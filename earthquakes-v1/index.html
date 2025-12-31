@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Cesium Earthquakes – Hover Info</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link
+    href="https://cesium.com/downloads/cesiumjs/releases/1.122/Build/Cesium/Widgets/widgets.css"
+    rel="stylesheet"
+  />
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.122/Build/Cesium/Cesium.js"></script>
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="toolbar">
+    <label>
+      Start time
+      <input id="startTime" type="date" />
+    </label>
+
+    <label>
+      End time
+      <input id="endTime" type="date" />
+    </label>
+
+    <label>
+      Min magnitude
+      <input id="minMag" type="number" step="0.1" value="4.5" />
+    </label>
+
+    <button id="loadBtn">Load</button>
+    <button id="clearBtn">Clear</button>
+
+    <span id="status">Ready</span>
+  </div>
+
+  <div id="cesiumContainer"></div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
