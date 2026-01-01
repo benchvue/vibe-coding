@@ -222,6 +222,8 @@ By the end of this course, students will:
 ## 🌍 earthquakes-v1  
 **Earthquake 3D Cesium Visualization**
 
+![Earthquakes Overview](./earthquakes-v1/images/overview.png)
+
 **Description**  
 A 3D globe visualization displaying recent earthquake activity using **CesiumJS**.
 
@@ -239,6 +241,8 @@ A 3D globe visualization displaying recent earthquake activity using **CesiumJS*
 
 ## ✈️ flight-cesium-v1  
 **Flight Route & Aircraft Visualization**
+
+![Flight Cesium Overview](./flight-cesium-v1/images/overview.png)
 
 **Description**  
 A Cesium-based visualization of airplane positions and flight routes on a 3D Earth.
@@ -258,6 +262,8 @@ A Cesium-based visualization of airplane positions and flight routes on a 3D Ear
 ## 🎬 movie-actor-explorer-v1  
 **Movie Actor Explorer**
 
+![Movie Actor Explorer Overview](./movie-actor-explorer-v1/images/overview.png)
+
 **Description**  
 A card-based app to explore famous movie actors and their movies using a public REST API.
 
@@ -275,6 +281,8 @@ A card-based app to explore famous movie actors and their movies using a public 
 
 ## 🏆 sports-heroes-explorer-v1  
 **Sports Heroes Explorer**
+
+![Sports Heroes Overview](./sports-heroes-explorer-v1/images/overview.png)
 
 **Description**  
 A colorful, student-friendly app showing sports stars with expandable photo galleries.
