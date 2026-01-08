@@ -197,6 +197,7 @@ with their own creative ideas.
 **Movie Actor Explorer**
 
 ![Movie Actor Explorer Overview](./movie-actor-explorer-v1/images/overview.png)
+![Movie Actor Animation](./movie-actor-explorer-v1/images/star-animation.gif)
 
 **Description**  
 A card-based app to explore famous movie actors and their movies using a public REST API.
@@ -256,6 +257,9 @@ This Solar System project uses planet surface textures that you can download man
 **Earthquake 3D Cesium Visualization**
 
 ![Earthquakes Overview](./earthquakes-v1/images/overview.png)
+
+![Earthquakes Animation](./earthquakes-v1/images/earthquake-animation.gif)
+
 
 **Description**  
 A 3D globe visualization displaying recent earthquake activity using **CesiumJS**.
