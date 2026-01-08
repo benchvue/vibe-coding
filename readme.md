@@ -256,10 +256,7 @@ This Solar System project uses planet surface textures that you can download man
 ## 🌍 earthquakes-v1  
 **Earthquake 3D Cesium Visualization**
 
-![Earthquakes Overview](./earthquakes-v1/images/overview.png)
-
-![Earthquakes Animation](./earthquakes-v1/images/earthquake-animation.gif)
-
+![Earthquakes Overview](./earthquakes-v1/images/overview.png)\
 
 **Description**  
 A 3D globe visualization displaying recent earthquake activity using **CesiumJS**.
