@@ -1,9 +1,9 @@
-# 🌍🎬✈️🏆 Vibe Coding Projects Collection
+# 🌍🌌🎬🏆 Vibe Coding Projects Collection
 
-This repository contains **four creative frontend projects** built using **vibe coding** principles:
-fast iteration, visual feedback, real-world APIs, and fun exploration.
+This repository contains **three creative frontend projects** built using **vibe coding** principles:
+fast iteration, visual feedback, real-world data, and fun exploration.
 
-Each project emphasizes **learning by building**, using **HTML, CSS, JavaScript**, and **real data**.
+Each project emphasizes **learning by building**, using **HTML, CSS, JavaScript**, and **3D visualization**.
 
 ---
 
@@ -13,7 +13,7 @@ This 7-session course introduces students to **Vibe Coding** —
 a visual, hands-on way to learn web development by building real projects
 with **HTML, CSS, JavaScript, REST APIs, and 3D visualization**.
 
-Students will build **four complete projects** and learn how to extend them
+Students will build **three complete projects** and learn how to extend them
 with their own creative ideas.
 
 ---
@@ -38,8 +38,8 @@ with their own creative ideas.
 | 2 | HTML / CSS / JavaScript 101 |
 | 3 | VS Code & Local Web Server |
 | 4 | Movie Actor Explorer Project |
-| 5 | Sports Heroes Explorer Project |
-| 6 | Earthquake & Flight Cesium Projects |
+| 5 | Solar System 3D Project |
+| 6 | Earthquake Cesium Project |
 | 7 | Extending Features & GitHub Basics |
 
 ---
@@ -49,7 +49,7 @@ with their own creative ideas.
 ### Goals
 - Understand what Vibe Coding is
 - Learn how the web works
-- Explore all four projects
+- Explore all projects
 
 ### Topics
 - What are HTML, CSS, and JavaScript?
@@ -126,50 +126,48 @@ with their own creative ideas.
 
 ---
 
-## 🟢 Session 5: Sports Heroes Explorer Project
+## 🟢 Session 5: Solar System 3D Project
 
 ### Goals
-- Build interactive student-friendly UI
-- Learn event-driven design
+- Learn 3D visualization concepts
+- Understand orbits and motion
 
 ### Topics
-- Public REST APIs (no API key)
-- Click → detail panel pattern
-- Image galleries
-- UX design for kids
+- Three.js basics
+- 3D coordinate systems
+- Orbits and animation loops
+- Texture mapping
 
 ### Activities
-- Display sports star cards
-- Click star → show photo gallery
-- Add more sports stars
-- Customize colors and layout
+- Render the Sun and planets
+- Animate planetary orbits
+- Add labels and controls
+- Adjust speed and camera view
 
 ### Project
-- `sports-heroes-explorer-v1`
+- `solar-system-v1`
 
 ---
 
-## 🟢 Session 6: Earthquake & Flight Cesium Projects
+## 🟢 Session 6: Earthquake Cesium Project
 
 ### Goals
-- Learn 3D visualization
-- Understand maps and coordinates
+- Learn 3D map visualization
+- Understand geographic coordinates
 
 ### Topics
 - CesiumJS fundamentals
 - Latitude and longitude
 - 3D globe navigation
-- Visualizing real-world data
+- Visualizing scientific data
 
 ### Activities
 - Plot earthquakes on Earth
 - Color earthquakes by magnitude
-- Draw flight routes
-- Animate aircraft movement
+- Explore time-based data
 
-### Projects
+### Project
 - `earthquakes-v1`
-- `flight-cesium-v1`
 
 ---
 
@@ -195,27 +193,62 @@ with their own creative ideas.
 
 ---
 
-## 🎯 Final Outcome
+## 🎬 movie-actor-explorer-v1  
+**Movie Actor Explorer**
 
-By the end of this course, students will:
+![Movie Actor Explorer Overview](./movie-actor-explorer-v1/images/overview.png)
 
-- Understand frontend web development
-- Build interactive projects
-- Use REST APIs
-- Visualize data in 3D
-- Use VS Code confidently
-- Share projects on GitHub
-- Think creatively with code
+**Description**  
+A card-based app to explore famous movie actors and their movies using a public REST API.
+
+**Vibe Coding Focus**
+- Card-based UI
+- Click → detail interaction
+- Entertainment data
+
+**Key Learning**
+- REST API usage
+- JSON parsing
+- Dynamic UI updates
 
 ---
 
-## 🚀 Optional Extensions
+## 🌌 solar-system-v1  
+**3D Solar System Visualization**
 
-- Add search and filters
-- Add animations
-- Add quizzes
-- Add maps and charts
-- Explore React or Vue next
+![Solar System Overview](./solar-system-v1/images/solar-system.gif)
+
+**Description**  
+A 3D visualization of the solar system built with **Three.js**, showing the Sun and planets orbiting in space.
+
+**Vibe Coding Focus**
+- 3D thinking and spatial reasoning
+- Animation and motion
+- Visual learning through simulation
+
+**Key Learning**
+- Three.js fundamentals
+- Animation loops
+- Texture mapping
+- Coordinate systems
+
+---
+
+## 📥 How to Download Planet Textures (Manual)
+
+This Solar System project uses planet surface textures that you can download manually from the **Planet Texture Maps Wiki**.
+
+### Step-by-Step Instructions
+
+1. Open the texture source site in your browser:
+
+   👉 https://planet-texture-maps.fandom.com/wiki/Planet_Texture_Maps_Wiki
+
+2. Use the navigation menu or search box to find a planet.
+
+3. On the planet page, scroll until you see the texture image.
+
+4. **Right-click** on the texture preview and choose:
 
 ---
 
@@ -239,79 +272,19 @@ A 3D globe visualization displaying recent earthquake activity using **CesiumJS*
 
 ---
 
-## ✈️ flight-cesium-v1  
-**Flight Route & Aircraft Visualization**
-
-![Flight Cesium Overview](./flight-cesium-v1/images/overview.png)
-
-**Description**  
-A Cesium-based visualization of airplane positions and flight routes on a 3D Earth.
-
-**Vibe Coding Focus**
-- Movement and animation
-- Map-based storytelling
-- Transportation systems
-
-**Key Learning**
-- Animations in Cesium
-- Time-based data
-- Global routing concepts
-
----
-
-## 🎬 movie-actor-explorer-v1  
-**Movie Actor Explorer**
-
-![Movie Actor Explorer Overview](./movie-actor-explorer-v1/images/overview.png)
-
-**Description**  
-A card-based app to explore famous movie actors and their movies using a public REST API.
-
-**Vibe Coding Focus**
-- Card-based UI
-- Click → detail interaction
-- Entertainment data
-
-**Key Learning**
-- REST API usage
-- JSON parsing
-- Dynamic UI updates
-
----
-
-## 🏆 sports-heroes-explorer-v1  
-**Sports Heroes Explorer**
-
-![Sports Heroes Overview](./sports-heroes-explorer-v1/images/overview.png)
-
-**Description**  
-A colorful, student-friendly app showing sports stars with expandable photo galleries.
-
-**Vibe Coding Focus**
-- Visual-first learning
-- No API keys
-- Classroom-friendly design
-
-**Key Learning**
-- Event handling (`click`)
-- DOM manipulation
-- Public REST APIs
-
----
-
 ## 🎯 Overall Vibe Coding Philosophy
 
 All projects follow these principles:
 
-- 🚀 Build fast, learn fast
-- 🎨 Visual-first design
-- 🌍 Use real-world data
-- 🧠 Learn through interaction
-- ❌ No heavy frameworks
+- Build fast, learn fast
+- Visual-first design
+- Use real-world data
+- Learn through interaction
+- No heavy frameworks
 
 Ideal for:
 - Learning frontend development
-- Teaching high school or college students
+- Teaching middle school, high school, or college students
 - Rapid prototyping
 - Portfolio projects
 
