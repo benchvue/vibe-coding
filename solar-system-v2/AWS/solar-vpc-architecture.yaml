@@ -1,0 +1,221 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  Solar System Explorer - VPC Architecture Stack
+  Creates Solar-VPC, Public Subnet, Internet Gateway, Route Table,
+  Elastic IP, and EC2 instance for hosting the Solar System Explorer 3D app.
+
+# ============================================================
+# PARAMETERS
+# ============================================================
+Parameters:
+  KeyPairName:
+    Type: String
+    Default: ch3-key
+    Description: Name of the existing EC2 KeyPair (without .pem extension)
+
+  InstanceType:
+    Type: String
+    Default: t2.micro
+    AllowedValues:
+      - t2.micro
+      - t2.small
+      - t3.micro
+      - t3.small
+    Description: EC2 instance type (t2.micro is free tier eligible)
+
+  SSHLocation:
+    Type: String
+    Default: 0.0.0.0/0
+    Description: CIDR block allowed to SSH into EC2 (use your IP/32 for security)
+    AllowedPattern: '(\d{1,3}\.){3}\d{1,3}/\d{1,2}'
+
+  LatestAmiId:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-x86_64
+    Description: Latest Amazon Linux 2023 AMI from SSM Parameter Store
+
+# ============================================================
+# RESOURCES
+# ============================================================
+Resources:
+
+  # ----------------------------------------------------------
+  # 1. VPC - Solar-VPC (10.0.0.0/16)
+  # ----------------------------------------------------------
+  SolarVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: Solar-VPC
+
+  # ----------------------------------------------------------
+  # 2. Internet Gateway - Solar-IGW
+  # ----------------------------------------------------------
+  SolarIGW:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: Solar-IGW
+
+  SolarIGWAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref SolarVPC
+      InternetGatewayId: !Ref SolarIGW
+
+  # ----------------------------------------------------------
+  # 3. Public Subnet - Solar-Public-Subnet (10.0.1.0/24)
+  # ----------------------------------------------------------
+  SolarPublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref SolarVPC
+      CidrBlock: 10.0.1.0/24
+      AvailabilityZone: !Select [0, !GetAZs ""]
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: Solar-Public-Subnet
+
+  # ----------------------------------------------------------
+  # 4. Route Table - Solar-Public-RT
+  # ----------------------------------------------------------
+  SolarPublicRT:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref SolarVPC
+      Tags:
+        - Key: Name
+          Value: Solar-Public-RT
+
+  SolarPublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: SolarIGWAttachment
+    Properties:
+      RouteTableId: !Ref SolarPublicRT
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref SolarIGW
+
+  SolarPublicSubnetRTAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref SolarPublicSubnet
+      RouteTableId: !Ref SolarPublicRT
+
+  # ----------------------------------------------------------
+  # 5. Security Group - Solar-Public-SG
+  # ----------------------------------------------------------
+  SolarPublicSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow SSH (22) and HTTP (80) access for Solar System Explorer
+      VpcId: !Ref SolarVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: !Ref SSHLocation
+          Description: SSH access
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+          Description: HTTP access for Solar System Explorer
+      SecurityGroupEgress:
+        - IpProtocol: "-1"
+          CidrIp: 0.0.0.0/0
+          Description: Allow all outbound traffic
+      Tags:
+        - Key: Name
+          Value: Solar-Public-SG
+
+  # ----------------------------------------------------------
+  # 6. Elastic IP - Solar-EIP
+  # ----------------------------------------------------------
+  SolarEIP:
+    Type: AWS::EC2::EIP
+    DependsOn: SolarIGWAttachment
+    Properties:
+      Domain: vpc
+      Tags:
+        - Key: Name
+          Value: Solar-EIP
+
+  SolarEIPAssociation:
+    Type: AWS::EC2::EIPAssociation
+    Properties:
+      AllocationId: !GetAtt SolarEIP.AllocationId
+      InstanceId: !Ref SolarPublicEC2
+
+  # ----------------------------------------------------------
+  # 7. EC2 Instance - Solar-Public-EC2
+  # ----------------------------------------------------------
+  SolarPublicEC2:
+    Type: AWS::EC2::Instance
+    DependsOn: SolarIGWAttachment
+    Properties:
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref KeyPairName
+      ImageId: !Ref LatestAmiId
+      SubnetId: !Ref SolarPublicSubnet
+      SecurityGroupIds:
+        - !Ref SolarPublicSG
+      Tags:
+        - Key: Name
+          Value: Solar-Public-EC2
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash -xe
+          yum update -y
+          yum install -y httpd
+          systemctl start httpd
+          systemctl enable httpd
+          # Create textures directory for planet images
+          mkdir -p /var/www/html/textures
+
+# ============================================================
+# OUTPUTS
+# ============================================================
+Outputs:
+  VPCId:
+    Description: Solar-VPC ID
+    Value: !Ref SolarVPC
+    Export:
+      Name: Solar-VPC-ID
+
+  PublicSubnetId:
+    Description: Solar-Public-Subnet ID
+    Value: !Ref SolarPublicSubnet
+
+  InternetGatewayId:
+    Description: Solar-IGW ID
+    Value: !Ref SolarIGW
+
+  RouteTableId:
+    Description: Solar-Public-RT ID
+    Value: !Ref SolarPublicRT
+
+  SecurityGroupId:
+    Description: Solar-Public-SG ID
+    Value: !Ref SolarPublicSG
+
+  InstanceId:
+    Description: Solar-Public-EC2 Instance ID
+    Value: !Ref SolarPublicEC2
+
+  ElasticIP:
+    Description: Elastic IP address for Solar-Public-EC2
+    Value: !Ref SolarEIP
+
+  WebsiteURL:
+    Description: URL to access Solar System Explorer
+    Value: !Sub "http://${SolarEIP}"
+
+  SSHCommand:
+    Description: SSH command to connect to Solar-Public-EC2
+    Value: !Sub "ssh -i ch3-key.pem ec2-user@${SolarEIP}"
