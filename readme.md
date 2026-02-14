@@ -181,6 +181,32 @@ with their own creative ideas.
 - Adding new features
 - Refactoring code
 - GitHub repositories and commits
+   - Initialize Git
+   ```
+   git init
+   ```
+   - Check:
+   ```
+   git status
+   ```
+   - Set the origin remote
+   This is the exact command VS Code runs behind the scenes:
+
+   git remote add origin https://github.com/[git hub id]/[repository name].git
+
+   ```
+   git remote add origin https://github.com/benchvue/GeoGebra.git
+   ```
+   - First commit
+   ```
+   git add .
+   git commit -m "Initial commit"
+   ```
+   Push to GitHub
+   ```
+   git push
+   ```
+
 - Writing README files
 - Sharing projects online
 

@@ -1,0 +1,219 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  Movie Actor Explorer - VPC Architecture Stack
+  Creates Movie-VPC, Public Subnet, Internet Gateway, Route Table,
+  Elastic IP, and EC2 instance for hosting the Movie Actor Explorer app.
+
+# ============================================================
+# PARAMETERS
+# ============================================================
+Parameters:
+  KeyPairName:
+    Type: String
+    Default: ch3-key
+    Description: Name of the existing EC2 KeyPair (without .pem extension)
+
+  InstanceType:
+    Type: String
+    Default: t2.micro
+    AllowedValues:
+      - t2.micro
+      - t2.small
+      - t3.micro
+      - t3.small
+    Description: EC2 instance type (t2.micro is free tier eligible)
+
+  SSHLocation:
+    Type: String
+    Default: 0.0.0.0/0
+    Description: CIDR block allowed to SSH into EC2 (use your IP/32 for security)
+    AllowedPattern: '(\d{1,3}\.){3}\d{1,3}/\d{1,2}'
+
+  LatestAmiId:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-x86_64
+    Description: Latest Amazon Linux 2023 AMI from SSM Parameter Store
+
+# ============================================================
+# RESOURCES
+# ============================================================
+Resources:
+
+  # ----------------------------------------------------------
+  # 1. VPC - Movie-VPC (10.0.0.0/16)
+  # ----------------------------------------------------------
+  MovieVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: Movie-VPC
+
+  # ----------------------------------------------------------
+  # 2. Internet Gateway - Movie-IGW
+  # ----------------------------------------------------------
+  MovieIGW:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: Movie-IGW
+
+  MovieIGWAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref MovieVPC
+      InternetGatewayId: !Ref MovieIGW
+
+  # ----------------------------------------------------------
+  # 3. Public Subnet - Movie-Public-Subnet (10.0.1.0/24)
+  # ----------------------------------------------------------
+  MoviePublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MovieVPC
+      CidrBlock: 10.0.1.0/24
+      AvailabilityZone: !Select [0, !GetAZs ""]
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: Movie-Public-Subnet
+
+  # ----------------------------------------------------------
+  # 4. Route Table - Movie-Public-RT
+  # ----------------------------------------------------------
+  MoviePublicRT:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref MovieVPC
+      Tags:
+        - Key: Name
+          Value: Movie-Public-RT
+
+  MoviePublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: MovieIGWAttachment
+    Properties:
+      RouteTableId: !Ref MoviePublicRT
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref MovieIGW
+
+  MoviePublicSubnetRTAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref MoviePublicSubnet
+      RouteTableId: !Ref MoviePublicRT
+
+  # ----------------------------------------------------------
+  # 5. Security Group - Movie-Public-SG
+  # ----------------------------------------------------------
+  MoviePublicSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow SSH (22) and HTTP (80) access
+      VpcId: !Ref MovieVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: !Ref SSHLocation
+          Description: SSH access
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+          Description: HTTP access for Movie Explorer
+      SecurityGroupEgress:
+        - IpProtocol: "-1"
+          CidrIp: 0.0.0.0/0
+          Description: Allow all outbound traffic
+      Tags:
+        - Key: Name
+          Value: Movie-Public-SG
+
+  # ----------------------------------------------------------
+  # 6. Elastic IP - Movie-EIP
+  # ----------------------------------------------------------
+  MovieEIP:
+    Type: AWS::EC2::EIP
+    DependsOn: MovieIGWAttachment
+    Properties:
+      Domain: vpc
+      Tags:
+        - Key: Name
+          Value: Movie-EIP
+
+  MovieEIPAssociation:
+    Type: AWS::EC2::EIPAssociation
+    Properties:
+      AllocationId: !GetAtt MovieEIP.AllocationId
+      InstanceId: !Ref MoviePublicEC2
+
+  # ----------------------------------------------------------
+  # 7. EC2 Instance - Movie-Public-EC2
+  # ----------------------------------------------------------
+  MoviePublicEC2:
+    Type: AWS::EC2::Instance
+    DependsOn: MovieIGWAttachment
+    Properties:
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref KeyPairName
+      ImageId: !Ref LatestAmiId
+      SubnetId: !Ref MoviePublicSubnet
+      SecurityGroupIds:
+        - !Ref MoviePublicSG
+      Tags:
+        - Key: Name
+          Value: Movie-Public-EC2
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash -xe
+          yum update -y
+          yum install -y httpd
+          systemctl start httpd
+          systemctl enable httpd
+
+# ============================================================
+# OUTPUTS
+# ============================================================
+Outputs:
+  VPCId:
+    Description: Movie-VPC ID
+    Value: !Ref MovieVPC
+    Export:
+      Name: Movie-VPC-ID
+
+  PublicSubnetId:
+    Description: Movie-Public-Subnet ID
+    Value: !Ref MoviePublicSubnet
+
+  InternetGatewayId:
+    Description: Movie-IGW ID
+    Value: !Ref MovieIGW
+
+  RouteTableId:
+    Description: Movie-Public-RT ID
+    Value: !Ref MoviePublicRT
+
+  SecurityGroupId:
+    Description: Movie-Public-SG ID
+    Value: !Ref MoviePublicSG
+
+  InstanceId:
+    Description: Movie-Public-EC2 Instance ID
+    Value: !Ref MoviePublicEC2
+
+  ElasticIP:
+    Description: Elastic IP address for Movie-Public-EC2
+    Value: !Ref MovieEIP
+
+  WebsiteURL:
+    Description: URL to access Movie Actor Explorer
+    Value: !Sub "http://${MovieEIP}"
+
+  SSHCommand:
+    Description: SSH command to connect to Movie-Public-EC2
+    Value: !Sub "ssh -i ch3-key.pem ec2-user@${MovieEIP}"

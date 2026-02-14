@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>🎬 Movie Actor Explorer</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #1a1a2e;
+      color: #eee;
+      min-height: 100vh;
+    }
+
+    header {
+      text-align: center;
+      padding: 2rem 1rem 1rem;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      margin-bottom: 0.3rem;
+    }
+
+    header p {
+      color: #aaa;
+      font-size: 1rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 1.2rem;
+      padding: 1.5rem 2rem;
+    }
+
+    .card {
+      background: #16213e;
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .card img {
+      width: 100%;
+      display: block;
+      aspect-ratio: 2 / 3;
+      object-fit: cover;
+    }
+
+    .card-body {
+      padding: 0.6rem 0.8rem;
+    }
+
+    .card-title {
+      font-weight: bold;
+      font-size: 0.95rem;
+    }
+
+    #movies {
+      padding: 0 2rem 2rem;
+    }
+
+    #movie-title {
+      font-size: 1.4rem;
+      margin-bottom: 0.5rem;
+      padding-top: 1rem;
+    }
+
+    #movie-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🎬 Movie Actor Explorer</h1>
+  <p>Click an actor to see their movies</p>
+</header>
+
+<section id="actors" class="grid"></section>
+
+<section id="movies">
+  <h2 id="movie-title"></h2>
+  <div id="movie-grid"></div>
+</section>
+
+<script>
+window.__ENV__ = {
+  READ_ACCESS_TOKEN: "YOUR_READ_ACCESS_TOKEN_HERE"
+};
+
+const READ_ACCESS_TOKEN = window.__ENV__.READ_ACCESS_TOKEN;
+const BASE_URL = "https://api.themoviedb.org/3";
+const IMAGE_URL = "https://image.tmdb.org/t/p/w500";
+
+async function tmdbFetch(endpoint) {
+  const res = await fetch(BASE_URL + endpoint, {
+    headers: {
+      Authorization: `Bearer ${READ_ACCESS_TOKEN}`,
+      "Content-Type": "application/json;charset=utf-8"
+    }
+  });
+  if (!res.ok) throw new Error("TMDB API error");
+  return res.json();
+}
+
+const famousActors = [
+  { id: 287, name: "Brad Pitt" },
+  { id: 31, name: "Tom Hanks" },
+  { id: 500, name: "Tom Cruise" },
+  { id: 3223, name: "Robert Downey Jr." },
+  { id: 1245, name: "Scarlett Johansson" },
+  { id: 11701, name: "Angelina Jolie" },
+  { id: 524, name: "Natalie Portman" },
+  { id: 10990, name: "Emma Watson" },
+  { id: 72129, name: "Jennifer Lawrence" }
+];
+
+const actorsEl = document.getElementById("actors");
+const moviesEl = document.getElementById("movie-grid");
+const titleEl = document.getElementById("movie-title");
+
+async function renderActors() {
+  for (const actor of famousActors) {
+    const person = await tmdbFetch(`/person/${actor.id}`);
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <img src="${person.profile_path ? IMAGE_URL + person.profile_path : 'https://via.placeholder.com/300x450?text=No+Image'}" />
+      <div class="card-body">
+        <div class="card-title">${actor.name}</div>
+      </div>
+    `;
+    card.onclick = () => loadMovies(actor);
+    actorsEl.appendChild(card);
+  }
+}
+
+renderActors();
+
+async function loadMovies(actor) {
+  titleEl.innerText = `🎞️ Movies starring ${actor.name}`;
+  moviesEl.innerHTML = "";
+  const data = await tmdbFetch(`/person/${actor.id}/movie_credits`);
+  data.cast
+    .sort((a, b) => b.popularity - a.popularity)
+    .slice(0, 12)
+    .forEach(movie => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <img src="${movie.poster_path ? IMAGE_URL + movie.poster_path : 'https://via.placeholder.com/300x450?text=No+Poster'}" />
+        <div class="card-body">
+          <div class="card-title">${movie.title}</div>
+        </div>
+      `;
+      moviesEl.appendChild(card);
+    });
+}
+</script>
+
+</body>
+</html>
