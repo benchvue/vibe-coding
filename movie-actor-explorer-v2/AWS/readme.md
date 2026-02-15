@@ -29,30 +29,37 @@ This project is ideal for:
 ## 📁 Project Structure
 
 ```
-movie-actor-explorer/
-│
-├─ index.html
-├─ env.js              # API token (DO NOT COMMIT)
-├─ css/
-│  └─ style.css
-└─ js/
-   └─ app.js
+movie-actor-explorer-v2/
+├── images/
+│   └── overview.png
+└── AWS/
+    ├── ch3-key.pem                         ← SSH key
+    ├── deployment-guide.md                 ← Full AWS guide
+    ├── movie-vpc-architecture.yaml         ← CloudFormation template
+    ├── movies-detailed-architecture.drawio ← Architecture diagram
+    ├── README.md                           ← readme    
+    └── index.html                          ← Single-file app (HTML + CSS + JS)
+
 ```
+
+### Single-File Architecture
+
+All HTML, CSS, JavaScript, and the API token are combined into a **single `index.html`** — no separate `env.js`, `style.css`, or `app.js` files.
+
+| Section in `index.html` | Description |
+|--------------------------|-------------|
+| `<style>` | Grid layout, dark theme, card styling |
+| `<script>` (top) | `window.__ENV__` with TMDB Read Access Token |
+| `<script>` (main) | Actor rendering, TMDB API fetch, movie loading |
 
 ---
 
 ## ▶️ How to Run
 
-### Option 1: Open Directly
-1. Download or clone the project
-2. Open `index.html` in your web browser
+1. Open `AWS/index.html` in your web browser
+2. Or right-click → **"Open with Live Server"** in VS Code
 
-### Option 2: VS Code Live Server (Recommended)
-1. Open the folder in VS Code
-2. Right-click `index.html`
-3. Select **"Open with Live Server"**
-
-No build or installation steps are required.
+No build or installation steps required.
 
 ---
 
@@ -71,8 +78,6 @@ https://www.themoviedb.org/signup
 1. Enter your **username**, **email**, and **password**
 2. Click **"Sign Up"**
 3. Check your email inbox and **verify your email address**
-
-> 💡 You can also sign up with your existing account if you already have one.
 
 ### Step 2 — Request an API Key
 
@@ -107,9 +112,9 @@ eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxMjUyNDVh...
 
 > 📌 You need the **Read Access Token**, NOT the API Key. The Read Access Token is the longer one that starts with `eyJ...`
 
-### Step 4 — Add the Token to `env.js`
+### Step 4 — Add the Token to `index.html`
 
-Open `env.js` and paste your token:
+Open `index.html` and find the `window.__ENV__` section, then paste your token:
 
 ```js
 window.__ENV__ = {
@@ -117,26 +122,26 @@ window.__ENV__ = {
 };
 ```
 
-> ⚠️ **Do NOT commit `env.js` to Git.** Add it to your `.gitignore` file to keep your token private.
-
 ---
 
 ## 🧠 Architecture
 
 ```
 Browser
-|
-|-- index.html
-|-- style.css
-|-- app.js
-|-- env.js (token)
-|
-TMDB REST API
+│
+├── index.html (single file)
+│   ├── <style>       → CSS
+│   ├── <script>      → window.__ENV__ (token)
+│   └── <script>      → App logic (fetch + render)
+│
+└── TMDB REST API
+    ├── /person/{id}           → Actor details
+    └── /person/{id}/movie_credits → Movies
 ```
 
 ### Key Design Decisions
 
-- Uses `env.js` instead of `.env` (browser-safe workaround)
+- **Single-file** — HTML, CSS, JS, and token all in one `index.html`
 - API token injected via `window.__ENV__`
 - REST calls authenticated using Bearer token
 - Stateless, frontend-only architecture
@@ -145,21 +150,15 @@ TMDB REST API
 
 ## 🔗 REST API Usage
 
-This project uses **TMDB v3 REST endpoints** authenticated by a **v4 Read Access Token**.
-
----
+This project uses **TMDB v3 REST endpoints** authenticated by the **v4 Read Access Token**.
 
 ### Example 1: Get Actor Details
 
-**Request**
-
 ```
 GET https://api.themoviedb.org/3/person/287
-
 Authorization: Bearer YOUR_READ_ACCESS_TOKEN
 ```
 
-**Response (JSON)**
 ```json
 {
   "id": 287,
@@ -169,19 +168,13 @@ Authorization: Bearer YOUR_READ_ACCESS_TOKEN
 }
 ```
 
----
-
 ### Example 2: Get Actor Movies
-
-**Request**
 
 ```
 GET https://api.themoviedb.org/3/person/287/movie_credits
-
 Authorization: Bearer YOUR_READ_ACCESS_TOKEN
 ```
 
-**Response (JSON)**
 ```json
 {
   "cast": [
@@ -196,21 +189,60 @@ Authorization: Bearer YOUR_READ_ACCESS_TOKEN
 
 ---
 
-### API Token Handling
+## ☁️ AWS Deployment (Quick Start)
 
-`env.js`
+This project includes a **CloudFormation template** for deploying to AWS EC2. Full details are in `AWS/deployment-guide.md`.
 
-```js
-window.__ENV__ = {
-  READ_ACCESS_TOKEN: "YOUR_TMDB_READ_ACCESS_TOKEN"
-};
+### Resources Created
+
+| Resource | Name | Details |
+|----------|------|---------|
+| VPC | Movie-VPC | 10.0.0.0/16 |
+| Subnet | Movie-Public-Subnet | 10.0.1.0/24 |
+| Internet Gateway | Movie-IGW | Attached to VPC |
+| Route Table | Movie-Public-RT | 0.0.0.0/0 → IGW |
+| Security Group | Movie-Public-SG | SSH (22), HTTP (80) |
+| EC2 | Movie-Public-EC2 | t2.micro, AL2023, Apache |
+| Elastic IP | Movie-EIP | Static public IP |
+
+### Deploy in 5 Commands
+
+```bash
+cd movie-actor-explorer-v2/AWS
+
+# 1. Create stack
+aws cloudformation create-stack \
+  --stack-name movie-vpc-stack \
+  --template-body file://movie-vpc-architecture.yaml \
+  --parameters ParameterKey=KeyPairName,ParameterValue=ch3-key
+
+# 2. Wait (~3-5 min)
+aws cloudformation wait stack-create-complete --stack-name movie-vpc-stack
+
+# 3. Get Elastic IP
+EIP=$(aws cloudformation describe-stacks \
+  --stack-name movie-vpc-stack \
+  --query "Stacks[0].Outputs[?OutputKey=='ElasticIP'].OutputValue" \
+  --output text)
+
+# 4. Deploy index.html
+scp -i ch3-key.pem index.html ec2-user@$EIP:/tmp/ && \
+ssh -i ch3-key.pem ec2-user@$EIP "\
+  sudo cp /tmp/index.html /var/www/html/index.html && \
+  sudo systemctl restart httpd"
+
+# 5. Open in browser
+echo "http://$EIP"
 ```
 
-Usage in `app.js`
+### Clean Up
 
-```js
-const READ_ACCESS_TOKEN = window.__ENV__.READ_ACCESS_TOKEN;
+```bash
+aws cloudformation delete-stack --stack-name movie-vpc-stack
+aws cloudformation wait stack-delete-complete --stack-name movie-vpc-stack
 ```
+
+> 📘 See `AWS/deployment-guide.md` for full step-by-step instructions, SSH guide, and troubleshooting.
 
 ---
 
@@ -218,13 +250,9 @@ const READ_ACCESS_TOKEN = window.__ENV__.READ_ACCESS_TOKEN;
 
 This is a frontend-only demo. The API token is visible in browser DevTools.
 
-**Suitable for:**
-- Learning
-- Prototyping
-- Demos
+**Suitable for:** Learning, Prototyping, Demos
 
-**For production environments:**
-- Use a backend API proxy (Node.js, Spring, Cloudflare Worker)
+**For production:** Use a backend API proxy (Node.js, Spring, Cloudflare Worker)
 
 ---
 
@@ -234,7 +262,6 @@ This is a frontend-only demo. The API token is visible in browser DevTools.
 - Movie detail modal
 - Pagination
 - Infinite scrolling
-- Cesium 3D globe visualization
 - Backend proxy for secure API access
 
 ---

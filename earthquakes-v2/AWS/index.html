@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Cesium Earthquakes – Hover Info</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link
+    href="https://cesium.com/downloads/cesiumjs/releases/1.122/Build/Cesium/Widgets/widgets.css"
+    rel="stylesheet"
+  />
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.122/Build/Cesium/Cesium.js"></script>
+
+  <style>
+    html, body, #cesiumContainer {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #toolbar {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 10;
+      background: rgba(20, 20, 20, 0.85);
+      padding: 10px;
+      border-radius: 8px;
+      color: white;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    #toolbar label {
+      display: flex;
+      flex-direction: column;
+      font-size: 12px;
+    }
+
+    #toolbar input {
+      height: 28px;
+      border-radius: 6px;
+      border: none;
+      padding: 0 8px;
+    }
+
+    #toolbar button {
+      height: 30px;
+      padding: 0 12px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+    }
+
+    #status {
+      margin-left: 10px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div id="toolbar">
+    <label>
+      Start time
+      <input id="startTime" type="date" />
+    </label>
+
+    <label>
+      End time
+      <input id="endTime" type="date" />
+    </label>
+
+    <label>
+      Min magnitude
+      <input id="minMag" type="number" step="0.1" value="4.5" />
+    </label>
+
+    <button id="loadBtn">Load</button>
+    <button id="clearBtn">Clear</button>
+
+    <span id="status">Ready</span>
+  </div>
+
+  <div id="cesiumContainer"></div>
+
+  <script>
+    // ======================
+    // Cesium access token
+    // ======================
+    Cesium.Ion.defaultAccessToken = "YOUR_READ_ACCESS_TOKEN_HERE";
+
+    // ======================
+    // Viewer
+    // ======================
+    const viewer = new Cesium.Viewer("cesiumContainer", {
+      terrain: Cesium.Terrain.fromWorldTerrain(),
+      animation: false,
+      timeline: false,
+      infoBox: true,
+      selectionIndicator: true,
+    });
+
+    viewer.scene.globe.enableLighting = true;
+
+    // ======================
+    // Data source
+    // ======================
+    const quakeSource = new Cesium.CustomDataSource("earthquakes");
+    viewer.dataSources.add(quakeSource);
+
+    // ======================
+    // UI
+    // ======================
+    const startInput = document.getElementById("startTime");
+    const endInput = document.getElementById("endTime");
+    const minMagInput = document.getElementById("minMag");
+    const loadBtn = document.getElementById("loadBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const statusEl = document.getElementById("status");
+
+    // Default: last 1 day
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+
+    startInput.value = formatDate(yesterday);
+    endInput.value = formatDate(today);
+
+    // ======================
+    // Hover label entity
+    // ======================
+    const hoverLabel = viewer.entities.add({
+      label: {
+        show: false,
+        text: "",
+        font: "14px sans-serif",
+        fillColor: Cesium.Color.WHITE,
+        outlineColor: Cesium.Color.BLACK,
+        outlineWidth: 3,
+        style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+        verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+        pixelOffset: new Cesium.Cartesian2(15, -10),
+        showBackground: true,
+        backgroundColor: Cesium.Color.BLACK.withAlpha(0.75),
+        disableDepthTestDistance: Number.POSITIVE_INFINITY,
+      },
+    });
+
+    // ======================
+    // Mouse hover handler
+    // ======================
+    const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+
+    handler.setInputAction(function (movement) {
+      const picked = viewer.scene.pick(movement.endPosition);
+
+      if (
+        Cesium.defined(picked) &&
+        picked.id &&
+        picked.id.properties
+      ) {
+        const props = picked.id.properties;
+
+        const place = props.place ? props.place.getValue() : null;
+        const mag = props.mag ? props.mag.getValue() : null;
+        const time = props.time ? props.time.getValue() : null;
+
+        if (!place || !mag || !time) return;
+
+        hoverLabel.position = picked.id.position.getValue(
+          viewer.clock.currentTime
+        );
+
+        hoverLabel.label.text =
+          place + "\n" +
+          formatUtc(time) + " | Mag " + mag.toFixed(1) + " Mw";
+
+        hoverLabel.label.show = true;
+      } else {
+        hoverLabel.label.show = false;
+      }
+    }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+
+    // ======================
+    // Helpers
+    // ======================
+    function formatDate(d) {
+      return d.toISOString().slice(0, 10);
+    }
+
+    function formatUtc(ms) {
+      var d = new Date(ms);
+      return d.toISOString().replace("T", " ").replace(".000Z", " UTC");
+    }
+
+    function setStatus(msg) {
+      statusEl.textContent = msg;
+    }
+
+    function magToHeight(mag) {
+      return 20000 + mag * 20000;
+    }
+
+    function magToRadius(mag) {
+      return 10000 + mag * 2000;
+    }
+
+    function magToColor(mag) {
+      if (mag < 4) return Cesium.Color.YELLOW.withAlpha(0.8);
+      if (mag < 6) return Cesium.Color.ORANGE.withAlpha(0.8);
+      return Cesium.Color.RED.withAlpha(0.85);
+    }
+
+    // ======================
+    // Load earthquakes
+    // ======================
+    async function loadEarthquakes() {
+      quakeSource.entities.removeAll();
+      setStatus("Loading…");
+
+      var url =
+        "https://earthquake.usgs.gov/fdsnws/event/1/query" +
+        "?format=geojson" +
+        "&starttime=" + startInput.value +
+        "&endtime=" + endInput.value +
+        "&minmagnitude=" + minMagInput.value;
+
+      try {
+        var res = await fetch(url);
+        var data = await res.json();
+
+        for (var i = 0; i < data.features.length; i++) {
+          var f = data.features[i];
+          var lon = f.geometry.coordinates[0];
+          var lat = f.geometry.coordinates[1];
+          var mag = f.properties.mag;
+          var place = f.properties.place;
+          var time = f.properties.time;
+
+          var height = magToHeight(mag);
+          var radius = magToRadius(mag);
+
+          var center = Cesium.Cartesian3.fromDegrees(
+            lon,
+            lat,
+            height / 2
+          );
+
+          quakeSource.entities.add({
+            position: center,
+
+            properties: {
+              place: place,
+              mag: mag,
+              time: time,
+            },
+
+            cylinder: {
+              length: height,
+              topRadius: radius,
+              bottomRadius: radius,
+              material: magToColor(mag),
+              outline: true,
+              outlineColor: Cesium.Color.BLACK.withAlpha(0.4),
+            },
+
+            description:
+              "<b>" + place + "</b><br/>" +
+              "Time: " + formatUtc(time) + "<br/>" +
+              "Magnitude: " + mag + " Mw",
+          });
+        }
+
+        viewer.flyTo(quakeSource);
+        setStatus("Loaded " + data.features.length + " earthquakes");
+      } catch (err) {
+        console.error(err);
+        setStatus("Error loading data");
+      }
+    }
+
+    // ======================
+    // Events
+    // ======================
+    loadBtn.onclick = loadEarthquakes;
+    clearBtn.onclick = function () {
+      quakeSource.entities.removeAll();
+      setStatus("Cleared");
+    };
+
+    // Initial load
+    loadEarthquakes();
+  </script>
+</body>
+</html>

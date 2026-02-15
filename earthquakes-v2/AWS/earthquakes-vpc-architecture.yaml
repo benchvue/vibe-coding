@@ -1,0 +1,219 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  Earthquake 3D Visualization - VPC Architecture Stack
+  Creates Earthquake-VPC, Public Subnet, Internet Gateway, Route Table,
+  Elastic IP, and EC2 instance for hosting the CesiumJS Earthquake Explorer app.
+
+# ============================================================
+# PARAMETERS
+# ============================================================
+Parameters:
+  KeyPairName:
+    Type: String
+    Default: ch3-key
+    Description: Name of the existing EC2 KeyPair (without .pem extension)
+
+  InstanceType:
+    Type: String
+    Default: t2.micro
+    AllowedValues:
+      - t2.micro
+      - t2.small
+      - t3.micro
+      - t3.small
+    Description: EC2 instance type (t2.micro is free tier eligible)
+
+  SSHLocation:
+    Type: String
+    Default: 0.0.0.0/0
+    Description: CIDR block allowed to SSH into EC2 (use your IP/32 for security)
+    AllowedPattern: '(\d{1,3}\.){3}\d{1,3}/\d{1,2}'
+
+  LatestAmiId:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-x86_64
+    Description: Latest Amazon Linux 2023 AMI from SSM Parameter Store
+
+# ============================================================
+# RESOURCES
+# ============================================================
+Resources:
+
+  # ----------------------------------------------------------
+  # 1. VPC - Earthquake-VPC (10.0.0.0/16)
+  # ----------------------------------------------------------
+  EarthquakeVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: Earthquake-VPC
+
+  # ----------------------------------------------------------
+  # 2. Internet Gateway - Earthquake-IGW
+  # ----------------------------------------------------------
+  EarthquakeIGW:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: Earthquake-IGW
+
+  EarthquakeIGWAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref EarthquakeVPC
+      InternetGatewayId: !Ref EarthquakeIGW
+
+  # ----------------------------------------------------------
+  # 3. Public Subnet - Earthquake-Public-Subnet (10.0.1.0/24)
+  # ----------------------------------------------------------
+  EarthquakePublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref EarthquakeVPC
+      CidrBlock: 10.0.1.0/24
+      AvailabilityZone: !Select [0, !GetAZs ""]
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: Earthquake-Public-Subnet
+
+  # ----------------------------------------------------------
+  # 4. Route Table - Earthquake-Public-RT
+  # ----------------------------------------------------------
+  EarthquakePublicRT:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref EarthquakeVPC
+      Tags:
+        - Key: Name
+          Value: Earthquake-Public-RT
+
+  EarthquakePublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: EarthquakeIGWAttachment
+    Properties:
+      RouteTableId: !Ref EarthquakePublicRT
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref EarthquakeIGW
+
+  EarthquakePublicSubnetRTAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref EarthquakePublicSubnet
+      RouteTableId: !Ref EarthquakePublicRT
+
+  # ----------------------------------------------------------
+  # 5. Security Group - Earthquake-Public-SG
+  # ----------------------------------------------------------
+  EarthquakePublicSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow SSH (22) and HTTP (80) access for Earthquake Explorer
+      VpcId: !Ref EarthquakeVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: !Ref SSHLocation
+          Description: SSH access
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+          Description: HTTP access for Earthquake Explorer
+      SecurityGroupEgress:
+        - IpProtocol: "-1"
+          CidrIp: 0.0.0.0/0
+          Description: Allow all outbound traffic
+      Tags:
+        - Key: Name
+          Value: Earthquake-Public-SG
+
+  # ----------------------------------------------------------
+  # 6. Elastic IP - Earthquake-EIP
+  # ----------------------------------------------------------
+  EarthquakeEIP:
+    Type: AWS::EC2::EIP
+    DependsOn: EarthquakeIGWAttachment
+    Properties:
+      Domain: vpc
+      Tags:
+        - Key: Name
+          Value: Earthquake-EIP
+
+  EarthquakeEIPAssociation:
+    Type: AWS::EC2::EIPAssociation
+    Properties:
+      AllocationId: !GetAtt EarthquakeEIP.AllocationId
+      InstanceId: !Ref EarthquakePublicEC2
+
+  # ----------------------------------------------------------
+  # 7. EC2 Instance - Earthquake-Public-EC2
+  # ----------------------------------------------------------
+  EarthquakePublicEC2:
+    Type: AWS::EC2::Instance
+    DependsOn: EarthquakeIGWAttachment
+    Properties:
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref KeyPairName
+      ImageId: !Ref LatestAmiId
+      SubnetId: !Ref EarthquakePublicSubnet
+      SecurityGroupIds:
+        - !Ref EarthquakePublicSG
+      Tags:
+        - Key: Name
+          Value: Earthquake-Public-EC2
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash -xe
+          yum update -y
+          yum install -y httpd
+          systemctl start httpd
+          systemctl enable httpd
+
+# ============================================================
+# OUTPUTS
+# ============================================================
+Outputs:
+  VPCId:
+    Description: Earthquake-VPC ID
+    Value: !Ref EarthquakeVPC
+    Export:
+      Name: Earthquake-VPC-ID
+
+  PublicSubnetId:
+    Description: Earthquake-Public-Subnet ID
+    Value: !Ref EarthquakePublicSubnet
+
+  InternetGatewayId:
+    Description: Earthquake-IGW ID
+    Value: !Ref EarthquakeIGW
+
+  RouteTableId:
+    Description: Earthquake-Public-RT ID
+    Value: !Ref EarthquakePublicRT
+
+  SecurityGroupId:
+    Description: Earthquake-Public-SG ID
+    Value: !Ref EarthquakePublicSG
+
+  InstanceId:
+    Description: Earthquake-Public-EC2 Instance ID
+    Value: !Ref EarthquakePublicEC2
+
+  ElasticIP:
+    Description: Elastic IP address for Earthquake-Public-EC2
+    Value: !Ref EarthquakeEIP
+
+  WebsiteURL:
+    Description: URL to access Earthquake 3D Visualization
+    Value: !Sub "http://${EarthquakeEIP}"
+
+  SSHCommand:
+    Description: SSH command to connect to Earthquake-Public-EC2
+    Value: !Sub "ssh -i ch3-key.pem ec2-user@${EarthquakeEIP}"

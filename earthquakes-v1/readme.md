@@ -153,19 +153,54 @@ earthquake-cesium/
 
 ### 1️⃣ Prerequisites
 
-- A **Cesium Ion access token**  
-  👉 https://cesium.com/ion/
+- A **Cesium Ion access token** (free — see below)
 - A local static web server (required for `fetch()`)
 
 ---
 
-### 2️⃣ Configure Cesium Token
+### 2️⃣ Get a Cesium Ion Access Token (Google Sign-In)
 
-Edit `main.js`:
+Cesium Ion provides free access to 3D terrain, satellite imagery, and tiling services. You can sign up with your **Google email** in under 2 minutes.
+
+#### Step 1 — Go to Cesium Ion Sign Up
+
+Open your browser and navigate to:
+
+```
+https://ion.cesium.com/signup/
+```
+
+#### Step 2 — Sign in with Google
+
+1. Click the **"Sign in with Google"** button
+2. Select your **Google account** (or enter your Gmail address)
+3. Authorize Cesium to access your basic profile info
+4. You'll be redirected to the **Cesium Ion Dashboard**
+
+> 💡 You can also sign in with **GitHub** or **Epic Games** accounts.
+
+#### Step 3 — Copy Your Access Token
+
+1. In the Cesium Ion Dashboard, click **"Access Tokens"** in the left sidebar
+   - Or go directly to: `https://ion.cesium.com/tokens`
+2. You'll see a **default token** already created for your account
+3. Click the **📋 Copy** button next to the default token
+
+Your token will look like this:
+
+```
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4ODNk...
+```
+
+#### Step 4 — Add the Token to Your Code
+
+Edit `main.js` and replace the token value:
 
 ```js
-Cesium.Ion.defaultAccessToken = "YOUR_CESIUM_ION_ACCESS_TOKEN";
+Cesium.Ion.defaultAccessToken = "PASTE_YOUR_TOKEN_HERE";
 ```
+
+> ⚠️ **Best Practice**: For production apps, create a **new token** instead of using the default one. Click **"Create Token"** on the Access Tokens page, give it a name (e.g., `earthquake-app`), and select only the scopes you need (`assets:read`).
 
 ---
 
