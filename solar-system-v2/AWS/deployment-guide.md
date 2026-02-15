@@ -193,7 +193,7 @@ scp -i ch3-key.pem -r textures ec2-user@$EIP:/tmp/
 ```bash
 ssh -i ch3-key.pem ec2-user@$EIP "\
   sudo cp /tmp/index.html /var/www/html/index.html && \
-  sudo cp -r /tmp/textures /var/www/html/textures && \
+  sudo cp -r /tmp/textures/* /var/www/html/textures && \
   sudo systemctl restart httpd"
 ```
 
