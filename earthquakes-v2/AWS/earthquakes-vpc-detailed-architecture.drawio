@@ -1,6 +1,6 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.7.17 Chrome/128.0.6613.36 Electron/32.0.1 Safari/537.36" version="24.7.17">
   <diagram name="Earthquake-VPC-Architecture" id="eq-vpc-arch">
-    <mxGraphModel dx="3594" dy="1356" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+    <mxGraphModel dx="2479" dy="935" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -35,7 +35,7 @@
           <mxGeometry x="610" y="440" width="70" height="70" as="geometry" />
         </mxCell>
         <mxCell id="ec2-details" value="&lt;div style=&quot;text-align:left;font-size:10px;line-height:1.6;&quot;&gt;&lt;b&gt;Instance Details:&lt;/b&gt;&lt;br&gt;• Type: t2.micro (Free Tier)&lt;br&gt;• AMI: Amazon Linux 2023&lt;br&gt;• Key Pair: ch3-key&lt;br&gt;• Web Server: Apache (httpd)&lt;br&gt;• App: Earthquake 3D Visualization&lt;br&gt;• Private IP: 10.0.1.x (DHCP)&lt;br&gt;&lt;br&gt;&lt;b&gt;Web Root:&lt;/b&gt;&lt;br&gt;• /var/www/html/index.html&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#232F3E;arcSize=10;verticalAlign=middle;align=left;spacingLeft=10;fontSize=10;" parent="1" vertex="1">
-          <mxGeometry x="540" y="555" width="220" height="150" as="geometry" />
+          <mxGeometry x="520" y="540" width="240" height="165" as="geometry" />
         </mxCell>
         <mxCell id="eip" value="&lt;b&gt;Earthquake-EIP&lt;/b&gt;&lt;br&gt;Elastic IP" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#8C4FFF;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=1;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.elastic_ip_address;" parent="1" vertex="1">
           <mxGeometry x="770" y="455" width="40" height="40" as="geometry" />
@@ -115,7 +115,7 @@
         </mxCell>
         <mxCell id="conn8-label" value="&lt;font style=&quot;font-size:9px;color:#6c8ebf&quot;&gt;CesiumJS + Terrain&lt;/font&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" parent="conn8" vertex="1" connectable="0">
           <mxGeometry x="-0.3" y="15" relative="1" as="geometry">
-            <mxPoint as="offset" />
+            <mxPoint x="12" y="-2" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="conn9" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#9673a6;strokeWidth=2;dashed=1;dashPattern=6 3;fontSize=10;" parent="1" source="scp-label" target="ec2" edge="1">

@@ -1,162 +1,376 @@
-# 🌌 Solar System Explorer (3D)
+# 🌍🌌🎬🏆 Vibe Coding Projects Collection
 
-![Solar System Explorer](./images/solar-system.gif)
+This repository contains **three creative frontend projects** built using **vibe coding** principles:
+fast iteration, visual feedback, real-world data, and fun exploration.
 
-A lightweight **frontend-only 3D Solar System visualization** that shows the Sun and planets orbiting in space.
-
-Built with **pure HTML, CSS, and JavaScript** using **Three.js**.  
-No Node.js, no build tools, no frameworks.
-
-Designed for **Grade 8–10 students** learning visual programming and basic astronomy concepts.
+Each project emphasizes **learning by building**, using **HTML, CSS, JavaScript**, and **3D visualization**.
 
 ---
 
-## 📸 Overview
+# 🎧 Vibe Coding Syllabus (7 Sessions)
 
-**Solar System Explorer** allows students to:
+This 7-session course introduces students to **Vibe Coding** —  
+a visual, hands-on way to learn web development by building real projects
+with **HTML, CSS, JavaScript, REST APIs, and 3D visualization**.
 
-- View the Sun and planets in a 3D space
-- See planets move along elliptical orbits
-- Control orbit speed (slow down / speed up)
-- Pause and resume planetary motion
-- Learn planet names through labels
-- Explore 3D scenes using mouse controls
-
-This project is ideal for:
-- Learning 3D thinking
-- Understanding planetary motion
-- Visual science exploration
-- Vibe coding demos 🎧
+Students will build **three complete projects** and learn how to extend them
+with their own creative ideas.
 
 ---
 
-## 📁 Project Structure
+## 🧠 What Is Vibe Coding?
 
-solar-system-v2/AWS/
-│
-├─ index.html
-├─ ch3-key.pem
-├─ textures/
-│ ├─ Sun.png
-│ ├─ Mercury.png
-│ ├─ Venus.png
-│ ├─ Earth.png
-│ ├─ Mars.png
-│ ├─ Jupiter.png
-│ ├─ Saturn.png
-│ ├─ Uranus.png
-│ └─ Neptune.png
+**Vibe Coding** means:
 
+- Build first, understand while building
+- Focus on visuals and interaction
+- Use real-world data
+- Keep things simple and fun
+- Learn by experimenting
 
 ---
 
-## ▶️ How to Run
+## 🗓 Session Overview
 
-### Option 1: Open Directly
-1. Download or clone the project
-2. Open `index.html` in your web browser
-
-### Option 2: VS Code Live Server (Recommended)
-1. Open the folder in VS Code
-2. Right-click `index.html`
-3. Select **“Open with Live Server”**
-
-No installation or build steps are required.
-
----
-
-## 🧠 Architecture
-
-Browser
-|
-|-- index.html
-|-- Three.js (ES Module)
-|-- OrbitControls
-|-- CSS2DRenderer (labels)
-|
-Local Texture Images
-
+| Session | Topic |
+|------|------|
+| 1 | Vibe Coding & Web Basics |
+| 2 | HTML / CSS / JavaScript 101 |
+| 3 | VS Code & Local Web Server |
+| 4 | Movie Actor Explorer Project |
+| 5 | Solar System 3D Project |
+| 6 | Earthquake Cesium Project |
+| 7 | Extending Features & GitHub Basics |
 
 ---
 
-## 🌍 What Students Learn
+## 🟢 Session 1: Vibe Coding & Web Basics
 
-### Computer Science Concepts
-- 3D coordinate systems (X, Y, Z)
-- Animation loops (`requestAnimationFrame`)
-- Event handling (buttons)
-- Separation of data and logic
-- Basic rendering pipeline
+### Goals
+- Understand what Vibe Coding is
+- Learn how the web works
+- Explore all projects
 
-### Science Concepts
-- Planetary orbits
-- Elliptical motion
-- Relative distance and scale
-- The Solar System structure
+### Topics
+- What are HTML, CSS, and JavaScript?
+- How browsers load web pages
+- Frontend vs Backend (conceptual)
+- REST API basics (high-level)
 
----
-
-## 🪐 Planet Textures
-
-This project uses **local planet texture images** instead of online URLs  
-to ensure reliable loading in classrooms and school networks.
-
-### 📥 How to Download Textures (Manual)
-
-Planet textures can be downloaded from:
-
-👉 https://planet-texture-maps.fandom.com/wiki/Planet_Texture_Maps_Wiki
-
-#### Steps
-1. Open the site and choose a planet
-2. Scroll to find the texture image
-3. Right-click the image → **Save image as…**
-4. Save it into the `textures/` folder
-5. Rename the file to match the code (example: `Mars.png`)
-
-Using local files avoids:
-- Network errors
-- CORS issues
-- Proxy or firewall problems
+### Activities
+- Open a simple HTML file
+- Change text and refresh the browser
+- Explore demo projects
 
 ---
 
-## 🎮 Controls
+## 🟢 Session 2: HTML / CSS / JavaScript 101
 
-- **Mouse Drag** → Rotate the view
-- **Mouse Wheel** → Zoom in / out
-- **Play** → Start planet motion
-- **Pause** → Stop planet motion
-- **Speed − / Speed +** → Control orbit speed
+### Goals
+- Build basic web pages
+- Understand structure, style, and behavior
 
----
+### Topics
+- HTML elements (`div`, `img`, `h1`)
+- CSS basics (colors, fonts, layout)
+- JavaScript fundamentals
+- Click events (`onclick`)
 
-## 🚀 Possible Enhancements
-
-Students can extend the project by adding:
-
-- Saturn rings
-- Planet self-rotation
-- Moons (Earth’s Moon, Jupiter’s moons)
-- Planet information panels
-- Time scale slider
-- Background stars
-- Labels toggle (on / off)
+### Activities
+- Create a card layout
+- Style cards with CSS
+- Add JavaScript click behavior
 
 ---
 
-## 🎯 Educational Goals (Grade 8–10)
+## 🟢 Session 3: VS Code & Local Web Server
 
-By completing this project, students will:
+### Goals
+- Use VS Code confidently
+- Run projects locally
 
-- Understand basic 3D programming concepts
-- Connect coding with science learning
-- Gain confidence using JavaScript
-- Learn how simulations are built
-- Practice problem-solving and creativity
+### Topics
+- VS Code interface
+- Project folder structure
+- Live Server extension
+- Browser DevTools basics
+
+### Activities
+- Install VS Code
+- Install Live Server
+- Run a project locally
+- Inspect HTML and JavaScript in DevTools
+
+---
+
+## 🟢 Session 4: Movie Actor Explorer Project
+
+### Goals
+- Build a REST API–driven project
+- Understand `fetch()` and JSON
+
+### Topics
+- REST API structure
+- Fetching data from APIs
+- Parsing JSON
+- Dynamic DOM updates
+
+### Activities
+- Build actor cards
+- Click actor → load movies
+- Show posters and descriptions
+- Add new actors
+
+### Project
+- `movie-actor-explorer-v1`
+
+---
+
+## 🟢 Session 5: Solar System 3D Project
+
+### Goals
+- Learn 3D visualization concepts
+- Understand orbits and motion
+
+### Topics
+- Three.js basics
+- 3D coordinate systems
+- Orbits and animation loops
+- Texture mapping
+
+### Activities
+- Render the Sun and planets
+- Animate planetary orbits
+- Add labels and controls
+- Adjust speed and camera view
+
+### Project
+- `solar-system-v1`
+
+---
+
+## 🟢 Session 6: Earthquake Cesium Project
+
+### Goals
+- Learn 3D map visualization
+- Understand geographic coordinates
+
+### Topics
+- CesiumJS fundamentals
+- Latitude and longitude
+- 3D globe navigation
+- Visualizing scientific data
+
+### Activities
+- Plot earthquakes on Earth
+- Color earthquakes by magnitude
+- Explore time-based data
+
+### Project
+- `earthquakes-v1`
+
+---
+
+## 🟢 Session 7: Extending Features & GitHub Basics
+
+### Goals
+- Extend projects creatively
+- Learn GitHub fundamentals
+
+### Topics
+- Adding new features
+- Refactoring code
+- GitHub repositories and commits
+   - Initialize Git
+```
+   git init
+```
+   - Check:
+```
+   git status
+```
+   - Set the origin remote
+   This is the exact command VS Code runs behind the scenes:
+
+   git remote add origin https://github.com/[git hub id]/[repository name].git
+```
+   git remote add origin https://github.com/benchvue/GeoGebra.git
+```
+   - First commit
+```
+   git add .
+   git commit -m "Initial commit"
+```
+   Push to GitHub
+```
+   git push
+```
+
+- Writing README files
+- Sharing projects online
+
+### Activities
+- Add a new feature to any project
+- Create a GitHub repository
+- Commit code
+- Write a README
+- Share project links
+
+---
+
+## 🎬 movie-actor-explorer-v1  
+**Movie Actor Explorer**
+
+![Movie Actor Explorer Overview](./movie-actor-explorer-v1/images/overview.png)
+![Movie Actor Animation](./movie-actor-explorer-v1/images/star-animation.gif)
+
+**Description**  
+A card-based app to explore famous movie actors and their movies using a public REST API.
+
+**Vibe Coding Focus**
+- Card-based UI
+- Click → detail interaction
+- Entertainment data
+
+**Key Learning**
+- REST API usage
+- JSON parsing
+- Dynamic UI updates
+
+---
+
+## 🌌 solar-system-v1  
+**3D Solar System Visualization**
+
+![Solar System Overview](./solar-system-v1/images/solar-system.gif)
+
+**Description**  
+A 3D visualization of the solar system built with **Three.js**, showing the Sun and planets orbiting in space.
+
+**Vibe Coding Focus**
+- 3D thinking and spatial reasoning
+- Animation and motion
+- Visual learning through simulation
+
+**Key Learning**
+- Three.js fundamentals
+- Animation loops
+- Texture mapping
+- Coordinate systems
+
+---
+
+## 📥 How to Download Planet Textures (Manual)
+
+This Solar System project uses planet surface textures that you can download manually from the **Planet Texture Maps Wiki**.
+
+### Step-by-Step Instructions
+
+1. Open the texture source site in your browser:
+
+   👉 https://planet-texture-maps.fandom.com/wiki/Planet_Texture_Maps_Wiki
+
+2. Use the navigation menu or search box to find a planet.
+
+3. On the planet page, scroll until you see the texture image.
+
+4. **Right-click** on the texture preview and choose:
+
+---
+
+## ☁️ AWS Deployment
+
+![Solar 3D Visualization — AWS VPC Architecture](./images/solar-vpc-stack.png)
+
+Deploy the Solar System 3D project to AWS using CloudFormation in **5 commands**.
+
+### Resources Created
+
+| Resource | Name | Details |
+|----------|------|---------|
+| VPC | Solar-VPC | CIDR: 10.0.0.0/16 |
+| Subnet | Solar-Public-Subnet | CIDR: 10.0.1.0/24, AZ-a |
+| Internet Gateway | Solar-IGW | Attached to Solar-VPC |
+| Route Table | Solar-Public-RT | 0.0.0.0/0 → IGW, 10.0.0.0/16 → local |
+| Security Group | Solar-Public-SG | Inbound: SSH (22), HTTP (80) |
+| EC2 Instance | Solar-Public-EC2 | t2.micro, Amazon Linux 2023, Apache |
+| Elastic IP | Solar-EIP | Static public IP for EC2 |
+
+### Deploy in 5 Commands
+
+Navigate to the AWS folder and run:
+```bash
+# 1. Create CloudFormation stack
+aws cloudformation create-stack \
+  --stack-name solar-vpc-stack \
+  --template-body file://solar-vpc-architecture.yaml \
+  --parameters \
+    ParameterKey=KeyPairName,ParameterValue=ch3-key \
+    ParameterKey=SSHLocation,ParameterValue=0.0.0.0/0
+
+# 2. Wait for stack creation
+aws cloudformation wait stack-create-complete --stack-name solar-vpc-stack
+
+# 3. Get Elastic IP
+EIP=$(aws cloudformation describe-stacks \
+  --stack-name solar-vpc-stack \
+  --query "Stacks[0].Outputs[?OutputKey=='ElasticIP'].OutputValue" \
+  --output text)
+
+# 4. Upload app files
+scp -i ch3-key.pem index.html ec2-user@$EIP:/tmp/ && \
+scp -i ch3-key.pem -r textures ec2-user@$EIP:/tmp/ && \
+ssh -i ch3-key.pem ec2-user@$EIP "\
+  sudo cp /tmp/index.html /var/www/html/index.html && \
+  sudo cp -r /tmp/textures/* /var/www/html/textures/ && \
+  sudo systemctl restart httpd"
+
+# 5. Open in browser
+echo "Visit: http://$EIP"
+```
+
+**📖 Full deployment guide:** See `solar-system-v2/AWS/deployment-guide.md` for detailed instructions, troubleshooting, and cleanup steps.
+
+---
+
+## 🌍 earthquakes-v1  
+**Earthquake 3D Cesium Visualization**
+
+![Earthquakes Overview](./earthquakes-v1/images/overview.png)
+
+**Description**  
+A 3D globe visualization displaying recent earthquake activity using **CesiumJS**.
+
+**Vibe Coding Focus**
+- Real-world geospatial data
+- 3D globe visualization
+- Visual learning through motion and scale
+
+**Key Learning**
+- CesiumJS basics
+- Coordinates and mapping
+- Scientific data visualization
+
+---
+
+## 🎯 Overall Vibe Coding Philosophy
+
+All projects follow these principles:
+
+- Build fast, learn fast
+- Visual-first design
+- Use real-world data
+- Learn through interaction
+- No heavy frameworks
+
+Ideal for:
+- Learning frontend development
+- Teaching middle school, high school, or college students
+- Rapid prototyping
+- Portfolio projects
 
 ---
 
 ## 📄 License
 
-MIT License — free to use for **learning, classroom demos, and education**.
+All projects are free to use for **learning, demos, and education**.

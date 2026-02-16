@@ -247,6 +247,8 @@ This project includes a complete **AWS CloudFormation** setup for deploying to a
 
 ### AWS Architecture
 
+![Earthquake 3D Visualization — AWS VPC Architecture](./images/earthquake-vpc-stack.png)
+
 ```
 User (Browser / SSH)
        │

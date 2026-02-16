@@ -191,6 +191,8 @@ Authorization: Bearer YOUR_READ_ACCESS_TOKEN
 
 ## ☁️ AWS Deployment (Quick Start)
 
+![Movie Actor 3D Visualization — AWS VPC Architecture](./images/movie-actor-vpc-stack.png)
+
 This project includes a **CloudFormation template** for deploying to AWS EC2. Full details are in `AWS/deployment-guide.md`.
 
 ### Resources Created
