@@ -1,0 +1,471 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+  SkyTracker Live Flight Tracker - VPC Architecture.
+  Creates VPC, EC2 with Node.js proxy (handles OpenSky OAuth2 server-side)
+  and Apache reverse proxy. Solves browser CORS issues.
+
+# ==============================================================
+#  PARAMETERS
+# ==============================================================
+Parameters:
+  KeyPairName:
+    Description: Name of an existing EC2 KeyPair for SSH access
+    Type: AWS::EC2::KeyPair::KeyName
+    ConstraintDescription: Must be the name of an existing EC2 KeyPair.
+
+  SSHLocation:
+    Description: IP range allowed for SSH access (CIDR notation)
+    Type: String
+    Default: 0.0.0.0/0
+    AllowedPattern: '(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d{1,2})'
+    ConstraintDescription: Must be a valid CIDR range (e.g., 203.0.113.0/24).
+
+  InstanceType:
+    Description: EC2 instance type
+    Type: String
+    Default: t2.micro
+    AllowedValues:
+      - t2.micro
+      - t2.small
+      - t2.medium
+      - t3.micro
+      - t3.small
+    ConstraintDescription: Must be a valid EC2 instance type.
+
+  LatestAmiId:
+    Description: Latest Amazon Linux 2023 AMI from SSM Parameter Store
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64
+
+  OpenSkyClientId:
+    Description: OpenSky Network OAuth2 Client ID (leave empty for anonymous)
+    Type: String
+    Default: ''
+
+  OpenSkyClientSecret:
+    Description: OpenSky Network OAuth2 Client Secret (leave empty for anonymous)
+    Type: String
+    Default: ''
+    NoEcho: true
+
+# ==============================================================
+#  RESOURCES
+# ==============================================================
+Resources:
+
+  # --------------- VPC ---------------
+  AirplanVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: Airplan-VPC
+
+  # --------------- Internet Gateway ---------------
+  AirplanIGW:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: Airplan-IGW
+
+  AirplanIGWAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref AirplanVPC
+      InternetGatewayId: !Ref AirplanIGW
+
+  # --------------- Public Subnet ---------------
+  AirplanPublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref AirplanVPC
+      CidrBlock: 10.0.1.0/24
+      AvailabilityZone: !Select [0, !GetAZs '']
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: Airplan-Public-Subnet
+
+  # --------------- Route Table ---------------
+  AirplanPublicRT:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref AirplanVPC
+      Tags:
+        - Key: Name
+          Value: Airplan-Public-RT
+
+  AirplanPublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: AirplanIGWAttachment
+    Properties:
+      RouteTableId: !Ref AirplanPublicRT
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref AirplanIGW
+
+  AirplanPublicSubnetRTAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref AirplanPublicSubnet
+      RouteTableId: !Ref AirplanPublicRT
+
+  # --------------- Security Group ---------------
+  AirplanPublicSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: SkyTracker - Allow SSH and HTTP inbound
+      VpcId: !Ref AirplanVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: !Ref SSHLocation
+          Description: SSH access
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+          Description: HTTP access (SkyTracker web app)
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          CidrIp: 0.0.0.0/0
+          Description: Allow all outbound
+      Tags:
+        - Key: Name
+          Value: Airplan-Public-SG
+
+  # --------------- EC2 Instance ---------------
+  AirplanPublicEC2:
+    Type: AWS::EC2::Instance
+    DependsOn: AirplanIGWAttachment
+    Properties:
+      InstanceType: !Ref InstanceType
+      ImageId: !Ref LatestAmiId
+      KeyName: !Ref KeyPairName
+      SubnetId: !Ref AirplanPublicSubnet
+      SecurityGroupIds:
+        - !Ref AirplanPublicSG
+      Tags:
+        - Key: Name
+          Value: Airplan-Public-EC2
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash -xe
+          exec > /var/log/user-data.log 2>&1
+
+          echo "========================================="
+          echo "SkyTracker EC2 UserData - $(date)"
+          echo "========================================="
+
+          # --- System updates ---
+          dnf update -y
+          dnf install -y httpd nodejs npm
+
+          # --- Create proxy app directory ---
+          mkdir -p /opt/skytracker
+
+          # --- Write the Node.js proxy server ---
+          cat > /opt/skytracker/proxy.js << 'PROXYEOF'
+          const http = require('http');
+          const https = require('https');
+          const url = require('url');
+
+          // Config from environment variables
+          const CLIENT_ID = process.env.OPENSKY_CLIENT_ID || '';
+          const CLIENT_SECRET = process.env.OPENSKY_CLIENT_SECRET || '';
+          const PORT = 3000;
+
+          // Token state
+          let accessToken = null;
+          let tokenExpiry = 0;
+
+          function log(msg) {
+            console.log('[' + new Date().toISOString() + '] ' + msg);
+          }
+
+          // Fetch OAuth2 token server-side (no CORS issues)
+          function refreshToken() {
+            return new Promise((resolve, reject) => {
+              if (!CLIENT_ID || !CLIENT_SECRET) {
+                log('No credentials configured - anonymous mode');
+                resolve(null);
+                return;
+              }
+
+              const postData = new URLSearchParams({
+                grant_type: 'client_credentials',
+                client_id: CLIENT_ID,
+                client_secret: CLIENT_SECRET,
+              }).toString();
+
+              const options = {
+                hostname: 'auth.opensky-network.org',
+                port: 443,
+                path: '/auth/realms/opensky-network/protocol/openid-connect/token',
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded',
+                  'Content-Length': Buffer.byteLength(postData),
+                },
+              };
+
+              log('Requesting OAuth2 token...');
+              const req = https.request(options, (res) => {
+                let body = '';
+                res.on('data', (chunk) => body += chunk);
+                res.on('end', () => {
+                  if (res.statusCode !== 200) {
+                    log('Token request failed: ' + res.statusCode + ' ' + body);
+                    accessToken = null;
+                    resolve(null);
+                    return;
+                  }
+                  try {
+                    const data = JSON.parse(body);
+                    accessToken = data.access_token;
+                    const expiresIn = (data.expires_in || 1800) - 300;
+                    tokenExpiry = Date.now() + expiresIn * 1000;
+                    log('Token obtained. Expires in ' + data.expires_in + 's. Refresh in ' + expiresIn + 's.');
+                    // Auto-refresh before expiry
+                    setTimeout(refreshToken, expiresIn * 1000);
+                    resolve(accessToken);
+                  } catch (e) {
+                    log('Token parse error: ' + e.message);
+                    resolve(null);
+                  }
+                });
+              });
+              req.on('error', (e) => {
+                log('Token request error: ' + e.message);
+                resolve(null);
+              });
+              req.write(postData);
+              req.end();
+            });
+          }
+
+          async function getToken() {
+            if (accessToken && Date.now() < tokenExpiry) return accessToken;
+            return await refreshToken();
+          }
+
+          // Proxy requests to OpenSky API
+          function proxyOpenSky(reqPath, clientRes) {
+            getToken().then((token) => {
+              const headers = {};
+              if (token) headers['Authorization'] = 'Bearer ' + token;
+
+              const options = {
+                hostname: 'opensky-network.org',
+                port: 443,
+                path: reqPath,
+                method: 'GET',
+                headers: headers,
+              };
+
+              log('Proxy -> https://opensky-network.org' + reqPath + (token ? ' [authenticated]' : ' [anonymous]'));
+
+              const proxy = https.request(options, (apiRes) => {
+                let body = '';
+                apiRes.on('data', (chunk) => body += chunk);
+                apiRes.on('end', () => {
+                  clientRes.writeHead(apiRes.statusCode, {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                    'X-OpenSky-Auth': token ? 'authenticated' : 'anonymous',
+                  });
+                  clientRes.end(body);
+                });
+              });
+              proxy.on('error', (e) => {
+                log('Proxy error: ' + e.message);
+                clientRes.writeHead(502, { 'Content-Type': 'application/json' });
+                clientRes.end(JSON.stringify({ error: 'proxy_error', message: e.message }));
+              });
+              proxy.end();
+            });
+          }
+
+          // HTTP server
+          const server = http.createServer((req, res) => {
+            const parsed = url.parse(req.url, true);
+
+            // Health check
+            if (parsed.pathname === '/api/health') {
+              res.writeHead(200, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({
+                status: 'ok',
+                authenticated: !!(accessToken && Date.now() < tokenExpiry),
+                hasCredentials: !!(CLIENT_ID && CLIENT_SECRET),
+              }));
+              return;
+            }
+
+            // Proxy OpenSky API calls
+            if (parsed.pathname.startsWith('/api/opensky/')) {
+              const apiPath = '/api/' + parsed.pathname.replace('/api/opensky/', '');
+              const qs = url.format({ query: parsed.query });
+              proxyOpenSky(apiPath + qs, res);
+              return;
+            }
+
+            // Everything else -> 404
+            res.writeHead(404);
+            res.end('Not found');
+          });
+
+          server.listen(PORT, '127.0.0.1', () => {
+            log('OpenSky proxy running on 127.0.0.1:' + PORT);
+            if (CLIENT_ID) {
+              refreshToken();
+            } else {
+              log('No credentials - proxy will forward anonymous requests');
+            }
+          });
+          PROXYEOF
+
+          # --- Write systemd service for the proxy ---
+          cat > /etc/systemd/system/skytracker-proxy.service << SERVICEEOF
+          [Unit]
+          Description=SkyTracker OpenSky Proxy
+          After=network.target
+
+          [Service]
+          Type=simple
+          User=nobody
+          Group=nobody
+          WorkingDirectory=/opt/skytracker
+          ExecStart=/usr/bin/node /opt/skytracker/proxy.js
+          Restart=always
+          RestartSec=5
+          Environment=OPENSKY_CLIENT_ID=${OpenSkyClientId}
+          Environment=OPENSKY_CLIENT_SECRET=${OpenSkyClientSecret}
+
+          [Install]
+          WantedBy=multi-user.target
+          SERVICEEOF
+
+          # --- Configure Apache as reverse proxy ---
+          cat > /etc/httpd/conf.d/skytracker.conf << 'APACHEEOF'
+          # Proxy /api/opensky/* and /api/health to Node.js on port 3000
+          ProxyPass /api/ http://127.0.0.1:3000/api/
+          ProxyPassReverse /api/ http://127.0.0.1:3000/api/
+
+          # Static files served from /var/www/html as usual
+          APACHEEOF
+
+          # --- Create placeholder index.html ---
+          cat > /var/www/html/index.html << 'PLACEHOLDER'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <title>SkyTracker - Awaiting Deployment</title>
+              <style>
+                  * { margin: 0; padding: 0; box-sizing: border-box; }
+                  body {
+                      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+                      background: #0a0a1e; color: #fff;
+                      font-family: 'Segoe UI', system-ui, sans-serif;
+                  }
+                  .card {
+                      text-align: center; padding: 60px 40px;
+                      background: rgba(255,255,255,0.03);
+                      border: 1px solid rgba(255,200,0,0.2);
+                      border-radius: 16px; max-width: 500px;
+                  }
+                  .icon { font-size: 64px; margin-bottom: 20px; }
+                  h1 { color: #ffd000; font-size: 28px; margin-bottom: 12px; }
+                  p { color: rgba(255,255,255,0.6); line-height: 1.6; }
+                  code {
+                      display: inline-block; margin-top: 16px; padding: 8px 16px;
+                      background: rgba(255,200,0,0.1); border-radius: 8px;
+                      color: #ffd000; font-size: 13px;
+                  }
+              </style>
+          </head>
+          <body>
+              <div class="card">
+                  <div class="icon">&#9992;</div>
+                  <h1>SkyTracker</h1>
+                  <p>Apache + Proxy running! Deploy <strong>index.html</strong> to see the flight tracker.</p>
+                  <code>scp -i ch3-key.pem ../index.html ec2-user@IP:/tmp/</code>
+              </div>
+          </body>
+          </html>
+          PLACEHOLDER
+
+          chown -R apache:apache /var/www/html/
+          chmod 644 /var/www/html/index.html
+
+          # --- Start services ---
+          systemctl daemon-reload
+          systemctl enable skytracker-proxy
+          systemctl start skytracker-proxy
+          systemctl enable httpd
+          systemctl start httpd
+
+          echo "UserData complete - Apache + Node.js proxy running"
+
+  # --------------- Elastic IP ---------------
+  AirplanEIP:
+    Type: AWS::EC2::EIP
+    DependsOn: AirplanIGWAttachment
+    Properties:
+      Domain: vpc
+      Tags:
+        - Key: Name
+          Value: Airplan-EIP
+
+  AirplanEIPAssociation:
+    Type: AWS::EC2::EIPAssociation
+    Properties:
+      AllocationId: !GetAtt AirplanEIP.AllocationId
+      InstanceId: !Ref AirplanPublicEC2
+
+# ==============================================================
+#  OUTPUTS
+# ==============================================================
+Outputs:
+  VPCId:
+    Description: VPC ID
+    Value: !Ref AirplanVPC
+
+  PublicSubnetId:
+    Description: Public Subnet ID
+    Value: !Ref AirplanPublicSubnet
+
+  SecurityGroupId:
+    Description: Security Group ID
+    Value: !Ref AirplanPublicSG
+
+  InstanceId:
+    Description: EC2 Instance ID
+    Value: !Ref AirplanPublicEC2
+
+  ElasticIP:
+    Description: Elastic IP address
+    Value: !Ref AirplanEIP
+
+  WebsiteURL:
+    Description: SkyTracker URL - open in browser
+    Value: !Sub http://${AirplanEIP}
+
+  SSHCommand:
+    Description: SSH command to connect to EC2
+    Value: !Sub ssh -i ch3-key.pem ec2-user@${AirplanEIP}
+
+  HealthCheckURL:
+    Description: Proxy health check - verify auth status
+    Value: !Sub http://${AirplanEIP}/api/health
+
+  DeployCommand:
+    Description: One-liner to deploy index.html (run from AWS folder)
+    Value: !Sub >-
+      scp -i ch3-key.pem ../index.html ec2-user@${AirplanEIP}:/tmp/ &&
+      ssh -i ch3-key.pem ec2-user@${AirplanEIP}
+      "sudo cp /tmp/index.html /var/www/html/index.html"
