@@ -6,6 +6,103 @@ fast iteration, visual feedback, real-world data, and fun exploration.
 Each project emphasizes **learning by building**, using **HTML, CSS, JavaScript**, and **3D visualization**.
 
 ---
+## 🎬 movie-actor-explorer-v1  
+**Movie Actor Explorer**
+
+![Movie Actor Explorer Overview](./movie-actor-explorer-v1/images/overview.png)
+![Movie Actor Animation](./movie-actor-explorer-v1/images/star-animation.gif)
+
+**Description**  
+A card-based app to explore famous movie actors and their movies using a public REST API.
+
+**Vibe Coding Focus**
+- Card-based UI
+- Click → detail interaction
+- Entertainment data
+
+**Key Learning**
+- REST API usage
+- JSON parsing
+- Dynamic UI updates
+
+---
+
+## 🌌 solar-system-v1  
+**3D Solar System Visualization**
+
+![Solar System Overview](./solar-system-v1/images/solar-system.gif)
+
+**Description**  
+A 3D visualization of the solar system built with **Three.js**, showing the Sun and planets orbiting in space.
+
+**Vibe Coding Focus**
+- 3D thinking and spatial reasoning
+- Animation and motion
+- Visual learning through simulation
+
+**Key Learning**
+- Three.js fundamentals
+- Animation loops
+- Texture mapping
+- Coordinate systems
+
+---
+
+## 📥 How to Download Planet Textures (Manual)
+
+This Solar System project uses planet surface textures that you can download manually from the **Planet Texture Maps Wiki**.
+
+### Step-by-Step Instructions
+
+1. Open the texture source site in your browser:
+
+   👉 https://planet-texture-maps.fandom.com/wiki/Planet_Texture_Maps_Wiki
+
+2. Use the navigation menu or search box to find a planet.
+
+3. On the planet page, scroll until you see the texture image.
+
+4. **Right-click** on the texture preview and choose:
+
+---
+
+## 🌍 earthquakes-v1  
+**Earthquake 3D Cesium Visualization**
+
+![Earthquakes Overview](./earthquakes-v1/images/overview.png)\
+
+**Description**  
+A 3D globe visualization displaying recent earthquake activity using **CesiumJS**.
+
+**Vibe Coding Focus**
+- Real-world geospatial data
+- 3D globe visualization
+- Visual learning through motion and scale
+
+**Key Learning**
+- CesiumJS basics
+- Coordinates and mapping
+- Scientific data visualization
+
+---
+
+## 🎯 Overall Vibe Coding Philosophy
+
+All projects follow these principles:
+
+- Build fast, learn fast
+- Visual-first design
+- Use real-world data
+- Learn through interaction
+- No heavy frameworks
+
+Ideal for:
+- Learning frontend development
+- Teaching middle school, high school, or college students
+- Rapid prototyping
+- Portfolio projects
+
+---
 
 # 🎧 Vibe Coding Syllabus (7 Sessions)
 
@@ -216,104 +313,6 @@ with their own creative ideas.
 - Commit code
 - Write a README
 - Share project links
-
----
-
-## 🎬 movie-actor-explorer-v1  
-**Movie Actor Explorer**
-
-![Movie Actor Explorer Overview](./movie-actor-explorer-v1/images/overview.png)
-![Movie Actor Animation](./movie-actor-explorer-v1/images/star-animation.gif)
-
-**Description**  
-A card-based app to explore famous movie actors and their movies using a public REST API.
-
-**Vibe Coding Focus**
-- Card-based UI
-- Click → detail interaction
-- Entertainment data
-
-**Key Learning**
-- REST API usage
-- JSON parsing
-- Dynamic UI updates
-
----
-
-## 🌌 solar-system-v1  
-**3D Solar System Visualization**
-
-![Solar System Overview](./solar-system-v1/images/solar-system.gif)
-
-**Description**  
-A 3D visualization of the solar system built with **Three.js**, showing the Sun and planets orbiting in space.
-
-**Vibe Coding Focus**
-- 3D thinking and spatial reasoning
-- Animation and motion
-- Visual learning through simulation
-
-**Key Learning**
-- Three.js fundamentals
-- Animation loops
-- Texture mapping
-- Coordinate systems
-
----
-
-## 📥 How to Download Planet Textures (Manual)
-
-This Solar System project uses planet surface textures that you can download manually from the **Planet Texture Maps Wiki**.
-
-### Step-by-Step Instructions
-
-1. Open the texture source site in your browser:
-
-   👉 https://planet-texture-maps.fandom.com/wiki/Planet_Texture_Maps_Wiki
-
-2. Use the navigation menu or search box to find a planet.
-
-3. On the planet page, scroll until you see the texture image.
-
-4. **Right-click** on the texture preview and choose:
-
----
-
-## 🌍 earthquakes-v1  
-**Earthquake 3D Cesium Visualization**
-
-![Earthquakes Overview](./earthquakes-v1/images/overview.png)\
-
-**Description**  
-A 3D globe visualization displaying recent earthquake activity using **CesiumJS**.
-
-**Vibe Coding Focus**
-- Real-world geospatial data
-- 3D globe visualization
-- Visual learning through motion and scale
-
-**Key Learning**
-- CesiumJS basics
-- Coordinates and mapping
-- Scientific data visualization
-
----
-
-## 🎯 Overall Vibe Coding Philosophy
-
-All projects follow these principles:
-
-- Build fast, learn fast
-- Visual-first design
-- Use real-world data
-- Learn through interaction
-- No heavy frameworks
-
-Ideal for:
-- Learning frontend development
-- Teaching middle school, high school, or college students
-- Rapid prototyping
-- Portfolio projects
 
 ---
 
