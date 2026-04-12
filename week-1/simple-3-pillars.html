@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The 3 Pillars of the Web</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #ffffff;
+    color: #111;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+    gap: 48px;
+  }
+
+  .heading {
+    text-align: center;
+  }
+
+  .eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #aaa;
+    margin-bottom: 14px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 6vw, 52px);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: #111;
+  }
+
+  /* ── Three pillars ── */
+  .pillars {
+    display: flex;
+    gap: 24px;
+    width: 100%;
+    max-width: 860px;
+    align-items: stretch;
+  }
+
+  @media (max-width: 600px) {
+    .pillars { flex-direction: column; }
+  }
+
+  .pillar {
+    flex: 1;
+    border-radius: 16px;
+    padding: 56px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: rise 0.5s ease forwards;
+  }
+
+  .pillar:nth-child(1) { animation-delay: 0.05s; }
+  .pillar:nth-child(2) { animation-delay: 0.15s; }
+  .pillar:nth-child(3) { animation-delay: 0.25s; }
+
+  @keyframes rise { to { opacity: 1; transform: translateY(0); } }
+
+  .pillar-html {
+    background: #fff5f2;
+    border: 2px solid #fcd5c8;
+  }
+
+  .pillar-css {
+    background: #f0f5ff;
+    border: 2px solid #c0d4fb;
+  }
+
+  .pillar-js {
+    background: #fffbec;
+    border: 2px solid #f5e099;
+  }
+
+  .pillar-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    opacity: 0.5;
+  }
+
+  .pillar-html .pillar-tag { color: #e44d26; }
+  .pillar-css  .pillar-tag { color: #2965f1; }
+  .pillar-js   .pillar-tag { color: #c89400; }
+
+  .pillar-name {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  .pillar-html .pillar-name { color: #e44d26; }
+  .pillar-css  .pillar-name { color: #2965f1; }
+  .pillar-js   .pillar-name { color: #c89400; }
+
+  .pillar-sub {
+    font-size: 13px;
+    font-weight: 500;
+    opacity: 0.55;
+  }
+
+  .pillar-html .pillar-sub { color: #7a2a14; }
+  .pillar-css  .pillar-sub { color: #1a3a7a; }
+  .pillar-js   .pillar-sub { color: #6b4f00; }
+</style>
+</head>
+<body>
+
+<div class="heading">
+  <div class="eyebrow">Session 2 · Vibe Coding</div>
+  <h1>The 3 Pillars of the Web</h1>
+</div>
+
+<div class="pillars">
+
+  <div class="pillar pillar-html">
+    <div class="pillar-tag">&lt;/&gt;</div>
+    <div class="pillar-name">HTML</div>
+    <div class="pillar-sub">Structure</div>
+  </div>
+
+  <div class="pillar pillar-css">
+    <div class="pillar-tag">✦</div>
+    <div class="pillar-name">CSS</div>
+    <div class="pillar-sub">Design</div>
+  </div>
+
+  <div class="pillar pillar-js">
+    <div class="pillar-tag">JS</div>
+    <div class="pillar-name">JavaScript</div>
+    <div class="pillar-sub">Behavior</div>
+  </div>
+
+</div>
+
+</body>
+</html>

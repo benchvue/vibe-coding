@@ -169,6 +169,14 @@ with their own creative ideas.
 
 [![Go Live with GitHub Pages](https://img.shields.io/badge/Go%20Live%20with%20GitHub%20Pages-1f2328?style=for-the-badge&logoColor=white)](https://benchvue.github.io/vibe-coding/week-1/github-pages-guide.html)
 
+**3. The 3 Pillars of the Web** — Simple visual: HTML, CSS, JavaScript
+
+[![Simple 3 Pillars](https://img.shields.io/badge/Simple%203%20Pillars-ffffff?style=for-the-badge&logoColor=111111&color=f1f5f9&labelColor=111111)](https://benchvue.github.io/vibe-coding/week-1/simple-3-pillars.html)
+
+**4. The 3 Pillars of the Web (Detail)** — Full interactive explainer with code and live demos
+
+[![3 Pillars Detail](https://img.shields.io/badge/3%20Pillars%20Detail-ffffff?style=for-the-badge&logoColor=white&color=e44d26)](https://benchvue.github.io/vibe-coding/week-1/3-pillars.html)
+
 ---
 
 ## 🟢 Session 2: HTML / CSS / JavaScript 101

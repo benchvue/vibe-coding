@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The 3 Pillars of the Web</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #ffffff;
+  --surface: #fafafa;
+  --border: #e8e8e8;
+  --text: #111111;
+  --muted: #888888;
+  --html-h: #e44d26;
+  --html-s: #f06529;
+  --html-bg: #fff5f2;
+  --html-border: #fcd5c8;
+  --css-h: #2965f1;
+  --css-s: #3d7fe8;
+  --css-bg: #f0f5ff;
+  --css-border: #c0d4fb;
+  --js-h: #c89400;
+  --js-s: #e4a800;
+  --js-bg: #fffbec;
+  --js-border: #f5e099;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ── HERO ── */
+.hero {
+  text-align: center;
+  padding: 72px 24px 56px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border), transparent);
+}
+
+.session-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 28px;
+  font-family: 'DM Mono', monospace;
+}
+
+h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(36px, 7vw, 72px);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  margin-bottom: 20px;
+}
+
+h1 em {
+  font-style: italic;
+  background: linear-gradient(135deg, var(--html-h), var(--css-h), var(--js-s));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-sub {
+  font-size: 16px;
+  color: var(--muted);
+  max-width: 480px;
+  margin: 0 auto 48px;
+  line-height: 1.7;
+}
+
+/* ── PILLAR NUMBER STRIP ── */
+.pillar-strip {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.pillar-num {
+  flex: 1;
+  text-align: center;
+  padding: 14px 0;
+  font-family: 'Playfair Display', serif;
+  font-size: 48px;
+  font-weight: 900;
+  opacity: 0.08;
+  line-height: 1;
+}
+.pillar-num.n1 { color: var(--html-h); }
+.pillar-num.n2 { color: var(--css-h); }
+.pillar-num.n3 { color: var(--js-h); }
+
+/* ── PILLARS GRID ── */
+.pillars {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  max-width: 1100px;
+  margin: 0 auto;
+  border-top: 1px solid var(--border);
+}
+
+@media (max-width: 700px) {
+  .pillars { grid-template-columns: 1fr; }
+}
+
+.pillar {
+  border-right: 1px solid var(--border);
+  padding: 0 0 60px;
+  opacity: 0;
+  transform: translateY(24px);
+  animation: rise 0.6s ease forwards;
+}
+.pillar:last-child { border-right: none; }
+.pillar:nth-child(1) { animation-delay: 0.1s; }
+.pillar:nth-child(2) { animation-delay: 0.22s; }
+.pillar:nth-child(3) { animation-delay: 0.34s; }
+
+@keyframes rise { to { opacity: 1; transform: translateY(0); } }
+
+.pillar-header {
+  padding: 36px 36px 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.pillar-icon {
+  width: 52px; height: 52px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Mono', monospace;
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+}
+
+.html .pillar-icon { background: var(--html-bg); color: var(--html-h); border: 1px solid var(--html-border); }
+.css  .pillar-icon { background: var(--css-bg);  color: var(--css-h);  border: 1px solid var(--css-border); }
+.js   .pillar-icon { background: var(--js-bg);   color: var(--js-h);   border: 1px solid var(--js-border); }
+
+.pillar-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+
+.html .pillar-name { color: var(--html-h); }
+.css  .pillar-name { color: var(--css-h); }
+.js   .pillar-name { color: var(--js-h); }
+
+.pillar-full {
+  font-size: 12px;
+  font-family: 'DM Mono', monospace;
+  color: var(--muted);
+  margin-bottom: 12px;
+  letter-spacing: 0.04em;
+}
+
+.pillar-role {
+  font-size: 14px;
+  color: var(--text);
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* ── CONTENT SECTIONS ── */
+.pillar-content { padding: 28px 36px 0; }
+
+.pillar-label {
+  font-size: 10px;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+/* Analogy card */
+.analogy {
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 24px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.html .analogy { background: var(--html-bg); border: 1px solid var(--html-border); color: #7a2a14; }
+.css  .analogy { background: var(--css-bg);  border: 1px solid var(--css-border);  color: #1a3a7a; }
+.js   .analogy { background: var(--js-bg);   border: 1px solid var(--js-border);   color: #6b4f00; }
+
+.analogy strong { font-weight: 600; display: block; margin-bottom: 4px; font-size: 12px; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.06em; }
+
+/* Code snippet */
+.code-wrap {
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 24px;
+  border: 1px solid var(--border);
+}
+
+.code-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 14px;
+  background: #f5f5f5;
+  border-bottom: 1px solid var(--border);
+}
+
+.code-dots { display: flex; gap: 5px; }
+.code-dot { width: 9px; height: 9px; border-radius: 50%; }
+
+.code-filename {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+pre {
+  background: #1e1e1e;
+  padding: 16px 18px;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  line-height: 1.75;
+  overflow-x: auto;
+  margin: 0;
+}
+
+.t-tag   { color: #4ec9b0; }
+.t-attr  { color: #9cdcfe; }
+.t-val   { color: #ce9178; }
+.t-text  { color: #d4d4d4; }
+.t-com   { color: #6a9955; }
+.t-prop  { color: #9cdcfe; }
+.t-num   { color: #b5cea8; }
+.t-sel   { color: #d7ba7d; }
+.t-kw    { color: #c586c0; }
+.t-fn    { color: #dcdcaa; }
+.t-str   { color: #ce9178; }
+
+/* What it does list */
+.does-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.does-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.does-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+.html .does-dot { background: var(--html-h); }
+.css  .does-dot { background: var(--css-h); }
+.js   .does-dot { background: var(--js-h); }
+
+/* ── LIVE DEMO ── */
+.demo-section {
+  border-top: 1px solid var(--border);
+  margin-top: 8px;
+}
+
+.demo-label {
+  padding: 14px 36px 0;
+  font-size: 10px;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+.demo-box {
+  margin: 0 36px 0;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+/* HTML demo */
+#html-demo {
+  padding: 20px;
+  background: #fff;
+  font-size: 14px;
+}
+#html-demo h2 { font-size: 18px; margin-bottom: 6px; font-family: serif; }
+#html-demo p  { font-size: 13px; color: #555; margin-bottom: 8px; }
+#html-demo img { width: 100%; height: 60px; object-fit: cover; border-radius: 5px; background: #eee; display: block; }
+
+/* CSS demo */
+.css-demo-wrap { background: #f5f5f5; padding: 16px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+.css-card {
+  background: white;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 13px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: default;
+  flex: 1; min-width: 80px;
+  text-align: center;
+}
+.css-card:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.15); }
+
+/* JS demo */
+.js-demo-wrap { background: #1e1e1e; padding: 16px; }
+.js-counter {
+  display: flex; align-items: center; justify-content: center;
+  gap: 14px;
+}
+.js-btn {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid #444;
+  background: #2d2d2d;
+  color: #ddd;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, border-color 0.15s;
+  font-family: 'DM Mono', monospace;
+}
+.js-btn:hover { background: #3d3d3d; border-color: #e4a800; color: #e4a800; }
+.js-count {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px;
+  font-weight: 700;
+  color: #e4a800;
+  min-width: 48px;
+  text-align: center;
+}
+.js-label { font-size: 11px; color: #858585; text-align: center; margin-top: 8px; font-family: 'DM Mono', monospace; letter-spacing: 0.06em; }
+
+/* ── BOTTOM STRIP ── */
+.bottom-strip {
+  border-top: 1px solid var(--border);
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.bottom-quote {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+  max-width: 420px;
+  line-height: 1.4;
+}
+
+.bottom-quote span { color: var(--muted); font-weight: 400; font-style: italic; font-size: 15px; display: block; margin-top: 4px; }
+
+.together-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 20px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.pill {
+  display: inline-block;
+  border-radius: 6px;
+  padding: 3px 10px;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+}
+.pill-html { background: var(--html-bg); color: var(--html-h); border: 1px solid var(--html-border); }
+.pill-css  { background: var(--css-bg);  color: var(--css-h);  border: 1px solid var(--css-border); }
+.pill-js   { background: var(--js-bg);   color: var(--js-h);   border: 1px solid var(--js-border); }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="session-tag">Session 2 · Vibe Coding</div>
+  <h1>The 3 <em>Pillars</em><br>of the Web</h1>
+  <p class="hero-sub">Every website ever built uses exactly these three technologies — nothing more, nothing less.</p>
+
+  <div class="pillar-strip">
+    <div class="pillar-num n1">I</div>
+    <div class="pillar-num n2">II</div>
+    <div class="pillar-num n3">III</div>
+  </div>
+</div>
+
+<!-- PILLARS -->
+<div class="pillars">
+
+  <!-- ── HTML ── -->
+  <div class="pillar html">
+    <div class="pillar-header">
+      <div class="pillar-icon">&lt;/&gt;</div>
+      <div class="pillar-name">HTML</div>
+      <div class="pillar-full">HyperText Markup Language</div>
+      <div class="pillar-role">The <strong>structure</strong> — what's on the page</div>
+    </div>
+
+    <div class="pillar-content">
+      <div class="pillar-label">Analogy</div>
+      <div class="analogy">
+        <strong>🏗 The skeleton</strong>
+        Like the frame of a house — it defines rooms, walls, and doors. Without it, there's nothing to build on.
+      </div>
+
+      <div class="pillar-label">What it does</div>
+      <ul class="does-list">
+        <li><span class="does-dot"></span>Defines headings, paragraphs, images, links</li>
+        <li><span class="does-dot"></span>Creates the structure browsers can read</li>
+        <li><span class="does-dot"></span>Tells the page what elements exist</li>
+        <li><span class="does-dot"></span>Uses tags like <code style="font-family:'DM Mono',monospace;font-size:11px;background:#fff5f2;border:1px solid #fcd5c8;border-radius:3px;padding:1px 5px;color:var(--html-h);">&lt;h1&gt;</code> <code style="font-family:'DM Mono',monospace;font-size:11px;background:#fff5f2;border:1px solid #fcd5c8;border-radius:3px;padding:1px 5px;color:var(--html-h);">&lt;p&gt;</code> <code style="font-family:'DM Mono',monospace;font-size:11px;background:#fff5f2;border:1px solid #fcd5c8;border-radius:3px;padding:1px 5px;color:var(--html-h);">&lt;div&gt;</code></li>
+      </ul>
+
+      <div class="pillar-label">Code</div>
+      <div class="code-wrap">
+        <div class="code-bar">
+          <div class="code-dots">
+            <div class="code-dot" style="background:#ff5f57"></div>
+            <div class="code-dot" style="background:#febc2e"></div>
+            <div class="code-dot" style="background:#28c840"></div>
+          </div>
+          <div class="code-filename">index.html</div>
+        </div>
+        <pre><span class="t-tag">&lt;header&gt;</span>
+  <span class="t-tag">&lt;h1&gt;</span><span class="t-text">🎬 Movie Explorer</span><span class="t-tag">&lt;/h1&gt;</span>
+  <span class="t-tag">&lt;p&gt;</span><span class="t-text">Click an actor to see movies</span><span class="t-tag">&lt;/p&gt;</span>
+<span class="t-tag">&lt;/header&gt;</span>
+
+<span class="t-tag">&lt;section</span> <span class="t-attr">id</span>=<span class="t-val">"actors"</span><span class="t-tag">&gt;</span>
+  <span class="t-tag">&lt;div</span> <span class="t-attr">class</span>=<span class="t-val">"card"</span><span class="t-tag">&gt;</span>
+    <span class="t-tag">&lt;img</span> <span class="t-attr">src</span>=<span class="t-val">"brad.jpg"</span><span class="t-tag"> /&gt;</span>
+    <span class="t-tag">&lt;h2&gt;</span><span class="t-text">Brad Pitt</span><span class="t-tag">&lt;/h2&gt;</span>
+  <span class="t-tag">&lt;/div&gt;</span>
+<span class="t-tag">&lt;/section&gt;</span></pre>
+      </div>
+    </div>
+
+    <div class="demo-section">
+      <div class="demo-label">Live result</div>
+      <div class="demo-box">
+        <div id="html-demo">
+          <h2>🎬 Movie Explorer</h2>
+          <p>Click an actor to see movies</p>
+          <div style="background:#eee; border-radius:6px; height:50px; display:flex; align-items:center; justify-content:center; color:#999; font-size:12px;">[ actor card ]</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CSS ── -->
+  <div class="pillar css">
+    <div class="pillar-header">
+      <div class="pillar-icon" style="font-size:16px;">✦</div>
+      <div class="pillar-name">CSS</div>
+      <div class="pillar-full">Cascading Style Sheets</div>
+      <div class="pillar-role">The <strong>design</strong> — how it looks</div>
+    </div>
+
+    <div class="pillar-content">
+      <div class="pillar-label">Analogy</div>
+      <div class="analogy">
+        <strong>🎨 The paint & furniture</strong>
+        If HTML is the skeleton, CSS is everything you see — colors, fonts, spacing, shadows, animations.
+      </div>
+
+      <div class="pillar-label">What it does</div>
+      <ul class="does-list">
+        <li><span class="does-dot"></span>Controls colors, fonts, and sizes</li>
+        <li><span class="does-dot"></span>Positions elements on the page</li>
+        <li><span class="does-dot"></span>Creates hover effects and animations</li>
+        <li><span class="does-dot"></span>Makes pages responsive on any screen</li>
+      </ul>
+
+      <div class="pillar-label">Code</div>
+      <div class="code-wrap">
+        <div class="code-bar">
+          <div class="code-dots">
+            <div class="code-dot" style="background:#ff5f57"></div>
+            <div class="code-dot" style="background:#febc2e"></div>
+            <div class="code-dot" style="background:#28c840"></div>
+          </div>
+          <div class="code-filename">style.css</div>
+        </div>
+        <pre><span class="t-sel">.card</span> {
+  <span class="t-prop">background</span>: <span class="t-val">white</span>;
+  <span class="t-prop">border-radius</span>: <span class="t-num">12px</span>;
+  <span class="t-prop">padding</span>: <span class="t-num">20px</span>;
+  <span class="t-prop">box-shadow</span>: <span class="t-num">0 4px 20px</span> <span class="t-val">rgba(0,0,0,.1)</span>;
+  <span class="t-prop">transition</span>: <span class="t-val">transform .2s</span>;
+}
+
+<span class="t-sel">.card:hover</span> {
+  <span class="t-prop">transform</span>: <span class="t-fn">translateY</span>(<span class="t-num">-6px</span>);
+}</pre>
+      </div>
+    </div>
+
+    <div class="demo-section">
+      <div class="demo-label">Live result — hover the cards</div>
+      <div class="demo-box">
+        <div class="css-demo-wrap">
+          <div class="css-card">🎬<br><small>Brad Pitt</small></div>
+          <div class="css-card">🎬<br><small>Tom Hanks</small></div>
+          <div class="css-card">🎬<br><small>Scarlett J.</small></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── JS ── -->
+  <div class="pillar js">
+    <div class="pillar-header">
+      <div class="pillar-icon">JS</div>
+      <div class="pillar-name">JavaScript</div>
+      <div class="pillar-full">ECMAScript / JS</div>
+      <div class="pillar-role">The <strong>behavior</strong> — what it does</div>
+    </div>
+
+    <div class="pillar-content">
+      <div class="pillar-label">Analogy</div>
+      <div class="analogy">
+        <strong>⚡ The electricity</strong>
+        HTML and CSS make a beautiful house — but JavaScript turns on the lights, opens the doors, and fetches data from the internet.
+      </div>
+
+      <div class="pillar-label">What it does</div>
+      <ul class="does-list">
+        <li><span class="does-dot"></span>Responds to clicks, input, and events</li>
+        <li><span class="does-dot"></span>Fetches live data from APIs (like TMDB)</li>
+        <li><span class="does-dot"></span>Updates the page without refreshing</li>
+        <li><span class="does-dot"></span>Handles logic, math, and conditions</li>
+      </ul>
+
+      <div class="pillar-label">Code</div>
+      <div class="code-wrap">
+        <div class="code-bar">
+          <div class="code-dots">
+            <div class="code-dot" style="background:#ff5f57"></div>
+            <div class="code-dot" style="background:#febc2e"></div>
+            <div class="code-dot" style="background:#28c840"></div>
+          </div>
+          <div class="code-filename">app.js</div>
+        </div>
+        <pre><span class="t-com">// Fetch movies from TMDB</span>
+<span class="t-kw">async function</span> <span class="t-fn">loadMovies</span>(actorId) {
+  <span class="t-kw">const</span> data = <span class="t-kw">await</span> <span class="t-fn">fetch</span>(
+    <span class="t-str">`/person/${actorId}/movie_credits`</span>
+  );
+  <span class="t-kw">const</span> json = <span class="t-kw">await</span> data.<span class="t-fn">json</span>();
+  <span class="t-fn">renderMovies</span>(json.cast);
+}</pre>
+      </div>
+    </div>
+
+    <div class="demo-section">
+      <div class="demo-label">Live demo — click the buttons</div>
+      <div class="demo-box">
+        <div class="js-demo-wrap">
+          <div class="js-counter">
+            <button class="js-btn" onclick="adjust(-1)">−</button>
+            <div class="js-count" id="counter">0</div>
+            <button class="js-btn" onclick="adjust(1)">+</button>
+          </div>
+          <div class="js-label">JavaScript updates the number instantly</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- BOTTOM STRIP -->
+<div class="bottom-strip">
+  <div class="bottom-quote">
+    Together, they build everything.<br>
+    <span>Every site. Every app. Every interaction.</span>
+  </div>
+  <div class="together-badge">
+    <span class="pill pill-html">HTML</span>
+    <span style="color:#ccc;">+</span>
+    <span class="pill pill-css">CSS</span>
+    <span style="color:#ccc;">+</span>
+    <span class="pill pill-js">JS</span>
+    <span style="font-size:16px; margin-left:4px;">= 🌐</span>
+  </div>
+</div>
+
+<script>
+let count = 0;
+function adjust(n) {
+  count += n;
+  document.getElementById('counter').textContent = count;
+}
+</script>
+
+</body>
+</html>
