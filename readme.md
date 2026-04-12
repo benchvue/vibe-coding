@@ -169,10 +169,6 @@ with their own creative ideas.
 
 [![Go Live with GitHub Pages](https://img.shields.io/badge/Go%20Live%20with%20GitHub%20Pages-1f2328?style=for-the-badge&logoColor=white)](https://benchvue.github.io/vibe-coding/week-1/github-pages-guide.html)
 
-**3. TMDB API Token** — How to create your free TMDB API token for the Movie Actor Explorer
-
-[![TMDB API Token](https://img.shields.io/badge/TMDB%20API%20Token-01b4e4?style=for-the-badge&logoColor=white)](https://benchvue.github.io/vibe-coding/week-1/tmdb-token-guide.html)
-
 ---
 
 ## 🟢 Session 2: HTML / CSS / JavaScript 101
@@ -191,6 +187,16 @@ with their own creative ideas.
 - Create a card layout
 - Style cards with CSS
 - Add JavaScript click behavior
+
+### 🛠 Week 2 Tools
+
+**1. Connect GitHub to VS Code** — Step-by-step guide to sign in to GitHub inside VS Code
+
+[![Connect GitHub to VS Code](https://img.shields.io/badge/Connect%20GitHub%20to%20VS%20Code-1f2328?style=for-the-badge&logoColor=white)](https://benchvue.github.io/vibe-coding/week-2/github-vscode-guide.html)
+
+**2. TMDB API Token** — How to create your free TMDB API token for the Movie Actor Explorer
+
+[![TMDB API Token](https://img.shields.io/badge/TMDB%20API%20Token-01b4e4?style=for-the-badge&logoColor=white)](https://benchvue.github.io/vibe-coding/week-2/tmdb-token-guide.html)
 
 ---
 

@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connect GitHub to VS Code</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --surface: #f8fafc;
+    --surface2: #f1f5f9;
+    --border: #e2e8f0;
+    --border2: #cbd5e1;
+    --text: #0f172a;
+    --muted: #64748b;
+    --hint: #94a3b8;
+    --vscode: #007acc;
+    --vscode-dim: #e8f4fd;
+    --github: #24292e;
+    --github-dim: #f0f2f4;
+    --green: #16a34a;
+    --green-bg: #f0fdf4;
+    --green-border: #86efac;
+    --amber: #92400e;
+    --amber-bg: #fffbeb;
+    --amber-border: #fde68a;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 56px 24px 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .wrapper { width: 100%; max-width: 620px; }
+
+  /* ── Header ── */
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+
+  .badge-vscode { background: var(--vscode-dim); color: var(--vscode); border: 1px solid #bde3f7; }
+  .badge-github { background: var(--github-dim); color: var(--github); border: 1px solid #d0d7de; }
+  .badge-sep { color: var(--border2); font-size: 16px; }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(22px, 5vw, 34px);
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: -0.025em;
+    color: var(--text);
+    margin-bottom: 10px;
+    line-height: 1.2;
+  }
+
+  .subtitle {
+    text-align: center;
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 52px;
+    line-height: 1.65;
+  }
+
+  /* ── Steps ── */
+  .steps { display: flex; flex-direction: column; }
+
+  .step {
+    display: flex;
+    gap: 20px;
+    padding-bottom: 36px;
+    position: relative;
+    opacity: 0;
+    transform: translateY(14px);
+    animation: rise 0.45s ease forwards;
+  }
+  .step:nth-child(1) { animation-delay: 0.05s; }
+  .step:nth-child(2) { animation-delay: 0.12s; }
+  .step:nth-child(3) { animation-delay: 0.19s; }
+  .step:nth-child(4) { animation-delay: 0.26s; }
+  .step:nth-child(5) { animation-delay: 0.33s; }
+  .step:nth-child(6) { animation-delay: 0.40s; }
+  .step:nth-child(7) { animation-delay: 0.47s; }
+
+  @keyframes rise { to { opacity: 1; transform: translateY(0); } }
+
+  .step:not(:last-child) .step-left::after {
+    content: '';
+    position: absolute;
+    top: 36px; left: 15px;
+    width: 1.5px;
+    height: calc(100% - 4px);
+    background: linear-gradient(to bottom, var(--border2) 60%, transparent);
+  }
+
+  .step-left {
+    position: relative;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .step-num {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 1.5px solid var(--border2);
+    color: var(--vscode);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; z-index: 1; flex-shrink: 0;
+  }
+
+  .step-num.done {
+    background: var(--green-bg);
+    border-color: var(--green);
+    color: var(--green);
+    font-size: 15px;
+  }
+
+  .step-body { padding-top: 4px; flex: 1; }
+
+  .step-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 5px;
+  }
+
+  .step-desc {
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.65;
+    margin-bottom: 12px;
+  }
+
+  strong.hi { color: var(--text); font-weight: 600; }
+
+  /* ── UI Mocks ── */
+  .mock {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 4px;
+    font-size: 13px;
+  }
+
+  /* VS Code activity bar + sidebar mock */
+  .vscode-mock {
+    display: flex;
+    height: 200px;
+    background: #1e1e1e;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 8px;
+    border: 1px solid #333;
+  }
+
+  .vs-activity {
+    width: 48px;
+    background: #333333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 8px;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .vs-icon {
+    width: 32px; height: 32px;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    color: #858585;
+    font-size: 16px;
+    cursor: default;
+  }
+
+  .vs-icon.active {
+    color: #ffffff;
+    border-left: 2px solid #007acc;
+  }
+
+  .vs-sidebar {
+    flex: 1;
+    background: #252526;
+    padding: 12px;
+    overflow: hidden;
+  }
+
+  .vs-sidebar-title {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #bbbbbb;
+    margin-bottom: 10px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .vs-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 6px;
+    border-radius: 3px;
+    color: #cccccc;
+    font-size: 12px;
+    margin-bottom: 2px;
+    cursor: default;
+  }
+
+  .vs-item.active { background: #094771; color: #ffffff; }
+  .vs-item.highlight { background: #0d47a1; color: #ffffff; }
+
+  .vs-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+  /* Command palette mock */
+  .palette-mock {
+    background: #1e1e1e;
+    border: 1px solid #454545;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+
+  .palette-input {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-bottom: 1px solid #454545;
+    background: #3c3c3c;
+  }
+
+  .palette-icon { color: #858585; font-size: 12px; }
+
+  .palette-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: #cccccc;
+    flex: 1;
+  }
+
+  .palette-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 14px;
+    font-size: 12px;
+    color: #cccccc;
+    border-bottom: 1px solid #2d2d2d;
+  }
+
+  .palette-item.selected { background: #094771; color: #fff; }
+  .palette-item-icon { color: #858585; font-size: 13px; width: 16px; text-align: center; flex-shrink: 0; }
+  .palette-item.selected .palette-item-icon { color: #ccc; }
+
+  /* Notification mock */
+  .notif-mock {
+    background: #1e1e1e;
+    border: 1px solid #454545;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-top: 8px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .notif-icon { font-size: 16px; flex-shrink: 0; }
+
+  .notif-text { font-size: 12px; color: #cccccc; line-height: 1.5; flex: 1; }
+
+  .notif-btn {
+    padding: 4px 12px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    cursor: default;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .notif-btn.primary { background: #007acc; color: #fff; }
+  .notif-btn.secondary { background: #3c3c3c; color: #ccc; border: 1px solid #555; }
+
+  /* Terminal mock */
+  .term-mock {
+    background: #1e1e1e;
+    border: 1px solid #454545;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+
+  .term-bar {
+    background: #2d2d2d;
+    padding: 6px 14px;
+    font-size: 11px;
+    color: #858585;
+    font-family: 'DM Mono', monospace;
+    border-bottom: 1px solid #454545;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .term-body {
+    padding: 10px 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    line-height: 1.8;
+  }
+
+  .term-prompt { color: #4ec9b0; }
+  .term-cmd { color: #ce9178; }
+  .term-out { color: #858585; }
+  .term-success { color: #4ec9b0; }
+  .term-branch { color: #c586c0; }
+
+  /* Source control mock */
+  .sc-mock {
+    background: #252526;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 8px;
+    border: 1px solid #333;
+  }
+
+  .sc-header {
+    background: #333333;
+    padding: 8px 12px;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #bbbbbb;
+    font-family: 'DM Mono', monospace;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .sc-btn {
+    background: #007acc;
+    color: #fff;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 3px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+  }
+
+  .sc-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px;
+    font-size: 12px;
+    color: #cccccc;
+    border-bottom: 1px solid #2d2d2d;
+  }
+
+  .sc-status { font-size: 11px; font-weight: 600; width: 14px; text-align: center; flex-shrink: 0; }
+  .sc-status.added { color: #4ec9b0; }
+  .sc-status.modified { color: #e2c08d; }
+
+  /* Info/warn/success boxes */
+  .info-box {
+    border-radius: 8px;
+    padding: 11px 16px;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .info-box.warn { background: var(--amber-bg); border: 1px solid var(--amber-border); color: var(--amber); }
+  .info-box.success { background: var(--green-bg); border: 1px solid var(--green-border); color: #166534; }
+  .info-box.tip { background: var(--vscode-dim); border: 1px solid #bde3f7; color: #1e4a6e; }
+
+  .info-icon { flex-shrink: 0; font-size: 14px; margin-top: 1px; }
+
+  code {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    color: var(--vscode);
+  }
+
+  /* shortcut pill */
+  .kbd {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 5px;
+    padding: 2px 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text);
+    font-weight: 500;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+
+  <div class="eyebrow">
+    <span class="badge badge-vscode">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Visual_Studio_Code_1.35_icon.svg/250px-Visual_Studio_Code_1.35_icon.svg.png" width="14" height="14"> VS Code
+    </span>
+    <span class="badge-sep">+</span>
+    <span class="badge badge-github">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      GitHub
+    </span>
+  </div>
+
+  <h1>Connect GitHub to VS Code</h1>
+  <p class="subtitle">Sign in to GitHub inside VS Code so you can push your<br>code directly — no terminal commands needed.</p>
+
+  <div class="steps">
+
+    <!-- Step 1 -->
+    <div class="step">
+      <div class="step-left"><div class="step-num">1</div></div>
+      <div class="step-body">
+        <p class="step-title">Open VS Code</p>
+        <p class="step-desc">Launch VS Code and open your project folder. Make sure your project has at least one file saved.</p>
+        <div class="info-box tip">
+          <span class="info-icon">💡</span>
+          <span>Use <strong>File → Open Folder</strong> to open your project, not just a single file.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="step">
+      <div class="step-left"><div class="step-num">2</div></div>
+      <div class="step-body">
+        <p class="step-title">Click the Source Control icon</p>
+        <p class="step-desc">In the left activity bar, click the <strong class="hi">branch icon</strong> (looks like a fork). This opens the Source Control panel.</p>
+        <div class="vscode-mock">
+          <div class="vs-activity">
+            <div class="vs-icon">📄</div>
+            <div class="vs-icon">🔍</div>
+            <div class="vs-icon active" style="border-left:2px solid #007acc; padding-left:6px;">
+              <svg width="18" height="18" viewBox="0 0 16 16" fill="#ffffff"><path d="M1.5 3.25a2.25 2.25 0 1 1 3 2.122v5.256a2.251 2.251 0 1 1-1.5 0V5.372A2.25 2.25 0 0 1 1.5 3.25Zm5.677-.177L9.573.677A.25.25 0 0 1 10 .854V2.5h.647A3.853 3.853 0 0 1 14.5 6.354v4.018a2.25 2.25 0 1 1-1.5 0V6.354a2.353 2.353 0 0 0-2.353-2.354H10v1.647a.25.25 0 0 1-.427.177L7.177 3.427a.25.25 0 0 1 0-.354Z"/></svg>
+            </div>
+            <div class="vs-icon">🧩</div>
+          </div>
+          <div class="vs-sidebar">
+            <div class="vs-sidebar-title">Source Control</div>
+            <div class="vs-item highlight">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="#ffffff"><path d="M1.5 3.25a2.25 2.25 0 1 1 3 2.122v5.256a2.251 2.251 0 1 1-1.5 0V5.372A2.25 2.25 0 0 1 1.5 3.25Z"/></svg>
+              Initialize Repository
+            </div>
+            <div class="vs-item" style="margin-top:8px; color:#858585; font-size:11px;">No source control providers registered.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="step">
+      <div class="step-left"><div class="step-num">3</div></div>
+      <div class="step-body">
+        <p class="step-title">Initialize the repository</p>
+        <p class="step-desc">Click <strong class="hi">Initialize Repository</strong>. This runs <code>git init</code> in your project folder — you'll see your files appear as changes.</p>
+        <div class="sc-mock">
+          <div class="sc-header">
+            Source Control
+            <div class="sc-btn">✓ Commit</div>
+          </div>
+          <div class="sc-item">
+            <span class="sc-status added">U</span>
+            <span>index.html</span>
+          </div>
+          <div class="sc-item">
+            <span class="sc-status added">U</span>
+            <span>env.js</span>
+          </div>
+          <div class="sc-item">
+            <span class="sc-status added">U</span>
+            <span>js/app.js</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="step">
+      <div class="step-left"><div class="step-num">4</div></div>
+      <div class="step-body">
+        <p class="step-title">Sign in to GitHub</p>
+        <p class="step-desc">Open the Command Palette with <span class="kbd">⌘ Shift P</span> (Mac) or <span class="kbd">Ctrl Shift P</span> (Windows), then type:</p>
+        <div class="palette-mock">
+          <div class="palette-input">
+            <span class="palette-icon">⌕</span>
+            <span class="palette-text">GitHub: Sign in</span>
+          </div>
+          <div class="palette-item selected">
+            <span class="palette-item-icon">🐙</span>
+            GitHub: Sign in to GitHub
+          </div>
+          <div class="palette-item">
+            <span class="palette-item-icon">🔑</span>
+            GitHub: Sign out
+          </div>
+        </div>
+        <p class="step-desc" style="margin-top:10px;">Select <strong class="hi">GitHub: Sign in to GitHub</strong> and press Enter.</p>
+      </div>
+    </div>
+
+    <!-- Step 5 -->
+    <div class="step">
+      <div class="step-left"><div class="step-num">5</div></div>
+      <div class="step-body">
+        <p class="step-title">Allow VS Code to open your browser</p>
+        <p class="step-desc">A notification pops up asking to open GitHub in your browser. Click <strong class="hi">Allow</strong>.</p>
+        <div class="notif-mock">
+          <span class="notif-icon">🔔</span>
+          <div class="notif-text">The extension 'GitHub' wants to sign in using GitHub.<br><span style="color:#858585;">Allow VS Code to open this URL?</span></div>
+          <div style="display:flex;flex-direction:column;gap:5px;">
+            <div class="notif-btn primary">Allow</div>
+            <div class="notif-btn secondary">Cancel</div>
+          </div>
+        </div>
+        <div class="info-box tip" style="margin-top:10px;">
+          <span class="info-icon">💡</span>
+          <span>Your browser opens GitHub's authorization page. Click <strong>Authorize Visual-Studio-Code</strong> to approve.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 6 -->
+    <div class="step">
+      <div class="step-left"><div class="step-num">6</div></div>
+      <div class="step-body">
+        <p class="step-title">Publish to GitHub</p>
+        <p class="step-desc">Back in VS Code, click <strong class="hi">Publish to GitHub</strong> in the Source Control panel. Choose <strong class="hi">Public</strong> or <strong class="hi">Private</strong> repo.</p>
+        <div class="palette-mock">
+          <div class="palette-input">
+            <span class="palette-icon">⌕</span>
+            <span class="palette-text">vibe-coding</span>
+          </div>
+          <div class="palette-item selected">
+            <span class="palette-item-icon">🌐</span>
+            Publish to GitHub as Public Repository
+          </div>
+          <div class="palette-item">
+            <span class="palette-item-icon">🔒</span>
+            Publish to GitHub as Private Repository
+          </div>
+        </div>
+        <div class="info-box warn" style="margin-top:10px;">
+          <span class="info-icon">⚠</span>
+          <span>Make sure <code style="color:inherit; background:#fde68a44; border-color:#fde68a;">env.js</code> is listed in <code style="color:inherit; background:#fde68a44; border-color:#fde68a;">.gitignore</code> before publishing so your TMDB token is not exposed.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 7 — Done -->
+    <div class="step">
+      <div class="step-left"><div class="step-num done">✓</div></div>
+      <div class="step-body">
+        <p class="step-title">You're connected!</p>
+        <p class="step-desc">From now on, use the Source Control panel to stage, commit, and push changes — no terminal needed.</p>
+        <div class="term-mock">
+          <div class="term-bar">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="#858585"><path d="M0 2.75C0 1.784.784 1 1.75 1h12.5c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0 1 14.25 15H1.75A1.75 1.75 0 0 1 0 13.25Zm1.75-.25a.25.25 0 0 0-.25.25v10.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V2.75a.25.25 0 0 0-.25-.25Z"/></svg>
+            TERMINAL
+          </div>
+          <div class="term-body">
+            <div><span class="term-prompt">~/vibe-coding</span> <span class="term-branch">(main)</span></div>
+            <div><span class="term-prompt">$</span> <span class="term-cmd">git status</span></div>
+            <div><span class="term-success">On branch main</span></div>
+            <div><span class="term-out">Your branch is up to date with 'origin/main'.</span></div>
+            <div><span class="term-out">nothing to commit, working tree clean ✓</span></div>
+          </div>
+        </div>
+        <div class="info-box success" style="margin-top:12px;">
+          <span class="info-icon">🎉</span>
+          <span>Your project is now on GitHub. Share the repo URL with your students!</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
