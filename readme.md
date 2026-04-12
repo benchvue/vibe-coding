@@ -163,11 +163,11 @@ with their own creative ideas.
 
 **1. Vibe Coding Tool** — Orbit-style launcher for VS Code, GitHub, and Gmail
 
-[![Open Live Demo](https://img.shields.io/badge/▶%20Open%20Live%20Demo-238636?style=for-the-badge&logoColor=white)](https://benchvue.github.io/vibe-coding/week-1/tools_page.html) &nbsp; ![Vibe Coding Tool](https://img.shields.io/badge/Vibe%20Coding%20Tool-1f2328?style=for-the-badge)
+[![VIBE CODING TOOLS](https://img.shields.io/badge/VIBE%20CODING%20TOOLS-238636?style=for-the-badge&logoColor=white)](https://benchvue.github.io/vibe-coding/week-1/tools_page.html)
 
 **2. Go Live with GitHub Pages** — Step-by-step guide to publish your HTML with GitHub Pages
 
-[![Open Live Demo](https://img.shields.io/badge/▶%20Open%20Live%20Demo-238636?style=for-the-badge&logoColor=white)](https://benchvue.github.io/vibe-coding/week-1/github-pages-guide.html) &nbsp; ![Go Live with GitHub Pages](https://img.shields.io/badge/Go%20Live%20with%20GitHub%20Pages-1f2328?style=for-the-badge)
+[![Go Live with GitHub Pages](https://img.shields.io/badge/Go%20Live%20with%20GitHub%20Pages-1f2328?style=for-the-badge&logoColor=white)](https://benchvue.github.io/vibe-coding/week-1/github-pages-guide.html)
 
 ---
 
