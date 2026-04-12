@@ -169,13 +169,17 @@ with their own creative ideas.
 
 [![3 Pillars Detail](https://img.shields.io/badge/3%20Pillars%20of%20the%20Web%20Detail-238636?style=for-the-badge&logoColor=white)](https://benchvue.github.io/vibe-coding/week-1/3-pillars.html)
 
-**3. Vibe Coding Tool** — Orbit-style launcher for VS Code, GitHub, and Gmail
+**3. Vibe Tool** — Orbit-style launcher for VS Code, GitHub, and Gmail
 
 [![VIBE CODING TOOLS](https://img.shields.io/badge/VIBE%20CODING%20TOOLS-238636?style=for-the-badge&logoColor=white)](https://benchvue.github.io/vibe-coding/week-1/tools_page.html)
 
 **4. Go Live with GitHub Pages** — Step-by-step guide to publish your HTML with GitHub Pages
 
 [![Go Live with GitHub Pages](https://img.shields.io/badge/Go%20Live%20with%20GitHub%20Pages-238636?style=for-the-badge&logoColor=white)](https://benchvue.github.io/vibe-coding/week-1/github-pages-guide.html)
+
+**5. Vibe Coding AI Tools** — Orbit-style launcher for Claude and ChatGPT
+
+[![Vibe Coding AI Tools](https://img.shields.io/badge/Vibe%20Coding%20AI%20Tools-238636?style=for-the-badge&logoColor=white)](https://benchvue.github.io/vibe-coding/week-1/vibe-coding-ai-tools.html)
 
 ---
 

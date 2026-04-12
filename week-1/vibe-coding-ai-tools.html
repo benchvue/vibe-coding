@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding Tools</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    color: #111;
+  }
+  h1 { font-size: 13px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: #999; margin-bottom: 8px; }
+  h2 { font-size: 28px; font-weight: 600; color: #111; margin-bottom: 60px; letter-spacing: -0.02em; }
+  .icon-circle { fill: #fff; stroke: #ddd; stroke-width: 1.5; }
+  .branch-circle { fill: #fff; stroke: #ddd; stroke-width: 1.5; }
+  .footer { margin-top: 60px; font-size: 12px; color: #ccc; letter-spacing: 0.05em; }
+</style>
+</head>
+<body>
+
+<h1>Week 1</h1>
+<h2>Vibe Coding Tools</h2>
+
+<svg width="520" height="520" viewBox="0 0 520 520" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;display:block;">
+  <defs>
+    <clipPath id="clip-claude"><circle cx="0" cy="0" r="30"/></clipPath>
+    <clipPath id="clip-chatgpt"><circle cx="0" cy="0" r="30"/></clipPath>
+  </defs>
+
+  <!-- Orbit ring -->
+  <circle cx="260" cy="260" r="160" fill="none" stroke="#bbb" stroke-width="3"/>
+  <circle cx="260" cy="260" r="6" fill="#ccc"/>
+
+  <!-- ===== CLAUDE.AI (270° — top) ===== -->
+  <line id="line-claude" stroke="#ccc" stroke-width="1.5" stroke-dasharray="5,4"/>
+  <a href="https://claude.ai" target="_blank" id="node-claude">
+    <circle class="icon-circle" r="36" id="bg-claude"/>
+    <!-- Anthropic / Claude logo mark — simplified -->
+    <g clip-path="url(#clip-claude)" transform="translate(-24,-24)">
+      <rect width="48" height="48" rx="12" fill="#D97757"/>
+      <!-- Claude's signature diamond/asterisk shape -->
+      <g transform="translate(24,24)" fill="#fff">
+        <ellipse cx="0" cy="-10" rx="3.5" ry="7"/>
+        <ellipse cx="0" cy="10"  rx="3.5" ry="7"/>
+        <ellipse cx="-10" cy="0" rx="7" ry="3.5"/>
+        <ellipse cx="10"  cy="0" rx="7" ry="3.5"/>
+        <ellipse cx="-7" cy="-7" rx="2.8" ry="6" transform="rotate(45 -7 -7)"/>
+        <ellipse cx="7"  cy="-7" rx="2.8" ry="6" transform="rotate(-45 7 -7)"/>
+        <ellipse cx="-7" cy="7"  rx="2.8" ry="6" transform="rotate(-45 -7 7)"/>
+        <ellipse cx="7"  cy="7"  rx="2.8" ry="6" transform="rotate(45 7 7)"/>
+      </g>
+    </g>
+    <text y="50" text-anchor="middle" font-size="12" fill="#555" font-family="DM Sans,sans-serif" font-weight="500">Claude</text>
+    <!-- Badge 1 -->
+    <circle cx="-26" cy="-26" r="11" fill="#D97757" stroke="#fff" stroke-width="2"/>
+    <text x="-26" y="-22" text-anchor="middle" font-size="12" fill="#fff" font-family="DM Sans,sans-serif" font-weight="700">1</text>
+  </a>
+  <!-- Branch: claude.ai -->
+  <a href="https://claude.ai" target="_blank" id="branch-claude">
+    <circle class="branch-circle" r="22" id="bbg-claude"/>
+    <text x="0" y="4" text-anchor="middle" font-size="10" fill="#D97757" font-family="DM Mono,monospace" font-weight="500">ai</text>
+    <text y="34" text-anchor="middle" font-size="10" fill="#777" font-family="DM Sans,sans-serif">Open</text>
+  </a>
+
+  <!-- ===== CHATGPT (150° — bottom-left) ===== -->
+  <line id="line-chatgpt" stroke="#ccc" stroke-width="1.5" stroke-dasharray="5,4"/>
+  <a href="https://chatgpt.com" target="_blank" id="node-chatgpt">
+    <circle class="icon-circle" r="36" id="bg-chatgpt"/>
+    <!-- ChatGPT logo — OpenAI flower/spark shape -->
+    <g clip-path="url(#clip-chatgpt)" transform="translate(-24,-24)">
+      <rect width="48" height="48" rx="12" fill="#10a37f"/>
+      <g transform="translate(24,24)" fill="#fff">
+        <!-- OpenAI logo approximation: overlapping rounded polygons -->
+        <path d="M0,-13 C5,-13 9,-9 9,-4 C9,1 5,5 0,7 C-5,5 -9,1 -9,-4 C-9,-9 -5,-13 0,-13Z" opacity="0.9"/>
+        <path d="M11,-7 C14,-3 13,2 10,5 C7,8 2,9 -2,7 C-2,2 0,-3 4,-6 C7,-9 12,-9 11,-7Z" opacity="0.9"/>
+        <path d="M11,7 C10,11 6,13 2,12 C-2,11 -5,7 -4,3 C-1,1 3,0 7,2 C10,3 13,6 11,7Z" opacity="0.9"/>
+        <path d="M0,13 C-5,13 -9,9 -9,4 C-9,-1 -5,-5 0,-7 C5,-5 9,-1 9,4 C9,9 5,13 0,13Z" opacity="0.9"/>
+        <path d="M-11,7 C-13,3 -12,-2 -9,-5 C-6,-8 -1,-9 3,-7 C3,-2 1,3 -3,6 C-6,9 -12,9 -11,7Z" opacity="0.9"/>
+        <path d="M-11,-7 C-10,-11 -6,-13 -2,-12 C2,-11 5,-7 4,-3 C1,-1 -3,0 -7,-2 C-10,-3 -13,-6 -11,-7Z" opacity="0.9"/>
+        <circle cx="0" cy="0" r="4" fill="#10a37f"/>
+      </g>
+    </g>
+    <text y="50" text-anchor="middle" font-size="12" fill="#555" font-family="DM Sans,sans-serif" font-weight="500">ChatGPT</text>
+    <!-- Badge 2 -->
+    <circle cx="-26" cy="-26" r="11" fill="#10a37f" stroke="#fff" stroke-width="2"/>
+    <text x="-26" y="-22" text-anchor="middle" font-size="12" fill="#fff" font-family="DM Sans,sans-serif" font-weight="700">2</text>
+  </a>
+  <!-- Branch: chatgpt.com -->
+  <a href="https://chatgpt.com" target="_blank" id="branch-chatgpt">
+    <circle class="branch-circle" r="22" id="bbg-chatgpt"/>
+    <text x="0" y="4" text-anchor="middle" font-size="9" fill="#10a37f" font-family="DM Mono,monospace" font-weight="500">GPT</text>
+    <text y="34" text-anchor="middle" font-size="10" fill="#777" font-family="DM Sans,sans-serif">Open</text>
+  </a>
+
+</svg>
+
+<div class="footer">click an icon to open the tool</div>
+
+<script>
+const CX = 260, CY = 260, R = 160, BRANCH_DIST = 90;
+const nodes = [
+  { id: 'claude',  angleDeg: 270 },
+  { id: 'chatgpt', angleDeg: 150 }
+];
+
+nodes.forEach(({ id, angleDeg }) => {
+  const rad = angleDeg * Math.PI / 180;
+  const mx = CX + R * Math.cos(rad);
+  const my = CY + R * Math.sin(rad);
+  document.getElementById('node-' + id).setAttribute('transform', `translate(${mx},${my})`);
+
+  const bx = CX + (R + BRANCH_DIST) * Math.cos(rad);
+  const by = CY + (R + BRANCH_DIST) * Math.sin(rad);
+  document.getElementById('branch-' + id).setAttribute('transform', `translate(${bx},${by})`);
+
+  const line = document.getElementById('line-' + id);
+  line.setAttribute('x1', mx + 36 * Math.cos(rad));
+  line.setAttribute('y1', my + 36 * Math.sin(rad));
+  line.setAttribute('x2', bx - 22 * Math.cos(rad));
+  line.setAttribute('y2', by - 22 * Math.sin(rad));
+});
+
+['claude','chatgpt'].forEach(id => {
+  const node = document.getElementById('node-' + id);
+  const bg   = document.getElementById('bg-' + id);
+  node.addEventListener('mouseenter', () => { bg.setAttribute('stroke','#999'); bg.setAttribute('filter','drop-shadow(0 3px 8px rgba(0,0,0,0.12))'); });
+  node.addEventListener('mouseleave', () => { bg.setAttribute('stroke','#ddd'); bg.removeAttribute('filter'); });
+
+  const branch = document.getElementById('branch-' + id);
+  const bbg    = document.getElementById('bbg-' + id);
+  branch.addEventListener('mouseenter', () => { bbg.setAttribute('stroke','#999'); bbg.setAttribute('filter','drop-shadow(0 2px 6px rgba(0,0,0,0.1))'); });
+  branch.addEventListener('mouseleave', () => { bbg.setAttribute('stroke','#ddd'); bbg.removeAttribute('filter'); });
+});
+</script>
+</body>
+</html>
