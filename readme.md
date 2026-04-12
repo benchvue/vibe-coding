@@ -159,6 +159,16 @@ with their own creative ideas.
 - Change text and refresh the browser
 - Explore demo projects
 
+### 🛠 Week 1 Tools
+
+**1. Vibe Coding Tool** — Orbit-style launcher for VS Code, GitHub, and Gmail
+
+[![Open Live Demo](https://img.shields.io/badge/▶%20Open%20Live%20Demo-238636?style=for-the-badge&logoColor=white)](https://benchvue.github.io/vibe-coding/week-1/tools_page.html) &nbsp; ![Vibe Coding Tool](https://img.shields.io/badge/Vibe%20Coding%20Tool-1f2328?style=for-the-badge)
+
+**2. Go Live with GitHub Pages** — Step-by-step guide to publish your HTML with GitHub Pages
+
+[![Open Live Demo](https://img.shields.io/badge/▶%20Open%20Live%20Demo-238636?style=for-the-badge&logoColor=white)](https://benchvue.github.io/vibe-coding/week-1/github-pages-guide.html) &nbsp; ![Go Live with GitHub Pages](https://img.shields.io/badge/Go%20Live%20with%20GitHub%20Pages-1f2328?style=for-the-badge)
+
 ---
 
 ## 🟢 Session 2: HTML / CSS / JavaScript 101

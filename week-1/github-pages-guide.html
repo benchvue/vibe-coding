@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Go Live with GitHub Pages</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0d1117;
+    --gray-dark: #21262d;
+    --gray-mid: #444c56;
+    --gray-light: #8b949e;
+    --gray-faint: #f0f2f5;
+    --white: #ffffff;
+    --green: #238636;
+    --green-light: #2ea043;
+    --border: #d0d7de;
+    --accent: #0969da;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--white);
+    color: var(--black);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 24px 80px;
+  }
+
+  /* ── Header ── */
+  .eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--gray-light);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .eyebrow::before, .eyebrow::after {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--border);
+  }
+
+  h1 {
+    font-size: clamp(26px, 5vw, 40px);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    color: var(--black);
+    text-align: center;
+    line-height: 1.15;
+    margin-bottom: 12px;
+  }
+
+  .subtitle {
+    font-size: 15px;
+    color: var(--gray-mid);
+    text-align: center;
+    max-width: 420px;
+    line-height: 1.6;
+    margin-bottom: 56px;
+  }
+
+  /* ── Steps container ── */
+  .steps {
+    width: 100%;
+    max-width: 560px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* ── Single step ── */
+  .step {
+    display: flex;
+    gap: 20px;
+    position: relative;
+    padding-bottom: 32px;
+    opacity: 0;
+    transform: translateY(18px);
+    animation: fadeUp 0.5s ease forwards;
+  }
+  .step:nth-child(1) { animation-delay: 0.05s; }
+  .step:nth-child(2) { animation-delay: 0.15s; }
+  .step:nth-child(3) { animation-delay: 0.25s; }
+  .step:nth-child(4) { animation-delay: 0.35s; }
+  .step:nth-child(5) { animation-delay: 0.45s; }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* vertical connector line */
+  .step:not(:last-child) .step-left::after {
+    content: '';
+    position: absolute;
+    top: 40px;
+    left: 15px;
+    width: 2px;
+    height: calc(100% - 8px);
+    background: linear-gradient(to bottom, var(--border) 60%, transparent);
+  }
+
+  .step-left {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .step-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .step-num.done {
+    background: var(--green);
+  }
+
+  .step-body {
+    padding-top: 5px;
+    flex: 1;
+  }
+
+  .step-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--black);
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+  }
+
+  .step-desc {
+    font-size: 14px;
+    color: var(--gray-mid);
+    line-height: 1.65;
+    margin-bottom: 10px;
+  }
+
+  /* ── Code / pill tags ── */
+  code {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    background: var(--gray-faint);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 2px 7px;
+    color: var(--black);
+    white-space: nowrap;
+  }
+
+  .pills {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--gray-faint);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--black);
+  }
+
+  .pill-label {
+    font-size: 11px;
+    color: var(--gray-light);
+    font-weight: 400;
+  }
+
+  .btn-save {
+    background: var(--green-light);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 16px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    cursor: default;
+  }
+
+  /* ── Result box ── */
+  .result-box {
+    background: #f6fff8;
+    border: 1.5px solid #aaeebb;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-top: 4px;
+  }
+
+  .result-label {
+    font-size: 12px;
+    color: var(--green);
+    font-weight: 600;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .result-url {
+    font-family: 'DM Mono', monospace;
+    font-size: 12.5px;
+    color: var(--accent);
+    word-break: break-all;
+    line-height: 1.5;
+  }
+
+  /* ── Note box ── */
+  .note {
+    background: #fffbea;
+    border-left: 3px solid #e3a000;
+    border-radius: 0 6px 6px 0;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #6a4f00;
+    line-height: 1.55;
+    margin-top: 6px;
+  }
+
+  /* ── Sidebar mock ── */
+  .sidebar-mock {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 0;
+    margin-top: 10px;
+    font-size: 13px;
+    width: 260px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .sb-section {
+    padding: 8px 16px 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--gray-light);
+    letter-spacing: 0.01em;
+  }
+  .sb-section.sb-highlight {
+    color: var(--black);
+    font-size: 12px;
+  }
+  .sb-item {
+    padding: 6px 16px;
+    color: #24292f;
+    cursor: default;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  .sb-item:hover {
+    background: var(--gray-faint);
+  }
+  .sb-item.sb-general {
+    background: var(--gray-faint);
+    font-weight: 600;
+    border-left: 3px solid #0969da;
+  }
+  .sb-item.active {
+    background: #ddf4ff;
+    color: #0969da;
+    font-weight: 600;
+    border-left: 3px solid #0969da;
+    padding-left: 13px;
+  }
+  .sb-arrow {
+    font-size: 12px;
+    margin-left: auto;
+    color: var(--gray-light);
+  }
+  .sb-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 4px 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="eyebrow">Week 1 · Vibe Coding</div>
+<h1>Go Live with GitHub Pages</h1>
+<p class="subtitle">Publish your <code>tools_page.html</code> to a public URL in under 2 minutes — no extra files needed.</p>
+
+<div class="steps">
+
+  <!-- Step 1 -->
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">1</div>
+    </div>
+    <div class="step-body">
+      <p class="step-title">Go to your repository — not your homepage</p>
+      <p class="step-desc">
+        The sidebar you see now is the GitHub homepage. You need to navigate directly to your repo first:
+      </p>
+      <div style="background:var(--gray-faint); border:1px solid var(--border); border-radius:8px; padding:10px 14px; margin-top:8px; display:flex; align-items:center; gap:8px;">
+        <span style="font-size:12px; color:var(--gray-light); font-family:'DM Mono',monospace;">🔗</span>
+        <code style="font-size:12px; color:var(--accent);">github.com/benchvue/vibe-coding</code>
+      </div>
+      <p class="step-desc" style="margin-top:10px;">Once you're on the repo page, click the <strong>Settings</strong> tab in the row of tabs near the top.</p>
+      <div style="margin-top:10px; border:1px solid var(--border); border-radius:8px; overflow:hidden; background:#fff; box-shadow:0 1px 4px rgba(0,0,0,0.06);">
+        <div style="display:flex; align-items:stretch; border-bottom:1px solid var(--border); overflow-x:auto; white-space:nowrap; padding:0 8px;">
+
+          <!-- Code -->
+          <div style="display:inline-flex;align-items:center;gap:5px;padding:10px 12px;font-size:12px;color:#57606a;cursor:default;flex-shrink:0;">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="#57606a"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v12.5A1.75 1.75 0 0 1 14.25 16H1.75A1.75 1.75 0 0 1 0 14.25Zm1.75-.25a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V1.75a.25.25 0 0 0-.25-.25Z"/><path d="M6.25 4.75a.75.75 0 0 0-1.5 0v6.5a.75.75 0 0 0 1.5 0Zm5 0a.75.75 0 0 0-1.5 0v6.5a.75.75 0 0 0 1.5 0Z"/></svg>
+            Code
+          </div>
+
+          <!-- Issues -->
+          <div style="display:inline-flex;align-items:center;gap:5px;padding:10px 12px;font-size:12px;color:#57606a;cursor:default;flex-shrink:0;">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="#57606a"><path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"/><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Z"/></svg>
+            Issues
+          </div>
+
+          <!-- Pull requests -->
+          <div style="display:inline-flex;align-items:center;gap:5px;padding:10px 12px;font-size:12px;color:#57606a;cursor:default;flex-shrink:0;">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="#57606a"><path d="M1.5 3.25a2.25 2.25 0 1 1 3 2.122v5.256a2.251 2.251 0 1 1-1.5 0V5.372A2.25 2.25 0 0 1 1.5 3.25Zm5.677-.177L9.573.677A.25.25 0 0 1 10 .854V2.5h.647A3.853 3.853 0 0 1 14.5 6.354v4.018a2.25 2.25 0 1 1-1.5 0V6.354a2.353 2.353 0 0 0-2.353-2.354H10v1.647a.25.25 0 0 1-.427.177L7.177 3.427a.25.25 0 0 1 0-.354Z"/></svg>
+            Pull requests
+          </div>
+
+          <!-- Actions -->
+          <div style="display:inline-flex;align-items:center;gap:5px;padding:10px 12px;font-size:12px;color:#57606a;cursor:default;flex-shrink:0;">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="#57606a"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm4.879-2.773 4.264 2.559a.25.25 0 0 1 0 .428l-4.264 2.559A.25.25 0 0 1 6 10.559V5.441a.25.25 0 0 1 .379-.214Z"/></svg>
+            Actions
+          </div>
+
+          <!-- Projects -->
+          <div style="display:inline-flex;align-items:center;gap:5px;padding:10px 12px;font-size:12px;color:#57606a;cursor:default;flex-shrink:0;">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="#57606a"><path d="M1.75 0h12.5C15.216 0 16 .784 16 1.75v12.5A1.75 1.75 0 0 1 14.25 16H1.75A1.75 1.75 0 0 1 0 14.25V1.75C0 .784.784 0 1.75 0ZM1.5 1.75v12.5c0 .138.112.25.25.25H6v-13H1.75a.25.25 0 0 0-.25.25ZM7.5 15h6.75a.25.25 0 0 0 .25-.25V1.75a.25.25 0 0 0-.25-.25H7.5Z"/></svg>
+            Projects
+          </div>
+
+          <!-- Wiki -->
+          <div style="display:inline-flex;align-items:center;gap:5px;padding:10px 12px;font-size:12px;color:#57606a;cursor:default;flex-shrink:0;">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="#57606a"><path d="M0 1.75A.75.75 0 0 1 .75 1h4.253c1.227 0 2.317.59 3 1.501A3.743 3.743 0 0 1 11.006 1h4.245a.75.75 0 0 1 .75.75v10.5a.75.75 0 0 1-.75.75h-4.507a2.25 2.25 0 0 0-1.591.659l-.622.621a.75.75 0 0 1-1.06 0l-.622-.621A2.25 2.25 0 0 0 5.258 13H.75a.75.75 0 0 1-.75-.75Z"/></svg>
+            Wiki
+          </div>
+
+          <!-- Security and quality -->
+          <div style="display:inline-flex;align-items:center;gap:5px;padding:10px 12px;font-size:12px;color:#57606a;cursor:default;flex-shrink:0;">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="#57606a"><path d="M7.467.133a1.748 1.748 0 0 1 1.066 0l5.25 1.68A1.75 1.75 0 0 1 15 3.48V7c0 1.566-.32 3.182-1.303 4.682-.983 1.498-2.585 2.813-5.032 3.855a1.697 1.697 0 0 1-1.33 0c-2.447-1.042-4.049-2.357-5.032-3.855C1.32 10.182 1 8.566 1 7V3.48a1.75 1.75 0 0 1 1.217-1.667Z"/></svg>
+            Security and quality
+          </div>
+
+          <!-- Insights -->
+          <div style="display:inline-flex;align-items:center;gap:5px;padding:10px 12px;font-size:12px;color:#57606a;cursor:default;flex-shrink:0;">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="#57606a"><path d="M1.5 1.75V13.5h13.75a.75.75 0 0 1 0 1.5H.75a.75.75 0 0 1-.75-.75V1.75a.75.75 0 0 1 1.5 0Zm14.28 2.53-5.25 5.25a.75.75 0 0 1-1.06 0L7 7.06 4.28 9.78a.75.75 0 0 1-1.06-1.06l3.25-3.25a.75.75 0 0 1 1.06 0L10 7.94l4.72-4.72a.75.75 0 1 1 1.06 1.06Z"/></svg>
+            Insights
+          </div>
+
+          <!-- Settings — ACTIVE with red underline -->
+          <div style="display:inline-flex;align-items:center;gap:5px;padding:10px 12px;font-size:12px;color:#0d1117;font-weight:600;cursor:default;flex-shrink:0;border-bottom:2px solid #fd8c73;margin-bottom:-1px;">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="#0d1117"><path d="M8 0a8.2 8.2 0 0 1 .701.031C9.444.095 9.99.645 10.16 1.29l.288 1.107c.018.066.079.158.212.224.231.114.454.243.668.386.123.082.233.09.299.071l1.103-.303c.644-.176 1.392.021 1.82.63.27.385.506.792.704 1.218.315.675.111 1.422-.364 1.891l-.814.806c-.049.048-.098.147-.088.294.016.257.016.515 0 .772-.01.147.038.246.088.294l.814.806c.475.469.679 1.216.364 1.891a7.977 7.977 0 0 1-.704 1.217c-.428.61-1.176.807-1.82.63l-1.102-.302c-.067-.019-.177-.011-.3.071a5.909 5.909 0 0 1-.668.386c-.133.066-.194.158-.211.224l-.29 1.106c-.168.646-.715 1.196-1.458 1.26a8.006 8.006 0 0 1-1.402 0c-.743-.064-1.289-.614-1.458-1.26l-.289-1.106c-.018-.066-.079-.158-.212-.224a5.738 5.738 0 0 1-.668-.386c-.123-.082-.233-.09-.299-.071l-1.103.303c-.644.176-1.392-.021-1.82-.63a8.12 8.12 0 0 1-.704-1.218c-.315-.675-.111-1.422.363-1.891l.815-.806c.05-.048.098-.147.088-.294a6.214 6.214 0 0 1 0-.772c.01-.147-.038-.246-.088-.294l-.815-.806C.635 6.045.431 5.298.746 4.623a7.92 7.92 0 0 1 .704-1.217c.428-.61 1.176-.807 1.82-.63l1.102.302c.067.019.177.011.3-.071.214-.143.437-.272.668-.386.133-.066.194-.158.211-.224l.29-1.106C6.717.645 7.264.095 8.007.031A8.217 8.217 0 0 1 8 0ZM5.5 8a2.5 2.5 0 1 0 5 0 2.5 2.5 0 0 0-5 0Z"/></svg>
+            Settings
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">2</div>
+    </div>
+    <div class="step-body">
+      <p class="step-title">Find Pages in the repo Settings sidebar</p>
+      <p class="step-desc">
+        Now you'll see a <em>different</em> sidebar — this is the repo Settings sidebar. Scroll down to <strong>Code and automation</strong> and click <strong>Pages</strong>.
+      </p>
+      <div class="sidebar-mock">
+        <div class="sb-item sb-general">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z" fill="#57606a"/></svg>
+          General
+        </div>
+        <hr class="sb-divider">
+        <div class="sb-section">Access</div>
+        <div class="sb-item">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><path d="M10.561 8.073a6.005 6.005 0 0 1 3.432 5.142.75.75 0 1 1-1.498.07 4.5 4.5 0 0 0-8.99 0 .75.75 0 0 1-1.498-.07 6.004 6.004 0 0 1 3.431-5.142 3.999 3.999 0 1 1 5.123 0ZM10.5 5a2.5 2.5 0 1 0-5 0 2.5 2.5 0 0 0 5 0Z" fill="#57606a"/></svg>
+          Collaborators
+        </div>
+        <div class="sb-item">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><path d="M0 2.75C0 1.784.784 1 1.75 1h12.5c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0 1 14.25 15H1.75A1.75 1.75 0 0 1 0 13.25Zm1.75-.25a.25.25 0 0 0-.25.25v10.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V2.75a.25.25 0 0 0-.25-.25Z" fill="#57606a"/></svg>
+          Moderation options
+          <span class="sb-arrow" style="margin-left:auto">⌄</span>
+        </div>
+        <hr class="sb-divider">
+        <div class="sb-section sb-highlight">Code and automation</div>
+        <div class="sb-item">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><path d="M5.45 5.154A4.25 4.25 0 0 0 9.25 7.5h1.378a2.251 2.251 0 1 1 0 1.5H9.25A5.734 5.734 0 0 1 5 7.123v3.505a2.25 2.25 0 1 1-1.5 0V5.372a2.25 2.25 0 1 1 1.95-.218Z" fill="#57606a"/></svg>
+          Branches
+        </div>
+        <div class="sb-item">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><path d="M2.5 7.775V2.75a.25.25 0 0 1 .25-.25h5.025a.25.25 0 0 1 .177.073l6.25 6.25a.25.25 0 0 1 0 .354l-5.025 5.025a.25.25 0 0 1-.354 0l-6.25-6.25a.25.25 0 0 1-.073-.177Z" fill="#57606a"/></svg>
+          Tags
+        </div>
+        <div class="sb-item">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><path d="M1.5 2.75a.25.25 0 0 1 .25-.25h12.5a.25.25 0 0 1 .25.25v8.5a.25.25 0 0 1-.25.25h-6.5a.75.75 0 0 0 0 1.5h6.5A1.75 1.75 0 0 0 16 11.25v-8.5A1.75 1.75 0 0 0 14.25 1H1.75A1.75 1.75 0 0 0 0 2.75v8.5C0 12.216.784 13 1.75 13H5a.75.75 0 0 0 0-1.5H1.75a.25.25 0 0 1-.25-.25Z" fill="#57606a"/></svg>
+          Rules
+          <span class="sb-arrow" style="margin-left:auto">⌄</span>
+        </div>
+        <div class="sb-item">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm4.879-2.773 4.264 2.559a.25.25 0 0 1 0 .428l-4.264 2.559A.25.25 0 0 1 6 10.559V5.441a.25.25 0 0 1 .379-.214Z" fill="#57606a"/></svg>
+          Actions
+          <span class="sb-arrow" style="margin-left:auto">⌄</span>
+        </div>
+        <div class="sb-item">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><path d="M5.5 3.5a2 2 0 1 0 0 4 2 2 0 0 0 0-4ZM2 5.5a3.5 3.5 0 1 1 5.898 2.549 5.508 5.508 0 0 1 3.034 4.084.75.75 0 1 1-1.482.235 4.001 4.001 0 0 0-7.9 0 .75.75 0 0 1-1.482-.236A5.507 5.507 0 0 1 3.102 8.05 3.493 3.493 0 0 1 2 5.5ZM11 4a.75.75 0 1 0 0 1.5 1.5 1.5 0 0 1 .666 2.844.75.75 0 0 0-.416.672v.352a.75.75 0 0 0 .574.73c1.2.289 2.162 1.2 2.522 2.372a.75.75 0 1 0 1.434-.44 5.01 5.01 0 0 0-2.56-3.012A3 3 0 0 0 11 4Z" fill="#57606a"/></svg>
+          Models
+          <span style="margin-left:auto; font-size:10px; border:1px solid #0969da; color:#0969da; border-radius:20px; padding:1px 8px; font-weight:500;">Preview</span>
+        </div>
+        <div class="sb-item">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><path d="M5.5 2.25a.25.25 0 0 1 .25-.25h4.5a.25.25 0 0 1 .25.25v1a.25.25 0 0 1-.25.25h-4.5a.25.25 0 0 1-.25-.25Zm-3 1A1.75 1.75 0 0 1 4.25 1.5h7.5c.966 0 1.75.784 1.75 1.75v1A1.75 1.75 0 0 1 11.75 6h-7.5A1.75 1.75 0 0 1 2.5 4.25Zm0 5A1.75 1.75 0 0 1 4.25 7.5h7.5c.966 0 1.75.784 1.75 1.75v4a1.75 1.75 0 0 1-1.75 1.75h-7.5A1.75 1.75 0 0 1 2.5 13.25Z" fill="#57606a"/></svg>
+          Webhooks
+        </div>
+        <div class="sb-item">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Z" fill="#57606a"/></svg>
+          Copilot
+          <span class="sb-arrow" style="margin-left:auto">⌄</span>
+        </div>
+        <div class="sb-item">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><path d="M1.75 1h8.5c.966 0 1.75.784 1.75 1.75v5.5A1.75 1.75 0 0 1 10.25 10H7.06l-2.573 2.573A1.457 1.457 0 0 1 2 11.543V10h-.25A1.75 1.75 0 0 1 0 8.25v-5.5C0 1.784.784 1 1.75 1Z" fill="#57606a"/></svg>
+          Environments
+        </div>
+        <div class="sb-item">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><path d="M0 11.25c0-.966.784-1.75 1.75-1.75h12.5c.966 0 1.75.784 1.75 1.75v3A1.75 1.75 0 0 1 14.25 16H1.75A1.75 1.75 0 0 1 0 14.25Zm2-9.5C2 .784 2.784 0 3.75 0h8.5C13.216 0 14 .784 14 1.75v5a1.75 1.75 0 0 1-1.75 1.75h-8.5A1.75 1.75 0 0 1 2 6.75Z" fill="#57606a"/></svg>
+          Codespaces
+        </div>
+        <div class="sb-item active">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.573 2.573A1.457 1.457 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Z" fill="#0969da"/></svg>
+          <strong style="color:#0969da">Pages</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3 -->
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">3</div>
+    </div>
+    <div class="step-body">
+      <p class="step-title">Set the source to your main branch</p>
+      <p class="step-desc">
+        Under <strong>Build and deployment → Source</strong>, select
+        <strong>Deploy from a branch</strong>, then set:
+      </p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px;">
+        <div style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:#fff;border:1px solid var(--border);border-radius:6px;font-size:13px;color:#24292f;cursor:default;box-shadow:0 1px 2px rgba(0,0,0,0.06);">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="#57606a"><path d="M1.5 3.25a2.25 2.25 0 1 1 3 2.122v5.256a2.251 2.251 0 1 1-1.5 0V5.372A2.25 2.25 0 0 1 1.5 3.25Zm5.677-.177L9.573.677A.25.25 0 0 1 10 .854V2.5h.647A3.853 3.853 0 0 1 14.5 6.354v4.018a2.25 2.25 0 1 1-1.5 0V6.354a2.353 2.353 0 0 0-2.353-2.354H10v1.647a.25.25 0 0 1-.427.177L7.177 3.427a.25.25 0 0 1 0-.354Z"/></svg>
+          main
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="#57606a"><path d="M4.427 7.427l3.396 3.396a.25.25 0 0 0 .354 0l3.396-3.396A.25.25 0 0 0 11.396 7H4.604a.25.25 0 0 0-.177.427Z"/></svg>
+        </div>
+        <div style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:#fff;border:1px solid var(--border);border-radius:6px;font-size:13px;color:#24292f;cursor:default;box-shadow:0 1px 2px rgba(0,0,0,0.06);">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="#57606a"><path d="M1.75 1A1.75 1.75 0 0 0 0 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0 0 16 13.25v-8.5A1.75 1.75 0 0 0 14.25 3H7.5a.25.25 0 0 1-.2-.1l-.9-1.2C6.07 1.26 5.55 1 5 1Z"/></svg>
+          / (root)
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="#57606a"><path d="M4.427 7.427l3.396 3.396a.25.25 0 0 0 .354 0l3.396-3.396A.25.25 0 0 0 11.396 7H4.604a.25.25 0 0 0-.177.427Z"/></svg>
+        </div>
+        <div style="display:inline-flex;align-items:center;padding:5px 16px;background:#fff;border:1px solid var(--border);border-radius:6px;font-size:13px;font-weight:500;color:#24292f;cursor:default;box-shadow:0 1px 2px rgba(0,0,0,0.06);">
+          Save
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 4 -->
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">4</div>
+    </div>
+    <div class="step-body">
+      <p class="step-title">Wait about 1 minute</p>
+      <p class="step-desc">
+        GitHub runs a deployment workflow automatically. Refresh the Pages settings page —
+        when a green checkmark appears, your site is live.
+      </p>
+      <div class="note">
+        You can also watch the progress under the <strong>Actions</strong> tab of your repo.
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 5 — Done -->
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num done">✓</div>
+    </div>
+    <div class="step-body">
+      <p class="step-title">Your page is live!</p>
+      <p class="step-desc">Visit your published page at:</p>
+      <div class="result-box">
+        <div class="result-label">🟢 Live URL</div>
+        <div class="result-url">https://benchvue.github.io/vibe-coding/week-1/tools_page.html</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
