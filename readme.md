@@ -161,21 +161,21 @@ with their own creative ideas.
 
 ### 🛠 Week 1 Tools
 
-**1. Vibe Coding Tool** — Orbit-style launcher for VS Code, GitHub, and Gmail
+**1. The 3 Pillars of the Web** — Simple visual: HTML, CSS, JavaScript
+
+[![3 Pillars Simple](https://img.shields.io/badge/3%20Pillars%20of%20the%20Web-238636?style=for-the-badge&logoColor=white)](https://benchvue.github.io/vibe-coding/week-1/simple-3-pillars.html)
+
+**2. The 3 Pillars of the Web (Detail)** — Full interactive explainer with code and live demos
+
+[![3 Pillars Detail](https://img.shields.io/badge/3%20Pillars%20of%20the%20Web%20Detail-238636?style=for-the-badge&logoColor=white)](https://benchvue.github.io/vibe-coding/week-1/3-pillars.html)
+
+**3. Vibe Coding Tool** — Orbit-style launcher for VS Code, GitHub, and Gmail
 
 [![VIBE CODING TOOLS](https://img.shields.io/badge/VIBE%20CODING%20TOOLS-238636?style=for-the-badge&logoColor=white)](https://benchvue.github.io/vibe-coding/week-1/tools_page.html)
 
-**2. Go Live with GitHub Pages** — Step-by-step guide to publish your HTML with GitHub Pages
+**4. Go Live with GitHub Pages** — Step-by-step guide to publish your HTML with GitHub Pages
 
-[![Go Live with GitHub Pages](https://img.shields.io/badge/Go%20Live%20with%20GitHub%20Pages-1f2328?style=for-the-badge&logoColor=white)](https://benchvue.github.io/vibe-coding/week-1/github-pages-guide.html)
-
-**3. The 3 Pillars of the Web** — Simple visual: HTML, CSS, JavaScript
-
-[![Simple 3 Pillars](https://img.shields.io/badge/Simple%203%20Pillars-ffffff?style=for-the-badge&logoColor=111111&color=f1f5f9&labelColor=111111)](https://benchvue.github.io/vibe-coding/week-1/simple-3-pillars.html)
-
-**4. The 3 Pillars of the Web (Detail)** — Full interactive explainer with code and live demos
-
-[![3 Pillars Detail](https://img.shields.io/badge/3%20Pillars%20Detail-ffffff?style=for-the-badge&logoColor=white&color=e44d26)](https://benchvue.github.io/vibe-coding/week-1/3-pillars.html)
+[![Go Live with GitHub Pages](https://img.shields.io/badge/Go%20Live%20with%20GitHub%20Pages-238636?style=for-the-badge&logoColor=white)](https://benchvue.github.io/vibe-coding/week-1/github-pages-guide.html)
 
 ---
 
