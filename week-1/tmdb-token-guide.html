@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Get Your TMDB API Token</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --surface: #f8fafc;
+    --surface2: #f1f5f9;
+    --border: #e2e8f0;
+    --border2: #cbd5e1;
+    --tmdb-blue: #0094c6;
+    --tmdb-teal: #2d9e6b;
+    --gold: #d97706;
+    --text: #0f172a;
+    --muted: #64748b;
+    --green: #16a34a;
+    --green-dim: #dcfce7;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 56px 24px 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* ── Ambient background glow ── */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -200px; left: 50%;
+    transform: translateX(-50%);
+    width: 800px; height: 500px;
+    background: radial-gradient(ellipse, #01b4e410 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 600px;
+  }
+
+  /* ── Header ── */
+  .logo-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 28px;
+    justify-content: center;
+  }
+
+  .tmdb-badge {
+    background: linear-gradient(135deg, #0094c6, #2d9e6b);
+    color: #ffffff;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    padding: 4px 10px;
+    border-radius: 5px;
+  }
+
+  .logo-sep {
+    color: var(--border2);
+    font-size: 18px;
+  }
+
+  .logo-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(24px, 5vw, 36px);
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-bottom: 10px;
+    color: #fff;
+  }
+
+  h1 span {
+    background: linear-gradient(90deg, #0094c6, #2d9e6b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .subtitle {
+    text-align: center;
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 52px;
+    line-height: 1.6;
+  }
+
+  /* ── Steps ── */
+  .steps { display: flex; flex-direction: column; gap: 0; }
+
+  .step {
+    display: flex;
+    gap: 20px;
+    padding-bottom: 36px;
+    position: relative;
+    opacity: 0;
+    transform: translateY(16px);
+    animation: rise 0.5s ease forwards;
+  }
+  .step:nth-child(1) { animation-delay: 0.05s; }
+  .step:nth-child(2) { animation-delay: 0.13s; }
+  .step:nth-child(3) { animation-delay: 0.21s; }
+  .step:nth-child(4) { animation-delay: 0.29s; }
+  .step:nth-child(5) { animation-delay: 0.37s; }
+  .step:nth-child(6) { animation-delay: 0.45s; }
+
+  @keyframes rise {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* connector line */
+  .step:not(:last-child) .step-left::after {
+    content: '';
+    position: absolute;
+    top: 38px; left: 15px;
+    width: 1.5px;
+    height: calc(100% - 6px);
+    background: linear-gradient(to bottom, var(--border2) 50%, transparent);
+  }
+
+  .step-left {
+    position: relative;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .step-num {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    border: 1.5px solid var(--border2);
+    color: var(--tmdb-blue);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0;
+  }
+
+  .step-num.done {
+    background: #f0fdf4;
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  .step-body { padding-top: 5px; flex: 1; }
+
+  .step-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: #0f172a;
+    margin-bottom: 6px;
+  }
+
+  .step-desc {
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.65;
+    margin-bottom: 12px;
+  }
+
+  a.link {
+    color: var(--tmdb-blue);
+    text-decoration: none;
+    border-bottom: 1px solid #01b4e444;
+    transition: border-color 0.2s;
+  }
+  a.link:hover { border-color: var(--tmdb-blue); }
+
+  /* ── UI mockups ── */
+  .ui-mock {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 2px;
+  }
+
+  .mock-bar {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .mock-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  .mock-url {
+    flex: 1;
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 3px 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    margin-left: 6px;
+  }
+
+  .mock-body { padding: 16px 18px; }
+
+  /* ── Nav tabs mock ── */
+  .mock-nav {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    padding: 0 18px;
+    gap: 0;
+    overflow-x: auto;
+  }
+
+  .mock-tab {
+    padding: 10px 16px;
+    font-size: 13px;
+    color: var(--muted);
+    white-space: nowrap;
+    cursor: default;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+
+  .mock-tab.active {
+    color: var(--tmdb-blue);
+    border-bottom-color: var(--tmdb-blue);
+    font-weight: 500;
+  }
+
+  /* ── Token box ── */
+  .token-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-top: 4px;
+  }
+
+  .token-label {
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--tmdb-teal);
+    margin-bottom: 8px;
+  }
+
+  .token-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    word-break: break-all;
+    line-height: 1.6;
+  }
+
+  .token-value span {
+    color: var(--tmdb-blue);
+    font-weight: 500;
+  }
+
+  /* ── Code block ── */
+  .code-block {
+    background: #f1f5f9;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.7;
+    margin-top: 8px;
+    position: relative;
+  }
+
+  .code-comment { color: #94a3b8; }
+  .code-key { color: #475569; }
+  .code-val { color: var(--tmdb-teal); }
+  .code-highlight {
+    background: #e0f2fe;
+    border: 1px solid #bae6fd;
+    border-radius: 3px;
+    padding: 1px 5px;
+    color: var(--tmdb-blue);
+  }
+
+  .copy-btn {
+    position: absolute;
+    top: 10px; right: 10px;
+    background: #ffffff;
+    border: 1px solid var(--border2);
+    border-radius: 5px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 3px 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .copy-btn:hover { color: var(--tmdb-blue); border-color: var(--tmdb-blue); }
+  .copy-btn.copied { color: var(--green); border-color: var(--green); }
+
+  /* ── Warning ── */
+  .warn {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #92400e;
+    line-height: 1.55;
+    margin-top: 8px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .warn-icon { flex-shrink: 0; font-size: 15px; margin-top: 1px; }
+
+  /* ── Result ── */
+  .result-box {
+    background: #f0fdf4;
+    border: 1.5px solid #86efac;
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-top: 4px;
+  }
+
+  .result-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--green);
+    margin-bottom: 6px;
+  }
+
+  .result-desc {
+    font-size: 13px;
+    color: #166534;
+    line-height: 1.6;
+  }
+
+  /* ── Avatar nav mock ── */
+  .mock-avatar-row {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px 18px;
+    border-bottom: 1px solid var(--border);
+    gap: 12px;
+    align-items: center;
+  }
+
+  .mock-avatar {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0094c6, #2d9e6b);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: #fff;
+  }
+
+  .mock-menu {
+    background: #ffffff;
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .mock-menu-item {
+    padding: 8px 18px;
+    font-size: 13px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .mock-menu-item:last-child { border-bottom: none; }
+  .mock-menu-item.active { color: var(--tmdb-blue); background: #e0f2fe; }
+
+  .highlight-badge {
+    background: var(--tmdb-blue);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 3px;
+    margin-left: auto;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+
+  <div class="logo-row">
+    <div class="tmdb-badge">TMDB</div>
+    <span class="logo-sep">×</span>
+    <div class="logo-label">Movie Actor Explorer</div>
+  </div>
+
+  <h1>Get Your <span>API Token</span></h1>
+  <p class="subtitle">Follow these steps to create a free TMDB account<br>and generate your Read Access Token.</p>
+
+  <div class="steps">
+
+    <!-- Step 1 -->
+    <div class="step">
+      <div class="step-left"><div class="step-num">1</div></div>
+      <div class="step-body">
+        <p class="step-title">Go to themoviedb.org</p>
+        <p class="step-desc">Open your browser and navigate to the TMDB website.</p>
+        <div class="ui-mock">
+          <div class="mock-bar">
+            <div class="mock-dot" style="background:#ff5f57"></div>
+            <div class="mock-dot" style="background:#febc2e"></div>
+            <div class="mock-dot" style="background:#28c840"></div>
+            <div class="mock-url">themoviedb.org</div>
+          </div>
+          <div class="mock-body" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+            <div style="font-family:'Syne',sans-serif; font-size:18px; font-weight:700; background:linear-gradient(90deg,#0094c6,#2d9e6b); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">TMDB</div>
+            <div style="display:flex; gap:8px;">
+              <div style="padding:6px 14px; background:var(--surface2); border:1px solid var(--border2); border-radius:5px; font-size:12px; color:var(--muted);">Login</div>
+              <div style="padding:6px 14px; background:linear-gradient(135deg,var(--tmdb-blue),var(--tmdb-teal)); border-radius:5px; font-size:12px; font-weight:600; color:#ffffff;">Join TMDB</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="step">
+      <div class="step-left"><div class="step-num">2</div></div>
+      <div class="step-body">
+        <p class="step-title">Create a free account</p>
+        <p class="step-desc">Click <strong style="color:#0f172a;">Join TMDB</strong> and sign up with your email. Verify your email when prompted — you'll get a confirmation link.</p>
+        <div class="warn">
+          <span class="warn-icon">⚠</span>
+          <span>You must verify your email before TMDB lets you create an API token.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="step">
+      <div class="step-left"><div class="step-num">3</div></div>
+      <div class="step-body">
+        <p class="step-title">Open your account Settings</p>
+        <p class="step-desc">After logging in, click your <strong style="color:#0f172a;">avatar</strong> in the top-right corner, then choose <strong style="color:#0f172a;">Settings</strong> from the dropdown.</p>
+        <div class="ui-mock">
+          <div class="mock-avatar-row">
+            <span style="font-size:12px; color:var(--muted);">Movies</span>
+            <span style="font-size:12px; color:var(--muted);">TV</span>
+            <span style="font-size:12px; color:var(--muted);">People</span>
+            <div class="mock-avatar">Y</div>
+          </div>
+          <div style="padding:10px 18px;">
+            <div class="mock-menu">
+              <div class="mock-menu-item">Profile</div>
+              <div class="mock-menu-item active">⚙ Settings <span class="highlight-badge">← click</span></div>
+              <div class="mock-menu-item">Logout</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="step">
+      <div class="step-left"><div class="step-num">4</div></div>
+      <div class="step-body">
+        <p class="step-title">Go to the API tab</p>
+        <p class="step-desc">In Settings, click the <strong style="color:#0f172a;">API</strong> tab in the left sidebar. Then click <strong style="color:#0f172a;">Create</strong> or <strong style="color:#0f172a;">Request an API Key</strong>. Choose <strong style="color:#0f172a;">Developer</strong> when asked.</p>
+        <div class="ui-mock">
+          <div class="mock-nav">
+            <div class="mock-tab">Account</div>
+            <div class="mock-tab active">API</div>
+            <div class="mock-tab">Lists</div>
+            <div class="mock-tab">Ratings</div>
+          </div>
+          <div class="mock-body">
+            <div style="font-size:12px; color:var(--muted); margin-bottom:10px;">API access</div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <div style="padding:7px 16px; background:linear-gradient(135deg,var(--tmdb-blue),var(--tmdb-teal)); border-radius:6px; font-size:12px; font-weight:600; color:#ffffff;">Request an API Key</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 5 -->
+    <div class="step">
+      <div class="step-left"><div class="step-num">5</div></div>
+      <div class="step-body">
+        <p class="step-title">Copy the Read Access Token</p>
+        <p class="step-desc">Scroll down to find the <strong style="color:#0f172a;">API Read Access Token (v4 auth)</strong>. This is a long string starting with <code style="font-family:'DM Mono',monospace; font-size:12px; color:var(--tmdb-blue);">eyJ...</code> — copy the whole thing.</p>
+        <div class="token-box">
+          <div class="token-label">API Read Access Token (v4 auth)</div>
+          <div class="token-value">
+            <span>eyJhbGciOiJIUzI1NiJ9</span>.eyJhdWQiOiJhYmNkMTIzNC4uLiIsInN1YiI6IjY0YWJjZGVm...
+            <br><br>
+            <span style="color:var(--muted); font-size:11px;">← Copy this entire token (it's very long)</span>
+          </div>
+        </div>
+        <div class="warn" style="margin-top:10px;">
+          <span class="warn-icon">⚠</span>
+          <span>Do NOT commit this token to GitHub. Add <code style="font-family:'DM Mono',monospace; font-size:12px; color:#fbbf24;">env.js</code> to your <code style="font-family:'DM Mono',monospace; font-size:12px; color:#fbbf24;">.gitignore</code> file.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 6 -->
+    <div class="step">
+      <div class="step-left"><div class="step-num done">✓</div></div>
+      <div class="step-body">
+        <p class="step-title">Paste it into env.js</p>
+        <p class="step-desc">Open your <code style="font-family:'DM Mono',monospace; font-size:12px; color:var(--tmdb-blue);">env.js</code> file and replace the placeholder with your token:</p>
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <div><span class="code-comment">// env.js</span></div>
+          <div><span class="code-key">window.__ENV__</span> = {</div>
+          <div>&nbsp;&nbsp;<span class="code-key">READ_ACCESS_TOKEN:</span> <span class="code-highlight">"eyJhbGciOi... paste here"</span></div>
+          <div>};</div>
+        </div>
+        <div class="result-box" style="margin-top:14px;">
+          <div class="result-title">✓ You're ready</div>
+          <div class="result-desc">Save the file, open with Live Server — your Movie Actor Explorer will load real data from TMDB.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function copyCode(btn) {
+  const code = `// env.js\nwindow.__ENV__ = {\n  READ_ACCESS_TOKEN: "paste your token here"\n};`;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = 'copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+</script>
+
+</body>
+</html>
