@@ -202,11 +202,16 @@ with their own creative ideas.
 
 ### 🛠 Week 2 Tools
 
-**1. Connect GitHub to VS Code** — Step-by-step guide to sign in to GitHub inside VS Code
+**1. Create GitHub account** — Step-by-step guide to create in GitHub
+
+[![Connect GitHub to VS Code](https://img.shields.io/badge/Connect%20GitHub%20to%20VS%20Code-1f2328?style=for-the-badge&logoColor=white)](https://benchvue.github.io/vibe-coding/week-2/guide-how-create-account-github.html)
+
+
+**2. Connect GitHub to VS Code** — Step-by-step guide to sign in to GitHub inside VS Code
 
 [![Connect GitHub to VS Code](https://img.shields.io/badge/Connect%20GitHub%20to%20VS%20Code-1f2328?style=for-the-badge&logoColor=white)](https://benchvue.github.io/vibe-coding/week-2/github-vscode-guide.html)
 
-**2. TMDB API Token** — How to create your free TMDB API token for the Movie Actor Explorer
+**3. TMDB API Token** — How to create your free TMDB API token for the Movie Actor Explorer
 
 [![TMDB API Token](https://img.shields.io/badge/TMDB%20API%20Token-01b4e4?style=for-the-badge&logoColor=white)](https://benchvue.github.io/vibe-coding/week-2/tmdb-token-guide.html)
 
