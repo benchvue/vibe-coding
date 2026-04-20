@@ -1,4 +1,4 @@
-### 🛠 Week 1 Tools
+### 🛠 Week 3 Demos
 
 **1. Ping Pong Game** — One persion Ping Pong Game
 
