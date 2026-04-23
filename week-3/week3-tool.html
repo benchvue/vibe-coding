@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 1 – Vibe Coding Tools</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #ffffff;
+    font-family: 'Segoe UI', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    color: #111;
+  }
+  h1 { font-size: 13px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: #999; margin-bottom: 8px; }
+  h2 { font-size: 28px; font-weight: 600; color: #111; margin-bottom: 60px; letter-spacing: -0.02em; }
+  .icon-circle { fill: #fff; stroke: #ddd; stroke-width: 1.5; }
+  .branch-circle { fill: #fff; stroke: #ddd; stroke-width: 1.5; }
+  .footer { margin-top: 60px; font-size: 12px; color: #ccc; letter-spacing: 0.05em; }
+</style>
+</head>
+<body>
+
+<h1>Week 1</h1>
+<h2>Vibe Coding Tools</h2>
+
+<svg width="520" height="520" viewBox="0 0 520 520" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;display:block;">
+  <defs>
+    <clipPath id="clip-vscode"><circle cx="0" cy="0" r="30"/></clipPath>
+    <clipPath id="clip-gmail"><circle cx="0" cy="0" r="30"/></clipPath>
+    <clipPath id="clip-git"><circle cx="0" cy="0" r="30"/></clipPath>
+    <clipPath id="clip-github"><circle cx="0" cy="0" r="30"/></clipPath>
+  </defs>
+
+  <!-- Orbit ring -->
+  <circle cx="260" cy="260" r="160" fill="none" stroke="#bbb" stroke-width="3"/>
+  <circle cx="260" cy="260" r="6" fill="#ccc"/>
+
+  <!-- ===== VS CODE (Top - 12 o'clock, badge 1) ===== -->
+  <line id="line-vscode" stroke="#ccc" stroke-width="1.5" stroke-dasharray="5,4"/>
+  <a href="https://code.visualstudio.com/download" target="_blank" id="node-vscode">
+    <circle class="icon-circle" r="36" id="bg-vscode"/>
+    <image href="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Visual_Studio_Code_1.35_icon.svg/250px-Visual_Studio_Code_1.35_icon.svg.png"
+           x="-30" y="-30" width="60" height="60" clip-path="url(#clip-vscode)" style="pointer-events:none;"/>
+    <text y="50" text-anchor="middle" font-size="12" fill="#555" font-family="Segoe UI,sans-serif" font-weight="500">VS Code</text>
+    <!-- Badge -->
+    <circle cx="-26" cy="-26" r="11" fill="#007ACC" stroke="#fff" stroke-width="2"/>
+    <text x="-26" y="-22" text-anchor="middle" font-size="12" fill="#fff" font-family="Segoe UI,sans-serif" font-weight="700">1</text>
+  </a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer" target="_blank" id="branch-vscode">
+    <circle class="branch-circle" r="22" id="bbg-vscode"/>
+    <image href="https://ritwickdey.gallerycdn.vsassets.io/extensions/ritwickdey/liveserver/5.7.10/1772184436918/Microsoft.VisualStudio.Services.Icons.Default"
+           x="-16" y="-16" width="32" height="32" style="pointer-events:none;"/>
+    <text y="34" text-anchor="middle" font-size="10" fill="#777" font-family="Segoe UI,sans-serif">Go Live</text>
+  </a>
+
+  <!-- ===== GMAIL (Right - 3 o'clock, badge 2) ===== -->
+  <line id="line-gmail" stroke="#ccc" stroke-width="1.5" stroke-dasharray="5,4"/>
+  <a href="https://gmail.com/" target="_blank" id="node-gmail">
+    <circle class="icon-circle" r="36" id="bg-gmail"/>
+    <image href="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Gmail_icon_%282020%29.svg/330px-Gmail_icon_%282020%29.svg.png"
+           x="-30" y="-30" width="60" height="60" clip-path="url(#clip-gmail)" style="pointer-events:none;"/>
+    <text y="50" text-anchor="middle" font-size="12" fill="#555" font-family="Segoe UI,sans-serif" font-weight="500">Gmail</text>
+    <!-- Badge -->
+    <circle cx="-26" cy="-26" r="11" fill="#EA4335" stroke="#fff" stroke-width="2"/>
+    <text x="-26" y="-22" text-anchor="middle" font-size="12" fill="#fff" font-family="Segoe UI,sans-serif" font-weight="700">2</text>
+  </a>
+  <a href="https://support.google.com/mail/answer/56256?hl=en" target="_blank" id="branch-gmail">
+    <circle class="branch-circle" r="22" id="bbg-gmail"/>
+    <text x="0" y="5" text-anchor="middle" font-size="18" fill="#EA4335" font-family="Arial,sans-serif" font-weight="700">G</text>
+    <text y="34" text-anchor="middle" font-size="10" fill="#777" font-family="Segoe UI,sans-serif">Create</text>
+  </a>
+
+  <!-- ===== GIT (Bottom - 6 o'clock, badge 3) - NO BRANCH ===== -->
+  <a href="https://github.com/git-guides/install-git" target="_blank" id="node-git">
+    <circle class="icon-circle" r="36" id="bg-git"/>
+    <image href="https://git-scm.com/images/logos/downloads/Git-Icon-1788C.png"
+           x="-30" y="-30" width="60" height="60" clip-path="url(#clip-git)" style="pointer-events:none;"/>
+    <text y="50" text-anchor="middle" font-size="12" fill="#555" font-family="Segoe UI,sans-serif" font-weight="500">Git</text>
+    <!-- Badge -->
+    <circle cx="-26" cy="-26" r="11" fill="#F05032" stroke="#fff" stroke-width="2"/>
+    <text x="-26" y="-22" text-anchor="middle" font-size="12" fill="#fff" font-family="Segoe UI,sans-serif" font-weight="700">3</text>
+  </a>
+
+  <!-- ===== GITHUB (Left - 9 o'clock, badge 4) ===== -->
+  <line id="line-github" stroke="#ccc" stroke-width="1.5" stroke-dasharray="5,4"/>
+  <a href="https://github.com/" target="_blank" id="node-github">
+    <circle class="icon-circle" r="36" id="bg-github"/>
+    <image href="https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/GitHub_logo_2013.svg/330px-GitHub_logo_2013.svg.png"
+           x="-30" y="-30" width="60" height="60" clip-path="url(#clip-github)" style="pointer-events:none;"/>
+    <text y="50" text-anchor="middle" font-size="12" fill="#555" font-family="Segoe UI,sans-serif" font-weight="500">GitHub</text>
+    <!-- Badge -->
+    <circle cx="-26" cy="-26" r="11" fill="#24292e" stroke="#fff" stroke-width="2"/>
+    <text x="-26" y="-22" text-anchor="middle" font-size="12" fill="#fff" font-family="Segoe UI,sans-serif" font-weight="700">4</text>
+  </a>
+  <a href="https://github.com/signup?ref_cta=Sign+up&ref_loc=header+logged+out&ref_page=%2F&source=header-home" target="_blank" id="branch-github">
+    <circle class="branch-circle" r="22" id="bbg-github"/>
+    <circle cx="0" cy="-3" r="8" fill="#24292e"/>
+    <ellipse cx="-6" cy="6" rx="3" ry="5" fill="#24292e"/>
+    <ellipse cx="6" cy="6" rx="3" ry="5" fill="#24292e"/>
+    <circle cx="0" cy="-3" r="5" fill="#fff"/>
+    <text y="34" text-anchor="middle" font-size="10" fill="#777" font-family="Segoe UI,sans-serif">Sign Up</text>
+  </a>
+</svg>
+
+<script>
+const CX = 260, CY = 260, R = 160, BRANCH_DIST = 90;
+
+// 4 nodes distributed 90° apart, starting from TOP (12 o'clock) going CLOCKWISE
+// SVG angle: 270° = top, 0° = right, 90° = bottom, 180° = left
+const nodes = [
+  { id: 'vscode', angleDeg: 270, hasBranch: true  }, // Top        - badge 1
+  { id: 'gmail',  angleDeg: 0,   hasBranch: true  }, // Right      - badge 2
+  { id: 'git',    angleDeg: 90,  hasBranch: false }, // Bottom     - badge 3 (no child)
+  { id: 'github', angleDeg: 180, hasBranch: true  }  // Left       - badge 4
+];
+
+nodes.forEach(({ id, angleDeg, hasBranch }) => {
+  const rad = angleDeg * Math.PI / 180;
+  const mx = CX + R * Math.cos(rad);
+  const my = CY + R * Math.sin(rad);
+  document.getElementById('node-' + id).setAttribute('transform', `translate(${mx},${my})`);
+
+  if (hasBranch) {
+    const bx = CX + (R + BRANCH_DIST) * Math.cos(rad);
+    const by = CY + (R + BRANCH_DIST) * Math.sin(rad);
+    document.getElementById('branch-' + id).setAttribute('transform', `translate(${bx},${by})`);
+
+    const line = document.getElementById('line-' + id);
+    line.setAttribute('x1', mx + 36 * Math.cos(rad));
+    line.setAttribute('y1', my + 36 * Math.sin(rad));
+    line.setAttribute('x2', bx - 22 * Math.cos(rad));
+    line.setAttribute('y2', by - 22 * Math.sin(rad));
+  }
+});
+
+// Hover effects for all main nodes
+['vscode','gmail','git','github'].forEach(id => {
+  const node = document.getElementById('node-' + id);
+  const bg   = document.getElementById('bg-' + id);
+  node.addEventListener('mouseenter', () => { bg.setAttribute('stroke','#999'); bg.setAttribute('filter','drop-shadow(0 3px 8px rgba(0,0,0,0.12))'); });
+  node.addEventListener('mouseleave', () => { bg.setAttribute('stroke','#ddd'); bg.removeAttribute('filter'); });
+});
+
+// Hover effects only for nodes with branches
+['vscode','gmail','github'].forEach(id => {
+  const branch = document.getElementById('branch-' + id);
+  const bbg    = document.getElementById('bbg-' + id);
+  branch.addEventListener('mouseenter', () => { bbg.setAttribute('stroke','#999'); bbg.setAttribute('filter','drop-shadow(0 2px 6px rgba(0,0,0,0.1))'); });
+  branch.addEventListener('mouseleave', () => { bbg.setAttribute('stroke','#ddd'); bbg.removeAttribute('filter'); });
+});
+</script>
+
+<div class="footer">click an icon or its branch to open the tool</div>
+
+</body>
+</html>
