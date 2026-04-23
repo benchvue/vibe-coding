@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Your First GitHub Repository</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #f7f7f9;
+    --card: #ffffff;
+    --ink: #111;
+    --muted: #666;
+    --line: #e5e5ea;
+    --accent: #007ACC;
+    --accent-2: #6f42c1;
+    --good: #22863a;
+    --code-bg: #f4f4f6;
+  }
+  body {
+    background: var(--bg);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: var(--ink);
+    line-height: 1.55;
+    padding: 48px 24px 80px;
+  }
+  .crumb {
+    max-width: 780px;
+    margin: 0 auto 12px;
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #999;
+    font-weight: 500;
+  }
+  h1 {
+    max-width: 780px;
+    margin: 0 auto 10px;
+    font-size: 36px;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+  .lede {
+    max-width: 780px;
+    margin: 0 auto 40px;
+    color: var(--muted);
+    font-size: 16px;
+  }
+  .step {
+    max-width: 780px;
+    margin: 0 auto 22px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 28px 32px 28px 92px;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+  }
+  .step-num {
+    position: absolute;
+    left: 28px;
+    top: 28px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #111;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+  }
+  .step h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .step p {
+    color: #333;
+    font-size: 15px;
+    margin-bottom: 10px;
+  }
+  .step p:last-child { margin-bottom: 0; }
+  .step ul {
+    margin: 8px 0 12px 18px;
+    color: #333;
+    font-size: 15px;
+  }
+  .step ul li { margin-bottom: 6px; }
+  code, .chip {
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 2px 7px;
+    font-size: 13px;
+    color: #24292e;
+  }
+  .chip-link {
+    display: inline-block;
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 13px;
+    color: #24292e;
+    text-decoration: none;
+    margin: 6px 0;
+  }
+  .chip-link:hover { border-color: #bbb; background: #efeff2; }
+  .cmd {
+    display: block;
+    background: #0d1117;
+    color: #e6edf3;
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 13px;
+    margin: 12px 0;
+    overflow-x: auto;
+    line-height: 1.7;
+    white-space: pre;
+  }
+  .cmd .prompt { color: #7ee787; user-select: none; }
+  .cmd .comment { color: #8b949e; }
+  .cmd .flag { color: #ffa657; }
+  .kbd {
+    display: inline-block;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-bottom-width: 2px;
+    border-radius: 5px;
+    padding: 1px 6px;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 12px;
+    color: #333;
+  }
+  .tip {
+    margin-top: 12px;
+    padding: 12px 14px;
+    background: #f0f7ff;
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    font-size: 14px;
+    color: #1a365d;
+  }
+  .tip strong { color: var(--accent); }
+  .warn {
+    margin-top: 12px;
+    padding: 12px 14px;
+    background: #fff8e1;
+    border-left: 3px solid #e6a23c;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #5a4100;
+  }
+  .warn strong { color: #a87500; }
+  .mock {
+    margin-top: 14px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .mock-header {
+    background: #f6f8fa;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: #57606a;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .mock-header .dot-r { width:10px; height:10px; border-radius:50%; background:#ff5f56;}
+  .mock-header .dot-y { width:10px; height:10px; border-radius:50%; background:#ffbd2e;}
+  .mock-header .dot-g { width:10px; height:10px; border-radius:50%; background:#27c93f;}
+  .mock-url { margin-left: 10px; font-family: monospace; color: #57606a; }
+  .mock-body { padding: 16px 18px; }
+  .mock-body h4 { font-size: 15px; margin-bottom: 10px; }
+  .field {
+    display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px;
+  }
+  .field label { font-size: 13px; font-weight: 600; color: #24292e; }
+  .field label .req { color: #cf222e; }
+  .field .input {
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 13px;
+    font-family: monospace;
+    background: #fff;
+    color: #24292e;
+  }
+  .field .input.good { border-color: #1a7f37; }
+  .field .hint { font-size: 12px; color: var(--good); }
+  .field .hint::before { content: "✓ "; }
+  .row {
+    display: flex; gap: 10px; align-items: center;
+  }
+  .row .slash { color: #999; font-size: 20px; }
+  .btn-ex {
+    display: inline-block;
+    background: #1f883d;
+    color: #fff;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .success {
+    max-width: 780px;
+    margin: 40px auto 0;
+    background: #ecfdf3;
+    border: 1px solid #abefc6;
+    border-radius: 14px;
+    padding: 28px 32px;
+    text-align: center;
+  }
+  .success .check {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: var(--good);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  .success h3 {
+    font-size: 20px;
+    margin-bottom: 6px;
+    color: #0d4a22;
+  }
+  .success p { color: #2a5738; font-size: 14px; }
+  .back {
+    max-width: 780px;
+    margin: 30px auto 0;
+    text-align: center;
+    font-size: 13px;
+  }
+  .back a { color: var(--muted); text-decoration: none; border-bottom: 1px dotted #bbb; }
+  .back a:hover { color: #111; }
+  @media (max-width: 640px) {
+    body { padding: 32px 16px 60px; }
+    h1 { font-size: 28px; }
+    .step { padding: 24px 20px 24px 72px; }
+    .step-num { left: 20px; top: 24px; width: 34px; height: 34px; font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="crumb">Week 1 · Vibe Coding</div>
+<h1>Create Your First GitHub Repository</h1>
+<p class="lede">Start from the GitHub UI, create <code>my-first-repository</code>, add a <code>main</code> branch, then connect it to your local project from the VS Code terminal.</p>
+
+<!-- ============ STEP 1 ============ -->
+<div class="step">
+  <div class="step-num">1</div>
+  <h3>Open the "New repository" page on GitHub</h3>
+  <p>Sign in to GitHub, then go directly to:</p>
+  <p><a class="chip-link" href="https://github.com/new" target="_blank">https://github.com/new</a></p>
+  <p>You'll land on the <strong>Create a new repository</strong> form. Required fields are marked with an asterisk (*).</p>
+</div>
+
+<!-- ============ STEP 2 ============ -->
+<div class="step">
+  <div class="step-num">2</div>
+  <h3>Fill in the General section</h3>
+  <p>Under <strong>General</strong>, set the Owner and Repository name:</p>
+
+  <div class="mock">
+    <div class="mock-header">
+      <span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span>
+      <span class="mock-url">github.com/new</span>
+    </div>
+    <div class="mock-body">
+      <h4>Create a new repository</h4>
+      <div class="row" style="gap:16px;">
+        <div class="field" style="flex:0 0 150px;">
+          <label>Owner <span class="req">*</span></label>
+          <div class="input">🟢 benchvue ▾</div>
+        </div>
+        <div class="slash">/</div>
+        <div class="field" style="flex:1;">
+          <label>Repository name <span class="req">*</span></label>
+          <div class="input good">my-first-repository</div>
+          <div class="hint">my-first-repository is available.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip"><strong>Naming tip:</strong> use only lowercase letters, numbers, and hyphens. GitHub will tell you in real-time whether the name is available.</div>
+</div>
+
+<!-- ============ STEP 3 ============ -->
+<div class="step">
+  <div class="step-num">3</div>
+  <h3>Choose visibility and initialize with a README</h3>
+  <p>Scroll down and configure the rest of the repo:</p>
+  <ul>
+    <li><strong>Description</strong> (optional) — e.g. <code>My first repository</code></li>
+    <li><strong>Public</strong> — anyone can see it. Choose this if you want to use GitHub Pages later.</li>
+    <li>Check <strong>Add a README file</strong> — this is important. It creates a first commit so your <code>main</code> branch actually exists on GitHub.</li>
+    <li>Leave <em>.gitignore</em> and <em>license</em> as "None" for now.</li>
+  </ul>
+  <p>Click the green <span class="btn-ex">Create repository</span> button at the bottom.</p>
+  <div class="warn"><strong>Why the README matters:</strong> without any file, GitHub shows a bare "quick setup" screen with no branches. Adding a README gives you an immediate <code>main</code> branch you can clone and push to.</div>
+</div>
+
+<!-- ============ STEP 4 ============ -->
+<div class="step">
+  <div class="step-num">4</div>
+  <h3>Confirm the main branch exists</h3>
+  <p>After creation, you land on your new repo page at:</p>
+  <p><a class="chip-link" href="#" onclick="return false;">github.com/<strong>benchvue</strong>/my-first-repository</a></p>
+  <p>Look at the branch dropdown near the top-left of the file list — it should say <code>main</code>. This is your default branch.</p>
+  <div class="tip"><strong>If you didn't check "Add a README" in step 3:</strong> you'll see a setup page instead. Scroll down to <em>"…or create a new repository on the command line"</em> and run the commands it lists, which include <code>git branch -M main</code> to rename the default branch to <code>main</code>.</div>
+</div>
+
+<!-- ============ STEP 5 ============ -->
+<div class="step">
+  <div class="step-num">5</div>
+  <h3>Copy the repo URL</h3>
+  <p>On the repo page, click the green <strong>&lt;&gt; Code</strong> button. Under the <strong>HTTPS</strong> tab, copy the URL — it looks like:</p>
+  <code class="cmd">https://github.com/benchvue/my-first-repository.git</code>
+  <p>You'll paste this into VS Code's terminal in the next step.</p>
+</div>
+
+<!-- ============ STEP 6 ============ -->
+<div class="step">
+  <div class="step-num">6</div>
+  <h3>Open VS Code terminal and clone the repo</h3>
+  <p>In VS Code, open the folder where you keep your projects. Open the terminal with <span class="kbd">Ctrl</span> + <span class="kbd">`</span> (or <span class="kbd">⌃</span> + <span class="kbd">`</span> on Mac), then run:</p>
+  <code class="cmd"><span class="prompt">$</span> git clone https://github.com/benchvue/my-first-repository.git
+<span class="prompt">$</span> cd my-first-repository</code>
+  <p>You now have a local copy of the repo, already connected to GitHub as <code>origin</code>.</p>
+  <div class="tip"><strong>Verify the connection:</strong> run <code>git remote -v</code> — you should see the GitHub URL listed for both <code>fetch</code> and <code>push</code>.</div>
+</div>
+
+<!-- ============ STEP 7 ============ -->
+<div class="step">
+  <div class="step-num">7</div>
+  <h3>Add a file, commit, and push</h3>
+  <p>Open the folder in VS Code (<code>File → Open Folder…</code> → pick <code>my-first-repository</code>), create a new file (for example <code>index.html</code>), save it, then from the terminal:</p>
+  <code class="cmd"><span class="prompt">$</span> git status                   <span class="comment"># see what changed</span>
+<span class="prompt">$</span> git add .                    <span class="comment"># stage every change</span>
+<span class="prompt">$</span> git commit <span class="flag">-m</span> "add index.html"
+<span class="prompt">$</span> git push                     <span class="comment"># upload to GitHub</span></code>
+  <p>Refresh your GitHub repo page — the new file is there. From now on, the cycle is just <strong>edit → add → commit → push</strong>.</p>
+</div>
+
+<!-- ============ ALT PATH ============ -->
+<div class="step">
+  <div class="step-num">8</div>
+  <h3>Alternative: push an existing local folder</h3>
+  <p>If you already have a folder of files and want to publish <em>it</em> to the empty repo you just created, don't clone. Instead, inside that folder run:</p>
+  <code class="cmd"><span class="prompt">$</span> git init
+<span class="prompt">$</span> git branch <span class="flag">-M</span> main
+<span class="prompt">$</span> git remote add origin https://github.com/benchvue/my-first-repository.git
+<span class="prompt">$</span> git add .
+<span class="prompt">$</span> git commit <span class="flag">-m</span> "first commit"
+<span class="prompt">$</span> git push <span class="flag">-u</span> origin main</code>
+  <p><code>git branch -M main</code> renames the local default branch to <code>main</code> so it matches GitHub. The <code>-u</code> flag in the final push sets GitHub as the upstream, so later pushes can be just <code>git push</code>.</p>
+</div>
+
+<!-- ============ SUCCESS ============ -->
+<div class="success">
+  <div class="check">✓</div>
+  <h3>Your first repository is live!</h3>
+  <p>Visit <code>github.com/benchvue/my-first-repository</code> to see your code on GitHub.</p>
+</div>
+
+<div class="back">
+  <a href="tools_page.html">← Back to Tools</a>
+</div>
+
+</body>
+</html>

@@ -35,6 +35,7 @@
     <clipPath id="clip-git"><circle cx="0" cy="0" r="30"/></clipPath>
     <clipPath id="clip-github"><circle cx="0" cy="0" r="30"/></clipPath>
     <clipPath id="clip-combo"><circle cx="0" cy="0" r="30"/></clipPath>
+    <clipPath id="clip-combo-child"><circle cx="0" cy="0" r="16"/></clipPath>
   </defs>
 
   <!-- Orbit ring -->
@@ -125,7 +126,8 @@
     <text y="34" text-anchor="middle" font-size="10" fill="#777" font-family="Segoe UI,sans-serif">Sign Up</text>
   </a>
 
-  <!-- ===== VS CODE + GITHUB (badge 5) — no child ===== -->
+  <!-- ===== VS CODE + GITHUB (badge 5) with child ===== -->
+  <line id="line-combo" stroke="#ccc" stroke-width="1.5" stroke-dasharray="5,4"/>
   <a href="VS-code-connect-github.html" target="_blank" id="node-combo">
     <circle class="icon-circle" r="36" id="bg-combo"/>
     <image href="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Visual_Studio_Code_1.35_icon.svg/250px-Visual_Studio_Code_1.35_icon.svg.png"
@@ -135,20 +137,24 @@
     <circle cx="-26" cy="-26" r="11" fill="#6f42c1" stroke="#fff" stroke-width="2"/>
     <text x="-26" y="-22" text-anchor="middle" font-size="12" fill="#fff" font-family="Segoe UI,sans-serif" font-weight="700">5</text>
   </a>
+  <a href="https://benchvue.github.io/vibe-coding/week-3/my-first-repository-guide.html" target="_blank" id="branch-combo">
+    <circle class="branch-circle" r="22" id="bbg-combo"/>
+    <image href="https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/GitHub_logo_2013.svg/330px-GitHub_logo_2013.svg.png"
+           x="-16" y="-16" width="32" height="32" clip-path="url(#clip-combo-child)" style="pointer-events:none;"/>
+    <text y="34" text-anchor="middle" font-size="10" fill="#777" font-family="Segoe UI,sans-serif">First Repo</text>
+  </a>
 </svg>
 
 <script>
 const CX = 320, CY = 320, R = 180, BRANCH_DIST = 95;
 
-// 5 main nodes distributed 72° apart, starting TOP (270° in SVG coords) going CLOCKWISE
-// Offsets from top (in degrees clockwise): 0, 72, 144, 216, 288
-// Add to 270° (top): 270, 342, 54, 126, 198
+// 5 main nodes 72° apart, starting TOP (270°) going CLOCKWISE
 const nodes = [
-  { id: 'vscode', angleDeg: 270, hasBranch: true  }, // 12 o'clock      - badge 1
-  { id: 'gmail',  angleDeg: 342, hasBranch: true  }, // upper-right     - badge 2
-  { id: 'git',    angleDeg: 54,  hasBranch: false }, // lower-right     - badge 3 (custom children)
-  { id: 'github', angleDeg: 126, hasBranch: true  }, // lower-left      - badge 4
-  { id: 'combo',  angleDeg: 198, hasBranch: false }  // upper-left      - badge 5
+  { id: 'vscode', angleDeg: 270, hasBranch: true  }, // 12 o'clock  - badge 1
+  { id: 'gmail',  angleDeg: 342, hasBranch: true  }, // upper-right - badge 2
+  { id: 'git',    angleDeg: 54,  hasBranch: false }, // lower-right - badge 3 (custom children)
+  { id: 'github', angleDeg: 126, hasBranch: true  }, // lower-left  - badge 4
+  { id: 'combo',  angleDeg: 198, hasBranch: true  }  // upper-left  - badge 5
 ];
 
 nodes.forEach(({ id, angleDeg, hasBranch }) => {
@@ -176,8 +182,8 @@ const gitX = CX + R * Math.cos(gitRad);
 const gitY = CY + R * Math.sin(gitRad);
 
 const gitChildren = [
-  { id: 'branch-git-win', lineId: 'line-git-win', angleDeg: 36  }, // more outward/up
-  { id: 'branch-git-mac', lineId: 'line-git-mac', angleDeg: 72  }  // more downward
+  { id: 'branch-git-win', lineId: 'line-git-win', angleDeg: 36 },
+  { id: 'branch-git-mac', lineId: 'line-git-mac', angleDeg: 72 }
 ];
 
 gitChildren.forEach(({ id, lineId, angleDeg }) => {
@@ -206,13 +212,14 @@ gitChildren.forEach(({ id, lineId, angleDeg }) => {
   node.addEventListener('mouseleave', () => { bg.setAttribute('stroke','#ddd'); bg.removeAttribute('filter'); });
 });
 
-// Hover effects for all branches
+// Hover effects for all branches (now including combo)
 const branches = [
   { b: 'branch-vscode',  c: 'bbg-vscode'  },
   { b: 'branch-gmail',   c: 'bbg-gmail'   },
   { b: 'branch-github',  c: 'bbg-github'  },
   { b: 'branch-git-win', c: 'bbg-git-win' },
-  { b: 'branch-git-mac', c: 'bbg-git-mac' }
+  { b: 'branch-git-mac', c: 'bbg-git-mac' },
+  { b: 'branch-combo',   c: 'bbg-combo'   }
 ];
 branches.forEach(({ b, c }) => {
   const branch = document.getElementById(b);
