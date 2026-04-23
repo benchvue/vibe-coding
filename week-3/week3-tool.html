@@ -28,19 +28,20 @@
 <h1>Week 1</h1>
 <h2>Vibe Coding Tools</h2>
 
-<svg width="520" height="520" viewBox="0 0 520 520" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;display:block;">
+<svg width="640" height="640" viewBox="0 0 640 640" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;display:block;">
   <defs>
     <clipPath id="clip-vscode"><circle cx="0" cy="0" r="30"/></clipPath>
     <clipPath id="clip-gmail"><circle cx="0" cy="0" r="30"/></clipPath>
     <clipPath id="clip-git"><circle cx="0" cy="0" r="30"/></clipPath>
     <clipPath id="clip-github"><circle cx="0" cy="0" r="30"/></clipPath>
+    <clipPath id="clip-combo"><circle cx="0" cy="0" r="30"/></clipPath>
   </defs>
 
   <!-- Orbit ring -->
-  <circle cx="260" cy="260" r="160" fill="none" stroke="#bbb" stroke-width="3"/>
-  <circle cx="260" cy="260" r="6" fill="#ccc"/>
+  <circle cx="320" cy="320" r="180" fill="none" stroke="#bbb" stroke-width="3"/>
+  <circle cx="320" cy="320" r="6" fill="#ccc"/>
 
-  <!-- ===== VS CODE (Top - 12 o'clock, badge 1) ===== -->
+  <!-- ===== VS CODE (badge 1) ===== -->
   <line id="line-vscode" stroke="#ccc" stroke-width="1.5" stroke-dasharray="5,4"/>
   <a href="https://code.visualstudio.com/download" target="_blank" id="node-vscode">
     <circle class="icon-circle" r="36" id="bg-vscode"/>
@@ -58,7 +59,7 @@
     <text y="34" text-anchor="middle" font-size="10" fill="#777" font-family="Segoe UI,sans-serif">Go Live</text>
   </a>
 
-  <!-- ===== GMAIL (Right - 3 o'clock, badge 2) ===== -->
+  <!-- ===== GMAIL (badge 2) ===== -->
   <line id="line-gmail" stroke="#ccc" stroke-width="1.5" stroke-dasharray="5,4"/>
   <a href="https://gmail.com/" target="_blank" id="node-gmail">
     <circle class="icon-circle" r="36" id="bg-gmail"/>
@@ -75,7 +76,9 @@
     <text y="34" text-anchor="middle" font-size="10" fill="#777" font-family="Segoe UI,sans-serif">Create</text>
   </a>
 
-  <!-- ===== GIT (Bottom - 6 o'clock, badge 3) - NO BRANCH ===== -->
+  <!-- ===== GIT (badge 3) with two children ===== -->
+  <line id="line-git-win" stroke="#ccc" stroke-width="1.5" stroke-dasharray="5,4"/>
+  <line id="line-git-mac" stroke="#ccc" stroke-width="1.5" stroke-dasharray="5,4"/>
   <a href="https://github.com/git-guides/install-git" target="_blank" id="node-git">
     <circle class="icon-circle" r="36" id="bg-git"/>
     <image href="https://git-scm.com/images/logos/downloads/Git-Icon-1788C.png"
@@ -85,8 +88,24 @@
     <circle cx="-26" cy="-26" r="11" fill="#F05032" stroke="#fff" stroke-width="2"/>
     <text x="-26" y="-22" text-anchor="middle" font-size="12" fill="#fff" font-family="Segoe UI,sans-serif" font-weight="700">3</text>
   </a>
+  <a href="https://gitforwindows.org/" target="_blank" id="branch-git-win">
+    <circle class="branch-circle" r="22" id="bbg-git-win"/>
+    <g transform="translate(-10,-10)">
+      <rect x="0" y="0" width="9" height="9" fill="#00ADEF"/>
+      <rect x="11" y="0" width="9" height="9" fill="#00ADEF"/>
+      <rect x="0" y="11" width="9" height="9" fill="#00ADEF"/>
+      <rect x="11" y="11" width="9" height="9" fill="#00ADEF"/>
+    </g>
+    <text y="34" text-anchor="middle" font-size="10" fill="#777" font-family="Segoe UI,sans-serif">Windows</text>
+  </a>
+  <a href="https://sourceforge.net/projects/git-osx-installer/files/git-2.23.0-intel-universal-mavericks.dmg" target="_blank" id="branch-git-mac">
+    <circle class="branch-circle" r="22" id="bbg-git-mac"/>
+    <path d="M 4,-8 C 2,-10 -2,-10 -4,-8 C -8,-6 -9,0 -7,5 C -5,9 -2,10 0,9 C 2,8 3,8 5,9 C 7,10 10,9 11,5 C 8,3 7,-2 9,-5 C 7,-7 5,-8 4,-8 Z M 2,-11 C 3,-13 5,-14 6,-13 C 6,-11 4,-10 2,-10 Z"
+          fill="#555" transform="scale(0.8)"/>
+    <text y="34" text-anchor="middle" font-size="10" fill="#777" font-family="Segoe UI,sans-serif">Mac</text>
+  </a>
 
-  <!-- ===== GITHUB (Left - 9 o'clock, badge 4) ===== -->
+  <!-- ===== GITHUB (badge 4) ===== -->
   <line id="line-github" stroke="#ccc" stroke-width="1.5" stroke-dasharray="5,4"/>
   <a href="https://github.com/" target="_blank" id="node-github">
     <circle class="icon-circle" r="36" id="bg-github"/>
@@ -105,18 +124,31 @@
     <circle cx="0" cy="-3" r="5" fill="#fff"/>
     <text y="34" text-anchor="middle" font-size="10" fill="#777" font-family="Segoe UI,sans-serif">Sign Up</text>
   </a>
+
+  <!-- ===== VS CODE + GITHUB (badge 5) — no child ===== -->
+  <a href="VS-code-connect-github.html" target="_blank" id="node-combo">
+    <circle class="icon-circle" r="36" id="bg-combo"/>
+    <image href="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Visual_Studio_Code_1.35_icon.svg/250px-Visual_Studio_Code_1.35_icon.svg.png"
+           x="-30" y="-30" width="60" height="60" clip-path="url(#clip-combo)" style="pointer-events:none;"/>
+    <text y="50" text-anchor="middle" font-size="12" fill="#555" font-family="Segoe UI,sans-serif" font-weight="500">VS Code + GitHub</text>
+    <!-- Badge -->
+    <circle cx="-26" cy="-26" r="11" fill="#6f42c1" stroke="#fff" stroke-width="2"/>
+    <text x="-26" y="-22" text-anchor="middle" font-size="12" fill="#fff" font-family="Segoe UI,sans-serif" font-weight="700">5</text>
+  </a>
 </svg>
 
 <script>
-const CX = 260, CY = 260, R = 160, BRANCH_DIST = 90;
+const CX = 320, CY = 320, R = 180, BRANCH_DIST = 95;
 
-// 4 nodes distributed 90° apart, starting from TOP (12 o'clock) going CLOCKWISE
-// SVG angle: 270° = top, 0° = right, 90° = bottom, 180° = left
+// 5 main nodes distributed 72° apart, starting TOP (270° in SVG coords) going CLOCKWISE
+// Offsets from top (in degrees clockwise): 0, 72, 144, 216, 288
+// Add to 270° (top): 270, 342, 54, 126, 198
 const nodes = [
-  { id: 'vscode', angleDeg: 270, hasBranch: true  }, // Top        - badge 1
-  { id: 'gmail',  angleDeg: 0,   hasBranch: true  }, // Right      - badge 2
-  { id: 'git',    angleDeg: 90,  hasBranch: false }, // Bottom     - badge 3 (no child)
-  { id: 'github', angleDeg: 180, hasBranch: true  }  // Left       - badge 4
+  { id: 'vscode', angleDeg: 270, hasBranch: true  }, // 12 o'clock      - badge 1
+  { id: 'gmail',  angleDeg: 342, hasBranch: true  }, // upper-right     - badge 2
+  { id: 'git',    angleDeg: 54,  hasBranch: false }, // lower-right     - badge 3 (custom children)
+  { id: 'github', angleDeg: 126, hasBranch: true  }, // lower-left      - badge 4
+  { id: 'combo',  angleDeg: 198, hasBranch: false }  // upper-left      - badge 5
 ];
 
 nodes.forEach(({ id, angleDeg, hasBranch }) => {
@@ -138,18 +170,53 @@ nodes.forEach(({ id, angleDeg, hasBranch }) => {
   }
 });
 
+// Git's two children fan outward from Git node (at 54°)
+const gitRad = 54 * Math.PI / 180;
+const gitX = CX + R * Math.cos(gitRad);
+const gitY = CY + R * Math.sin(gitRad);
+
+const gitChildren = [
+  { id: 'branch-git-win', lineId: 'line-git-win', angleDeg: 36  }, // more outward/up
+  { id: 'branch-git-mac', lineId: 'line-git-mac', angleDeg: 72  }  // more downward
+];
+
+gitChildren.forEach(({ id, lineId, angleDeg }) => {
+  const rad = angleDeg * Math.PI / 180;
+  const bx = CX + (R + BRANCH_DIST) * Math.cos(rad);
+  const by = CY + (R + BRANCH_DIST) * Math.sin(rad);
+  document.getElementById(id).setAttribute('transform', `translate(${bx},${by})`);
+
+  const dx = bx - gitX;
+  const dy = by - gitY;
+  const len = Math.sqrt(dx * dx + dy * dy);
+  const ux = dx / len;
+  const uy = dy / len;
+  const line = document.getElementById(lineId);
+  line.setAttribute('x1', gitX + 36 * ux);
+  line.setAttribute('y1', gitY + 36 * uy);
+  line.setAttribute('x2', bx - 22 * ux);
+  line.setAttribute('y2', by - 22 * uy);
+});
+
 // Hover effects for all main nodes
-['vscode','gmail','git','github'].forEach(id => {
+['vscode','gmail','git','github','combo'].forEach(id => {
   const node = document.getElementById('node-' + id);
   const bg   = document.getElementById('bg-' + id);
   node.addEventListener('mouseenter', () => { bg.setAttribute('stroke','#999'); bg.setAttribute('filter','drop-shadow(0 3px 8px rgba(0,0,0,0.12))'); });
   node.addEventListener('mouseleave', () => { bg.setAttribute('stroke','#ddd'); bg.removeAttribute('filter'); });
 });
 
-// Hover effects only for nodes with branches
-['vscode','gmail','github'].forEach(id => {
-  const branch = document.getElementById('branch-' + id);
-  const bbg    = document.getElementById('bbg-' + id);
+// Hover effects for all branches
+const branches = [
+  { b: 'branch-vscode',  c: 'bbg-vscode'  },
+  { b: 'branch-gmail',   c: 'bbg-gmail'   },
+  { b: 'branch-github',  c: 'bbg-github'  },
+  { b: 'branch-git-win', c: 'bbg-git-win' },
+  { b: 'branch-git-mac', c: 'bbg-git-mac' }
+];
+branches.forEach(({ b, c }) => {
+  const branch = document.getElementById(b);
+  const bbg    = document.getElementById(c);
   branch.addEventListener('mouseenter', () => { bbg.setAttribute('stroke','#999'); bbg.setAttribute('filter','drop-shadow(0 2px 6px rgba(0,0,0,0.1))'); });
   branch.addEventListener('mouseleave', () => { bbg.setAttribute('stroke','#ddd'); bbg.removeAttribute('filter'); });
 });

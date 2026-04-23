@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connect GitHub from VS Code</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #f7f7f9;
+    --card: #ffffff;
+    --ink: #111;
+    --muted: #666;
+    --line: #e5e5ea;
+    --accent: #007ACC;
+    --accent-2: #6f42c1;
+    --good: #22863a;
+    --code-bg: #f4f4f6;
+  }
+  body {
+    background: var(--bg);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: var(--ink);
+    line-height: 1.55;
+    padding: 48px 24px 80px;
+  }
+  .crumb {
+    max-width: 780px;
+    margin: 0 auto 12px;
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #999;
+    font-weight: 500;
+  }
+  h1 {
+    max-width: 780px;
+    margin: 0 auto 10px;
+    font-size: 36px;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+  .lede {
+    max-width: 780px;
+    margin: 0 auto 40px;
+    color: var(--muted);
+    font-size: 16px;
+  }
+  .step {
+    max-width: 780px;
+    margin: 0 auto 22px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 28px 32px 28px 92px;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+  }
+  .step-num {
+    position: absolute;
+    left: 28px;
+    top: 28px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #111;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+  }
+  .step h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .step p {
+    color: #333;
+    font-size: 15px;
+    margin-bottom: 10px;
+  }
+  .step p:last-child { margin-bottom: 0; }
+  code, .chip {
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 2px 7px;
+    font-size: 13px;
+    color: #24292e;
+  }
+  .chip-link {
+    display: inline-block;
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 13px;
+    color: #24292e;
+    text-decoration: none;
+    margin: 6px 0;
+  }
+  .chip-link:hover { border-color: #bbb; background: #efeff2; }
+  .cmd {
+    display: block;
+    background: #0d1117;
+    color: #e6edf3;
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 13px;
+    margin: 12px 0;
+    overflow-x: auto;
+    line-height: 1.7;
+  }
+  .cmd .prompt { color: #7ee787; user-select: none; }
+  .cmd .comment { color: #8b949e; }
+  .kbd {
+    display: inline-block;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-bottom-width: 2px;
+    border-radius: 5px;
+    padding: 1px 6px;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 12px;
+    color: #333;
+  }
+  .tip {
+    margin-top: 12px;
+    padding: 12px 14px;
+    background: #f0f7ff;
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    font-size: 14px;
+    color: #1a365d;
+  }
+  .tip strong { color: var(--accent); }
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 12px;
+  }
+  .option {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px 16px;
+    background: #fafafc;
+  }
+  .option h4 {
+    font-size: 14px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .option .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent);
+  }
+  .option.b .dot { background: var(--accent-2); }
+  .success {
+    max-width: 780px;
+    margin: 40px auto 0;
+    background: #ecfdf3;
+    border: 1px solid #abefc6;
+    border-radius: 14px;
+    padding: 28px 32px;
+    text-align: center;
+  }
+  .success .check {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: var(--good);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  .success h3 {
+    font-size: 20px;
+    margin-bottom: 6px;
+    color: #0d4a22;
+  }
+  .success p { color: #2a5738; font-size: 14px; }
+  .back {
+    max-width: 780px;
+    margin: 30px auto 0;
+    text-align: center;
+    font-size: 13px;
+  }
+  .back a { color: var(--muted); text-decoration: none; border-bottom: 1px dotted #bbb; }
+  .back a:hover { color: #111; }
+  @media (max-width: 640px) {
+    body { padding: 32px 16px 60px; }
+    h1 { font-size: 28px; }
+    .step { padding: 24px 20px 24px 72px; }
+    .step-num { left: 20px; top: 24px; width: 34px; height: 34px; font-size: 14px; }
+    .two-col { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="crumb">Week 1 · Vibe Coding</div>
+<h1>Connect GitHub from VS Code</h1>
+<p class="lede">Link your local VS Code workspace to a GitHub repository — push, pull, and commit without ever leaving the editor.</p>
+
+<!-- ============ STEP 1 ============ -->
+<div class="step">
+  <div class="step-num">1</div>
+  <h3>Make sure Git and a GitHub account are ready</h3>
+  <p>Before connecting, confirm the two prerequisites are installed and that you have a GitHub account:</p>
+  <p>
+    <a class="chip-link" href="https://github.com/git-guides/install-git" target="_blank">Install Git</a>
+    &nbsp;
+    <a class="chip-link" href="https://github.com/signup" target="_blank">Create a GitHub account</a>
+  </p>
+  <p>Open a terminal in VS Code with <span class="kbd">Ctrl</span> + <span class="kbd">`</span> (or <span class="kbd">⌃</span> + <span class="kbd">`</span> on Mac) and verify Git is available:</p>
+  <code class="cmd"><span class="prompt">$</span> git --version
+<span class="comment"># e.g. git version 2.43.0</span></code>
+</div>
+
+<!-- ============ STEP 2 ============ -->
+<div class="step">
+  <div class="step-num">2</div>
+  <h3>Tell Git who you are</h3>
+  <p>Set your name and email — these show up on every commit. Use the same email as your GitHub account so commits get linked to your profile.</p>
+  <code class="cmd"><span class="prompt">$</span> git config --global user.name "Your Name"
+<span class="prompt">$</span> git config --global user.email "you@example.com"</code>
+  <div class="tip"><strong>Tip:</strong> Run <code>git config --global --list</code> to double-check your values.</div>
+</div>
+
+<!-- ============ STEP 3 ============ -->
+<div class="step">
+  <div class="step-num">3</div>
+  <h3>Sign in to GitHub inside VS Code</h3>
+  <p>VS Code has built-in GitHub auth — no tokens to manage manually.</p>
+  <p>Open the <strong>Command Palette</strong> with <span class="kbd">Ctrl</span> + <span class="kbd">Shift</span> + <span class="kbd">P</span> (or <span class="kbd">⌘</span> + <span class="kbd">Shift</span> + <span class="kbd">P</span> on Mac), then type:</p>
+  <code class="cmd">&gt; Sign in to GitHub</code>
+  <p>A browser window opens. Click <strong>Authorize Visual Studio Code</strong>, then return to VS Code — you'll see your GitHub avatar in the lower-left corner of the window.</p>
+</div>
+
+<!-- ============ STEP 4 ============ -->
+<div class="step">
+  <div class="step-num">4</div>
+  <h3>Pick your path: new repo or existing repo</h3>
+  <p>There are two common starting points. Choose whichever matches your situation:</p>
+  <div class="two-col">
+    <div class="option">
+      <h4><span class="dot"></span> A. Start from a local folder</h4>
+      <p style="font-size:13px;color:#555;">You already have files on disk and want to publish them.</p>
+      <p style="font-size:13px;color:#555;margin-top:8px;">Open the folder in VS Code &rarr; click the <strong>Source Control</strong> icon in the left sidebar &rarr; <strong>Publish to GitHub</strong>.</p>
+    </div>
+    <div class="option b">
+      <h4><span class="dot"></span> B. Clone an existing GitHub repo</h4>
+      <p style="font-size:13px;color:#555;">You want to work on a repo that already lives on GitHub.</p>
+      <p style="font-size:13px;color:#555;margin-top:8px;">Command Palette &rarr; <code>&gt; Git: Clone</code> &rarr; paste the repo URL &rarr; pick a local folder.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ STEP 5 ============ -->
+<div class="step">
+  <div class="step-num">5</div>
+  <h3>Make your first commit</h3>
+  <p>Edit any file in the folder. In the <strong>Source Control</strong> panel you'll see the changed file appear.</p>
+  <p>Hover over the file &rarr; click <strong>+</strong> to stage it, type a commit message at the top, then click the <strong>✓ Commit</strong> button.</p>
+  <div class="tip"><strong>Shortcut:</strong> if nothing is staged yet, VS Code will ask whether to stage all changes automatically — say yes.</div>
+</div>
+
+<!-- ============ STEP 6 ============ -->
+<div class="step">
+  <div class="step-num">6</div>
+  <h3>Push to GitHub</h3>
+  <p>After committing, click the <strong>Sync Changes</strong> button (the circular arrows icon, also visible in the blue status bar at the bottom).</p>
+  <p>The first push uploads your branch to GitHub. Refresh your repo page in the browser — your files are there.</p>
+  <code class="cmd"><span class="comment"># Equivalent terminal commands, if you prefer CLI:</span>
+<span class="prompt">$</span> git add .
+<span class="prompt">$</span> git commit -m "first commit"
+<span class="prompt">$</span> git push</code>
+</div>
+
+<!-- ============ SUCCESS ============ -->
+<div class="success">
+  <div class="check">✓</div>
+  <h3>You're connected!</h3>
+  <p>Every future edit follows the same loop: <strong>change → stage → commit → sync</strong> — all from inside VS Code.</p>
+</div>
+
+<div class="back">
+  <a href="tools_page.html">← Back to Tools</a>
+</div>
+
+</body>
+</html>
