@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Turn on HTML Web server your Github</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #fafbfc;
+    background-image:
+      linear-gradient(to right, #e8eaed 1px, transparent 1px),
+      linear-gradient(to bottom, #e8eaed 1px, transparent 1px);
+    background-size: 24px 24px;
+    min-height: 100vh;
+    padding: 40px 50px 60px 50px;
+    color: #202124;
+  }
+
+  .container {
+    max-width: 1500px;
+    margin: 0 auto;
+  }
+
+  .title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 400;
+    color: #202124;
+    margin: 20px 0 60px 0;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+
+  .label-box {
+    padding: 20px 24px;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 400;
+    color: #202124;
+  }
+
+  .label-green {
+    background-color: #d9ead3;
+    border: 1px solid #93c47d;
+  }
+
+  .label-blue {
+    background-color: #cfe2f3;
+    border: 1px solid #6fa8dc;
+  }
+
+  /* Use monospace so we can align annotation arrows precisely under URL parts */
+  .url {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 24px;
+    font-weight: 700;
+    padding-left: 20px;
+    letter-spacing: 0;
+    white-space: nowrap;
+  }
+
+  .blue { color: #1a73e8; }
+  .red { color: #d93025; }
+  .black { color: #202124; }
+
+  .middle {
+    grid-column: 2;
+    padding-left: 20px;
+    position: relative;
+    height: 130px;
+    margin: 10px 0;
+  }
+
+  .legend {
+    display: flex;
+    font-size: 22px;
+    padding-top: 30px;
+  }
+
+  .legend .blue-part {
+    width: 38%;
+    text-align: center;
+  }
+
+  .legend .red-part {
+    width: 32%;
+    text-align: center;
+  }
+
+  .legend .black-part {
+    width: 22%;
+    text-align: center;
+  }
+
+  /* Thick downward arrow */
+  .arrow-down {
+    position: absolute;
+    left: calc(38% - 4px);
+    top: 60px;
+    width: 8px;
+    height: 60px;
+    background-color: #202124;
+  }
+
+  .arrow-down::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: -11px;
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 22px solid #202124;
+  }
+
+  /* Annotation area beneath the second URL */
+  .annotations {
+    grid-column: 2;
+    padding-left: 20px;
+    position: relative;
+    height: 220px;
+    margin-top: 10px;
+  }
+
+  .annotations svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .annotations .label {
+    position: absolute;
+    font-size: 20px;
+    color: #202124;
+    white-space: nowrap;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="title">Turn on HTML Web server your Github</h1>
+
+    <div class="grid">
+      <!-- Row 1: HTML TEXT URL -->
+      <div class="label-box label-green">HTML TEXT URL</div>
+      <div class="url">
+        https://<span class="blue">github.com/benchvue</span>/vibe-coding/<span class="red">blob/main</span>/week-3/ping-pong-game.html
+      </div>
+
+      <!-- Middle: legend + thick arrow -->
+      <div></div>
+      <div class="middle">
+        <div class="legend">
+          <span class="blue-part blue">Blue part convert</span>
+          <span class="red-part red">Red part gone</span>
+          <span class="black-part black">Black part same</span>
+        </div>
+        <div class="arrow-down"></div>
+      </div>
+
+      <!-- Row 2: HTML Web Service URL -->
+      <div class="label-box label-blue">HTML Web Service URL</div>
+      <div class="url" id="url2">
+        https://<span class="blue">benchvue.github.io</span>/vibe-coding/week-3/ping-pong-game.html
+      </div>
+
+      <!-- Annotation arrows under the second URL -->
+      <div></div>
+      <div class="annotations">
+        <svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+          <!-- Marker definitions for arrowheads -->
+          <defs>
+            <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="5" refY="3" orient="auto">
+              <polygon points="0 0, 10 3, 0 6" fill="#202124"/>
+            </marker>
+          </defs>
+
+          <!-- Arrow 1: under "benchvue" (center x=193) -->
+          <path d="M 193 140 L 193 5" stroke="#202124" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+          <path d="M 193 140 L 440 140" stroke="#202124" stroke-width="2" fill="none"/>
+
+          <!-- Arrow 2: under "vibe-coding" (center x=488) -->
+          <path d="M 488 95 L 488 5" stroke="#202124" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+          <path d="M 488 95 L 720 95" stroke="#202124" stroke-width="2" fill="none"/>
+
+          <!-- Arrow 3: under "ping-pong-game.html" (center x=819) -->
+          <path d="M 819 50 L 819 5" stroke="#202124" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+          <path d="M 819 50 L 990 50" stroke="#202124" stroke-width="2" fill="none"/>
+        </svg>
+
+        <span class="label" style="left: 450px; top: 128px;">your github account name</span>
+        <span class="label" style="left: 730px; top: 83px;">your repository name</span>
+        <span class="label" style="left: 1000px; top: 38px;">your html file name</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

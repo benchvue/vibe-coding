@@ -12,6 +12,10 @@
 
 [![Week3 Tool Setup](https://img.shields.io/badge/Week3%20Tool%20Setup-238636?style=for-the-badge&logoColor=white)](https://benchvue.github.io/vibe-coding/week-3/VS-code-connect-github.html)
 
-**2. Ping Pong Game** — One persion Ping Pong Game
+**4. Ping Pong Game** — One persion Ping Pong Game
 
 [![Simple Ping Pong Game](https://img.shields.io/badge/Simple%20Ping%20Pong%20Game-238636?style=for-the-badge&logoColor=white)](https://benchvue.github.io/vibe-coding/week-3/ping-pong-game.html)
+
+**5. After Turn On Web Service** — GitHub Pages URL conversion guide
+
+[![After Turn On Web Service](https://img.shields.io/badge/After%20Turn%20On%20Web%20Service-238636?style=for-the-badge&logoColor=white)](https://benchvue.github.io/vibe-coding/week-3/after-turn-on-web-service.html)
