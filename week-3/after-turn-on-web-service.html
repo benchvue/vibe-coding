@@ -67,6 +67,16 @@
     white-space: nowrap;
   }
 
+  .url a {
+    text-decoration: none;
+    color: #202124;
+    cursor: pointer;
+  }
+
+  .url a:hover {
+    text-decoration: underline;
+  }
+
   .blue { color: #1a73e8; }
   .red { color: #d93025; }
   .black { color: #202124; }
@@ -156,7 +166,7 @@
       <!-- Row 1: HTML TEXT URL -->
       <div class="label-box label-green">HTML TEXT URL</div>
       <div class="url">
-        https://<span class="blue">github.com/benchvue</span>/vibe-coding/<span class="red">blob/main</span>/week-3/ping-pong-game.html
+        <a href="https://github.com/benchvue/vibe-coding/blob/main/week-3/ping-pong-game.html" target="_blank" rel="noopener noreferrer">https://<span class="blue">github.com/benchvue</span>/vibe-coding/<span class="red">blob/main</span>/week-3/ping-pong-game.html</a>
       </div>
 
       <!-- Middle: legend + thick arrow -->
@@ -173,7 +183,7 @@
       <!-- Row 2: HTML Web Service URL -->
       <div class="label-box label-blue">HTML Web Service URL</div>
       <div class="url" id="url2">
-        https://<span class="blue">benchvue.github.io</span>/vibe-coding/week-3/ping-pong-game.html
+        <a href="https://benchvue.github.io/vibe-coding/week-3/ping-pong-game.html" target="_blank" rel="noopener noreferrer">https://<span class="blue">benchvue.github.io</span>/vibe-coding/week-3/ping-pong-game.html</a>
       </div>
 
       <!-- Annotation arrows under the second URL -->
