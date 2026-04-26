@@ -19,3 +19,17 @@
 **5. After Turn On Web Service** — GitHub Pages URL conversion guide
 
 [![After Turn On Web Service](https://img.shields.io/badge/After%20Turn%20On%20Web%20Service-238636?style=for-the-badge&logoColor=white)](https://benchvue.github.io/vibe-coding/week-3/after-turn-on-web-service.html)
+
+---
+
+### 🌟 Week 3 Student Showcase
+
+Congratulations to the students who successfully completed the Week 3 vibe-coding class and deployed their game collections to GitHub Pages! 🎉
+
+**1. dwdbjkjhgfd's Games** — Ping Pong, Brick Breaker & Shooter Game
+
+[![dwdbjkjhgfd Games](https://img.shields.io/badge/dwdbjkjhgfd's%20Games-FFD700?style=for-the-badge&logo=github&logoColor=black)](https://dwdbjkjhgfd.github.io/games/index.html)
+
+**2. hemos-games' Games** — Ping Pong, Brick Breaker & Shooter Game
+
+[![hemos-games Games](https://img.shields.io/badge/hemos--games'%20Games-FFD700?style=for-the-badge&logo=github&logoColor=black)](https://hemos-games.github.io/Games/index.html)
