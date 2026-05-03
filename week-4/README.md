@@ -64,17 +64,28 @@ Adds **Web Audio API** sound effects — laser zap on fire, crystalline thump on
 
 ---
 
+### 6. v6 — iPad / Touch Support
+Full **touch interface** for iPad, iPhone, and Android tablets. Two on-screen virtual joysticks (left = move, right = look + aim), a big red **FIRE** button, dedicated aim up/down arrows, plus mute and recenter buttons. The touch UI auto-shows on devices with a touch screen and stays hidden on desktop. All previous controls (USB joystick, keyboard) still work side-by-side, so you can mix and match — e.g. keyboard to walk while tapping FIRE.
+
+Designed for landscape orientation; safe-area inset aware (works under iPad's home-indicator and notch). Add to Home Screen on iOS for full-screen standalone mode.
+
+**Controls:** USB joystick · keyboard · OR on-screen touch — all simultaneous
+
+[![Walker v6 — iPad Touch](https://img.shields.io/badge/v6%20%C2%B7%20iPad%20Touch%20Support-238636?style=for-the-badge&logoColor=white)](https://benchvue.github.io/vibe-coding/week-4/joystick_walker-v6.html)
+
+---
+
 ## 🎯 Axis & Button Mapping
 
-| Function | Joystick Input | Gamepad API Index | Keyboard |
-|---|---|---|---|
-| Walk forward / back | Pitch (Y) | `axes[1]` | <kbd>W</kbd> <kbd>S</kbd> |
-| Strafe left / right | Roll (X) | `axes[0]` | <kbd>A</kbd> <kbd>D</kbd> |
-| Turn body | Yaw / twist (Rz) | `axes[2]` (or `[3]`) | <kbd>Q</kbd> <kbd>E</kbd> |
-| Aim up / down | A1 ministick Y | `axes[5]` (or `[4]`) | <kbd>R</kbd> <kbd>F</kbd> |
-| Fire | A1 trigger (front red) | `buttons[0]` | <kbd>Space</kbd> / click |
-| Re-center calibration | — | — | <kbd>C</kbd> |
-| Mute / unmute (v5) | — | — | <kbd>M</kbd> |
+| Function | Joystick Input | Gamepad API Index | Keyboard | Touch (v6) |
+|---|---|---|---|---|
+| Walk forward / back | Pitch (Y) | `axes[1]` | <kbd>W</kbd> <kbd>S</kbd> | Left pad ↑↓ |
+| Strafe left / right | Roll (X) | `axes[0]` | <kbd>A</kbd> <kbd>D</kbd> | Left pad ←→ |
+| Turn body | Yaw / twist (Rz) | `axes[2]` (or `[3]`) | <kbd>Q</kbd> <kbd>E</kbd> | Right pad ←→ |
+| Aim up / down | A1 ministick Y | `axes[5]` (or `[4]`) | <kbd>R</kbd> <kbd>F</kbd> | Right pad ↑↓ or ▲▼ buttons |
+| Fire | A1 trigger (front red) | `buttons[0]` | <kbd>Space</kbd> / click | **FIRE** button |
+| Re-center calibration | — | — | <kbd>C</kbd> | ⊙ button |
+| Mute / unmute (v5+) | — | — | <kbd>M</kbd> | 🔊 button |
 
 ---
 

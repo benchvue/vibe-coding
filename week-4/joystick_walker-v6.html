@@ -1,0 +1,1360 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Gladiator NXT EVO — 3D Walker v6 · iPad Touch</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="theme-color" content="#0b0d10" />
+<style>
+  :root{
+    --bg:#0b0d10;
+    --panel:rgba(16,20,26,.78);
+    --line:rgba(180,210,255,.18);
+    --hot:#ff8a3d;
+    --cool:#7ad7ff;
+    --fire:#ff3a3a;
+    --laser:#ff2a55;
+    --ok:#7CFFA8;
+    --warn:#FFD479;
+    --bad:#FF6E6E;
+    --ink:#e8eef7;
+    --dim:#7d8a9e;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;
+    -webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);
+    font-family:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+    overflow:hidden;
+    /* iPad safe-area awareness */
+    padding:env(safe-area-inset-top) env(safe-area-inset-right)
+            env(safe-area-inset-bottom) env(safe-area-inset-left);
+    touch-action:none;
+    overscroll-behavior:none;
+  }
+  #stage{position:fixed;inset:0}
+
+  #hud{
+    position:fixed;top:14px;left:14px;z-index:10;
+    background:var(--panel);
+    border:1px solid var(--line);
+    padding:14px 16px;border-radius:10px;
+    backdrop-filter:blur(10px);
+    min-width:340px;
+    box-shadow:0 10px 40px rgba(0,0,0,.5);
+  }
+  #hud h1{
+    margin:0 0 8px;font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--cool);font-weight:600;
+  }
+  #hud .sub{font-size:10px;color:var(--dim);margin-bottom:12px;letter-spacing:.06em}
+  .axis{margin:8px 0}
+  .axis .row{display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px}
+  .axis .row .lab{color:var(--dim);letter-spacing:.06em}
+  .axis .row .val{font-variant-numeric:tabular-nums}
+  .bar{position:relative;height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden}
+  .bar.center::before{
+    content:"";position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;
+    background:rgba(255,255,255,.22);
+  }
+  .bar > i{
+    position:absolute;top:0;bottom:0;left:50%;width:2px;
+    background:linear-gradient(90deg,var(--hot),var(--cool));
+    transform-origin:left center;transition:transform .05s linear;
+  }
+  /* aim-axis bar uses different color — pink/red laser theme */
+  .bar.aim > i{
+    background:linear-gradient(90deg,var(--laser),#ff8aa8);
+  }
+  #status{
+    margin-top:10px;padding-top:10px;border-top:1px solid var(--line);
+    font-size:10px;letter-spacing:.05em;color:var(--warn);
+  }
+  #status.connected{color:var(--ok)}
+  #status.error{color:var(--bad)}
+
+  .trigger{
+    margin-top:10px;padding:8px 10px;
+    border:1px solid var(--line);border-radius:6px;
+    display:flex;align-items:center;justify-content:space-between;
+    background:rgba(255,58,58,0.05);
+    transition:background .1s, border-color .1s;
+  }
+  .trigger.fire{
+    background:rgba(255,58,58,0.25);
+    border-color:var(--fire);
+    box-shadow:0 0 16px rgba(255,58,58,0.4);
+  }
+  .trigger .dot{
+    width:10px;height:10px;border-radius:50%;
+    background:#3a0808;border:1px solid #5a0808;
+    transition:all .1s;
+  }
+  .trigger.fire .dot{
+    background:var(--fire);
+    box-shadow:0 0 12px var(--fire);
+  }
+  .trigger .lab{font-size:10px;letter-spacing:.18em;color:var(--dim);text-transform:uppercase}
+  .trigger.fire .lab{color:var(--ink)}
+  .trigger .ammo{font-size:11px;font-variant-numeric:tabular-nums;color:var(--ink)}
+
+  #legend{
+    position:fixed;bottom:14px;left:14px;z-index:10;
+    background:var(--panel);border:1px solid var(--line);
+    padding:10px 14px;border-radius:10px;backdrop-filter:blur(10px);
+    font-size:10px;color:var(--dim);letter-spacing:.05em;
+    max-width:380px;line-height:1.7;
+  }
+  #legend b{color:var(--cool);font-weight:600}
+  #legend .k{color:var(--hot)}
+  #legend .f{color:var(--fire)}
+  #legend .l{color:var(--laser)}
+  kbd{background:rgba(255,255,255,.08);border:1px solid var(--line);
+    padding:1px 6px;border-radius:3px;color:var(--ink);font-size:9px;
+    font-family:inherit}
+
+  #map{
+    position:fixed;top:14px;right:14px;z-index:10;
+    width:180px;height:180px;
+    background:var(--panel);border:1px solid var(--line);
+    border-radius:10px;backdrop-filter:blur(10px);
+    overflow:hidden;
+  }
+  #map canvas{display:block;width:100%;height:100%}
+  #map .label{
+    position:absolute;top:6px;left:8px;font-size:9px;
+    color:var(--dim);letter-spacing:.18em;text-transform:uppercase;
+  }
+
+  .pos{
+    margin-top:10px;padding-top:10px;border-top:1px solid var(--line);
+    font-size:10px;color:var(--dim);letter-spacing:.05em;
+    display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;
+  }
+  .pos div span{color:var(--ink);font-variant-numeric:tabular-nums}
+
+  /* aim indicator next to crosshair */
+  #aimGauge{
+    position:fixed;left:50%;top:50%;
+    transform:translate(80px,-50%);
+    z-index:6;pointer-events:none;
+    width:14px;height:140px;
+    background:rgba(11,13,16,0.5);
+    border:1px solid var(--line);
+    border-radius:8px;
+  }
+  #aimGauge .needle{
+    position:absolute;left:-4px;width:22px;height:2px;
+    background:var(--laser);box-shadow:0 0 6px var(--laser);
+    top:50%;transition:top .08s linear;
+  }
+  #aimGauge .center{
+    position:absolute;left:50%;top:50%;width:8px;height:1px;
+    transform:translate(-50%,-50%);background:rgba(255,255,255,0.3);
+  }
+  #aimGauge .lab{
+    position:absolute;left:18px;top:0;font-size:9px;color:var(--dim);
+    letter-spacing:.15em;
+  }
+  #aimGauge .lab.bot{top:auto;bottom:0}
+
+  #score{
+    position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:10;
+    background:var(--panel);border:1px solid var(--line);
+    padding:8px 18px;border-radius:24px;backdrop-filter:blur(10px);
+    font-size:12px;letter-spacing:.18em;color:var(--cool);
+  }
+  #score .num{color:var(--hot);font-weight:600;font-size:14px}
+
+  /* laser crosshair — sharper red cross with center dot */
+  #crosshair{
+    position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);
+    z-index:5;pointer-events:none;
+    width:34px;height:34px;
+  }
+  #crosshair::before, #crosshair::after{
+    content:"";position:absolute;
+    background:var(--laser);
+    box-shadow:0 0 6px var(--laser),0 0 12px rgba(255,42,85,0.5);
+  }
+  #crosshair::before{left:50%;top:0;bottom:0;width:1px;transform:translateX(-50%)}
+  #crosshair::after{top:50%;left:0;right:0;height:1px;transform:translateY(-50%)}
+  #crosshair .dot{
+    position:absolute;left:50%;top:50%;width:4px;height:4px;
+    transform:translate(-50%,-50%);border-radius:50%;
+    background:var(--laser);box-shadow:0 0 8px var(--laser);
+  }
+  #crosshair .ring{
+    position:absolute;inset:11px;border:1px solid rgba(255,42,85,.5);border-radius:50%;
+  }
+  #crosshair.locked .ring{
+    inset:9px;border-color:var(--ok);
+    box-shadow:0 0 12px var(--ok);
+  }
+
+  /* ─── TOUCH CONTROLS (visible on touch devices, hidden on desktop) ─── */
+  .touch-only{display:none}
+
+  .vjoy{
+    position:fixed;z-index:20;
+    width:140px;height:140px;border-radius:50%;
+    background:rgba(16,20,26,0.55);
+    border:1px solid var(--line);
+    backdrop-filter:blur(10px);
+    touch-action:none;
+  }
+  .vjoy.left{left:24px;bottom:24px}
+  .vjoy.right{right:24px;bottom:24px}
+  .vjoy .nub{
+    position:absolute;left:50%;top:50%;
+    width:56px;height:56px;border-radius:50%;
+    margin-left:-28px;margin-top:-28px;
+    background:linear-gradient(135deg,var(--hot),#c46a2c);
+    box-shadow:0 4px 14px rgba(255,138,61,0.4),
+               inset 0 1px 0 rgba(255,255,255,0.3);
+    pointer-events:none;
+    transition:transform .04s linear;
+  }
+  .vjoy.right .nub{
+    background:linear-gradient(135deg,var(--cool),#4a8aac);
+    box-shadow:0 4px 14px rgba(122,215,255,0.4),
+               inset 0 1px 0 rgba(255,255,255,0.3);
+  }
+  .vjoy .label{
+    position:absolute;left:0;right:0;top:-22px;text-align:center;
+    font-size:10px;letter-spacing:.2em;color:var(--dim);
+    text-transform:uppercase;
+  }
+
+  .tbtn{
+    position:fixed;z-index:20;
+    border:1px solid var(--line);
+    border-radius:12px;
+    backdrop-filter:blur(10px);
+    color:var(--ink);
+    font-family:inherit;font-size:11px;letter-spacing:.15em;
+    text-transform:uppercase;
+    padding:0;
+    touch-action:none;
+    -webkit-user-select:none;user-select:none;
+    cursor:pointer;
+  }
+  .tbtn.fire{
+    right:194px;bottom:90px;
+    width:84px;height:84px;border-radius:50%;
+    background:rgba(255,58,58,0.25);
+    border-color:var(--fire);
+    color:#ffd0d0;
+    font-weight:600;font-size:13px;
+    box-shadow:0 0 24px rgba(255,58,58,0.3);
+  }
+  .tbtn.fire:active, .tbtn.fire.held{
+    background:rgba(255,58,58,0.55);
+    box-shadow:0 0 32px rgba(255,58,58,0.7);
+    transform:scale(0.96);
+  }
+  .tbtn.aim{
+    right:24px;width:62px;height:62px;
+    background:rgba(255,42,85,0.18);
+    border-color:rgba(255,42,85,0.5);
+    color:#ffc0d0;
+    font-size:18px;font-weight:600;
+  }
+  .tbtn.aim.up{bottom:188px}
+  .tbtn.aim.dn{bottom:118px}
+  .tbtn.aim:active, .tbtn.aim.held{
+    background:rgba(255,42,85,0.4);
+    transform:scale(0.94);
+  }
+  .tbtn.util{
+    top:14px;width:44px;height:44px;
+    background:var(--panel);
+    font-size:16px;
+  }
+  .tbtn.util.mute{right:204px}
+  .tbtn.util.recenter{right:152px}
+  .tbtn.util:active{background:rgba(122,215,255,0.18)}
+
+  /* show the touch controls on coarse pointers (touch-only devices) */
+  @media (pointer: coarse), (hover: none){
+    .touch-only{display:block}
+    /* hide desktop crosshair on touch — use the stage itself, the laser dot is enough */
+    #crosshair{opacity:0.6}
+    #aimGauge{transform:translate(64px,-50%)}
+    /* shrink HUD on small screens */
+    #hud{
+      min-width:0;width:calc(50vw - 32px);max-width:340px;
+      padding:10px 12px;
+      font-size:10px;
+    }
+    #hud h1{font-size:10px;letter-spacing:.16em}
+    #hud .sub{font-size:9px;margin-bottom:8px}
+    .axis .row{font-size:10px}
+    #status{font-size:9px}
+    #legend{display:none}     /* keyboard hints irrelevant on touch */
+    #map{
+      width:130px;height:130px;
+      top:auto;bottom:24px;
+      left:50%;transform:translateX(-50%);
+      right:auto;
+    }
+    .pos{grid-template-columns:1fr 1fr}
+    #score{font-size:11px;padding:6px 14px}
+  }
+
+  /* portrait phones: stack things tighter */
+  @media (max-width: 600px) and (orientation: portrait){
+    #hud{width:calc(100vw - 28px);max-width:none;left:14px;right:14px;top:60px}
+    .vjoy{width:120px;height:120px}
+    .vjoy .nub{width:48px;height:48px;margin-left:-24px;margin-top:-24px}
+    .tbtn.fire{width:72px;height:72px;right:160px;bottom:80px}
+    .tbtn.aim{width:54px;height:54px}
+    .tbtn.aim.up{bottom:170px}
+    .tbtn.aim.dn{bottom:108px}
+  }
+</style>
+</head>
+<body>
+  <div id="stage"></div>
+
+  <div id="score">SCORE · <span class="num" id="scoreNum">0</span></div>
+
+  <div id="crosshair"><div class="ring"></div><div class="dot"></div></div>
+  <div id="aimGauge">
+    <div class="lab">UP</div>
+    <div class="center"></div>
+    <div class="needle"></div>
+    <div class="lab bot">DN</div>
+  </div>
+
+  <div id="hud">
+    <h1>◢ Gladiator NXT EVO · v6 iPad</h1>
+    <div class="sub">Joystick · keyboard · or touch — fully cross-device</div>
+
+    <div class="axis">
+      <div class="row"><span class="lab">PITCH (Y) — fwd/back</span><span class="val" id="vP">0.000</span></div>
+      <div class="bar center"><i id="bP"></i></div>
+    </div>
+    <div class="axis">
+      <div class="row"><span class="lab">ROLL (X) — strafe</span><span class="val" id="vR">0.000</span></div>
+      <div class="bar center"><i id="bR"></i></div>
+    </div>
+    <div class="axis">
+      <div class="row"><span class="lab">YAW (Rz) — turn</span><span class="val" id="vT">0.000</span></div>
+      <div class="bar center"><i id="bT"></i></div>
+    </div>
+    <div class="axis">
+      <div class="row"><span class="lab">A1 MINISTICK Y — aim up/down</span><span class="val" id="vA">0.000</span></div>
+      <div class="bar aim center"><i id="bA"></i></div>
+    </div>
+
+    <div class="trigger" id="triggerInd">
+      <div style="display:flex;gap:8px;align-items:center">
+        <div class="dot"></div>
+        <div class="lab">A1 Trigger</div>
+      </div>
+      <div class="ammo">SHOTS · <span id="shotCount">0</span></div>
+    </div>
+
+    <div class="pos">
+      <div>X<br><span id="px">0.0</span></div>
+      <div>Z<br><span id="pz">0.0</span></div>
+      <div>HEAD<br><span id="ph">0°</span></div>
+      <div>AIM<br><span id="pA">0°</span></div>
+    </div>
+
+    <div id="status">⌛ Press any button on the stick to wake it up</div>
+  </div>
+
+  <div id="map">
+    <div class="label">Map · Top-down</div>
+    <canvas id="mapCanvas" width="360" height="360"></canvas>
+  </div>
+
+  <div id="legend">
+    <b>CONTROLS</b><br/>
+    <span class="k">Stick fwd/back</span> · walk &nbsp;·&nbsp; <span class="k">tilt L/R</span> · strafe &nbsp;·&nbsp; <span class="k">twist</span> · turn<br/>
+    <span class="l">★ A1 MINISTICK (thumb stick on top of grip)</span> → <b>aim up / down</b><br/>
+    <span class="f">★ Front red trigger (A1)</span> → <b>fire ball along laser</b><br/>
+    Keyboard: <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><kbd>Q</kbd><kbd>E</kbd> · <kbd>R</kbd>/<kbd>F</kbd> aim · <kbd>Space</kbd> fire · <kbd>C</kbd> recenter · <kbd>M</kbd> mute
+    <div id="sndStatus" style="margin-top:6px;color:var(--ok)">🔊 Sound: ON · click anywhere first to enable</div>
+  </div>
+
+  <!-- TOUCH-ONLY CONTROLS (auto-shown on iPad / phones) -->
+  <div class="vjoy left touch-only" id="vjoyL">
+    <div class="label">Move</div>
+    <div class="nub"></div>
+  </div>
+  <div class="vjoy right touch-only" id="vjoyR">
+    <div class="label">Look</div>
+    <div class="nub"></div>
+  </div>
+  <button class="tbtn fire touch-only" id="btnFire">FIRE</button>
+  <button class="tbtn aim up touch-only" id="btnAimUp">▲</button>
+  <button class="tbtn aim dn touch-only" id="btnAimDn">▼</button>
+  <button class="tbtn util mute touch-only" id="btnMute" title="Mute">🔊</button>
+  <button class="tbtn util recenter touch-only" id="btnRecenter" title="Recenter">⊙</button>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.module.min.js"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+
+// ═══ WEB AUDIO ENGINE ═════════════════════════════════════════
+// Generates all sounds procedurally via Web Audio API — no audio files needed.
+// Browsers block audio until the user interacts with the page (click/keydown),
+// so we lazy-create the AudioContext on first user gesture.
+let audioCtx = null;
+let masterGain = null;
+let soundOn = true;
+const sndStatusEl = document.getElementById('sndStatus');
+
+function initAudio(){
+  if (audioCtx) return;
+  try {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    audioCtx = new Ctx();
+    masterGain = audioCtx.createGain();
+    masterGain.gain.value = 0.4;
+    masterGain.connect(audioCtx.destination);
+    if (sndStatusEl) sndStatusEl.textContent = '🔊 Sound: ON · audio ready';
+  } catch(e){
+    console.warn('Audio init failed:', e);
+    if (sndStatusEl) sndStatusEl.textContent = '🔇 Sound unavailable';
+  }
+}
+// initialize on first user gesture (browser policy)
+['pointerdown','keydown','gamepadconnected'].forEach(ev=>{
+  addEventListener(ev, ()=>{
+    initAudio();
+    // resume if suspended
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+  }, {once:false});
+});
+
+// ── Laser zap: short descending sine sweep + noise click
+function playZap(){
+  if (!audioCtx || !soundOn) return;
+  const t0 = audioCtx.currentTime;
+
+  // tonal sweep
+  const osc = audioCtx.createOscillator();
+  osc.type = 'sawtooth';
+  osc.frequency.setValueAtTime(880, t0);
+  osc.frequency.exponentialRampToValueAtTime(120, t0 + 0.18);
+
+  const oscGain = audioCtx.createGain();
+  oscGain.gain.setValueAtTime(0.0001, t0);
+  oscGain.gain.exponentialRampToValueAtTime(0.5, t0 + 0.005);
+  oscGain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.22);
+
+  // band-pass for sci-fi flavor
+  const bp = audioCtx.createBiquadFilter();
+  bp.type = 'bandpass';
+  bp.frequency.value = 1200;
+  bp.Q.value = 6;
+
+  osc.connect(oscGain).connect(bp).connect(masterGain);
+  osc.start(t0);
+  osc.stop(t0 + 0.25);
+
+  // attack click — short noise burst
+  const noise = makeNoiseBuffer(0.04);
+  const src = audioCtx.createBufferSource();
+  src.buffer = noise;
+  const ng = audioCtx.createGain();
+  ng.gain.setValueAtTime(0.35, t0);
+  ng.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.04);
+  src.connect(ng).connect(masterGain);
+  src.start(t0);
+}
+
+// ── Target hit: thump + crystal ping + noise burst
+function playHit(){
+  if (!audioCtx || !soundOn) return;
+  const t0 = audioCtx.currentTime;
+
+  // low thump
+  const thump = audioCtx.createOscillator();
+  thump.type = 'sine';
+  thump.frequency.setValueAtTime(180, t0);
+  thump.frequency.exponentialRampToValueAtTime(40, t0 + 0.18);
+  const tg = audioCtx.createGain();
+  tg.gain.setValueAtTime(0.6, t0);
+  tg.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.22);
+  thump.connect(tg).connect(masterGain);
+  thump.start(t0); thump.stop(t0 + 0.25);
+
+  // crystalline ping (two stacked tones for shimmer)
+  [1320, 1760].forEach((f, i)=>{
+    const o = audioCtx.createOscillator();
+    o.type = 'triangle';
+    o.frequency.value = f;
+    const g = audioCtx.createGain();
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(0.25, t0 + 0.005);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.45 + i*0.1);
+    o.connect(g).connect(masterGain);
+    o.start(t0); o.stop(t0 + 0.6);
+  });
+
+  // explosion noise tail
+  const noise = makeNoiseBuffer(0.3);
+  const src = audioCtx.createBufferSource();
+  src.buffer = noise;
+  const hp = audioCtx.createBiquadFilter();
+  hp.type = 'highpass';
+  hp.frequency.value = 800;
+  const ng = audioCtx.createGain();
+  ng.gain.setValueAtTime(0.4, t0);
+  ng.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.3);
+  src.connect(hp).connect(ng).connect(masterGain);
+  src.start(t0);
+}
+
+// ── Footstep: muted thump
+function playStep(){
+  if (!audioCtx || !soundOn) return;
+  const t0 = audioCtx.currentTime;
+  const noise = makeNoiseBuffer(0.08);
+  const src = audioCtx.createBufferSource();
+  src.buffer = noise;
+  const lp = audioCtx.createBiquadFilter();
+  lp.type = 'lowpass';
+  lp.frequency.value = 200;
+  const g = audioCtx.createGain();
+  g.gain.setValueAtTime(0.18, t0);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.08);
+  src.connect(lp).connect(g).connect(masterGain);
+  src.start(t0);
+}
+
+// helper: build a short white-noise buffer
+function makeNoiseBuffer(durSec){
+  const len = Math.floor(audioCtx.sampleRate * durSec);
+  const buf = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+  return buf;
+}
+
+function toggleMute(){
+  soundOn = !soundOn;
+  if (sndStatusEl){
+    sndStatusEl.textContent = soundOn
+      ? '🔊 Sound: ON'
+      : '🔇 Sound: MUTED (press M to unmute)';
+    sndStatusEl.style.color = soundOn ? 'var(--ok)' : 'var(--dim)';
+  }
+}
+// ═══════════════════════════════════════════════════════════════
+
+// ═══ TOUCH INPUT (iPad / phones) ══════════════════════════════
+// Two virtual joysticks: left = move (pitch/roll), right = look (yaw + extra pitch tilt)
+// Plus on-screen buttons for fire, aim up/down, mute, and recenter.
+//
+// The virtual joysticks output -1..+1 on each axis and live in `touch` state
+// alongside `keys`. They get summed into `readStick()` just like keyboard.
+const touch = {
+  moveX: 0, moveY: 0,    // left pad → roll (X) and pitch (Y, inverted so up = forward)
+  lookX: 0, lookY: 0,    // right pad → yaw (X) and aim (Y, inverted so up = aim up)
+  fire:  false,
+  aimUp: false,
+  aimDn: false,
+};
+
+function bindVirtualJoystick(padEl, onChange){
+  const nub = padEl.querySelector('.nub');
+  let activeId = null;
+  const radius = padEl.clientWidth * 0.35;   // max nub travel from center
+
+  function getCenter(){
+    const r = padEl.getBoundingClientRect();
+    return {cx: r.left + r.width/2, cy: r.top + r.height/2};
+  }
+
+  function setNub(dx, dy){
+    nub.style.transform = `translate(${dx}px, ${dy}px)`;
+  }
+
+  function update(clientX, clientY){
+    const {cx, cy} = getCenter();
+    let dx = clientX - cx;
+    let dy = clientY - cy;
+    const dist = Math.hypot(dx, dy);
+    if (dist > radius){
+      dx = dx / dist * radius;
+      dy = dy / dist * radius;
+    }
+    setNub(dx, dy);
+    onChange(dx / radius, dy / radius);
+  }
+
+  function reset(){
+    activeId = null;
+    setNub(0, 0);
+    onChange(0, 0);
+  }
+
+  padEl.addEventListener('pointerdown', e=>{
+    if (activeId !== null) return;
+    activeId = e.pointerId;
+    padEl.setPointerCapture(e.pointerId);
+    update(e.clientX, e.clientY);
+    e.preventDefault();
+  });
+  padEl.addEventListener('pointermove', e=>{
+    if (e.pointerId !== activeId) return;
+    update(e.clientX, e.clientY);
+    e.preventDefault();
+  });
+  ['pointerup','pointercancel','pointerleave'].forEach(ev=>{
+    padEl.addEventListener(ev, e=>{
+      if (e.pointerId !== activeId) return;
+      reset();
+      e.preventDefault();
+    });
+  });
+}
+
+// Hook up after DOM is parsed (script is at end of body, so it's safe)
+const vjoyL = document.getElementById('vjoyL');
+const vjoyR = document.getElementById('vjoyR');
+if (vjoyL) bindVirtualJoystick(vjoyL, (x, y)=>{
+  touch.moveX = x;
+  touch.moveY = y;
+});
+if (vjoyR) bindVirtualJoystick(vjoyR, (x, y)=>{
+  touch.lookX = x;
+  touch.lookY = y;
+});
+
+// Buttons
+function bindHoldButton(el, key){
+  if (!el) return;
+  const on = e=>{ touch[key] = true;  el.classList.add('held'); e.preventDefault(); };
+  const off = e=>{ touch[key] = false; el.classList.remove('held'); e.preventDefault(); };
+  el.addEventListener('pointerdown', on);
+  el.addEventListener('pointerup', off);
+  el.addEventListener('pointercancel', off);
+  el.addEventListener('pointerleave', off);
+}
+bindHoldButton(document.getElementById('btnFire'),  'fire');
+bindHoldButton(document.getElementById('btnAimUp'), 'aimUp');
+bindHoldButton(document.getElementById('btnAimDn'), 'aimDn');
+
+const btnMute = document.getElementById('btnMute');
+if (btnMute) btnMute.addEventListener('pointerdown', e=>{
+  toggleMute();
+  btnMute.textContent = soundOn ? '🔊' : '🔇';
+  e.preventDefault();
+});
+const btnRecenter = document.getElementById('btnRecenter');
+if (btnRecenter) btnRecenter.addEventListener('pointerdown', e=>{
+  recenter();
+  e.preventDefault();
+});
+
+const stage = document.getElementById('stage');
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0b0d10);
+scene.fog = new THREE.Fog(0x0b0d10, 25, 95);
+
+const camera = new THREE.PerspectiveCamera(55, innerWidth/innerHeight, 0.1, 300);
+
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+stage.appendChild(renderer.domElement);
+
+// floor grid
+const grid = new THREE.GridHelper(200, 200, 0x7ad7ff, 0x1e3550);
+grid.material.transparent = true;
+grid.material.opacity = 0.55;
+scene.add(grid);
+
+const ring = new THREE.Mesh(
+  new THREE.RingGeometry(0.6, 0.7, 64),
+  new THREE.MeshBasicMaterial({color:0xff8a3d, side:THREE.DoubleSide, transparent:true, opacity:.55})
+);
+ring.rotation.x = -Math.PI/2;
+ring.position.y = 0.01;
+scene.add(ring);
+
+// pillars
+const pillarMat = new THREE.MeshStandardMaterial({color:0x2a3a55, roughness:.8, emissive:0x0a1525, emissiveIntensity:.4});
+const pillarPositions = [
+  [10,0,10],[-10,0,10],[10,0,-10],[-10,0,-10],
+  [20,0,0],[-20,0,0],[0,0,20],[0,0,-20],
+  [15,0,-15],[-15,0,15]
+];
+pillarPositions.forEach(([x,_,z])=>{
+  const h = 1.5 + Math.random()*1.5;
+  const p = new THREE.Mesh(new THREE.BoxGeometry(0.8,h,0.8), pillarMat);
+  p.position.set(x, h/2, z);
+  p.castShadow = true; p.receiveShadow = true;
+  scene.add(p);
+});
+
+// ─── TARGETS at varied heights — low (floor), mid, high ──────
+const targets = [];
+const targetMat = new THREE.MeshStandardMaterial({color:0x7ad7ff, emissive:0x1a5570, emissiveIntensity:.7, roughness:.4});
+const targetPositions = [
+  // [x, y, z]  — y now varies dramatically
+  [ 6, 0.6, -12],   // low
+  [-8, 4.5, -16],   // high
+  [12, 1.5, -20],   // mid
+  [-14, 5.5, -8],   // very high
+  [ 0, 0.4, -24],   // floor
+  [18, 3.0,  8],
+  [-18, 6.5, -4],   // very high
+  [22, 1.2, -16],   // low
+  [-4, 7.0, -20],   // very high
+  [ 8, 0.5,  16],   // floor
+];
+targetPositions.forEach(([x,y,z])=>{
+  const t = new THREE.Mesh(
+    new THREE.TorusGeometry(0.7, 0.18, 12, 32),
+    targetMat.clone()
+  );
+  t.position.set(x,y,z);
+  t.castShadow = true;
+  t.userData = {alive:true, seed:Math.random()*Math.PI*2, baseY:y};
+  scene.add(t);
+  targets.push(t);
+});
+
+// PERSON
+const person = new THREE.Group();
+scene.add(person);
+
+const skin = 0xf2c79a, shirt = 0xff8a3d, pants = 0x2a3a55;
+
+const torso = new THREE.Mesh(
+  new THREE.BoxGeometry(0.55, 0.7, 0.3),
+  new THREE.MeshStandardMaterial({color:shirt, roughness:.7})
+);
+torso.position.y = 1.25; torso.castShadow = true;
+person.add(torso);
+
+const head = new THREE.Mesh(
+  new THREE.SphereGeometry(0.22, 24, 16),
+  new THREE.MeshStandardMaterial({color:skin, roughness:.6})
+);
+head.position.y = 1.85; head.castShadow = true;
+person.add(head);
+
+const nose = new THREE.Mesh(
+  new THREE.ConeGeometry(0.05, 0.12, 8),
+  new THREE.MeshStandardMaterial({color:0xd99a6a})
+);
+nose.rotation.x = Math.PI/2;
+nose.position.set(0, 1.85, 0.22);
+person.add(nose);
+
+function makeLimb(color, w=0.14, h=0.55, d=0.14){
+  return new THREE.Mesh(
+    new THREE.BoxGeometry(w,h,d),
+    new THREE.MeshStandardMaterial({color, roughness:.7})
+  );
+}
+const armL = makeLimb(shirt); armL.position.set(-0.36, 1.25, 0); armL.castShadow=true;
+const armR = makeLimb(shirt); armR.position.set( 0.36, 1.25, 0); armR.castShadow=true;
+person.add(armL, armR);
+
+const legL = makeLimb(pants, 0.18, 0.7, 0.18);
+legL.position.set(-0.14, 0.55, 0); legL.castShadow=true;
+const legR = makeLimb(pants, 0.18, 0.7, 0.18);
+legR.position.set( 0.14, 0.55, 0); legR.castShadow=true;
+person.add(legL, legR);
+
+function setPivot(mesh, pivotY){
+  mesh.geometry.translate(0, -pivotY, 0);
+  mesh.position.y += pivotY;
+}
+setPivot(armL, 0.275); setPivot(armR, 0.275);
+setPivot(legL, 0.35);  setPivot(legR, 0.35);
+
+const shadow = new THREE.Mesh(
+  new THREE.CircleGeometry(0.45, 24),
+  new THREE.MeshBasicMaterial({color:0x000000, transparent:true, opacity:.35})
+);
+shadow.rotation.x = -Math.PI/2;
+shadow.position.y = 0.015;
+person.add(shadow);
+
+// muzzle flash
+const muzzle = new THREE.Mesh(
+  new THREE.SphereGeometry(0.25, 12, 8),
+  new THREE.MeshBasicMaterial({color:0xffaa44, transparent:true, opacity:0})
+);
+person.add(muzzle);
+muzzle.position.set(0, 1.4, 0.55);
+
+// ─── LASER BEAM (red sighting line from chest along aim direction) ──
+const laserMat = new THREE.LineBasicMaterial({
+  color:0xff2a55, transparent:true, opacity:0.65
+});
+const laserGeo = new THREE.BufferGeometry();
+laserGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(6), 3));
+const laser = new THREE.Line(laserGeo, laserMat);
+scene.add(laser);
+
+// red dot where laser hits — gives player a clear in-world target indicator
+const laserDot = new THREE.Mesh(
+  new THREE.SphereGeometry(0.12, 12, 8),
+  new THREE.MeshBasicMaterial({color:0xff2a55})
+);
+scene.add(laserDot);
+const laserDotLight = new THREE.PointLight(0xff2a55, 1.2, 3);
+laserDot.add(laserDotLight);
+
+// LIGHTS
+scene.add(new THREE.AmbientLight(0x6688aa, 0.5));
+const keyLight = new THREE.DirectionalLight(0xffd9b0, 1.1);
+keyLight.position.set(5, 9, 4);
+keyLight.castShadow = true;
+keyLight.shadow.mapSize.set(1024,1024);
+keyLight.shadow.camera.left=-15; keyLight.shadow.camera.right=15;
+keyLight.shadow.camera.top=15;   keyLight.shadow.camera.bottom=-15;
+scene.add(keyLight);
+const rim = new THREE.DirectionalLight(0x7ad7ff, 0.6);
+rim.position.set(-4, 3, -5);
+scene.add(rim);
+
+// ─── BALLS ────────────────────────────────────────────────────
+const balls = [];
+const ballGeo = new THREE.SphereGeometry(0.12, 16, 12);
+const ballMat = new THREE.MeshStandardMaterial({
+  color:0xff3a3a, emissive:0xff3a3a, emissiveIntensity:1.5, roughness:.3
+});
+
+let shotCount = 0;
+let score = 0;
+
+function fireBall(){
+  const ball = new THREE.Mesh(ballGeo, ballMat.clone());
+
+  // chest position
+  const chestX = person.position.x;
+  const chestY = 1.4;
+  const chestZ = person.position.z;
+
+  // aim direction = horizontal heading + vertical aimPitch
+  const dirX = -Math.sin(heading) * Math.cos(aimPitch);
+  const dirY =  Math.sin(aimPitch);
+  const dirZ = -Math.cos(heading) * Math.cos(aimPitch);
+
+  // spawn just in front of chest along aim
+  ball.position.set(
+    chestX + dirX * 0.6,
+    chestY + dirY * 0.6,
+    chestZ + dirZ * 0.6
+  );
+  ball.castShadow = true;
+
+  // flat-trajectory speed (no gravity now — laser-aimed = direct hit)
+  const speed = 32;
+  ball.userData = {
+    vx: dirX * speed,
+    vy: dirY * speed,
+    vz: dirZ * speed,
+    life: 0,
+    maxLife: 3.5,
+  };
+
+  const light = new THREE.PointLight(0xff3a3a, 1.2, 4);
+  ball.add(light);
+
+  scene.add(ball);
+  balls.push(ball);
+
+  muzzle.material.opacity = 1;
+  muzzle.scale.setScalar(1);
+
+  shotCount++;
+  document.getElementById('shotCount').textContent = shotCount;
+
+  playZap();   // 🔊 fire sound
+}
+
+// HUD refs
+const status = document.getElementById('status');
+const vP=document.getElementById('vP'), bP=document.getElementById('bP');
+const vR=document.getElementById('vR'), bR=document.getElementById('bR');
+const vT=document.getElementById('vT'), bT=document.getElementById('bT');
+const vA=document.getElementById('vA'), bA=document.getElementById('bA');
+const px=document.getElementById('px'), pz=document.getElementById('pz');
+const ph=document.getElementById('ph'), pA=document.getElementById('pA');
+const triggerInd = document.getElementById('triggerInd');
+const scoreNum = document.getElementById('scoreNum');
+const aimNeedle = document.querySelector('#aimGauge .needle');
+const crosshairEl = document.getElementById('crosshair');
+
+// KEYBOARD
+const keys = {fwd:false,back:false,left:false,right:false,turnL:false,turnR:false,aimUp:false,aimDn:false};
+const movementKeys = ['w','a','s','d','q','e','r','f','arrowup','arrowdown','arrowleft','arrowright',' '];
+addEventListener('keydown', e=>{
+  const k = e.key.toLowerCase();
+  if (movementKeys.includes(k)) e.preventDefault();
+  if (k==='w'||k==='arrowup')   keys.fwd=true;
+  if (k==='s'||k==='arrowdown') keys.back=true;
+  if (k==='a'||k==='arrowleft') keys.left=true;
+  if (k==='d'||k==='arrowright')keys.right=true;
+  if (k==='q') keys.turnL=true;
+  if (k==='e') keys.turnR=true;
+  if (k==='r') keys.aimUp=true;
+  if (k==='f') keys.aimDn=true;
+  if (k==='c') recenter();
+  if (k==='m' && !e.repeat) toggleMute();
+  if (k===' ' && !e.repeat) tryFire();
+});
+addEventListener('keyup', e=>{
+  const k = e.key.toLowerCase();
+  if (movementKeys.includes(k)) e.preventDefault();
+  if (k==='w'||k==='arrowup')   keys.fwd=false;
+  if (k==='s'||k==='arrowdown') keys.back=false;
+  if (k==='a'||k==='arrowleft') keys.left=false;
+  if (k==='d'||k==='arrowright')keys.right=false;
+  if (k==='q') keys.turnL=false;
+  if (k==='e') keys.turnR=false;
+  if (k==='r') keys.aimUp=false;
+  if (k==='f') keys.aimDn=false;
+});
+addEventListener('mousedown', e=>{
+  // only fire on left-click of the 3D canvas (avoid double-fire from touch buttons)
+  if (e.button === 0 && e.target.tagName === 'CANVAS') tryFire();
+});
+
+addEventListener('gamepadconnected', e=>{
+  status.textContent = '⏳ Calibrating ' + e.gamepad.id + ' — keep stick centered…';
+  status.className = '';
+  calibrated = false; calibFrames = 0;
+  calibAccum.x = calibAccum.y = calibAccum.z = calibAccum.aim = 0;
+});
+addEventListener('gamepaddisconnected', ()=>{
+  status.textContent = '✗ Joystick disconnected';
+  status.className = 'error';
+});
+
+// ── auto-calibration ──
+// We capture the resting value of all relevant axes (including ministick)
+// so even if the ministick isn't perfectly centered, "no input" means 0 aim.
+const center = {x:0, y:0, z:0, aim:0};
+let calibrated = false;
+let calibFrames = 0;
+const CALIB_NEEDED = 30;
+const calibAccum = {x:0, y:0, z:0, aim:0};
+
+// A1 ministick Y is on axis index 5 for VKB Gladiator NXT EVO (standard mapping).
+// Some variants put it on 4 — we try 5 first, fall back to 4.
+function getAimAxis(p){
+  // prefer axes[5], else axes[4], else none
+  if (p.axes[5] !== undefined) return 5;
+  if (p.axes[4] !== undefined) return 4;
+  return -1;
+}
+
+function recenter(){
+  const pads = navigator.getGamepads ? navigator.getGamepads() : [];
+  for (const p of pads){
+    if (!p) continue;
+    center.x = p.axes[0] ?? 0;
+    center.y = p.axes[1] ?? 0;
+    let yawRaw = p.axes[2];
+    if (yawRaw === undefined || yawRaw === null) yawRaw = p.axes[3] ?? 0;
+    center.z = yawRaw ?? 0;
+    const aimAxis = getAimAxis(p);
+    center.aim = (aimAxis >= 0) ? (p.axes[aimAxis] ?? 0) : 0;
+    calibrated = true;
+    status.textContent = '✓ Re-centered · ' + p.id;
+    status.className = 'connected';
+    return;
+  }
+}
+
+function clean(raw, dz=0.08, invert=false){
+  let v = invert ? -raw : raw;
+  if (Math.abs(v) < dz) return 0;
+  v = (v - Math.sign(v)*dz) / (1 - dz);
+  return Math.max(-1, Math.min(1, v));
+}
+
+let lastFireTime = 0;
+const FIRE_COOLDOWN = 0.18;
+let prevTriggerDown = false;
+
+function tryFire(){
+  const now = performance.now() / 1000;
+  if (now - lastFireTime < FIRE_COOLDOWN) return;
+  lastFireTime = now;
+  fireBall();
+}
+
+function pollTrigger(){
+  const pads = navigator.getGamepads ? navigator.getGamepads() : [];
+  for (const p of pads){
+    if (!p) continue;
+    return !!(p.buttons[0] && p.buttons[0].pressed);
+  }
+  return false;
+}
+
+function readStick(){
+  // keyboard contribution
+  let pitch = (keys.fwd?1:0)+(keys.back?-1:0);
+  let roll  = (keys.right?1:0)+(keys.left?-1:0);
+  let yaw   = (keys.turnR?1:0)+(keys.turnL?-1:0);
+  let aim   = (keys.aimUp?1:0)+(keys.aimDn?-1:0);
+
+  // touch contribution (virtual joysticks + aim buttons)
+  // left pad: x = roll, y = pitch (inverted: drag up = forward)
+  pitch += -touch.moveY;
+  roll  +=  touch.moveX;
+  // right pad: x = yaw (drag right = turn right), y = aim (drag up = aim up)
+  yaw   +=  touch.lookX;
+  aim   += -touch.lookY;
+  if (touch.aimUp) aim += 1;
+  if (touch.aimDn) aim -= 1;
+
+  // clamp keyboard+touch combined
+  pitch = Math.max(-1, Math.min(1, pitch));
+  roll  = Math.max(-1, Math.min(1, roll));
+  yaw   = Math.max(-1, Math.min(1, yaw));
+  aim   = Math.max(-1, Math.min(1, aim));
+
+  const pads = navigator.getGamepads ? navigator.getGamepads() : [];
+  for (const p of pads){
+    if (!p) continue;
+
+    const rawX = p.axes[0] ?? 0;
+    const rawY = p.axes[1] ?? 0;
+    let   rawZ = p.axes[2];
+    if (rawZ === undefined || rawZ === null) rawZ = p.axes[3] ?? 0;
+    rawZ = rawZ ?? 0;
+
+    const aimAxis = getAimAxis(p);
+    const rawAim = (aimAxis >= 0) ? (p.axes[aimAxis] ?? 0) : 0;
+
+    if (!calibrated){
+      calibAccum.x += rawX; calibAccum.y += rawY;
+      calibAccum.z += rawZ; calibAccum.aim += rawAim;
+      calibFrames++;
+      if (calibFrames >= CALIB_NEEDED){
+        center.x   = calibAccum.x   / calibFrames;
+        center.y   = calibAccum.y   / calibFrames;
+        center.z   = calibAccum.z   / calibFrames;
+        center.aim = calibAccum.aim / calibFrames;
+        calibrated = true;
+      }
+      break;
+    }
+
+    const jRoll  = clean(rawX - center.x, 0.08);
+    const jPitch = clean(rawY - center.y, 0.08, true);
+    const jYaw   = clean(rawZ - center.z, 0.12);
+    pitch = Math.max(-1, Math.min(1, pitch + jPitch));
+    roll  = Math.max(-1, Math.min(1, roll  + jRoll));
+    yaw   = Math.max(-1, Math.min(1, yaw   + jYaw));
+
+    // ministick aim — subtract resting offset so it's exactly 0 when untouched.
+    // Invert because pushing thumbstick "up" usually reports negative on Y.
+    if (aimAxis >= 0){
+      const jAim = clean(rawAim - center.aim, 0.10, true);
+      aim = Math.max(-1, Math.min(1, aim + jAim));
+    }
+    break;
+  }
+  return {pitch, roll, yaw, aim};
+}
+
+// MOVEMENT + AIM
+let heading = 0;
+let aimPitch = 0;                 // radians, positive = up
+const AIM_RANGE = Math.PI / 2.5;  // ~72° up or down max
+const MAX_WALK = 4.0, MAX_STRAFE = 3.0, MAX_TURN = 2.2;
+
+// MINI-MAP
+const mapCanvas = document.getElementById('mapCanvas');
+const mctx = mapCanvas.getContext('2d');
+const mapTrail = [];
+
+function drawMap(){
+  const W = mapCanvas.width, H = mapCanvas.height;
+  mctx.fillStyle = 'rgba(11,13,16,0.4)';
+  mctx.fillRect(0,0,W,H);
+
+  mctx.strokeStyle = 'rgba(122,215,255,0.12)';
+  mctx.lineWidth = 1;
+  const step = 30;
+  for (let i=0;i<=W;i+=step){
+    mctx.beginPath(); mctx.moveTo(i,0); mctx.lineTo(i,H); mctx.stroke();
+    mctx.beginPath(); mctx.moveTo(0,i); mctx.lineTo(W,i); mctx.stroke();
+  }
+  mctx.strokeStyle = 'rgba(255,138,61,0.35)';
+  mctx.beginPath(); mctx.moveTo(W/2,0); mctx.lineTo(W/2,H); mctx.stroke();
+  mctx.beginPath(); mctx.moveTo(0,H/2); mctx.lineTo(W,H/2); mctx.stroke();
+
+  mctx.fillStyle = 'rgba(122,215,255,0.6)';
+  pillarPositions.forEach(([x,_,z])=>{
+    mctx.fillRect(W/2 + x*4 - 2, H/2 + z*4 - 2, 4, 4);
+  });
+
+  // alive targets — dot size hints at height
+  targets.forEach(t=>{
+    if (!t.userData.alive) return;
+    const r = 2 + t.userData.baseY * 0.4;
+    mctx.fillStyle = 'rgba(122,215,255,0.95)';
+    mctx.beginPath();
+    mctx.arc(W/2 + t.position.x*4, H/2 + t.position.z*4, r, 0, Math.PI*2);
+    mctx.fill();
+  });
+
+  mctx.strokeStyle = 'rgba(255,138,61,0.5)';
+  mctx.lineWidth = 1.2;
+  mctx.beginPath();
+  mapTrail.forEach((pt,i)=>{
+    const sx = W/2 + pt.x*4, sy = H/2 + pt.z*4;
+    if (i===0) mctx.moveTo(sx,sy); else mctx.lineTo(sx,sy);
+  });
+  mctx.stroke();
+
+  const sx = W/2 + person.position.x*4;
+  const sy = H/2 + person.position.z*4;
+  mctx.save();
+  mctx.translate(sx,sy);
+  mctx.rotate(-heading);
+  mctx.fillStyle = '#ff8a3d';
+  mctx.beginPath();
+  mctx.moveTo(0,-7); mctx.lineTo(5,5); mctx.lineTo(-5,5); mctx.closePath();
+  mctx.fill();
+  // laser line on map (top-down it's just heading length)
+  mctx.strokeStyle = 'rgba(255,42,85,0.7)';
+  mctx.beginPath(); mctx.moveTo(0,0); mctx.lineTo(0,-30); mctx.stroke();
+  mctx.restore();
+}
+
+// ─── ANIMATION LOOP ───────────────────────────────────────────
+const clock = new THREE.Clock();
+let walkPhase = 0, trailTimer = 0;
+let lastFootSign = 0;   // tracks zero-crossings of walk cycle for footsteps
+
+const _rayOrigin = new THREE.Vector3();
+const _rayDir = new THREE.Vector3();
+const raycaster = new THREE.Raycaster();
+
+function tick(){
+  const dt = Math.min(0.05, clock.getDelta());
+  const {pitch, roll, yaw, aim} = readStick();
+
+  // trigger
+  const triggerDown = pollTrigger() || touch.fire;
+  if (triggerDown) tryFire();
+  prevTriggerDown = triggerDown;
+  if (triggerDown) triggerInd.classList.add('fire');
+  else triggerInd.classList.remove('fire');
+
+  // movement
+  heading -= yaw * MAX_TURN * dt;
+  person.rotation.y = heading;
+
+  // aim — slider gives absolute -1..+1, multiply by AIM_RANGE
+  // for keyboard, integrate; but here `aim` already encodes direction
+  aimPitch = aim * AIM_RANGE;
+
+  const fx = Math.sin(heading), fz = Math.cos(heading);
+  const rx = Math.cos(heading), rz = -Math.sin(heading);
+
+  const walkSpeed   = pitch * MAX_WALK;
+  const strafeSpeed = roll  * MAX_STRAFE;
+
+  person.position.x += (-fx * walkSpeed + rx * strafeSpeed) * dt;
+  person.position.z += (-fz * walkSpeed + rz * strafeSpeed) * dt;
+
+  // tilt the person's head/torso slightly with aim for visual feedback
+  head.rotation.x = -aimPitch * 0.5;
+  torso.rotation.x = -aimPitch * 0.15;
+
+  // walk anim
+  const motion = Math.min(1, Math.hypot(pitch, roll));
+  walkPhase += motion * dt * 7;
+  const swing = Math.sin(walkPhase) * 0.6 * motion;
+  legL.rotation.x =  swing;
+  legR.rotation.x = -swing;
+  armL.rotation.x = -swing * 0.7 + aimPitch * 0.5;
+  armR.rotation.x =  swing * 0.7 + aimPitch * 0.5;
+  torso.position.y = 1.25 + Math.abs(Math.sin(walkPhase*2)) * 0.04 * motion;
+
+  // 🔊 footstep on each leg-swing zero crossing (only when moving)
+  if (motion > 0.15){
+    const sign = Math.sign(Math.sin(walkPhase));
+    if (sign !== 0 && sign !== lastFootSign){
+      lastFootSign = sign;
+      playStep();
+    }
+  } else {
+    lastFootSign = 0;
+  }
+
+  // muzzle flash decay
+  if (muzzle.material.opacity > 0){
+    muzzle.material.opacity -= dt * 6;
+    muzzle.scale.multiplyScalar(0.92);
+    if (muzzle.material.opacity < 0) muzzle.material.opacity = 0;
+  }
+
+  // ─── LASER & CROSSHAIR (raycast from chest along aim) ──
+  _rayOrigin.set(person.position.x, 1.4, person.position.z);
+  _rayDir.set(
+    -Math.sin(heading) * Math.cos(aimPitch),
+     Math.sin(aimPitch),
+    -Math.cos(heading) * Math.cos(aimPitch)
+  );
+  raycaster.set(_rayOrigin, _rayDir);
+
+  // collect hittable objects: alive targets + pillars
+  const hittable = [];
+  targets.forEach(t=>{ if (t.userData.alive) hittable.push(t); });
+  scene.traverse(o=>{ if (o.geometry && o.geometry.type === 'BoxGeometry' && o !== torso && o !== head && o !== nose && o !== armL && o !== armR && o !== legL && o !== legR) hittable.push(o); });
+
+  const intersects = raycaster.intersectObjects(hittable, false);
+  let hitPoint, hitTarget = null;
+  if (intersects.length > 0){
+    hitPoint = intersects[0].point;
+    if (intersects[0].object.userData && intersects[0].object.userData.alive){
+      hitTarget = intersects[0].object;
+    }
+  } else {
+    // no hit — extend the laser 80m
+    hitPoint = new THREE.Vector3(
+      _rayOrigin.x + _rayDir.x * 80,
+      _rayOrigin.y + _rayDir.y * 80,
+      _rayOrigin.z + _rayDir.z * 80
+    );
+  }
+
+  // update laser line geometry
+  const arr = laser.geometry.attributes.position.array;
+  arr[0] = _rayOrigin.x; arr[1] = _rayOrigin.y; arr[2] = _rayOrigin.z;
+  arr[3] = hitPoint.x;   arr[4] = hitPoint.y;   arr[5] = hitPoint.z;
+  laser.geometry.attributes.position.needsUpdate = true;
+  laser.geometry.computeBoundingSphere();
+
+  // laser dot
+  laserDot.position.copy(hitPoint);
+  laserDot.visible = intersects.length > 0;
+
+  // crosshair lock indicator
+  if (hitTarget) crosshairEl.classList.add('locked');
+  else crosshairEl.classList.remove('locked');
+
+  // ─ BALLS update ─
+  for (let i = balls.length - 1; i >= 0; i--){
+    const b = balls[i];
+    const ud = b.userData;
+    b.position.x += ud.vx * dt;
+    b.position.y += ud.vy * dt;
+    b.position.z += ud.vz * dt;
+    // no gravity now — straight-line laser shots
+    ud.life += dt;
+
+    let hit = false;
+    for (const t of targets){
+      if (!t.userData.alive) continue;
+      const dx = b.position.x - t.position.x;
+      const dy = b.position.y - t.position.y;
+      const dz = b.position.z - t.position.z;
+      if (dx*dx + dy*dy + dz*dz < 0.85*0.85){
+        hit = true;
+        t.userData.alive = false;
+        t.material.color.setHex(0xff3a3a);
+        t.material.emissive.setHex(0xff3a3a);
+        t.userData.deathTimer = 0;
+        score += 10;
+        scoreNum.textContent = score;
+        playHit();   // 🔊 explosion
+        break;
+      }
+    }
+
+    if (hit || ud.life > ud.maxLife || b.position.y < -0.5){
+      scene.remove(b);
+      balls.splice(i, 1);
+    }
+  }
+
+  // animate targets
+  const t = clock.elapsedTime;
+  targets.forEach(tgt=>{
+    if (tgt.userData.alive){
+      tgt.position.y = tgt.userData.baseY + Math.sin(t*1.5 + tgt.userData.seed) * 0.25;
+      tgt.rotation.y += dt * 1.0;
+      tgt.rotation.x = Math.sin(t + tgt.userData.seed) * 0.3;
+    } else {
+      tgt.userData.deathTimer += dt;
+      tgt.scale.multiplyScalar(0.92);
+      tgt.position.y += dt * 2;
+      if (tgt.userData.deathTimer > 1.2 && tgt.parent){
+        scene.remove(tgt);
+      }
+    }
+  });
+
+  // chase cam — pulls back slightly when aiming up so target stays in view
+  const camDist = 7.5;
+  const camHeight = 4.2 + aimPitch * 1.5;     // raise camera when aiming up
+  const camX = person.position.x + Math.sin(heading) * camDist;
+  const camZ = person.position.z + Math.cos(heading) * camDist;
+  camera.position.lerp(new THREE.Vector3(camX, camHeight, camZ), 0.08);
+  // camera looks slightly toward where you're aiming
+  const lookY = 1.2 + aimPitch * 4;
+  camera.lookAt(person.position.x, lookY, person.position.z);
+
+  // HUD
+  vP.textContent = pitch.toFixed(3); bP.style.transform = `scaleX(${pitch * 140})`;
+  vR.textContent = roll.toFixed(3);  bR.style.transform = `scaleX(${roll  * 140})`;
+  vT.textContent = yaw.toFixed(3);   bT.style.transform = `scaleX(${yaw   * 140})`;
+  vA.textContent = aim.toFixed(3);   bA.style.transform = `scaleX(${aim   * 140})`;
+  px.textContent = person.position.x.toFixed(1);
+  pz.textContent = person.position.z.toFixed(1);
+  ph.textContent = ((heading * 180/Math.PI) % 360).toFixed(0) + '°';
+  pA.textContent = (aimPitch * 180/Math.PI).toFixed(0) + '°';
+
+  // aim gauge needle
+  const needleTop = 50 - aim * 48;     // 0% = top, 50% = center, 100% = bottom
+  aimNeedle.style.top = needleTop + '%';
+
+  if (calibrated && status.textContent.startsWith('⏳')){
+    status.textContent = '✓ Calibrated · drift corrected · aim centered';
+    status.className = 'connected';
+  }
+
+  trailTimer += dt;
+  if (trailTimer > 0.1){
+    trailTimer = 0;
+    mapTrail.push({x: person.position.x, z: person.position.z});
+    if (mapTrail.length > 400) mapTrail.shift();
+  }
+  drawMap();
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(tick);
+}
+tick();
+
+addEventListener('resize', ()=>{
+  camera.aspect = innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+</script>
+</body>
+</html>
