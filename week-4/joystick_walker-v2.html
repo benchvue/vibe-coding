@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Gladiator NXT EVO — 3D Walker v2</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+  :root{
+    --bg:#0b0d10;
+    --panel:rgba(16,20,26,.78);
+    --line:rgba(180,210,255,.18);
+    --hot:#ff8a3d;
+    --cool:#7ad7ff;
+    --ok:#7CFFA8;
+    --warn:#FFD479;
+    --bad:#FF6E6E;
+    --ink:#e8eef7;
+    --dim:#7d8a9e;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);
+    font-family:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+    overflow:hidden;
+  }
+  #stage{position:fixed;inset:0}
+
+  #hud{
+    position:fixed;top:14px;left:14px;z-index:10;
+    background:var(--panel);
+    border:1px solid var(--line);
+    padding:14px 16px;border-radius:10px;
+    backdrop-filter:blur(10px);
+    min-width:320px;
+    box-shadow:0 10px 40px rgba(0,0,0,.5);
+  }
+  #hud h1{
+    margin:0 0 8px;font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--cool);font-weight:600;
+  }
+  #hud .sub{font-size:10px;color:var(--dim);margin-bottom:12px;letter-spacing:.06em}
+  .axis{margin:8px 0}
+  .axis .row{display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px}
+  .axis .row .lab{color:var(--dim);letter-spacing:.06em}
+  .axis .row .val{font-variant-numeric:tabular-nums}
+  .bar{position:relative;height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden}
+  .bar.center::before{
+    content:"";position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;
+    background:rgba(255,255,255,.22);
+  }
+  .bar > i{
+    position:absolute;top:0;bottom:0;left:50%;width:2px;
+    background:linear-gradient(90deg,var(--hot),var(--cool));
+    transform-origin:left center;transition:transform .05s linear;
+  }
+  #status{
+    margin-top:10px;padding-top:10px;border-top:1px solid var(--line);
+    font-size:10px;letter-spacing:.05em;color:var(--warn);
+  }
+  #status.connected{color:var(--ok)}
+  #status.error{color:var(--bad)}
+
+  #legend{
+    position:fixed;bottom:14px;left:14px;z-index:10;
+    background:var(--panel);border:1px solid var(--line);
+    padding:10px 14px;border-radius:10px;backdrop-filter:blur(10px);
+    font-size:10px;color:var(--dim);letter-spacing:.05em;
+    max-width:340px;line-height:1.7;
+  }
+  #legend b{color:var(--cool);font-weight:600}
+  #legend .k{color:var(--hot)}
+  kbd{background:rgba(255,255,255,.08);border:1px solid var(--line);
+    padding:1px 6px;border-radius:3px;color:var(--ink);font-size:9px;
+    font-family:inherit}
+
+  #map{
+    position:fixed;top:14px;right:14px;z-index:10;
+    width:180px;height:180px;
+    background:var(--panel);border:1px solid var(--line);
+    border-radius:10px;backdrop-filter:blur(10px);
+    overflow:hidden;
+  }
+  #map canvas{display:block;width:100%;height:100%}
+  #map .label{
+    position:absolute;top:6px;left:8px;font-size:9px;
+    color:var(--dim);letter-spacing:.18em;text-transform:uppercase;
+  }
+
+  .pos{
+    margin-top:10px;padding-top:10px;border-top:1px solid var(--line);
+    font-size:10px;color:var(--dim);letter-spacing:.05em;
+    display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;
+  }
+  .pos div span{color:var(--ink);font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+  <div id="stage"></div>
+
+  <div id="hud">
+    <h1>◢ Gladiator NXT EVO · Telemetry</h1>
+    <div class="sub">Pitch · Roll · Yaw → walking + strafe + turn</div>
+
+    <div class="axis">
+      <div class="row"><span class="lab">PITCH (Y) — fwd/back</span><span class="val" id="vP">0.000</span></div>
+      <div class="bar center"><i id="bP"></i></div>
+    </div>
+    <div class="axis">
+      <div class="row"><span class="lab">ROLL (X) — strafe</span><span class="val" id="vR">0.000</span></div>
+      <div class="bar center"><i id="bR"></i></div>
+    </div>
+    <div class="axis">
+      <div class="row"><span class="lab">YAW (Rz) — turn</span><span class="val" id="vT">0.000</span></div>
+      <div class="bar center"><i id="bT"></i></div>
+      <div class="row" style="margin-top:3px;font-size:10px"><span class="lab">↳ raw / center</span><span class="val" id="vTraw">0.000 / 0.000</span></div>
+    </div>
+
+    <div class="pos">
+      <div>X<br><span id="px">0.0</span></div>
+      <div>Z<br><span id="pz">0.0</span></div>
+      <div>HEAD<br><span id="ph">0°</span></div>
+    </div>
+
+    <div id="status">⌛ Press any button on the stick to wake it up</div>
+  </div>
+
+  <div id="map">
+    <div class="label">Map · Top-down</div>
+    <canvas id="mapCanvas" width="360" height="360"></canvas>
+  </div>
+
+  <div id="legend">
+    <b>CONTROLS</b><br/>
+    <span class="k">Push forward</span> → walk forward · <span class="k">pull back</span> → walk back<br/>
+    <span class="k">Tilt left/right</span> → strafe sideways<br/>
+    <span class="k">Twist grip</span> → turn (yaw)<br/>
+    Keyboard fallback: <kbd>W</kbd><kbd>S</kbd> walk · <kbd>A</kbd><kbd>D</kbd> strafe · <kbd>Q</kbd><kbd>E</kbd> turn<br/>
+    <span class="k">Press</span> <kbd>C</kbd> to <b>re-center</b> joystick (zero out drift)
+  </div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.module.min.js"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+
+const stage = document.getElementById('stage');
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0b0d10);
+scene.fog = new THREE.Fog(0x0b0d10, 22, 80);
+
+const camera = new THREE.PerspectiveCamera(55, innerWidth/innerHeight, 0.1, 300);
+
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+stage.appendChild(renderer.domElement);
+
+// floor grid
+const grid = new THREE.GridHelper(200, 200, 0x7ad7ff, 0x1e3550);
+grid.material.transparent = true;
+grid.material.opacity = 0.55;
+scene.add(grid);
+
+// origin ring
+const ring = new THREE.Mesh(
+  new THREE.RingGeometry(0.6, 0.7, 64),
+  new THREE.MeshBasicMaterial({color:0xff8a3d, side:THREE.DoubleSide, transparent:true, opacity:.55})
+);
+ring.rotation.x = -Math.PI/2;
+ring.position.y = 0.01;
+scene.add(ring);
+
+// pillars for visual reference
+const pillarMat = new THREE.MeshStandardMaterial({color:0x2a3a55, roughness:.8, emissive:0x0a1525, emissiveIntensity:.4});
+const pillarPositions = [
+  [10,0,10],[-10,0,10],[10,0,-10],[-10,0,-10],
+  [20,0,0],[-20,0,0],[0,0,20],[0,0,-20],
+  [15,0,-15],[-15,0,15]
+];
+pillarPositions.forEach(([x,_,z])=>{
+  const h = 1.5 + Math.random()*1.5;
+  const p = new THREE.Mesh(new THREE.BoxGeometry(0.8,h,0.8), pillarMat);
+  p.position.set(x, h/2, z);
+  p.castShadow = true; p.receiveShadow = true;
+  scene.add(p);
+});
+
+// edge dots
+const accentMat = new THREE.MeshBasicMaterial({color:0xff8a3d});
+[[0,1,30],[0,1,-30],[30,1,0],[-30,1,0]].forEach(([x,y,z])=>{
+  const dot = new THREE.Mesh(new THREE.SphereGeometry(0.18,12,8), accentMat);
+  dot.position.set(x,y,z); scene.add(dot);
+});
+
+// PERSON
+const person = new THREE.Group();
+scene.add(person);
+
+const skin = 0xf2c79a, shirt = 0xff8a3d, pants = 0x2a3a55;
+
+const torso = new THREE.Mesh(
+  new THREE.BoxGeometry(0.55, 0.7, 0.3),
+  new THREE.MeshStandardMaterial({color:shirt, roughness:.7})
+);
+torso.position.y = 1.25; torso.castShadow = true;
+person.add(torso);
+
+const head = new THREE.Mesh(
+  new THREE.SphereGeometry(0.22, 24, 16),
+  new THREE.MeshStandardMaterial({color:skin, roughness:.6})
+);
+head.position.y = 1.85; head.castShadow = true;
+person.add(head);
+
+// nose to show facing direction
+const nose = new THREE.Mesh(
+  new THREE.ConeGeometry(0.05, 0.12, 8),
+  new THREE.MeshStandardMaterial({color:0xd99a6a})
+);
+nose.rotation.x = Math.PI/2;
+nose.position.set(0, 1.85, 0.22);
+person.add(nose);
+
+function makeLimb(color, w=0.14, h=0.55, d=0.14){
+  return new THREE.Mesh(
+    new THREE.BoxGeometry(w,h,d),
+    new THREE.MeshStandardMaterial({color, roughness:.7})
+  );
+}
+const armL = makeLimb(shirt); armL.position.set(-0.36, 1.25, 0); armL.castShadow=true;
+const armR = makeLimb(shirt); armR.position.set( 0.36, 1.25, 0); armR.castShadow=true;
+person.add(armL, armR);
+
+const legL = makeLimb(pants, 0.18, 0.7, 0.18);
+legL.position.set(-0.14, 0.55, 0); legL.castShadow=true;
+const legR = makeLimb(pants, 0.18, 0.7, 0.18);
+legR.position.set( 0.14, 0.55, 0); legR.castShadow=true;
+person.add(legL, legR);
+
+function setPivot(mesh, pivotY){
+  mesh.geometry.translate(0, -pivotY, 0);
+  mesh.position.y += pivotY;
+}
+setPivot(armL, 0.275); setPivot(armR, 0.275);
+setPivot(legL, 0.35);  setPivot(legR, 0.35);
+
+const shadow = new THREE.Mesh(
+  new THREE.CircleGeometry(0.45, 24),
+  new THREE.MeshBasicMaterial({color:0x000000, transparent:true, opacity:.35})
+);
+shadow.rotation.x = -Math.PI/2;
+shadow.position.y = 0.015;
+person.add(shadow);
+
+// LIGHTS
+scene.add(new THREE.AmbientLight(0x6688aa, 0.5));
+const key = new THREE.DirectionalLight(0xffd9b0, 1.1);
+key.position.set(5, 9, 4);
+key.castShadow = true;
+key.shadow.mapSize.set(1024,1024);
+key.shadow.camera.left=-15; key.shadow.camera.right=15;
+key.shadow.camera.top=15;   key.shadow.camera.bottom=-15;
+scene.add(key);
+const rim = new THREE.DirectionalLight(0x7ad7ff, 0.6);
+rim.position.set(-4, 3, -5);
+scene.add(rim);
+
+// INPUT
+const status = document.getElementById('status');
+const vP=document.getElementById('vP'), bP=document.getElementById('bP');
+const vR=document.getElementById('vR'), bR=document.getElementById('bR');
+const vT=document.getElementById('vT'), bT=document.getElementById('bT');
+const px=document.getElementById('px'), pz=document.getElementById('pz'), ph=document.getElementById('ph');
+
+const keys = {fwd:false,back:false,left:false,right:false,turnL:false,turnR:false};
+const movementKeys = ['w','a','s','d','q','e','arrowup','arrowdown','arrowleft','arrowright'];
+addEventListener('keydown', e=>{
+  const k = e.key.toLowerCase();
+  if (movementKeys.includes(k)) e.preventDefault();
+  if (k==='w'||k==='arrowup')   keys.fwd=true;
+  if (k==='s'||k==='arrowdown') keys.back=true;
+  if (k==='a'||k==='arrowleft') keys.left=true;
+  if (k==='d'||k==='arrowright')keys.right=true;
+  if (k==='q') keys.turnL=true;
+  if (k==='e') keys.turnR=true;
+});
+addEventListener('keyup', e=>{
+  const k = e.key.toLowerCase();
+  if (movementKeys.includes(k)) e.preventDefault();
+  if (k==='w'||k==='arrowup')   keys.fwd=false;
+  if (k==='s'||k==='arrowdown') keys.back=false;
+  if (k==='a'||k==='arrowleft') keys.left=false;
+  if (k==='d'||k==='arrowright')keys.right=false;
+  if (k==='q') keys.turnL=false;
+  if (k==='e') keys.turnR=false;
+});
+
+addEventListener('gamepadconnected', e=>{
+  status.textContent = '⏳ Calibrating ' + e.gamepad.id + ' — keep stick centered…';
+  status.className = '';
+  // reset calibration state for the new pad
+  calibrated = false; calibFrames = 0;
+  calibAccum.x = calibAccum.y = calibAccum.z = 0;
+});
+addEventListener('gamepaddisconnected', ()=>{
+  status.textContent = '✗ Joystick disconnected';
+  status.className = 'error';
+});
+
+function clean(raw, dz=0.08, invert=false){
+  let v = invert ? -raw : raw;
+  if (Math.abs(v) < dz) return 0;
+  v = (v - Math.sign(v)*dz) / (1 - dz);
+  return Math.max(-1, Math.min(1, v));
+}
+
+// ── auto-calibration: capture resting position of every axis once,
+//    subtract that offset on every read so a non-zero center = 0 input.
+const center = {x:0, y:0, z:0};
+let calibrated = false;
+let calibFrames = 0;
+const CALIB_NEEDED = 30;       // average over ~half a second at 60fps
+const calibAccum = {x:0, y:0, z:0};
+let lastRawYaw = 0;
+
+function recenter(){
+  // snapshot current axes as the new zero-point
+  const pads = navigator.getGamepads ? navigator.getGamepads() : [];
+  for (const p of pads){
+    if (!p) continue;
+    center.x = p.axes[0] ?? 0;
+    center.y = p.axes[1] ?? 0;
+    let yawRaw = p.axes[2];
+    if (yawRaw === undefined || yawRaw === null) yawRaw = p.axes[3] ?? 0;
+    center.z = yawRaw ?? 0;
+    calibrated = true;
+    status.textContent = '✓ Re-centered · ' + p.id;
+    status.className = 'connected';
+    return;
+  }
+}
+addEventListener('keydown', e=>{
+  if (e.key.toLowerCase() === 'c') recenter();
+});
+
+function readStick(){
+  // start with keyboard contribution (always active)
+  let pitch = (keys.fwd?1:0)+(keys.back?-1:0);
+  let roll  = (keys.right?1:0)+(keys.left?-1:0);
+  let yaw   = (keys.turnR?1:0)+(keys.turnL?-1:0);
+
+  const pads = navigator.getGamepads ? navigator.getGamepads() : [];
+  for (const p of pads){
+    if (!p) continue;
+
+    const rawX = p.axes[0] ?? 0;
+    const rawY = p.axes[1] ?? 0;
+    let   rawZ = p.axes[2];
+    if (rawZ === undefined || rawZ === null) rawZ = p.axes[3] ?? 0;
+    rawZ = rawZ ?? 0;
+    lastRawYaw = rawZ;
+
+    // first ~30 frames after connect: average to find the true rest position
+    if (!calibrated){
+      calibAccum.x += rawX; calibAccum.y += rawY; calibAccum.z += rawZ;
+      calibFrames++;
+      if (calibFrames >= CALIB_NEEDED){
+        center.x = calibAccum.x / calibFrames;
+        center.y = calibAccum.y / calibFrames;
+        center.z = calibAccum.z / calibFrames;
+        calibrated = true;
+      }
+      // during calibration, only keyboard works
+      break;
+    }
+
+    // joystick adds onto keyboard; clamp to [-1,1]
+    const jRoll  = clean(rawX - center.x, 0.08);
+    const jPitch = clean(rawY - center.y, 0.08, true);
+    const jYaw   = clean(rawZ - center.z, 0.12);
+    pitch = Math.max(-1, Math.min(1, pitch + jPitch));
+    roll  = Math.max(-1, Math.min(1, roll  + jRoll));
+    yaw   = Math.max(-1, Math.min(1, yaw   + jYaw));
+    break;   // only use first connected pad
+  }
+
+  return {pitch, roll, yaw};
+}
+
+// MOVEMENT
+let heading = 0;
+const MAX_WALK = 4.0, MAX_STRAFE = 3.0, MAX_TURN = 2.2;
+
+// MINI-MAP
+const mapCanvas = document.getElementById('mapCanvas');
+const mctx = mapCanvas.getContext('2d');
+const mapTrail = [];
+
+function drawMap(){
+  const W = mapCanvas.width, H = mapCanvas.height;
+  mctx.fillStyle = 'rgba(11,13,16,0.4)';
+  mctx.fillRect(0,0,W,H);
+
+  mctx.strokeStyle = 'rgba(122,215,255,0.12)';
+  mctx.lineWidth = 1;
+  const step = 30;
+  for (let i=0;i<=W;i+=step){
+    mctx.beginPath(); mctx.moveTo(i,0); mctx.lineTo(i,H); mctx.stroke();
+    mctx.beginPath(); mctx.moveTo(0,i); mctx.lineTo(W,i); mctx.stroke();
+  }
+  mctx.strokeStyle = 'rgba(255,138,61,0.35)';
+  mctx.beginPath(); mctx.moveTo(W/2,0); mctx.lineTo(W/2,H); mctx.stroke();
+  mctx.beginPath(); mctx.moveTo(0,H/2); mctx.lineTo(W,H/2); mctx.stroke();
+
+  mctx.fillStyle = 'rgba(122,215,255,0.6)';
+  pillarPositions.forEach(([x,_,z])=>{
+    const sx = W/2 + x*4;
+    const sy = H/2 + z*4;
+    mctx.fillRect(sx-2, sy-2, 4, 4);
+  });
+
+  mctx.strokeStyle = 'rgba(255,138,61,0.5)';
+  mctx.lineWidth = 1.2;
+  mctx.beginPath();
+  mapTrail.forEach((pt,i)=>{
+    const sx = W/2 + pt.x*4;
+    const sy = H/2 + pt.z*4;
+    if (i===0) mctx.moveTo(sx,sy); else mctx.lineTo(sx,sy);
+  });
+  mctx.stroke();
+
+  const sx = W/2 + person.position.x*4;
+  const sy = H/2 + person.position.z*4;
+  mctx.save();
+  mctx.translate(sx,sy);
+  mctx.rotate(-heading);
+  mctx.fillStyle = '#ff8a3d';
+  mctx.beginPath();
+  mctx.moveTo(0,-7); mctx.lineTo(5,5); mctx.lineTo(-5,5); mctx.closePath();
+  mctx.fill();
+  mctx.restore();
+}
+
+// LOOP
+const clock = new THREE.Clock();
+let walkPhase = 0, trailTimer = 0;
+
+function tick(){
+  const dt = Math.min(0.05, clock.getDelta());
+  const {pitch, roll, yaw} = readStick();
+
+  heading -= yaw * MAX_TURN * dt;
+  person.rotation.y = heading;
+
+  const fx = Math.sin(heading), fz = Math.cos(heading);
+  const rx = Math.cos(heading), rz = -Math.sin(heading);
+
+  const walkSpeed   = pitch * MAX_WALK;
+  const strafeSpeed = roll  * MAX_STRAFE;
+
+  person.position.x += (-fx * walkSpeed + rx * strafeSpeed) * dt;
+  person.position.z += (-fz * walkSpeed + rz * strafeSpeed) * dt;
+
+  const motion = Math.min(1, Math.hypot(pitch, roll));
+  walkPhase += motion * dt * 7;
+  const swing = Math.sin(walkPhase) * 0.6 * motion;
+  legL.rotation.x =  swing;
+  legR.rotation.x = -swing;
+  armL.rotation.x = -swing * 0.7;
+  armR.rotation.x =  swing * 0.7;
+  torso.position.y = 1.25 + Math.abs(Math.sin(walkPhase*2)) * 0.04 * motion;
+
+  // chase cam behind heading
+  const camDist = 7.5, camHeight = 4.2;
+  const camX = person.position.x + Math.sin(heading) * camDist;
+  const camZ = person.position.z + Math.cos(heading) * camDist;
+  camera.position.lerp(new THREE.Vector3(camX, camHeight, camZ), 0.08);
+  camera.lookAt(person.position.x, 1.2, person.position.z);
+
+  vP.textContent = pitch.toFixed(3); bP.style.transform = `scaleX(${pitch * 140})`;
+  vR.textContent = roll.toFixed(3);  bR.style.transform = `scaleX(${roll  * 140})`;
+  vT.textContent = yaw.toFixed(3);   bT.style.transform = `scaleX(${yaw   * 140})`;
+  document.getElementById('vTraw').textContent =
+    lastRawYaw.toFixed(3) + ' / ' + center.z.toFixed(3);
+
+  // flip status to green once auto-cal finishes
+  if (calibrated && !status.classList.contains('connected') && status.textContent.startsWith('⏳')){
+    status.textContent = '✓ Calibrated · drift corrected';
+    status.className = 'connected';
+  }
+  px.textContent = person.position.x.toFixed(1);
+  pz.textContent = person.position.z.toFixed(1);
+  ph.textContent = ((heading * 180/Math.PI) % 360).toFixed(0) + '°';
+
+  trailTimer += dt;
+  if (trailTimer > 0.1){
+    trailTimer = 0;
+    mapTrail.push({x: person.position.x, z: person.position.z});
+    if (mapTrail.length > 400) mapTrail.shift();
+  }
+  drawMap();
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(tick);
+}
+tick();
+
+addEventListener('resize', ()=>{
+  camera.aspect = innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+</script>
+</body>
+</html>
