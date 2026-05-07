@@ -51,6 +51,87 @@
   svg {
     display: block;
   }
+  .rest-gallery {
+    display: none;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+  .rest-gallery.active {
+    display: block;
+  }
+  .rest-gallery h2 {
+    margin: 0 0 4px 0;
+    color: #c0392b;
+    font-size: 18px;
+  }
+  .rest-gallery .gallery-sub {
+    color: #888;
+    font-size: 13px;
+    margin-bottom: 18px;
+  }
+  .rest-tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+  }
+  .rest-tile {
+    border: 1px solid #e8e8e8;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .rest-tile:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  .rest-tile-img {
+    width: 100%;
+    height: 140px;
+    background-size: cover;
+    background-position: center;
+    background-color: #f0f0f0;
+  }
+  .rest-tile-body {
+    padding: 12px;
+  }
+  .rest-tile-name {
+    font-weight: bold;
+    font-size: 14px;
+    color: #222;
+    margin-bottom: 6px;
+  }
+  .rest-tile-name .num {
+    display: inline-block;
+    background: #c0392b;
+    color: #fff;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    line-height: 20px;
+    font-size: 11px;
+    margin-right: 6px;
+  }
+  .rest-tile-desc {
+    font-size: 12px;
+    color: #555;
+    line-height: 1.4;
+    margin-bottom: 10px;
+  }
+  .rest-tile-link {
+    display: inline-block;
+    font-size: 12px;
+    color: #2980b9;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .rest-tile-link:hover {
+    text-decoration: underline;
+  }
 </style>
 </head>
 <body>
@@ -76,6 +157,9 @@
 </svg>
 </div>
 
+<!-- Restaurant tile galleries (shown when Restaurants tab is active) -->
+<div id="rest-galleries" style="margin-top: 24px;"></div>
+
 <script>
 const personColors = {
   P1: '#e74c3c',
@@ -83,6 +167,150 @@ const personColors = {
   P3: '#2ecc71',
   P4: '#f39c12',
   P5: '#9b59b6'
+};
+
+// Per-location restaurant and shopping recommendations
+const placesData = {
+  'Zurich': {
+    restaurants: [
+      'Zeughauskeller — traditional Swiss',
+      'Kronenhalle — classic, art-filled',
+      'Confiserie Sprüngli — chocolate & lunch',
+      'Hiltl — world\'s oldest vegetarian'
+    ],
+    shopping: [
+      'Bahnhofstrasse — luxury & main shops',
+      'Niederdorf — old town boutiques',
+      'Globus — department store',
+      'Sprüngli — Swiss chocolate'
+    ]
+  },
+  'Interlaken': {
+    restaurants: [
+      'Restaurant Taverne — Swiss classics',
+      'Husi Bierhaus — local beer & food',
+      'Sapori — Italian',
+      'Benacus — modern Swiss'
+    ],
+    shopping: [
+      'Höheweg — main shopping street',
+      'Kirchhofer — watches & souvenirs',
+      'Migros / Coop — supermarkets',
+      'Swiss Knife Valley — outdoor gear'
+    ]
+  },
+  'Grindelwald': {
+    restaurants: [
+      'Restaurant Barry\'s — Swiss-Alpine',
+      'C and M — bistro & coffee',
+      'Onkel Tom\'s Hütte — pizza',
+      'Memory Restaurant — fondue & raclette'
+    ],
+    shopping: [
+      'Dorfstrasse — village main street',
+      'Bergsport Outlet — ski/hike gear',
+      'Coop — supermarket',
+      'Souvenir shops along Bahnhofplatz'
+    ]
+  },
+  'Milano': {
+    restaurants: [
+      'Trattoria Milanese — classic',
+      'Ratanà — modern Milanese',
+      'Luini Panzerotti — quick bite',
+      'Il Salumaio — Brera district'
+    ],
+    shopping: [
+      'Quadrilatero della Moda — luxury',
+      'Galleria Vittorio Emanuele II',
+      'Corso Buenos Aires — high-street',
+      'La Rinascente — department store'
+    ]
+  },
+  'Firenze': {
+    restaurants: [
+      {
+        name: 'Ristorante Perseus',
+        desc: 'Famous T-bone (Bistecca Fiorentina) spot loved by locals. A bit far from the city center.',
+        link: 'https://www.google.com/maps/search/?api=1&query=Ristorante+Perseus+Firenze',
+        image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=400&h=300&fit=crop'
+      },
+      {
+        name: 'Ristorante Il Parione',
+        desc: 'Upscale restaurant near the luxury shopping street Via Tornabuoni.',
+        link: 'https://www.google.com/maps/search/?api=1&query=Ristorante+Il+Parione+Firenze',
+        image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop'
+      },
+      {
+        name: 'La Falterona',
+        desc: 'T-bone steak near Florence Central Station and San Lorenzo Market. Lobster spaghetti is also great.',
+        link: 'https://www.google.com/maps/search/?api=1&query=La+Falterona+Firenze',
+        image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=300&fit=crop'
+      },
+      {
+        name: 'Antico Fattore',
+        desc: 'Historic restaurant near the Uffizi Gallery, recently featured on Korean travel TV (Tent Out: Italy).',
+        link: 'https://www.google.com/maps/search/?api=1&query=Antico+Fattore+Firenze',
+        image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&h=300&fit=crop'
+      },
+      {
+        name: 'La Bussola',
+        desc: 'Famous downtown spot with variety — meat, fish, pizza, pasta — something for everyone.',
+        link: 'https://www.google.com/maps/search/?api=1&query=La+Bussola+Firenze',
+        image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&h=300&fit=crop'
+      },
+      {
+        name: 'Ciro & Sons',
+        desc: 'Pizza spot near Central Station. Pizza, meat, and pasta — truffle pasta is a standout.',
+        link: 'https://www.google.com/maps/search/?api=1&query=Ciro+and+Sons+Firenze',
+        image: 'https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?w=400&h=300&fit=crop'
+      },
+      {
+        name: 'Osteria dei Centopoveri',
+        desc: 'Great-value popular spot near the Santa Maria Novella church.',
+        link: 'https://www.google.com/maps/search/?api=1&query=Osteria+dei+Centopoveri+Firenze',
+        image: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=400&h=300&fit=crop'
+      },
+      {
+        name: 'Trattoria la Gratella',
+        desc: 'T-bone spot near the Central Market. Friendly, popular with Korean visitors.',
+        link: 'https://www.google.com/maps/search/?api=1&query=Trattoria+la+Gratella+Firenze',
+        image: 'https://images.unsplash.com/photo-1558030006-450675393462?w=400&h=300&fit=crop'
+      },
+      {
+        name: "I'Mangiarino",
+        desc: 'Affordable home-style local restaurant near the Duomo. Great Antipasto, Ribollita (Tuscan home cooking), and handmade pasta. Well-known among locals.',
+        link: 'https://www.google.com/maps/search/?api=1&query=I+Mangiarino+Firenze',
+        image: 'https://images.unsplash.com/photo-1481931098730-318b6f776db0?w=400&h=300&fit=crop'
+      },
+      {
+        name: 'Matto Matto Firenze',
+        desc: 'Great-value Tuscan spot popular with locals near the Central Market. Especially good for pizza.',
+        link: 'https://www.google.com/maps/search/?api=1&query=Matto+Matto+Firenze',
+        image: 'https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=400&h=300&fit=crop'
+      }
+    ],
+    shopping: [
+      'Ponte Vecchio — gold & jewelry',
+      'Via de\' Tornabuoni — luxury',
+      'Mercato Centrale — food & crafts',
+      'San Lorenzo Market — leather'
+    ]
+  },
+  'Rome': {
+    restaurants: [
+      'Roscioli — Roman classics',
+      'Pizzarium — pizza al taglio',
+      'Da Enzo al 29 — Trastevere',
+      'Giolitti — historic gelato'
+    ],
+    shopping: [
+      'Via del Corso — main shopping',
+      'Via Condotti — luxury near Spanish Steps',
+      'Campo de\' Fiori — market',
+      'Via del Governo Vecchio — vintage'
+    ]
+  }
 };
 
 const schedule = [
@@ -247,7 +475,7 @@ blocks.forEach((b) => {
   for (let d = 0; d < b.days; d++) {
     const dateLabel = createEl('text', {
       x: b.x + d * COL_WIDTH + COL_WIDTH/2,
-      y: b.y - 30,
+      y: b.y - 16,
       'text-anchor': 'middle',
       'font-size': 11, fill: '#666',
       'font-weight': 'bold'
@@ -257,7 +485,7 @@ blocks.forEach((b) => {
   }
 
   const locLabel = createEl('text', {
-    x: b.x + b.width/2, y: b.y - 90,
+    x: b.x + b.width/2, y: b.y - 100,
     'text-anchor': 'middle',
     'font-size': 17, 'font-weight': 'bold', fill: '#222'
   });
@@ -265,7 +493,7 @@ blocks.forEach((b) => {
   svg.appendChild(locLabel);
 
   const hotelLabel = createEl('text', {
-    x: b.x + b.width/2, y: b.y - 72,
+    x: b.x + b.width/2, y: b.y - 84,
     'text-anchor': 'middle',
     'font-size': 11, 'font-style': 'italic', fill: '#777'
   });
@@ -273,7 +501,7 @@ blocks.forEach((b) => {
   svg.appendChild(hotelLabel);
 
   const peopleLabel = createEl('text', {
-    x: b.x + b.width/2, y: b.y - 54,
+    x: b.x + b.width/2, y: b.y - 68,
     'text-anchor': 'middle',
     'font-size': 10, fill: '#999'
   });
@@ -289,9 +517,82 @@ blocks.forEach((b) => {
   });
   svg.appendChild(rect);
 
+  // ===== Tab badges (Schedule / Restaurants / Shopping) =====
+  // Place them between people row and date row, above the block
+  const tabY = b.y - 48;
+  const tabH = 18;
+  const tabGap = 4;
+  const tabs = [
+    { id: 'schedule',    label: 'Schedule',    icon: '📅' },
+    { id: 'restaurants', label: 'Restaurants', icon: '🍽' },
+    { id: 'shopping',    label: 'Shopping',    icon: '🛍' }
+  ];
+
+  // Calculate tab widths so all 3 fit within block width
+  const totalTabSpace = b.width - (tabs.length - 1) * tabGap;
+  const tabW = Math.max(60, totalTabSpace / tabs.length);
+
+  tabs.forEach((tab, ti) => {
+    const tx = b.x + ti * (tabW + tabGap);
+    const isActive = tab.id === 'schedule';
+
+    const tabRect = createEl('rect', {
+      x: tx, y: tabY,
+      width: tabW, height: tabH,
+      fill: isActive ? '#222' : '#fff',
+      stroke: '#444',
+      'stroke-width': 1, rx: 10,
+      style: 'cursor: pointer;',
+      'data-block': b.idx,
+      'data-tab': tab.id,
+      'class': 'tab-btn'
+    });
+    svg.appendChild(tabRect);
+
+    const tabText = createEl('text', {
+      x: tx + tabW/2, y: tabY + 13,
+      'text-anchor': 'middle',
+      'font-size': 10,
+      'font-weight': isActive ? 'bold' : 'normal',
+      fill: isActive ? '#fff' : '#444',
+      'class': 'tab-text',
+      'data-block': b.idx,
+      'data-tab': tab.id,
+      style: 'cursor: pointer; pointer-events: none;'
+    });
+    tabText.textContent = `${tab.icon} ${tab.label}`;
+    svg.appendChild(tabText);
+  });
+
+  // ===== Schedule view group (default visible) =====
+  const scheduleGroup = createEl('g', {
+    id: `schedule-${b.idx}`,
+    'data-block': b.idx,
+    'data-view': 'schedule'
+  });
+  svg.appendChild(scheduleGroup);
+
+  // ===== Restaurants view group (hidden by default) =====
+  const restGroup = createEl('g', {
+    id: `restaurants-${b.idx}`,
+    'data-block': b.idx,
+    'data-view': 'restaurants',
+    style: 'display: none;'
+  });
+  svg.appendChild(restGroup);
+
+  // ===== Shopping view group (hidden by default) =====
+  const shopGroup = createEl('g', {
+    id: `shopping-${b.idx}`,
+    'data-block': b.idx,
+    'data-view': 'shopping',
+    style: 'display: none;'
+  });
+  svg.appendChild(shopGroup);
+
   for (let d = 1; d < b.days; d++) {
     const sepX = b.x + d * COL_WIDTH;
-    svg.appendChild(createEl('line', {
+    scheduleGroup.appendChild(createEl('line', {
       x1: sepX, y1: b.y, x2: sepX, y2: b.y + b.height,
       stroke: '#ddd', 'stroke-width': 1,
       'stroke-dasharray': '3,3'
@@ -300,7 +601,7 @@ blocks.forEach((b) => {
 
   for (let h = HOUR_TOP + 2; h < HOUR_BOTTOM; h += 2) {
     const gy = b.y + (h - HOUR_TOP) * HOUR_HEIGHT;
-    svg.appendChild(createEl('line', {
+    scheduleGroup.appendChild(createEl('line', {
       x1: b.x, y1: gy, x2: b.x + b.width, y2: gy,
       stroke: '#f3f3f3', 'stroke-width': 1
     }));
@@ -311,14 +612,14 @@ blocks.forEach((b) => {
     'font-size': 9, fill: '#bbb'
   });
   startLbl.textContent = '6 AM';
-  svg.appendChild(startLbl);
+  scheduleGroup.appendChild(startLbl);
 
   const endLbl = createEl('text', {
     x: b.x + b.width - 6, y: b.y + b.height - 6,
     'font-size': 9, fill: '#bbb', 'text-anchor': 'end'
   });
   endLbl.textContent = '10 PM';
-  svg.appendChild(endLbl);
+  scheduleGroup.appendChild(endLbl);
 
   // Event notes - draw with type-based styling
   b.notes.forEach(n => {
@@ -326,15 +627,13 @@ blocks.forEach((b) => {
     const colX = b.x + n.day * COL_WIDTH;
     const style = noteStyle(n.type);
 
-    // tick line
-    svg.appendChild(createEl('line', {
+    scheduleGroup.appendChild(createEl('line', {
       x1: colX, y1: ny,
       x2: colX + COL_WIDTH, y2: ny,
       stroke: style.color, 'stroke-width': 1, opacity: 0.5
     }));
 
-    // dot at start of tick
-    svg.appendChild(createEl('circle', {
+    scheduleGroup.appendChild(createEl('circle', {
       cx: colX + 3, cy: ny, r: 2.5, fill: style.color
     }));
 
@@ -343,15 +642,138 @@ blocks.forEach((b) => {
       'font-size': 9, 'font-weight': 'bold', fill: style.color
     });
     noteTime.textContent = n.time;
-    svg.appendChild(noteTime);
+    scheduleGroup.appendChild(noteTime);
 
     const noteText = createEl('text', {
       x: colX + 8, y: ny + 10,
       'font-size': 8.5, fill: '#444'
     });
     noteText.textContent = n.label;
-    svg.appendChild(noteText);
+    scheduleGroup.appendChild(noteText);
   });
+
+  // ===== Populate Restaurants group =====
+  const places = placesData[b.location] || { restaurants: [], shopping: [] };
+
+  const restHeader = createEl('text', {
+    x: b.x + b.width/2, y: b.y + 26,
+    'text-anchor': 'middle',
+    'font-size': 12, 'font-weight': 'bold', fill: '#c0392b'
+  });
+  restHeader.textContent = '🍽 Restaurants';
+  restGroup.appendChild(restHeader);
+
+  // Check if any restaurant is an object (rich format with image+link)
+  const hasRichRestaurants = places.restaurants.some(r => typeof r === 'object');
+
+  if (hasRichRestaurants) {
+    // Show a hint text inside the small SVG block; full tile view renders as HTML overlay
+    const hint = createEl('text', {
+      x: b.x + b.width/2, y: b.y + 50,
+      'text-anchor': 'middle',
+      'font-size': 10, fill: '#666'
+    });
+    hint.textContent = `${places.restaurants.length} picks — see tile view below ↓`;
+    restGroup.appendChild(hint);
+
+    // List restaurant names compactly
+    places.restaurants.forEach((r, i) => {
+      const ry = b.y + 75 + i * 18;
+      if (ry > b.y + b.height - 20) return; // skip if overflow
+      const txt = createEl('text', {
+        x: b.x + 10, y: ry,
+        'font-size': 9, fill: '#444'
+      });
+      txt.textContent = `${i+1}. ${r.name}`;
+      restGroup.appendChild(txt);
+    });
+  } else {
+    places.restaurants.forEach((r, i) => {
+      const ry = b.y + 60 + i * 32;
+      restGroup.appendChild(createEl('rect', {
+        x: b.x + 8, y: ry - 12,
+        width: b.width - 16, height: 26,
+        fill: '#fdf2f0', stroke: '#e8c5be',
+        'stroke-width': 1, rx: 4
+      }));
+      const rTxt = createEl('text', {
+        x: b.x + 14, y: ry + 4,
+        'font-size': 9.5, fill: '#333'
+      });
+      const maxChars = Math.floor((b.width - 24) / 5);
+      const txt = typeof r === 'string' ? r : r.name;
+      rTxt.textContent = txt.length > maxChars ? txt.substring(0, maxChars - 1) + '…' : txt;
+      const title = createEl('title');
+      title.textContent = txt;
+      rTxt.appendChild(title);
+      restGroup.appendChild(rTxt);
+    });
+  }
+
+  // ===== Populate Shopping group =====
+  const shopHeader = createEl('text', {
+    x: b.x + b.width/2, y: b.y + 26,
+    'text-anchor': 'middle',
+    'font-size': 12, 'font-weight': 'bold', fill: '#8e44ad'
+  });
+  shopHeader.textContent = '🛍 Shopping';
+  shopGroup.appendChild(shopHeader);
+
+  places.shopping.forEach((s, i) => {
+    const sy = b.y + 60 + i * 32;
+    shopGroup.appendChild(createEl('rect', {
+      x: b.x + 8, y: sy - 12,
+      width: b.width - 16, height: 26,
+      fill: '#f6f0fa', stroke: '#d6c5e0',
+      'stroke-width': 1, rx: 4
+    }));
+    const sTxt = createEl('text', {
+      x: b.x + 14, y: sy + 4,
+      'font-size': 9.5, fill: '#333'
+    });
+    const maxChars = Math.floor((b.width - 24) / 5);
+    sTxt.textContent = s.length > maxChars ? s.substring(0, maxChars - 1) + '…' : s;
+    const title = createEl('title');
+    title.textContent = s;
+    sTxt.appendChild(title);
+    shopGroup.appendChild(sTxt);
+  });
+});
+
+// ===== Build HTML restaurant galleries for blocks with rich restaurant data =====
+const galleryContainer = document.getElementById('rest-galleries');
+blocks.forEach(b => {
+  const places = placesData[b.location];
+  if (!places || !places.restaurants || !places.restaurants.length) return;
+  const hasRich = places.restaurants.some(r => typeof r === 'object');
+  if (!hasRich) return;
+
+  const gallery = document.createElement('div');
+  gallery.className = 'rest-gallery';
+  gallery.id = `gallery-${b.idx}`;
+
+  gallery.innerHTML = `
+    <h2>🍽 ${b.location} — Restaurant Picks</h2>
+    <div class="gallery-sub">${places.restaurants.length} recommended spots · click to open in Google Maps</div>
+    <div class="rest-tiles"></div>
+  `;
+  const tilesDiv = gallery.querySelector('.rest-tiles');
+
+  places.restaurants.forEach((r, i) => {
+    const tile = document.createElement('div');
+    tile.className = 'rest-tile';
+    tile.innerHTML = `
+      <div class="rest-tile-img" style="background-image: url('${r.image}');"></div>
+      <div class="rest-tile-body">
+        <div class="rest-tile-name"><span class="num">${i+1}</span>${r.name}</div>
+        <div class="rest-tile-desc">${r.desc}</div>
+        <a href="${r.link}" target="_blank" rel="noopener" class="rest-tile-link">📍 View on Google Maps →</a>
+      </div>
+    `;
+    tilesDiv.appendChild(tile);
+  });
+
+  galleryContainer.appendChild(gallery);
 });
 
 // Bezier connections
@@ -675,6 +1097,39 @@ legendItems.forEach(item => {
   txt.textContent = item.label;
   svg.appendChild(txt);
   lx += 160;
+});
+
+// ===== Tab interactivity =====
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', e => {
+    const blockIdx = btn.getAttribute('data-block');
+    const tabId = btn.getAttribute('data-tab');
+
+    // Hide all view groups for this block
+    ['schedule','restaurants','shopping'].forEach(v => {
+      const g = document.getElementById(`${v}-${blockIdx}`);
+      if (g) g.style.display = (v === tabId) ? '' : 'none';
+    });
+
+    // Toggle the HTML gallery for this block (only shows on Restaurants tab)
+    const gallery = document.getElementById(`gallery-${blockIdx}`);
+    if (gallery) {
+      if (tabId === 'restaurants') gallery.classList.add('active');
+      else gallery.classList.remove('active');
+    }
+
+    // Update tab visuals: find all tab buttons for this block
+    document.querySelectorAll(`.tab-btn[data-block="${blockIdx}"]`).forEach(t => {
+      const isActive = t.getAttribute('data-tab') === tabId;
+      t.setAttribute('fill', isActive ? '#222' : '#fff');
+    });
+    // Update tab text labels
+    document.querySelectorAll(`text.tab-text[data-block="${blockIdx}"]`).forEach(t => {
+      const isActive = t.getAttribute('data-tab') === tabId;
+      t.setAttribute('fill', isActive ? '#fff' : '#444');
+      t.setAttribute('font-weight', isActive ? 'bold' : 'normal');
+    });
+  });
 });
 
 </script>
