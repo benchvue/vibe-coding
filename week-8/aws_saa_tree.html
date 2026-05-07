@@ -56,19 +56,35 @@
   }
 
   .items { display: flex; flex-direction: column; gap: 6px; }
-  .item {
+  .item-wrap {
     display: inline-flex; align-items: center; gap: 6px;
-    background: #fff; border-left: 3px solid #00b8d4; color: #374151;
-    padding: 7px 14px; border-radius: 4px; font-size: 12px;
+    background: #fff; border-left: 3px solid #00b8d4;
+    padding: 5px 8px 5px 12px; border-radius: 4px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.04); transition: all 0.2s;
-    white-space: nowrap; width: max-content; text-decoration: none;
+    width: max-content;
   }
-  .item:hover {
-    border-left-color: #ff9900; background: #fff8ec; color: #232f3e;
+  .item-wrap:hover {
+    border-left-color: #ff9900; background: #fff8ec;
     transform: translateX(4px); box-shadow: 0 3px 10px rgba(255,153,0,0.18);
   }
-  .item::after { content: '↗'; font-size: 10px; color: #9ca3af; margin-left: 4px; }
-  .item:hover::after { color: #ff9900; }
+  .item-link {
+    color: #374151; font-size: 12px; text-decoration: none; white-space: nowrap;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .item-wrap:hover .item-link { color: #232f3e; }
+  .item-link::after { content: '↗'; font-size: 10px; color: #9ca3af; }
+  .item-wrap:hover .item-link::after { color: #ff9900; }
+
+  .badge {
+    display: inline-flex; text-decoration: none; align-items: center; justify-content: center;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: linear-gradient(135deg, #ff9900, #ec7211);
+    color: #fff; font-size: 11px; cursor: pointer;
+    border: none; flex-shrink: 0; transition: transform 0.15s;
+    box-shadow: 0 1px 3px rgba(236,114,17,0.4);
+  }
+  .badge:hover { transform: scale(1.15); }
+  .badge svg { width: 13px; height: 13px; fill: currentColor; }
 
   .legend {
     margin: 30px auto 0; padding: 15px 20px; background: #fff;
@@ -76,12 +92,16 @@
     font-size: 13px; color: #4b5563; max-width: 1100px;
   }
   .legend strong { color: #ec7211; }
+  .legend .badge-demo {
+    display: inline-flex; vertical-align: middle; margin: 0 4px;
+    width: 18px; height: 18px;
+  }
 </style>
 </head>
 <body>
 
 <h1>🎓 AWS Certified Solutions Architect <span>– Associate (SAA-C03)</span></h1>
-<p class="subtitle">Click any item to open the AWS product page (avoids docs.aws.amazon.com)</p>
+<p class="subtitle">Click the orange badge to see AWS's official architecture diagram · Click the text for the AWS product overview page</p>
 
 <div class="tree-wrapper">
 <div class="canvas" id="canvas">
@@ -101,31 +121,31 @@
           <div class="cat-row">
             <div class="category" data-node="d1-c1">Identity & Access (IAM)</div>
             <div class="items" data-parent="d1-c1">
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/iam/">IAM Users, Groups, Roles, Policies</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/iam/identity-center/">IAM Identity Center (SSO) & Federation</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/iam/features/manage-roles/">STS, AssumeRole, Cross-account access</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/iam/features/mfa/">MFA, Permission Boundaries, SCPs</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/organizations/">AWS Organizations & OUs</a>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/iam/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/iam/">IAM Users, Groups, Roles, Policies</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/iam/identity-center/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/iam/identity-center/">IAM Identity Center (SSO) & Federation</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/iam/features/manage-roles/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/iam/features/manage-roles/">STS, AssumeRole, Cross-account access</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/iam/features/mfa/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/iam/features/mfa/">MFA, Permission Boundaries, SCPs</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/organizations/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/organizations/">AWS Organizations & OUs</a></div>
             </div>
           </div>
           <div class="cat-row">
             <div class="category" data-node="d1-c2">Data Protection</div>
             <div class="items" data-parent="d1-c2">
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/kms/">KMS (CMK, rotation, envelope encryption)</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/secrets-manager/">CloudHSM, Secrets Manager, SSM Parameter Store</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/certificate-manager/">Encryption in transit (TLS/SSL, ACM)</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/s3/features/security/">S3 encryption (SSE-S3, SSE-KMS, SSE-C)</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/macie/">Macie (PII detection)</a>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/kms/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/kms/">KMS (CMK, rotation, envelope encryption)</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/secrets-manager/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/secrets-manager/">CloudHSM, Secrets Manager, SSM Parameter Store</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/certificate-manager/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/certificate-manager/">Encryption in transit (TLS/SSL, ACM)</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/s3/features/security/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/s3/features/security/">S3 encryption (SSE-S3, SSE-KMS, SSE-C)</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/macie/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/macie/">Macie (PII detection)</a></div>
             </div>
           </div>
           <div class="cat-row">
             <div class="category" data-node="d1-c3">Network Security</div>
             <div class="items" data-parent="d1-c3">
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/vpc/features/">Security Groups vs NACLs</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/waf/">WAF, Shield, Shield Advanced</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/guardduty/">GuardDuty, Inspector, Detective</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/privatelink/">VPC Endpoints (Gateway / Interface)</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/network-firewall/">PrivateLink, Network Firewall</a>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/vpc/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/vpc/features/">Security Groups vs NACLs</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/waf/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/waf/">WAF, Shield, Shield Advanced</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/guardduty/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/guardduty/">GuardDuty, Inspector, Detective</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/privatelink/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/privatelink/">VPC Endpoints (Gateway / Interface)</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/privatelink/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/network-firewall/">PrivateLink, Network Firewall</a></div>
             </div>
           </div>
         </div>
@@ -139,31 +159,31 @@
           <div class="cat-row">
             <div class="category" data-node="d2-c1">High Availability & DR</div>
             <div class="items" data-parent="d2-c1">
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/about-aws/global-infrastructure/regions_az/">Multi-AZ vs Multi-Region designs</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/disaster-recovery/">DR strategies (Backup, Pilot Light, Warm Standby, Multi-Site)</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/architecture/well-architected/">RTO & RPO concepts</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/route53/">Route 53 routing policies & failover</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/backup/">AWS Backup, Elastic Disaster Recovery</a>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/about-aws/global-infrastructure/regions_az/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/about-aws/global-infrastructure/regions_az/">Multi-AZ vs Multi-Region designs</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/disaster-recovery/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/disaster-recovery/">DR strategies (Backup, Pilot Light, Warm Standby, Multi-Site)</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/architecture/well-architected/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/architecture/well-architected/">RTO & RPO concepts</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/route53/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/route53/">Route 53 routing policies & failover</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/backup/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/backup/">AWS Backup, Elastic Disaster Recovery</a></div>
             </div>
           </div>
           <div class="cat-row">
             <div class="category" data-node="d2-c2">Decoupling & Scaling</div>
             <div class="items" data-parent="d2-c2">
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/sqs/">SQS (Standard, FIFO, DLQ, visibility timeout)</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/sns/">SNS (fan-out, filtering)</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/eventbridge/">EventBridge, Step Functions</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/ec2/autoscaling/">Auto Scaling Groups & policies</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/elasticloadbalancing/">Elastic Load Balancers (ALB, NLB, GWLB)</a>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/sqs/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/sqs/">SQS (Standard, FIFO, DLQ, visibility timeout)</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/sns/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/sns/">SNS (fan-out, filtering)</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/eventbridge/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/eventbridge/">EventBridge, Step Functions</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/ec2/autoscaling/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/ec2/autoscaling/">Auto Scaling Groups & policies</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/elasticloadbalancing/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/elasticloadbalancing/">Elastic Load Balancers (ALB, NLB, GWLB)</a></div>
             </div>
           </div>
           <div class="cat-row">
             <div class="category" data-node="d2-c3">Storage Resilience</div>
             <div class="items" data-parent="d2-c3">
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/s3/features/replication/">S3 versioning, replication (CRR/SRR)</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/ebs/snapshots/">EBS snapshots & multi-attach</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/efs/">EFS vs FSx (Windows, Lustre, NetApp)</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/storagegateway/">Storage Gateway types</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/s3/storage-classes/glacier/">Glacier vault lock & retrieval tiers</a>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/s3/features/replication/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/s3/features/replication/">S3 versioning, replication (CRR/SRR)</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/ebs/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/ebs/snapshots/">EBS snapshots & multi-attach</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/efs/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/efs/">EFS vs FSx (Windows, Lustre, NetApp)</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/storagegateway/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/storagegateway/">Storage Gateway types</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/s3/storage-classes/glacier/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/s3/storage-classes/glacier/">Glacier vault lock & retrieval tiers</a></div>
             </div>
           </div>
         </div>
@@ -177,41 +197,41 @@
           <div class="cat-row">
             <div class="category" data-node="d3-c1">Compute</div>
             <div class="items" data-parent="d3-c1">
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/ec2/instance-types/">EC2 instance types & purchase options</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/savingsplans/">Spot, Reserved, Savings Plans</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/lambda/">Lambda (limits, concurrency, cold starts)</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/ecs/">ECS, EKS, Fargate</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/elasticbeanstalk/">Elastic Beanstalk, Lightsail, Batch</a>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/ec2/instance-types/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/ec2/instance-types/">EC2 instance types & purchase options</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/ec2/pricing/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/savingsplans/">Spot, Reserved, Savings Plans</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/lambda/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/lambda/">Lambda (limits, concurrency, cold starts)</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/ecs/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/ecs/">ECS, EKS, Fargate</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/elasticbeanstalk/details/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/elasticbeanstalk/">Elastic Beanstalk, Lightsail, Batch</a></div>
             </div>
           </div>
           <div class="cat-row">
             <div class="category" data-node="d3-c2">Databases</div>
             <div class="items" data-parent="d3-c2">
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/rds/">RDS (Multi-AZ, Read Replicas, engines)</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/rds/aurora/">Aurora (Global DB, Serverless v2)</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/dynamodb/">DynamoDB (DAX, Streams, Global Tables)</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/elasticache/">ElastiCache (Redis vs Memcached)</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/redshift/">Redshift, Neptune, DocumentDB, Timestream</a>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/rds/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/rds/">RDS (Multi-AZ, Read Replicas, engines)</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/rds/aurora/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/rds/aurora/">Aurora (Global DB, Serverless v2)</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/dynamodb/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/dynamodb/">DynamoDB (DAX, Streams, Global Tables)</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/elasticache/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/elasticache/">ElastiCache (Redis vs Memcached)</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/redshift/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/redshift/">Redshift, Neptune, DocumentDB, Timestream</a></div>
             </div>
           </div>
           <div class="cat-row">
             <div class="category" data-node="d3-c3">Networking & CDN</div>
             <div class="items" data-parent="d3-c3">
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/vpc/">VPC, Subnets, Route Tables, IGW, NAT</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/transit-gateway/">Transit Gateway, VPC Peering</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/directconnect/">Direct Connect, Site-to-Site VPN</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/cloudfront/">CloudFront (origins, OAC, signed URLs)</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/global-accelerator/">Global Accelerator</a>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/vpc/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/vpc/">VPC, Subnets, Route Tables, IGW, NAT</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/transit-gateway/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/transit-gateway/">Transit Gateway, VPC Peering</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/directconnect/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/directconnect/">Direct Connect, Site-to-Site VPN</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/cloudfront/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/cloudfront/">CloudFront (origins, OAC, signed URLs)</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/global-accelerator/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/global-accelerator/">Global Accelerator</a></div>
             </div>
           </div>
           <div class="cat-row">
             <div class="category" data-node="d3-c4">Analytics & Streaming</div>
             <div class="items" data-parent="d3-c4">
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/kinesis/">Kinesis (Data Streams, Firehose, Analytics)</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/msk/">MSK (Managed Kafka)</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/athena/">Athena, Glue, EMR</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/quicksight/">QuickSight, Lake Formation</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/opensearch-service/">OpenSearch Service</a>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/kinesis/data-streams/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/kinesis/">Kinesis (Data Streams, Firehose, Analytics)</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/msk/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/msk/">MSK (Managed Kafka)</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/athena/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/athena/">Athena, Glue, EMR</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/quicksight/resources/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/quicksight/">QuickSight, Lake Formation</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/opensearch-service/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/opensearch-service/">OpenSearch Service</a></div>
             </div>
           </div>
         </div>
@@ -225,31 +245,31 @@
           <div class="cat-row">
             <div class="category" data-node="d4-c1">Cost-Effective Compute</div>
             <div class="items" data-parent="d4-c1">
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/compute-optimizer/">Right-sizing & Compute Optimizer</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/ec2/spot/">Spot Fleet & mixed instance policies</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/savingsplans/">Savings Plans vs Reserved Instances</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/lambda/pricing/">Lambda vs EC2 cost trade-offs</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/ec2/autoscaling/">Auto Scaling for cost reduction</a>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/compute-optimizer/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/compute-optimizer/">Right-sizing & Compute Optimizer</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/ec2/spot/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/ec2/spot/">Spot Fleet & mixed instance policies</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/savingsplans/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/savingsplans/">Savings Plans vs Reserved Instances</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/lambda/pricing/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/lambda/pricing/">Lambda vs EC2 cost trade-offs</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/ec2/autoscaling/features/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/ec2/autoscaling/">Auto Scaling for cost reduction</a></div>
             </div>
           </div>
           <div class="cat-row">
             <div class="category" data-node="d4-c2">Cost-Effective Storage</div>
             <div class="items" data-parent="d4-c2">
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/s3/storage-classes/">S3 storage classes (Standard, IA, Glacier tiers)</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/s3/storage-classes/intelligent-tiering/">S3 Lifecycle & Intelligent-Tiering</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/ebs/volume-types/">EBS volume types (gp3, io2, st1, sc1)</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/ec2/pricing/on-demand/">Data transfer & egress optimization</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/s3/pricing/">S3 Requester Pays</a>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/s3/storage-classes/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/s3/storage-classes/">S3 storage classes (Standard, IA, Glacier tiers)</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/s3/storage-classes/intelligent-tiering/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/s3/storage-classes/intelligent-tiering/">S3 Lifecycle & Intelligent-Tiering</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/ebs/volume-types/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/ebs/volume-types/">EBS volume types (gp3, io2, st1, sc1)</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/ec2/pricing/on-demand/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/ec2/pricing/on-demand/">Data transfer & egress optimization</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/s3/pricing/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/s3/pricing/">S3 Requester Pays</a></div>
             </div>
           </div>
           <div class="cat-row">
             <div class="category" data-node="d4-c3">Cost Monitoring & Governance</div>
             <div class="items" data-parent="d4-c3">
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/aws-cost-management/aws-budgets/">AWS Budgets & Cost Explorer</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/aws-cost-management/aws-cost-and-usage-reporting/">Cost & Usage Reports (CUR)</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/answers/account-management/aws-tagging-strategies/">Tagging strategies & allocation</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/premiumsupport/technology/trusted-advisor/">Trusted Advisor cost checks</a>
-              <a class="item" target="_blank" rel="noopener" href="https://aws.amazon.com/aws-cost-management/aws-billing/">Consolidated billing & volume discounts</a>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/aws-cost-management/aws-budgets/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/aws-cost-management/aws-budgets/">AWS Budgets & Cost Explorer</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/aws-cost-management/aws-cost-and-usage-reporting/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/aws-cost-management/aws-cost-and-usage-reporting/">Cost & Usage Reports (CUR)</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/answers/account-management/aws-tagging-strategies/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/answers/account-management/aws-tagging-strategies/">Tagging strategies & allocation</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/premiumsupport/technology/trusted-advisor/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/premiumsupport/technology/trusted-advisor/">Trusted Advisor cost checks</a></div>
+              <div class="item-wrap"><a class="badge" target="_blank" rel="noopener" href="https://aws.amazon.com/aws-cost-management/aws-billing/" title="See AWS architecture overview">i</a><a class="item-link" target="_blank" rel="noopener" href="https://aws.amazon.com/aws-cost-management/aws-billing/">Consolidated billing & volume discounts</a></div>
             </div>
           </div>
         </div>
@@ -262,57 +282,55 @@
 </div>
 
 <div class="legend">
-  <strong>Note:</strong> Links now point to <code>aws.amazon.com</code> product pages (not <code>docs.aws.amazon.com</code>) to work around the CloudFront 403 you were seeing. Each product page links onward to the official documentation.
+  <strong>Tip:</strong> Click the orange <span class="badge badge-demo">i</span> badge to open the official AWS architecture overview page. Click the text to open the AWS product page.
+</div>
+
+
 </div>
 
 <script>
-  function drawWires() {
-    const canvas = document.getElementById('canvas');
-    const svg = document.getElementById('wires');
-    const cRect = canvas.getBoundingClientRect();
-    svg.setAttribute('width', canvas.scrollWidth);
-    svg.setAttribute('height', canvas.scrollHeight);
-    svg.setAttribute('viewBox', `0 0 ${canvas.scrollWidth} ${canvas.scrollHeight}`);
-    svg.innerHTML = '';
 
-    function getPoint(el, side) {
-      const r = el.getBoundingClientRect();
-      const x = side === 'right' ? r.right - cRect.left : r.left - cRect.left;
-      const y = r.top - cRect.top + r.height / 2;
-      return { x, y };
-    }
-    function drawCurve(from, to, color, width) {
-      const dx = Math.max(60, (to.x - from.x) * 0.5);
-      const c1 = { x: from.x + dx, y: from.y };
-      const c2 = { x: to.x - dx,   y: to.y };
-      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      path.setAttribute('d', `M ${from.x} ${from.y} C ${c1.x} ${c1.y}, ${c2.x} ${c2.y}, ${to.x} ${to.y}`);
-      path.setAttribute('stroke', color);
-      path.setAttribute('stroke-width', width);
-      path.setAttribute('fill', 'none');
-      path.setAttribute('stroke-linecap', 'round');
-      path.setAttribute('opacity', '0.85');
-      svg.appendChild(path);
-    }
 
-    const root = document.getElementById('root');
-    const rootRight = getPoint(root, 'right');
-    document.querySelectorAll('.domain[data-node]').forEach(d => drawCurve(rootRight, getPoint(d,'left'), '#ff9900', 2.5));
-    document.querySelectorAll('.domain[data-node]').forEach(d => {
-      const id = d.getAttribute('data-node');
-      const right = getPoint(d, 'right');
-      document.querySelectorAll(`.category[data-node^="${id}-c"]`).forEach(c => drawCurve(right, getPoint(c,'left'), '#ec7211', 1.8));
-    });
-    document.querySelectorAll('.category[data-node]').forEach(c => {
-      const id = c.getAttribute('data-node');
-      const right = getPoint(c, 'right');
-      const itemsBox = document.querySelector(`.items[data-parent="${id}"]`);
-      if (!itemsBox) return;
-      itemsBox.querySelectorAll('.item').forEach(i => drawCurve(right, getPoint(i,'left'), '#00b8d4', 1.2));
-    });
+
+
+// Wire drawing
+function drawWires() {
+  const canvas = document.getElementById('canvas');
+  const svg = document.getElementById('wires');
+  const cRect = canvas.getBoundingClientRect();
+  svg.setAttribute('width', canvas.scrollWidth);
+  svg.setAttribute('height', canvas.scrollHeight);
+  svg.setAttribute('viewBox', `0 0 ${canvas.scrollWidth} ${canvas.scrollHeight}`);
+  svg.innerHTML = '';
+  function getPoint(el, side) {
+    const r = el.getBoundingClientRect();
+    return { x: side==='right'? r.right-cRect.left : r.left-cRect.left, y: r.top-cRect.top + r.height/2 };
   }
-  window.addEventListener('load', drawWires);
-  window.addEventListener('resize', drawWires);
+  function drawCurve(from, to, color, width) {
+    const dx = Math.max(60, (to.x - from.x) * 0.5);
+    const c1 = { x: from.x + dx, y: from.y }, c2 = { x: to.x - dx, y: to.y };
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', `M ${from.x} ${from.y} C ${c1.x} ${c1.y}, ${c2.x} ${c2.y}, ${to.x} ${to.y}`);
+    path.setAttribute('stroke', color); path.setAttribute('stroke-width', width);
+    path.setAttribute('fill', 'none'); path.setAttribute('stroke-linecap', 'round');
+    path.setAttribute('opacity', '0.85'); svg.appendChild(path);
+  }
+  const root = document.getElementById('root');
+  const rootRight = getPoint(root, 'right');
+  document.querySelectorAll('.domain[data-node]').forEach(d => drawCurve(rootRight, getPoint(d,'left'), '#ff9900', 2.5));
+  document.querySelectorAll('.domain[data-node]').forEach(d => {
+    const id = d.getAttribute('data-node'); const right = getPoint(d, 'right');
+    document.querySelectorAll(`.category[data-node^="${id}-c"]`).forEach(c => drawCurve(right, getPoint(c,'left'), '#ec7211', 1.8));
+  });
+  document.querySelectorAll('.category[data-node]').forEach(c => {
+    const id = c.getAttribute('data-node'); const right = getPoint(c, 'right');
+    const itemsBox = document.querySelector(`.items[data-parent="${id}"]`);
+    if (!itemsBox) return;
+    itemsBox.querySelectorAll('.item-wrap').forEach(i => drawCurve(right, getPoint(i,'left'), '#00b8d4', 1.2));
+  });
+}
+window.addEventListener('load', drawWires);
+window.addEventListener('resize', drawWires);
 </script>
 
 </body>
