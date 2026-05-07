@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AWS Certified Solutions Architect Associate - Learning Tree</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: #f7f9fc;
+    color: #1a1a1a;
+    padding: 30px 20px;
+    min-height: 100vh;
+  }
+  h1 {
+    text-align: center;
+    color: #232f3e;
+    margin-bottom: 8px;
+    font-size: 28px;
+  }
+  h1 span { color: #ff9900; }
+  .subtitle {
+    text-align: center;
+    color: #6b7280;
+    margin-bottom: 30px;
+    font-size: 14px;
+  }
+
+  .tree-wrapper {
+    overflow-x: auto;
+    padding-bottom: 20px;
+  }
+  .canvas {
+    position: relative;
+    width: 1500px;
+    margin: 0 auto;
+  }
+  .svg-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .main-grid {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: stretch;
+    gap: 80px;
+    padding: 20px;
+  }
+  .col-root {
+    display: flex;
+    align-items: center;
+  }
+  .col-domains {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    flex: 1;
+  }
+
+  /* Root */
+  .root {
+    background: #fff;
+    border: 2px solid #ff9900;
+    color: #232f3e;
+    padding: 22px 20px;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 16px;
+    text-align: center;
+    box-shadow: 0 6px 20px rgba(255,153,0,0.18);
+    min-width: 180px;
+  }
+  .root small {
+    display: block;
+    font-size: 11px;
+    font-weight: normal;
+    color: #6b7280;
+    margin-top: 4px;
+  }
+
+  /* Domain row */
+  .domain-row {
+    display: grid;
+    grid-template-columns: 230px 240px 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .domain {
+    background: #fff;
+    border: 2px solid #ec7211;
+    color: #232f3e;
+    padding: 14px 16px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    box-shadow: 0 4px 12px rgba(236,114,17,0.12);
+  }
+  .domain .weight {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    color: #ec7211;
+    margin-top: 4px;
+  }
+
+  /* Categories */
+  .cat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .cat-row {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+  .category {
+    background: #fff;
+    border: 1.5px solid #2c5282;
+    color: #2c5282;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 3px 8px rgba(44,82,130,0.08);
+  }
+
+  /* Items */
+  .items {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .item {
+    background: #fff;
+    border-left: 3px solid #00b8d4;
+    color: #374151;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    transition: all 0.2s;
+  }
+  .item:hover {
+    border-left-color: #ff9900;
+    background: #fff8ec;
+    transform: translateX(4px);
+  }
+
+  .legend {
+    margin: 30px auto 0;
+    padding: 15px 20px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 13px;
+    color: #4b5563;
+    max-width: 1100px;
+  }
+  .legend strong { color: #ec7211; }
+</style>
+</head>
+<body>
+
+<h1>🎓 AWS Certified Solutions Architect <span>– Associate (SAA-C03)</span></h1>
+<p class="subtitle">Study Roadmap · Exam Domains → Categories → Key Services & Concepts</p>
+
+<div class="tree-wrapper">
+<div class="canvas" id="canvas">
+  <svg class="svg-layer" id="wires" xmlns="http://www.w3.org/2000/svg"></svg>
+
+  <div class="main-grid">
+    <!-- ROOT -->
+    <div class="col-root">
+      <div class="root" id="root">
+        AWS SAA-C03
+        <small>Exam Topics</small>
+      </div>
+    </div>
+
+    <!-- DOMAINS -->
+    <div class="col-domains">
+
+      <!-- DOMAIN 1 -->
+      <div class="domain-row">
+        <div class="domain" data-node="d1">
+          Design Secure Architectures
+          <span class="weight">Domain 1 · 30%</span>
+        </div>
+        <div class="cat-list">
+          <div class="cat-row">
+            <div class="category" data-node="d1-c1">Identity & Access (IAM)</div>
+            <div class="items" data-parent="d1-c1">
+              <div class="item">IAM Users, Groups, Roles, Policies</div>
+              <div class="item">IAM Identity Center (SSO) & Federation</div>
+              <div class="item">STS, AssumeRole, Cross-account access</div>
+              <div class="item">MFA, Permission Boundaries, SCPs</div>
+              <div class="item">AWS Organizations & OUs</div>
+            </div>
+          </div>
+          <div class="cat-row">
+            <div class="category" data-node="d1-c2">Data Protection</div>
+            <div class="items" data-parent="d1-c2">
+              <div class="item">KMS (CMK, rotation, envelope encryption)</div>
+              <div class="item">CloudHSM, Secrets Manager, SSM Parameter Store</div>
+              <div class="item">Encryption in transit (TLS/SSL, ACM)</div>
+              <div class="item">S3 encryption (SSE-S3, SSE-KMS, SSE-C)</div>
+              <div class="item">Macie (PII detection)</div>
+            </div>
+          </div>
+          <div class="cat-row">
+            <div class="category" data-node="d1-c3">Network Security</div>
+            <div class="items" data-parent="d1-c3">
+              <div class="item">Security Groups vs NACLs</div>
+              <div class="item">WAF, Shield, Shield Advanced</div>
+              <div class="item">GuardDuty, Inspector, Detective</div>
+              <div class="item">VPC Endpoints (Gateway / Interface)</div>
+              <div class="item">PrivateLink, Network Firewall</div>
+            </div>
+          </div>
+        </div>
+        <div></div>
+      </div>
+
+      <!-- DOMAIN 2 -->
+      <div class="domain-row">
+        <div class="domain" data-node="d2">
+          Design Resilient Architectures
+          <span class="weight">Domain 2 · 26%</span>
+        </div>
+        <div class="cat-list">
+          <div class="cat-row">
+            <div class="category" data-node="d2-c1">High Availability & DR</div>
+            <div class="items" data-parent="d2-c1">
+              <div class="item">Multi-AZ vs Multi-Region designs</div>
+              <div class="item">DR strategies: Backup, Pilot Light, Warm Standby, Multi-Site</div>
+              <div class="item">RTO & RPO concepts</div>
+              <div class="item">Route 53 routing policies & failover</div>
+              <div class="item">AWS Backup, Elastic Disaster Recovery</div>
+            </div>
+          </div>
+          <div class="cat-row">
+            <div class="category" data-node="d2-c2">Decoupling & Scaling</div>
+            <div class="items" data-parent="d2-c2">
+              <div class="item">SQS (Standard, FIFO, DLQ, visibility timeout)</div>
+              <div class="item">SNS (fan-out, filtering)</div>
+              <div class="item">EventBridge, Step Functions</div>
+              <div class="item">Auto Scaling Groups & policies</div>
+              <div class="item">Elastic Load Balancers (ALB, NLB, GWLB)</div>
+            </div>
+          </div>
+          <div class="cat-row">
+            <div class="category" data-node="d2-c3">Storage Resilience</div>
+            <div class="items" data-parent="d2-c3">
+              <div class="item">S3 versioning, replication (CRR/SRR)</div>
+              <div class="item">EBS snapshots & multi-attach</div>
+              <div class="item">EFS vs FSx (Windows, Lustre, NetApp)</div>
+              <div class="item">Storage Gateway types</div>
+              <div class="item">Glacier vault lock & retrieval tiers</div>
+            </div>
+          </div>
+        </div>
+        <div></div>
+      </div>
+
+      <!-- DOMAIN 3 -->
+      <div class="domain-row">
+        <div class="domain" data-node="d3">
+          Design High-Performing Architectures
+          <span class="weight">Domain 3 · 24%</span>
+        </div>
+        <div class="cat-list">
+          <div class="cat-row">
+            <div class="category" data-node="d3-c1">Compute</div>
+            <div class="items" data-parent="d3-c1">
+              <div class="item">EC2 instance types & purchase options</div>
+              <div class="item">Spot, Reserved, Savings Plans</div>
+              <div class="item">Lambda (limits, concurrency, cold starts)</div>
+              <div class="item">ECS, EKS, Fargate</div>
+              <div class="item">Elastic Beanstalk, Lightsail, Batch</div>
+            </div>
+          </div>
+          <div class="cat-row">
+            <div class="category" data-node="d3-c2">Databases</div>
+            <div class="items" data-parent="d3-c2">
+              <div class="item">RDS (Multi-AZ, Read Replicas, engines)</div>
+              <div class="item">Aurora (Global DB, Serverless v2)</div>
+              <div class="item">DynamoDB (DAX, Streams, Global Tables)</div>
+              <div class="item">ElastiCache (Redis vs Memcached)</div>
+              <div class="item">Redshift, Neptune, DocumentDB, Timestream</div>
+            </div>
+          </div>
+          <div class="cat-row">
+            <div class="category" data-node="d3-c3">Networking & CDN</div>
+            <div class="items" data-parent="d3-c3">
+              <div class="item">VPC, Subnets, Route Tables, IGW, NAT</div>
+              <div class="item">Transit Gateway, VPC Peering</div>
+              <div class="item">Direct Connect, Site-to-Site VPN</div>
+              <div class="item">CloudFront (origins, OAC, signed URLs)</div>
+              <div class="item">Global Accelerator</div>
+            </div>
+          </div>
+          <div class="cat-row">
+            <div class="category" data-node="d3-c4">Analytics & Streaming</div>
+            <div class="items" data-parent="d3-c4">
+              <div class="item">Kinesis (Data Streams, Firehose, Analytics)</div>
+              <div class="item">MSK (Managed Kafka)</div>
+              <div class="item">Athena, Glue, EMR</div>
+              <div class="item">QuickSight, Lake Formation</div>
+              <div class="item">OpenSearch Service</div>
+            </div>
+          </div>
+        </div>
+        <div></div>
+      </div>
+
+      <!-- DOMAIN 4 -->
+      <div class="domain-row">
+        <div class="domain" data-node="d4">
+          Design Cost-Optimized Architectures
+          <span class="weight">Domain 4 · 20%</span>
+        </div>
+        <div class="cat-list">
+          <div class="cat-row">
+            <div class="category" data-node="d4-c1">Cost-Effective Compute</div>
+            <div class="items" data-parent="d4-c1">
+              <div class="item">Right-sizing & Compute Optimizer</div>
+              <div class="item">Spot Fleet & mixed instance policies</div>
+              <div class="item">Savings Plans vs Reserved Instances</div>
+              <div class="item">Lambda vs EC2 cost trade-offs</div>
+              <div class="item">Auto Scaling for cost reduction</div>
+            </div>
+          </div>
+          <div class="cat-row">
+            <div class="category" data-node="d4-c2">Cost-Effective Storage</div>
+            <div class="items" data-parent="d4-c2">
+              <div class="item">S3 storage classes (Standard, IA, Glacier tiers)</div>
+              <div class="item">S3 Lifecycle & Intelligent-Tiering</div>
+              <div class="item">EBS volume types (gp3, io2, st1, sc1)</div>
+              <div class="item">Data transfer & egress optimization</div>
+              <div class="item">S3 Requester Pays</div>
+            </div>
+          </div>
+          <div class="cat-row">
+            <div class="category" data-node="d4-c3">Cost Monitoring & Governance</div>
+            <div class="items" data-parent="d4-c3">
+              <div class="item">AWS Budgets & Cost Explorer</div>
+              <div class="item">Cost & Usage Reports (CUR)</div>
+              <div class="item">Tagging strategies & allocation</div>
+              <div class="item">Trusted Advisor cost checks</div>
+              <div class="item">Consolidated billing & volume discounts</div>
+            </div>
+          </div>
+        </div>
+        <div></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="legend">
+  <strong>How to use:</strong> Each branch maps to an exam domain (with weight %). Bezier wires connect the root → domains → categories → items. Hover items for emphasis.
+</div>
+
+<script>
+  function drawWires() {
+    const canvas = document.getElementById('canvas');
+    const svg = document.getElementById('wires');
+    const cRect = canvas.getBoundingClientRect();
+
+    svg.setAttribute('width', canvas.scrollWidth);
+    svg.setAttribute('height', canvas.scrollHeight);
+    svg.setAttribute('viewBox', `0 0 ${canvas.scrollWidth} ${canvas.scrollHeight}`);
+    svg.innerHTML = '';
+
+    function getPoint(el, side) {
+      const r = el.getBoundingClientRect();
+      const x = side === 'right' ? r.right - cRect.left : r.left - cRect.left;
+      const y = r.top - cRect.top + r.height / 2;
+      return { x, y };
+    }
+
+    function drawCurve(from, to, color, width) {
+      const dx = Math.max(40, (to.x - from.x) * 0.5);
+      const c1 = { x: from.x + dx, y: from.y };
+      const c2 = { x: to.x - dx,   y: to.y };
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', `M ${from.x} ${from.y} C ${c1.x} ${c1.y}, ${c2.x} ${c2.y}, ${to.x} ${to.y}`);
+      path.setAttribute('stroke', color);
+      path.setAttribute('stroke-width', width);
+      path.setAttribute('fill', 'none');
+      path.setAttribute('stroke-linecap', 'round');
+      path.setAttribute('opacity', '0.85');
+      svg.appendChild(path);
+    }
+
+    const root = document.getElementById('root');
+    const rootRight = getPoint(root, 'right');
+
+    // Root → Domains
+    document.querySelectorAll('.domain[data-node]').forEach(domain => {
+      const left = getPoint(domain, 'left');
+      drawCurve(rootRight, left, '#ff9900', 2.5);
+    });
+
+    // Domain → Categories
+    document.querySelectorAll('.domain[data-node]').forEach(domain => {
+      const id = domain.getAttribute('data-node');
+      const right = getPoint(domain, 'right');
+      document.querySelectorAll(`.category[data-node^="${id}-c"]`).forEach(cat => {
+        const left = getPoint(cat, 'left');
+        drawCurve(right, left, '#ec7211', 1.8);
+      });
+    });
+
+    // Category → Items
+    document.querySelectorAll('.category[data-node]').forEach(cat => {
+      const id = cat.getAttribute('data-node');
+      const right = getPoint(cat, 'right');
+      const itemsBox = document.querySelector(`.items[data-parent="${id}"]`);
+      if (!itemsBox) return;
+      itemsBox.querySelectorAll('.item').forEach(item => {
+        const left = getPoint(item, 'left');
+        drawCurve(right, left, '#00b8d4', 1.2);
+      });
+    });
+  }
+
+  window.addEventListener('load', drawWires);
+  window.addEventListener('resize', drawWires);
+</script>
+
+</body>
+</html>
