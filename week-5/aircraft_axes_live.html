@@ -65,8 +65,8 @@
   #status.error{color:var(--bad)}
 
   #controls{
-    position:fixed;top:14px;right:14px;z-index:10;
-    display:flex;gap:8px;
+    position:fixed;top:170px;right:14px;z-index:10;
+    display:flex;flex-direction:column;gap:8px;
   }
   .btn{
     background:var(--panel);border:1px solid var(--line);
@@ -76,6 +76,28 @@
   }
   .btn:hover{color:var(--ink);border-color:rgba(20,40,80,.3)}
   .btn:active{transform:scale(0.97)}
+
+  #keyboard-help{
+    position:fixed;top:14px;right:14px;z-index:10;
+    background:var(--panel);border:1px solid var(--line);
+    padding:12px 16px;border-radius:10px;backdrop-filter:blur(10px);
+    box-shadow:0 8px 24px rgba(20,40,80,.10);
+    min-width:240px;
+  }
+  #keyboard-help h2{
+    margin:0 0 8px;font-size:10px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--dim);font-weight:600;
+  }
+  #keyboard-help .key-row{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:4px 0;font-size:11px;
+  }
+  #keyboard-help .key-row .lab{display:flex;align-items:center;gap:8px;color:var(--ink)}
+  #keyboard-help .key-row .lab .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+  #keyboard-help .key-row.pitch .dot{background:var(--pitch)}
+  #keyboard-help .key-row.roll  .dot{background:var(--roll)}
+  #keyboard-help .key-row.yaw   .dot{background:var(--yaw)}
+  #keyboard-help .keys-cell{display:flex;gap:4px}
 
   #legend{
     position:fixed;bottom:14px;left:14px;right:14px;z-index:10;
@@ -93,10 +115,11 @@
   #legend .axis-info.pitch b{color:var(--pitch)}
   #legend .axis-info.roll  b{color:var(--roll)}
   #legend .axis-info.yaw   b{color:var(--yaw)}
-  #legend .keys{margin-top:6px;font-size:10px;color:var(--ink);letter-spacing:.04em;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  #legend .keys{margin-top:8px;font-size:11px;color:var(--ink);font-weight:500;letter-spacing:.04em;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
   #legend .ang{font-size:14px;font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink);margin-top:4px;display:block}
-  kbd{background:rgba(20,40,80,.08);border:1px solid var(--line);
-    padding:1px 6px;border-radius:3px;color:var(--ink);font-size:10px;font-family:inherit}
+  kbd{background:rgba(20,40,80,.10);border:1px solid var(--line);
+    padding:2px 7px;border-radius:4px;color:var(--ink);font-size:11px;font-family:inherit;font-weight:600;
+    box-shadow:0 1px 2px rgba(20,40,80,.08)}
 
   #footer{
     position:fixed;bottom:14px;right:14px;z-index:10;
@@ -136,6 +159,25 @@
   <div id="controls">
     <button class="btn" id="reset-btn">RECENTER (C)</button>
     <button class="btn" id="view-btn">RESET VIEW</button>
+  </div>
+
+  <div id="keyboard-help">
+    <h2>⌨ Keyboard</h2>
+    <div class="key-row pitch">
+      <span class="lab"><span class="dot"></span>Pitch</span>
+      <span class="keys-cell"><kbd>W</kbd> down · <kbd>S</kbd> up</span>
+    </div>
+    <div class="key-row roll">
+      <span class="lab"><span class="dot"></span>Roll</span>
+      <span class="keys-cell"><kbd>A</kbd> left · <kbd>D</kbd> right</span>
+    </div>
+    <div class="key-row yaw">
+      <span class="lab"><span class="dot"></span>Yaw</span>
+      <span class="keys-cell"><kbd>Q</kbd> left · <kbd>E</kbd> right</span>
+    </div>
+    <div class="key-row" style="margin-top:4px;padding-top:6px;border-top:1px solid var(--line)">
+      <span class="lab">Recenter</span><span class="keys-cell"><kbd>C</kbd></span>
+    </div>
   </div>
 
   <div id="legend">
