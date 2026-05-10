@@ -344,10 +344,54 @@ const placesData = {
   },
   'Interlaken': {
     restaurants: [
-      { en: 'Restaurant Taverne — Swiss classics', ko: 'Restaurant Taverne — 스위스 정통' },
-      { en: 'Husi Bierhaus — local beer & food', ko: 'Husi Bierhaus — 현지 맥주 & 음식' },
-      { en: 'Sapori — Italian', ko: 'Sapori — 이탈리아 요리' },
-      { en: 'Benacus — modern Swiss', ko: 'Benacus — 모던 스위스' }
+      {
+        name: 'Hotel-Restaurant Steinbock',
+        name_ko: 'Hotel-Restaurant Steinbock',
+        desc: 'Swiss restaurant in Brienz with terrace seating and great lake views. Walking distance from Brienz station. Schnitzel and lunch menu of the day are well-priced.',
+        desc_ko: '브리엔츠의 스위스 레스토랑으로 테라스 좌석에서 호수 풍경 감상. 브리엔츠 역에서 도보 거리. 슈니첼과 오늘의 런치 메뉴 가성비 좋음.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJr9QTVfKWj0cRECGi9jNiW1s',
+        image: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=400&h=300&fit=crop'
+      },
+      {
+        name: 'Walz Wine Café',
+        name_ko: 'Walz Wine Café',
+        desc: 'Coffee, cakes, brunch and wine — high traveler satisfaction. Recommended: Apfelstrudel, Latte, Brunch plate, Wine. A local bakery-café with stunning Lake Brienz views.',
+        desc_ko: '커피, 케이크, 브런치, 와인까지 가능한 현지 베이커리 카페로 여행객 만족도가 높음. 추천: 아펠슈트루델, 라떼, 브런치 플레이트, 와인. 브리엔츠 호숫가 풍경이 멋진 곳.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJzd_iSACXj0cR8CFCIpnzgA4',
+        image: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400&h=300&fit=crop'
+      },
+      {
+        name: 'Restaurant Taverne',
+        name_ko: 'Restaurant Taverne',
+        desc: 'Swiss classics in a traditional setting — fondue, rösti, schnitzel.',
+        desc_ko: '전통적인 분위기의 스위스 정통 요리 — 퐁듀, 뢰스티, 슈니첼.',
+        link: 'https://www.google.com/maps/search/?api=1&query=Restaurant+Taverne+Interlaken',
+        image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop'
+      },
+      {
+        name: 'Husi Bierhaus',
+        name_ko: 'Husi Bierhaus',
+        desc: 'Local beer and hearty Swiss-Bavarian food. Lively atmosphere.',
+        desc_ko: '현지 맥주와 푸짐한 스위스-바이에른 요리. 활기찬 분위기.',
+        link: 'https://www.google.com/maps/search/?api=1&query=Husi+Bierhaus+Interlaken',
+        image: 'https://images.unsplash.com/photo-1535007813616-79dc02ba4021?w=400&h=300&fit=crop'
+      },
+      {
+        name: 'Sapori',
+        name_ko: 'Sapori',
+        desc: 'Italian restaurant — pasta, pizza, and wine.',
+        desc_ko: '이탈리아 레스토랑 — 파스타, 피자, 와인.',
+        link: 'https://www.google.com/maps/search/?api=1&query=Sapori+Interlaken',
+        image: 'https://images.unsplash.com/photo-1481931098730-318b6f776db0?w=400&h=300&fit=crop'
+      },
+      {
+        name: 'Benacus',
+        name_ko: 'Benacus',
+        desc: 'Modern Swiss cuisine with creative twists. Trendy spot.',
+        desc_ko: '창의적인 변주가 있는 모던 스위스 요리. 트렌디한 곳.',
+        link: 'https://www.google.com/maps/search/?api=1&query=Benacus+Interlaken',
+        image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&h=300&fit=crop'
+      }
     ],
     shopping: [
       { en: 'Höheweg — main shopping street', ko: 'Höheweg — 메인 쇼핑 거리' },
@@ -524,13 +568,13 @@ const schedule = [
       { day: 1, time: '9:00 AM',  label: 'Harder Kulm viewpoint', label_ko: '하더쿨룸 전망대', type: 'excursion' },
       { day: 1, time: '10:30 AM', label: 'Train → Brienz', label_ko: '브리엔츠 이동', type: 'excursion' },
       { day: 1, time: '11:00 AM', label: 'Ballenberg Open-Air Museum', label_ko: '발렌베르크 야외 박물관', type: 'excursion' },
-      { day: 1, time: '12:30 PM', label: 'Lunch near museum', label_ko: '박물관 근처 점심', type: 'other' },
-      { day: 1, time: '2:00 PM',  label: 'Boat → Iseltwald', label_ko: '유람선 → 이젤트발트', type: 'excursion' },
-      { day: 1, time: '2:40 PM',  label: 'Iseltwald: CLOY pier', label_ko: '이젤트발트: 사랑의 불시착 선착장', type: 'excursion' },
-      { day: 1, time: '3:40 PM',  label: 'Boat → Giessbach', label_ko: '유람선 → 기스바흐', type: 'excursion' },
-      { day: 1, time: '4:00 PM',  label: 'Giessbach Falls + funicular', label_ko: '기스바흐 폭포 + 푸니쿨라', type: 'excursion' },
-      { day: 1, time: '5:30 PM',  label: 'Boat → Brienz', label_ko: '유람선 → 브리엔츠', type: 'excursion' },
-      { day: 1, time: '6:00 PM',  label: 'Brienz village walk', label_ko: '브리엔츠 마을 산책', type: 'excursion' },
+      { day: 1, time: '12:30 PM', label: 'Lunch at Hotel-Restaurant Steinbock', label_ko: '점심: Hotel-Restaurant Steinbock', type: 'other' },
+      { day: 1, time: '2:00 PM',  label: 'Walz Wine Café (coffee/cake)', label_ko: 'Walz Wine Café (커피/케이크)', type: 'other' },
+      { day: 1, time: '3:00 PM',  label: 'Boat → Iseltwald', label_ko: '유람선 → 이젤트발트', type: 'excursion' },
+      { day: 1, time: '3:40 PM',  label: 'Iseltwald: CLOY pier', label_ko: '이젤트발트: 사랑의 불시착 선착장', type: 'excursion' },
+      { day: 1, time: '4:40 PM',  label: 'Boat → Giessbach', label_ko: '유람선 → 기스바흐', type: 'excursion' },
+      { day: 1, time: '5:10 PM',  label: 'Giessbach Falls + funicular', label_ko: '기스바흐 폭포 + 푸니쿨라', type: 'excursion' },
+      { day: 1, time: '6:30 PM',  label: 'Boat → Brienz', label_ko: '유람선 → 브리엔츠', type: 'excursion' },
       { day: 1, time: '7:00 PM',  label: 'Dinner', label_ko: '저녁 식사' },
       { day: 1, time: '8:30 PM',  label: 'Return to Interlaken', label_ko: '인터라켄 복귀' },
       { day: 2, time: '7:30 AM', label: 'Depart Interlaken Ost', label_ko: '인터라켄 OST 출발', type: 'excursion' },
@@ -754,6 +798,22 @@ function noteStyle(type) {
   return { color: '#2980b9', label: '' };
 }
 
+// ===== Pastel palette per city =====
+// Each city has a base background, plus alternating zebra shades for each day,
+// and slightly different tints for team A / team B lanes (when a day is split).
+const cityPalette = {
+  'Zurich':       { base: '#fff5e6', zebra: ['#fff5e6', '#ffe9cc'], laneA: 'rgba(255,200,150,0.18)', laneB: 'rgba(255,170,100,0.22)' },
+  'Interlaken':   { base: '#e8f4fc', zebra: ['#e8f4fc', '#d4ecf8'], laneA: 'rgba(140,200,240,0.20)', laneB: 'rgba(100,170,220,0.25)' },
+  'Grindelwald':  { base: '#eaf5ea', zebra: ['#eaf5ea', '#d8edd8'], laneA: 'rgba(150,210,150,0.20)', laneB: 'rgba(110,180,110,0.25)' },
+  'Milano':       { base: '#fce8ec', zebra: ['#fce8ec', '#f8d4dc'], laneA: 'rgba(240,160,180,0.20)', laneB: 'rgba(220,120,150,0.25)' },
+  'Firenze':      { base: '#f4ebfb', zebra: ['#f4ebfb', '#e8d8f5'], laneA: 'rgba(200,160,230,0.20)', laneB: 'rgba(170,120,210,0.25)' },
+  'Rome':         { base: '#fff0d6', zebra: ['#fff0d6', '#ffe1ad'], laneA: 'rgba(255,190,110,0.22)', laneB: 'rgba(230,150,70,0.25)' }
+};
+
+function paletteFor(loc) {
+  return cityPalette[loc] || { base: '#ffffff', zebra: ['#ffffff', '#f5f5f5'], laneA: 'rgba(0,0,0,0.04)', laneB: 'rgba(0,0,0,0.08)' };
+}
+
 function buildDiagram() {
   // Clear existing SVG content (keep <defs>)
   while (svg.firstChild) svg.removeChild(svg.firstChild);
@@ -871,14 +931,79 @@ blocks.forEach((b) => {
   badgeText.textContent = '🔍 ' + badgeLabel;
   svg.appendChild(badgeText);
 
+  const palette = paletteFor(b.location);
+
+  // Clip path to keep zebra and lane fills inside the rounded block
+  const clipId = `clip-block-${b.idx}`;
+  const clipPath = createEl('clipPath', { id: clipId });
+  clipPath.appendChild(createEl('rect', {
+    x: b.x, y: b.y,
+    width: b.width, height: b.height,
+    rx: 6
+  }));
+  svg.appendChild(clipPath);
+
+  // Main block background (pastel base color)
   const rect = createEl('rect', {
     x: b.x, y: b.y,
     width: b.width, height: b.height,
-    fill: '#ffffff', stroke: '#444',
+    fill: palette.base, stroke: '#444',
     'stroke-width': 1.5, rx: 6,
     filter: 'url(#shadow)'
   });
   svg.appendChild(rect);
+
+  // Zebra: alternating shades for each day column (clipped to rounded rect)
+  for (let d = 0; d < b.days; d++) {
+    if (d % 2 === 1) {  // only paint odd-indexed columns; even ones use the base
+      const dayRect = createEl('rect', {
+        x: b.x + d * COL_WIDTH, y: b.y,
+        width: COL_WIDTH, height: b.height,
+        fill: palette.zebra[1],
+        'clip-path': `url(#${clipId})`
+      });
+      svg.appendChild(dayRect);
+    }
+  }
+
+  // Team-lane backgrounds for split days — only paint the actual time range
+  // where the split happens (from the earliest team-tagged note to the latest),
+  // not the full day column.
+  const splitRangesByDay = {};
+  b.notes.forEach(n => {
+    if (!n.team) return;
+    if (!splitRangesByDay[n.day]) splitRangesByDay[n.day] = [];
+    splitRangesByDay[n.day].push(n);
+  });
+  Object.keys(splitRangesByDay).forEach(dStr => {
+    const d = parseInt(dStr, 10);
+    const teamNotes = splitRangesByDay[dStr];
+    // Find earliest and latest team-tagged note times
+    const ys = teamNotes.map(n => timeToY(n.time, b.y));
+    const startY = Math.min(...ys) - 4;  // small pad above first note
+    const endY = Math.max(...ys) + 14;   // small pad below last note (label height)
+    const clampedStart = Math.max(b.y, startY);
+    const clampedEnd = Math.min(b.y + b.height, endY);
+    const splitH = clampedEnd - clampedStart;
+    if (splitH <= 0) return;
+
+    const dayX = b.x + d * COL_WIDTH;
+    const half = COL_WIDTH / 2;
+    // Left lane (team A) - subtle tint
+    svg.appendChild(createEl('rect', {
+      x: dayX, y: clampedStart,
+      width: half, height: splitH,
+      fill: palette.laneA,
+      'clip-path': `url(#${clipId})`
+    }));
+    // Right lane (team B) - slightly stronger tint
+    svg.appendChild(createEl('rect', {
+      x: dayX + half, y: clampedStart,
+      width: half, height: splitH,
+      fill: palette.laneB,
+      'clip-path': `url(#${clipId})`
+    }));
+  });
 
   // ===== Tab badges (Schedule / Restaurants / Shopping) =====
   // Place them between people row and date row, above the block
@@ -1209,14 +1334,21 @@ blocks.forEach((b) => {
     });
 
     // For days that have team-tagged notes, draw a vertical separator between lanes
+    // Only across the actual split time range, not the full day height.
     if (hasTeam) {
-      const sepX = colXBase + COL_WIDTH / 2;
-      scheduleGroup.appendChild(createEl('line', {
-        x1: sepX, y1: b.y,
-        x2: sepX, y2: b.y + b.height,
-        stroke: '#ccc', 'stroke-width': 1,
-        'stroke-dasharray': '2,3', opacity: 0.7
-      }));
+      const teamNotesInDay = dayNotes.filter(n => n.team);
+      if (teamNotesInDay.length > 0) {
+        const ys = teamNotesInDay.map(n => timeToY(n.time, b.y));
+        const sepStartY = Math.max(b.y, Math.min(...ys) - 4);
+        const sepEndY = Math.min(b.y + b.height, Math.max(...ys) + 14);
+        const sepX = colXBase + COL_WIDTH / 2;
+        scheduleGroup.appendChild(createEl('line', {
+          x1: sepX, y1: sepStartY,
+          x2: sepX, y2: sepEndY,
+          stroke: '#ccc', 'stroke-width': 1,
+          'stroke-dasharray': '2,3', opacity: 0.7
+        }));
+      }
     }
   });
 
@@ -1833,10 +1965,11 @@ function renderDetailModal(blockIdx) {
   const datesArr = L(item, 'dates') || item.dates;
   const locName = L(item, 'location');
   const hotelName = L(item, 'hotel');
+  const palette = paletteFor(item.location);
 
-  // Build header
+  // Build header with city pastel accent band
   let html = `
-    <div class="detail-modal-header">
+    <div class="detail-modal-header" style="background: ${palette.base}; padding: 16px 20px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.06); border-bottom: 2px solid rgba(0,0,0,0.08);">
       <h2 class="detail-modal-title">${locName}</h2>
       <div class="detail-modal-meta">
         <span style="font-style: italic;">${hotelName}</span>
@@ -1870,11 +2003,13 @@ function renderDetailModal(blockIdx) {
     notesByDay[d].sort((a, b) => timeToY(a.time, 0) - timeToY(b.time, 0));
   });
 
-  // Render each day
+  // Render each day with zebra
   for (let d = 0; d < item.days; d++) {
     const dayNotes = notesByDay[d] || [];
     const dateStr = datesArr[d] || '';
-    html += `<div class="detail-day">`;
+    const isOdd = d % 2 === 1;
+    const dayBg = isOdd ? palette.zebra[1] : palette.base;
+    html += `<div class="detail-day" style="background: ${dayBg}; border-radius: 6px; padding: 10px 12px; border: 1px solid rgba(0,0,0,0.04);">`;
     html += `<div class="detail-day-header">${dateStr}</div>`;
     if (dayNotes.length === 0) {
       html += `<div style="color: #999; padding: 8px 12px; font-size: 13px;">—</div>`;
@@ -1883,8 +2018,12 @@ function renderDetailModal(blockIdx) {
         const type = n.type || 'other';
         const icon = eventTypeIcon(n.type);
         const labelText = L(n, 'label');
+        // Subtle tint for team-tagged events
+        let teamTint = '';
+        if (n.team === 'A') teamTint = `background: ${palette.laneA}; border-left: 3px solid rgba(0,0,0,0.10);`;
+        else if (n.team === 'B') teamTint = `background: ${palette.laneB}; border-left: 3px solid rgba(0,0,0,0.18);`;
         html += `
-          <div class="detail-event ${type}">
+          <div class="detail-event ${type}" style="${teamTint}">
             <div class="detail-event-time">${n.time}</div>
             <div class="detail-event-icon">${icon}</div>
             <div class="detail-event-label">${labelText}</div>
