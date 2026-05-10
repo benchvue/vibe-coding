@@ -132,6 +132,56 @@
   .rest-tile-link:hover {
     text-decoration: underline;
   }
+  /* Hotel card (shown atop galleries) */
+  .hotel-card-wrap {
+    margin-bottom: 24px;
+  }
+  .hotel-card {
+    display: flex;
+    background: linear-gradient(135deg, #fff8ed, #ffeed1);
+    border: 1px solid #e8c98c;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .hotel-card-img {
+    flex: 0 0 200px;
+    background-size: cover;
+    background-position: center;
+    background-color: #ddd;
+  }
+  .hotel-card-body {
+    padding: 16px 20px;
+    flex: 1;
+  }
+  .hotel-card-label {
+    display: inline-block;
+    background: #d35400;
+    color: #fff;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 3px 10px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .hotel-card-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: #222;
+    margin-bottom: 8px;
+  }
+  .hotel-card-desc {
+    color: #555;
+    line-height: 1.5;
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+  @media (max-width: 600px) {
+    .hotel-card { flex-direction: column; }
+    .hotel-card-img { flex: 0 0 160px; }
+  }
   .lang-toggle {
     position: fixed;
     top: 16px;
@@ -423,6 +473,32 @@ const placesData = {
       { en: 'Kirchhofer — watches & souvenirs', ko: 'Kirchhofer — 시계 & 기념품' },
       { en: 'Migros / Coop — supermarkets', ko: 'Migros / Coop — 슈퍼마켓' },
       { en: 'Swiss Knife Valley — outdoor gear', ko: 'Swiss Knife Valley — 아웃도어 용품' }
+    ],
+    groceries: [
+      {
+        name: 'Coop Supermarkt Interlaken Ost',
+        name_ko: 'Coop Supermarkt 인터라켄 오스트',
+        desc: 'Largest grocery store next to Interlaken Ost station. Massive selection — fresh produce, prepared meals, Swiss chocolate, cheese, café upstairs. ⚠️ Closed Thu & Sun.',
+        desc_ko: '인터라켄 오스트역 옆 대형 식료품점. 신선 식품, 즉석식, 스위스 초콜릿, 치즈, 위층 카페까지 방대한 선택지. ⚠️ 목·일 휴무.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJ-1UViGCjj0cRbKT1IcChKa4',
+        image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&h=300&fit=crop'
+      },
+      {
+        name: 'Migros Interlaken',
+        name_ko: 'Migros 인터라켄',
+        desc: 'Large, well-organized supermarket. Wide variety of fresh produce, cheese (with samples), prepared sandwiches. Has clothing/kitchenware sections too. ⚠️ Closed Thu & Sun.',
+        desc_ko: '대형 정돈된 슈퍼마켓. 다양한 신선 식품, 치즈(시식 가능), 즉석 샌드위치. 의류/주방용품 코너도 있음. ⚠️ 목·일 휴무.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJWYkJ_Y-kj0cRD_tcqJZHa60',
+        image: 'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=400&h=300&fit=crop'
+      },
+      {
+        name: 'ALDI SUISSE Interlaken',
+        name_ko: 'ALDI SUISSE 인터라켄',
+        desc: 'Discount supermarket — best value option. Swiss flag tags mark locally made products. Open Sundays (rare in Switzerland) 9 AM-6 PM. Located near Interlaken Ost.',
+        desc_ko: '할인 슈퍼마켓 — 가성비 최고. 스위스 국기 태그로 현지 생산품 표시. 일요일 영업 (스위스에선 드뭄) 오전 9시-오후 6시. 인터라켄 오스트 근처.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJAQDAdGijj0cRI4k0It2ljFw',
+        image: 'https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=400&h=300&fit=crop'
+      }
     ]
   },
   'Grindelwald': {
@@ -507,6 +583,32 @@ const placesData = {
       { en: 'Bergsport Outlet — ski/hike gear', ko: 'Bergsport Outlet — 스키/하이킹 용품' },
       { en: 'Coop — supermarket', ko: 'Coop — 슈퍼마켓' },
       { en: 'Souvenir shops along Bahnhofplatz', ko: '반호프플라츠 기념품 가게들' }
+    ],
+    groceries: [
+      {
+        name: 'Coop Supermarkt Grindelwald',
+        name_ko: 'Coop Supermarkt 그린델발트',
+        desc: 'Large Coop in the village center, next to bus station and parking garage. Fresh produce, ready-to-eat sushi/sandwiches/salads, fresh bakery, hot deli. Open daily 8 AM–7 PM. Express store upstairs.',
+        desc_ko: '마을 중심의 대형 Coop, 버스 정류장 및 주차장 옆. 신선 식품, 즉석 스시/샌드위치/샐러드, 신선 베이커리, 핫 델리. 매일 오전 8시-오후 7시. 위층에 익스프레스 매장.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJxYfZjFWZj0cRU12KXy7w1Bg',
+        image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&h=300&fit=crop'
+      },
+      {
+        name: 'VOI Grindelwald (Migros partner)',
+        name_ko: 'VOI 그린델발트 (Migros 제휴)',
+        desc: 'Smaller Migros-affiliated grocer in the village. Often cheaper than Coop, well-stocked. Open daily 8 AM–7 PM — great for Sunday shopping when Coop closes (Coop here actually opens Sun, but useful alternative).',
+        desc_ko: '마을 안의 소규모 Migros 제휴 식료품점. Coop보다 저렴한 경우 많고 상품 구성 충실. 매일 오전 8시-오후 7시. (Coop이 닫는 일요일 대안으로 활용 가능)',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJ80ZBVP6bj0cRCeRARAhNgmE',
+        image: 'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=400&h=300&fit=crop'
+      },
+      {
+        name: 'No ALDI in Grindelwald',
+        name_ko: '그린델발트에는 ALDI 없음',
+        desc: 'ALDI Suisse is not present in Grindelwald — the village is too small. Nearest ALDI is in Interlaken (Lindenallee 106). For groceries here, use Coop or VOI above.',
+        desc_ko: 'ALDI Suisse는 그린델발트에 없음 — 마을이 작아서. 가장 가까운 ALDI는 인터라켄(Lindenallee 106). 그린델발트에서는 위 Coop 또는 VOI를 이용.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJAQDAdGijj0cRI4k0It2ljFw',
+        image: 'https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=400&h=300&fit=crop'
+      }
     ]
   },
   'Milano': {
@@ -521,6 +623,32 @@ const placesData = {
       { en: 'Galleria Vittorio Emanuele II', ko: '비토리오 에마누엘레 2세 갤러리아' },
       { en: 'Corso Buenos Aires — high-street', ko: 'Corso Buenos Aires — 하이스트리트' },
       { en: 'La Rinascente — department store', ko: 'La Rinascente — 백화점' }
+    ],
+    groceries: [
+      {
+        name: 'La Rinascente Food Hall (7th floor)',
+        name_ko: 'La Rinascente 푸드홀 (7층)',
+        desc: 'Whole-floor gourmet food hall on the top of historic La Rinascente next to the Duomo. Made-in-Italy gourmet goods, international specialties, refined wines, sushi, champagne tastings. ~3 min walk from Hotel The Square.',
+        desc_ko: '두오모 옆 역사적인 La Rinascente 백화점 최상층 한 층 전체의 고급 푸드홀. 메이드 인 이탈리아 고급 식품, 인터내셔널 스페셜티, 고급 와인, 스시, 샴페인 시음. Hotel The Square에서 도보 약 3분.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJ49FuRq7GhkcRFRAAacn5qPU',
+        image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&h=300&fit=crop'
+      },
+      {
+        name: 'Giusti Boutique Duomo',
+        name_ko: 'Giusti 부티크 두오모',
+        desc: "World's oldest balsamic vinegar producer (since 1605, from Modena). Beautiful boutique near Duomo with tastings — aged vinegars presented like fine wines. ⭐ 4.9/5. Perfect gift purchase.",
+        desc_ko: '세계에서 가장 오래된 발사믹 식초 생산자 (1605년부터, 모데나). 두오모 근처 아름다운 부티크에서 시음 — 와인처럼 숙성된 식초들. ⭐ 4.9/5. 선물용으로 완벽.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJzZsK8MPHhkcRyglQukFAzOs',
+        image: 'https://images.unsplash.com/photo-1474722883778-792e7990302f?w=400&h=300&fit=crop'
+      },
+      {
+        name: 'laESSE Milano (Brera)',
+        name_ko: 'laESSE 밀라노 (브레라)',
+        desc: 'Modern small supermarket in Brera district with helpful staff. Quick stop for everyday groceries, fresh items. Open daily until 9 PM. ~10 min walk from hotel.',
+        desc_ko: '브레라 지구의 모던한 소형 슈퍼마켓, 친절한 직원. 일상 식료품·신선 식품 빠른 구매. 매일 오후 9시까지 영업. 호텔에서 도보 약 10분.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJv4rBRxrBhkcRd2O8P6NvypI',
+        image: 'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=400&h=300&fit=crop'
+      }
     ]
   },
   'Firenze': {
@@ -611,6 +739,32 @@ const placesData = {
       { en: "Via de' Tornabuoni — luxury", ko: '비아 토르나부오니 — 명품' },
       { en: 'Mercato Centrale — food & crafts', ko: '중앙시장 — 음식 & 공예품' },
       { en: 'San Lorenzo Market — leather', ko: '산 로렌초 시장 — 가죽 제품' }
+    ],
+    groceries: [
+      {
+        name: 'Pegna dal 1860',
+        name_ko: 'Pegna dal 1860',
+        desc: 'High-end gourmet grocer near the Duomo, operating since 1860. Truffle spreads, premium olive oils, fine vinegars, deli meats, cheeses. Beautiful historic interior. Perfect for travel-friendly gifts. ⚠️ Closed Sun.',
+        desc_ko: '두오모 근처의 고급 식료품점, 1860년부터 운영. 트러플 스프레드, 프리미엄 올리브 오일, 고급 식초, 델리 미트, 치즈. 아름다운 역사적 인테리어. 여행 친화적 선물에 완벽. ⚠️ 일 휴무.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJT6FJRAFUKhMRZKAvNWasLs4',
+        image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&h=300&fit=crop'
+      },
+      {
+        name: 'Alimentari Uffizi',
+        name_ko: 'Alimentari Uffizi',
+        desc: 'Family-run delicatessen near Uffizi Gallery — meats and cheeses from their own farm. Outstanding Tuscan olive oil, wines €4/glass. ⭐ 4.8/5. ⚠️ Closed Tue. Authentic Tuscan tasting experience.',
+        desc_ko: '우피치 미술관 근처 가족 운영 델리 — 자가 농장의 고기와 치즈. 뛰어난 토스카나 올리브 오일, 와인 €4/잔. ⭐ 4.8/5. ⚠️ 화 휴무. 정통 토스카나 시식 경험.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJowAaZwBUKhMRyyZHbcRZUa0',
+        image: 'https://images.unsplash.com/photo-1474722883778-792e7990302f?w=400&h=300&fit=crop'
+      },
+      {
+        name: 'SchiacciaMatta Signoria',
+        name_ko: 'SchiacciaMatta Signoria',
+        desc: "Quick-bite gourmet sandwich shop near Piazza della Signoria. Famous Tuscan schiacciata flatbread sandwiches made to order with quality ingredients. ⭐ 5.0/5. Open daily 10 AM–9 PM.",
+        desc_ko: '시뇨리아 광장 근처 고급 샌드위치 가게. 유명한 토스카나 스키아챠타 플랫브레드 샌드위치를 양질의 재료로 즉석 제조. ⭐ 5.0/5. 매일 오전 10시-오후 9시.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJScSLTyRVKhMRbF_yMjGZ85Q',
+        image: 'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=400&h=300&fit=crop'
+      }
     ]
   },
   'Rome': {
@@ -625,6 +779,32 @@ const placesData = {
       { en: 'Via Condotti — luxury near Spanish Steps', ko: '비아 콘도티 — 스페인 광장 근처 명품' },
       { en: "Campo de' Fiori — market", ko: '캄포 데 피오리 — 시장' },
       { en: 'Via del Governo Vecchio — vintage', ko: '비아 델 고베르노 베키오 — 빈티지' }
+    ],
+    groceries: [
+      {
+        name: 'Antica Bottega dei Sapori Ruggeri (1935)',
+        name_ko: 'Antica Bottega dei Sapori Ruggeri (1935)',
+        desc: 'Traditional gourmet deli on Via della Pace, just 2-3 min walk from Eitch Borromini hotel. Operating since 1935 — quality cheeses, deli meats, wines, olive oils, biscotti. Open daily 8 AM-8:15 PM. ⚠️ Closed Sun.',
+        desc_ko: 'Via della Pace의 전통 고급 델리, Eitch Borromini 호텔에서 도보 2-3분. 1935년부터 운영 — 고급 치즈, 델리 미트, 와인, 올리브 오일, 비스코티. 매일 오전 8시-오후 8시 15분. ⚠️ 일 휴무.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJGbpKSkVgLxMRbWsQMqX_myI',
+        image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&h=300&fit=crop'
+      },
+      {
+        name: 'Castroni (Cola di Rienzo)',
+        name_ko: 'Castroni (콜라 디 리엔초)',
+        desc: 'Roman gourmet treasure — large flagship near Vatican area. Italian specialties (coffee, chocolates, pasta) PLUS hard-to-find international goods (Tex-Mex, Asian, German). Espresso bar inside. Open Sundays. Take metro/walk ~15 min from hotel.',
+        desc_ko: '로마의 보물급 고급 식품점 — 바티칸 근처 대형 본점. 이탈리아 스페셜티(커피, 초콜릿, 파스타) + 구하기 힘든 인터내셔널 상품(텍사스-멕시칸, 아시아, 독일). 내부 에스프레소 바. 일요일 영업. 호텔에서 지하철/도보 약 15분.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJv7LkTV5gLxMRBEUnhwi7rvU',
+        image: 'https://images.unsplash.com/photo-1474722883778-792e7990302f?w=400&h=300&fit=crop'
+      },
+      {
+        name: 'Salumeria Volpetti (Testaccio)',
+        name_ko: 'Salumeria Volpetti (테스타치오)',
+        desc: 'Iconic Roman salumeria in Testaccio district — wide variety of cured meats (incl. Spanish ham), aged balsamic tastings, fresh mozzarella & burrata. Small platters with wine on-site. ⚠️ Closed Sun. Worth the detour.',
+        desc_ko: '테스타치오 지구의 상징적인 로마 살루메리아 — 다양한 가공육(스페인 햄 포함), 숙성 발사믹 시음, 신선 모차렐라 & 부라타. 현장에서 와인과 작은 플래터. ⚠️ 일 휴무. 멀어도 갈 만한 가치.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJzeFj-C1gLxMRoIn__UbjP2I',
+        image: 'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=400&h=300&fit=crop'
+      }
     ]
   }
 };
@@ -697,6 +877,12 @@ const schedule = [
     location_ko: '그린델발트',
     hotel: 'Chalet Carve',
     hotel_ko: 'Chalet Carve',
+    hotelInfo: {
+      desc: 'Self-catering chalet apartments with high-end alpine décor. Modern wood/stone interior, mountain views. ~10 min walk downhill to Grindelwald station, very close to Coop. Hosts Claudia & David are praised for hospitality.',
+      desc_ko: '자취 가능한 샬레 아파트, 고급 알파인 인테리어. 모던한 우드/스톤 내장재, 산 전망. 그린델발트 역까지 도보 약 10분(내리막), Coop 매우 가까움. 호스트 Claudia & David의 환대로 호평.',
+      link: 'https://www.google.com/maps/place/?q=place_id:ChIJO1VvhPWZj0cR30xZkI9DXM8',
+      image: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&h=300&fit=crop'
+    },
     people: ['P1','P2','P3','P4','P5'],
     dates: ['5/26 Tue','5/27 Wed','5/28 Thu'],
     dates_ko: ['5/26 화','5/27 수','5/28 목'],
@@ -717,6 +903,12 @@ const schedule = [
     location_ko: '밀라노',
     hotel: 'Hotel The Square',
     hotel_ko: 'Hotel The Square',
+    hotelInfo: {
+      desc: 'Boutique 4-star hotel near Piazza del Duomo. Spacious modern rooms, comfortable beds. 5-min walk to the Duomo, Galleria, and fashion district. Friendly reception, breakfast highly rated.',
+      desc_ko: '두오모 광장 근처의 부티크 4성급 호텔. 넓은 모던 객실, 편안한 침대. 두오모, 갤러리아, 패션 지구까지 도보 5분. 친절한 리셉션, 조식 호평.',
+      link: 'https://www.google.com/maps/place/?q=place_id:ChIJvZrqeqnGhkcR3vPZgptLlhI',
+      image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop'
+    },
     people: ['P1','P2','P3','P4','P5'],
     dates: ['5/29 Fri','5/30 Sat'],
     dates_ko: ['5/29 금','5/30 토'],
@@ -732,6 +924,12 @@ const schedule = [
     location_ko: '피렌체',
     hotel: 'FH55',
     hotel_ko: 'FH55',
+    hotelInfo: {
+      desc: 'FH55 Hotel Calzaiuoli — boutique hotel in the historic center of Florence. Located between Piazza della Signoria/Ponte Vecchio and the Duomo. Welcome drink, mimosa social hour at 5 PM. Excellent breakfast and friendly staff.',
+      desc_ko: 'FH55 Hotel Calzaiuoli — 피렌체 역사 중심부의 부티크 호텔. 시뇨리아 광장/폰테 베키오와 두오모 사이 위치. 환영 음료, 오후 5시 미모사 소셜 아워. 훌륭한 조식과 친절한 직원.',
+      link: 'https://www.google.com/maps/place/?q=place_id:ChIJ3VyxAAFUKhMRFKC_06cNqUc',
+      image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=400&h=300&fit=crop'
+    },
     people: ['P1','P2','P3'],
     dates: ['5/31 Sun','6/1 Mon','6/2 Tue'],
     dates_ko: ['5/31 일','6/1 월','6/2 화'],
@@ -748,6 +946,12 @@ const schedule = [
     location_ko: '로마',
     hotel: 'Eitch Borromini',
     hotel_ko: 'Eitch Borromini',
+    hotelInfo: {
+      desc: 'Eitch Borromini — Palazzo Pamphilj, on Piazza Navona. Once a papal family residence, now a beautifully restored 16th-century palazzo. Spacious rooms, stunning rooftop bar, exceptional staff, 5★ luxury feel.',
+      desc_ko: 'Eitch Borromini — Palazzo Pamphilj, 나보나 광장 위치. 한때 교황 가문 저택이었던 16세기 궁전을 아름답게 복원. 넓은 객실, 멋진 루프탑 바, 뛰어난 직원, 5성급 럭셔리.',
+      link: 'https://www.google.com/maps/place/?q=place_id:ChIJd8jCVUVgLxMR4nw75MhqRkc',
+      image: 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=400&h=300&fit=crop'
+    },
     people: ['P1','P2','P3'],
     dates: ['6/3 Wed','6/4 Thu','6/5 Fri','6/6 Sat'],
     dates_ko: ['6/3 수','6/4 목','6/5 금','6/6 토'],
@@ -804,8 +1008,11 @@ const i18n = {
     schedule: 'Schedule',
     restaurants: 'Restaurants',
     shopping: 'Shopping',
+    groceries: 'Groceries',
+    hotels: 'Hotel',
     restaurantsHeader: 'Restaurants',
     shoppingHeader: 'Shopping',
+    groceriesHeader: 'Groceries',
     morePicks: (n) => `${n} picks — see tile view below ↓`,
     legend: {
       checkin: '✓ Check-in',
@@ -835,8 +1042,11 @@ const i18n = {
     schedule: '일정',
     restaurants: '음식점',
     shopping: '쇼핑',
+    groceries: '식품점',
+    hotels: '호텔',
     restaurantsHeader: '음식점',
     shoppingHeader: '쇼핑',
+    groceriesHeader: '식품점',
     morePicks: (n) => `${n}개 추천 — 아래 타일 보기 ↓`,
     legend: {
       checkin: '✓ 체크인',
@@ -1109,11 +1319,16 @@ blocks.forEach((b) => {
   const tabY = b.y - 48;
   const tabH = 18;
   const tabGap = 4;
+  // Build tab list - only include groceries tab if this city has grocery data
+  const cityPlaces = placesData[b.location] || {};
   const tabs = [
     { id: 'schedule',    label: T().schedule },
     { id: 'restaurants', label: T().restaurants },
     { id: 'shopping',    label: T().shopping }
   ];
+  if (cityPlaces.groceries && cityPlaces.groceries.length > 0) {
+    tabs.push({ id: 'groceries', label: T().groceries });
+  }
 
   // Calculate tab widths so all 3 fit within block width
   const totalTabSpace = b.width - (tabs.length - 1) * tabGap;
@@ -1176,6 +1391,15 @@ blocks.forEach((b) => {
     style: 'display: none;'
   });
   svg.appendChild(shopGroup);
+
+  // ===== Groceries view group (hidden by default) =====
+  const groceriesGroup = createEl('g', {
+    id: `groceries-${b.idx}`,
+    'data-block': b.idx,
+    'data-view': 'groceries',
+    style: 'display: none;'
+  });
+  svg.appendChild(groceriesGroup);
 
   for (let d = 1; d < b.days; d++) {
     const sepX = b.x + d * COL_WIDTH;
@@ -1542,6 +1766,46 @@ blocks.forEach((b) => {
     sTxt.appendChild(title);
     shopGroup.appendChild(sTxt);
   });
+
+  // ===== Populate Groceries group =====
+  if (places.groceries && places.groceries.length > 0) {
+    const groceriesHeader = createEl('text', {
+      x: b.x + b.width/2, y: b.y + 26,
+      'text-anchor': 'middle',
+      'font-size': 12, 'font-weight': 'bold', fill: '#16a085'
+    });
+    groceriesHeader.textContent = T().groceriesHeader;
+    groceriesGroup.appendChild(groceriesHeader);
+
+    // Hint to look at the gallery below
+    const groceriesHint = createEl('text', {
+      x: b.x + b.width/2, y: b.y + 50,
+      'text-anchor': 'middle',
+      'font-size': 10, fill: '#666'
+    });
+    groceriesHint.textContent = T().morePicks(places.groceries.length);
+    groceriesGroup.appendChild(groceriesHint);
+
+    // Compact name list
+    places.groceries.forEach((g, i) => {
+      const gy = b.y + 75 + i * 18;
+      if (gy > b.y + b.height - 20) return;
+      const txt = createEl('text', {
+        x: b.x + 10, y: gy,
+        'font-size': 9, fill: '#444'
+      });
+      const gname = (currentLang === 'ko' && g.name_ko) ? g.name_ko : g.name;
+      // Truncate to fit
+      const charPx = currentLang === 'ko' ? 9.5 : 5;
+      const maxChars = Math.floor((b.width - 18) / charPx);
+      const numbered = `${i+1}. ${gname}`;
+      txt.textContent = numbered.length > maxChars ? numbered.substring(0, maxChars - 1) + '…' : numbered;
+      const tt = createEl('title');
+      tt.textContent = gname;
+      txt.appendChild(tt);
+      groceriesGroup.appendChild(txt);
+    });
+  }
 });
 
 // ===== Build HTML restaurant galleries for blocks with rich restaurant data =====
@@ -1584,6 +1848,89 @@ blocks.forEach(b => {
   });
 
   galleryContainer.appendChild(gallery);
+});
+
+// ===== Helper: build hotel card HTML (returns a div element or null) =====
+function buildHotelCard(b) {
+  // Show hotel card only when block has hotelInfo (Interlaken doesn't have one — excluded)
+  if (!b.hotelInfo) return null;
+  const hi = b.hotelInfo;
+  const hname = L(b, 'hotel');
+  const hdesc = (currentLang === 'ko' && hi.desc_ko) ? hi.desc_ko : hi.desc;
+  const wrap = document.createElement('div');
+  wrap.className = 'hotel-card-wrap';
+  wrap.innerHTML = `
+    <div class="hotel-card">
+      <div class="hotel-card-img" style="background-image: url('${hi.image}');"></div>
+      <div class="hotel-card-body">
+        <div class="hotel-card-label">${T().hotels}</div>
+        <div class="hotel-card-name">${hname}</div>
+        <div class="hotel-card-desc">${hdesc}</div>
+        <a href="${hi.link}" target="_blank" rel="noopener" class="rest-tile-link">📍 ${T().viewMap}</a>
+      </div>
+    </div>
+  `;
+  return wrap;
+}
+
+// ===== Build HTML grocery galleries =====
+blocks.forEach(b => {
+  const places = placesData[b.location];
+  if (!places || !places.groceries || !places.groceries.length) return;
+
+  const gallery = document.createElement('div');
+  gallery.className = 'rest-gallery';
+  gallery.id = `grocery-gallery-${b.idx}`;
+
+  gallery.innerHTML = `
+    <h2>${currentLang === 'ko' ? L(b, 'location') + ' 식품점' : 'Groceries in ' + L(b, 'location')}</h2>
+    <div class="gallery-sub">${T().gallerySub(places.groceries.length)}</div>
+    <div class="rest-tiles"></div>
+  `;
+  const tilesDiv = gallery.querySelector('.rest-tiles');
+
+  // Insert hotel card just before the tiles
+  const hotelCard = buildHotelCard(b);
+  if (hotelCard && tilesDiv) {
+    gallery.insertBefore(hotelCard, tilesDiv);
+  }
+
+  places.groceries.forEach((g, i) => {
+    const tile = document.createElement('div');
+    tile.className = 'rest-tile';
+    const gname = (currentLang === 'ko' && g.name_ko) ? g.name_ko : g.name;
+    const gdesc = (currentLang === 'ko' && g.desc_ko) ? g.desc_ko : g.desc;
+    const websiteLink = g.website
+      ? `<a href="${g.website}" target="_blank" rel="noopener" class="rest-tile-link" style="margin-left: 12px;">🌐 ${T().officialSite}</a>`
+      : '';
+    tile.innerHTML = `
+      <div class="rest-tile-img" style="background-image: url('${g.image}');"></div>
+      <div class="rest-tile-body">
+        <div class="rest-tile-name"><span class="num">${i+1}</span>${gname}</div>
+        <div class="rest-tile-desc">${gdesc}</div>
+        <a href="${g.link}" target="_blank" rel="noopener" class="rest-tile-link">📍 ${T().viewMap}</a>${websiteLink}
+      </div>
+    `;
+    tilesDiv.appendChild(tile);
+  });
+
+  galleryContainer.appendChild(gallery);
+});
+
+// ===== Inject hotel cards into restaurant galleries too (Interlaken excluded since it has no hotelInfo) =====
+blocks.forEach(b => {
+  const restGallery = document.getElementById(`gallery-${b.idx}`);
+  if (!restGallery) return;
+  const hotelCard = buildHotelCard(b);
+  if (hotelCard) {
+    // Insert just before the .rest-tiles container (after h2 + gallery-sub)
+    const tilesDiv = restGallery.querySelector('.rest-tiles');
+    if (tilesDiv) {
+      restGallery.insertBefore(hotelCard, tilesDiv);
+    } else {
+      restGallery.appendChild(hotelCard);
+    }
+  }
 });
 
 // Bezier connections
@@ -1931,16 +2278,23 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     const tabId = btn.getAttribute('data-tab');
 
     // Hide all view groups for this block
-    ['schedule','restaurants','shopping'].forEach(v => {
+    ['schedule','restaurants','shopping','groceries'].forEach(v => {
       const g = document.getElementById(`${v}-${blockIdx}`);
       if (g) g.style.display = (v === tabId) ? '' : 'none';
     });
 
-    // Toggle the HTML gallery for this block (only shows on Restaurants tab)
-    const gallery = document.getElementById(`gallery-${blockIdx}`);
-    if (gallery) {
-      if (tabId === 'restaurants') gallery.classList.add('active');
-      else gallery.classList.remove('active');
+    // Toggle the HTML restaurant gallery (only shows on Restaurants tab)
+    const restGallery = document.getElementById(`gallery-${blockIdx}`);
+    if (restGallery) {
+      if (tabId === 'restaurants') restGallery.classList.add('active');
+      else restGallery.classList.remove('active');
+    }
+
+    // Toggle the HTML grocery gallery (only shows on Groceries tab)
+    const grocGallery = document.getElementById(`grocery-gallery-${blockIdx}`);
+    if (grocGallery) {
+      if (tabId === 'groceries') grocGallery.classList.add('active');
+      else grocGallery.classList.remove('active');
     }
 
     // Update tab visuals: find all tab buttons for this block
