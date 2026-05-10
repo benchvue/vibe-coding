@@ -361,6 +361,31 @@ const placesData = {
         image: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400&h=300&fit=crop'
       },
       {
+        name: '[Lungern] Hotel Restaurant Kaiserstuhl',
+        name_ko: '[룽게른] Hotel Restaurant Kaiserstuhl',
+        desc: 'Lakefront restaurant on Lungernsee with breathtaking lake and mountain views. Authentic Swiss cuisine and friendly service. Open Mondays — perfect for the 5/25 sunset dinner.',
+        desc_ko: '룽게른 호수 바로 앞 레스토랑. 호수와 알프스 산맥의 숨막히는 풍경. 정통 스위스 요리와 친절한 서비스. 월요일 영업 — 5/25 일몰 저녁에 적합.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJYzXd2nKTj0cRaCrsQm7d-BE',
+        image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop'
+      },
+      {
+        name: '[Lungern] Restaurant Bahnhöfli',
+        name_ko: '[룽게른] Restaurant Bahnhöfli',
+        desc: 'Cozy restaurant at Lungern station with local ingredients. Pizza, pasta, goulash soup, and hash browns highly rated. ⚠️ Closed Mondays — not available 5/25.',
+        desc_ko: '룽게른 역에 위치한 아늑한 레스토랑. 현지 식재료 사용. 피자, 파스타, 굴라시 수프, 해시브라운이 인기. ⚠️ 월요일 휴무 — 5/25 이용 불가.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJh2HKMm2Sj0cRZysV6Tl1VRg',
+        image: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=400&h=300&fit=crop'
+      },
+      {
+        name: '[Lungern] Cantina Caverna',
+        name_ko: '[룽게른] Cantina Caverna',
+        desc: 'Unique cave restaurant up to 80m deep inside the Brünig mountain. Seasonal cuisine with regional ingredients from lake, forest, fields, and the Alps. Beef tartare, deer schnitzel, burgers, and chestnut dessert highly recommended. ⚠️ Mondays lunch only (until 2 PM) — not available for 5/25 dinner.',
+        desc_ko: '브뤼니히 산 안으로 최대 80m 깊이의 독특한 동굴 레스토랑. 호수·숲·들판·알프스의 지역 제철 재료를 사용한 요리. 비프 타르타르, 사슴 슈니첼, 버거, 밤 디저트 추천. ⚠️ 월요일은 점심만 (오후 2시까지) — 5/25 저녁 이용 불가.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJ-ROAFyWSj0cRGrvpNzUbLb4',
+        website: 'https://cantina-caverna.ch/',
+        image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&h=300&fit=crop'
+      },
+      {
         name: 'Restaurant Taverne',
         name_ko: 'Restaurant Taverne',
         desc: 'Swiss classics in a traditional setting — fondue, rösti, schnitzel.',
@@ -590,8 +615,10 @@ const schedule = [
       { day: 2, time: '3:10 PM', team: 'A', label: '[Paraglide team] Train → Lungern', label_ko: '[패러팀] 기차 → 룽게른', type: 'excursion' },
       { day: 2, time: '4:10 PM', team: 'A', label: '[Paraglide team] Arrive Lungern, join', label_ko: '[패러팀] 룽게른 도착, 합류', type: 'excursion' },
       { day: 2, time: '4:30 PM', label: 'All together: explore Lungern', label_ko: '전원 합류: 룽게른 산책', type: 'excursion' },
-      { day: 2, time: '7:00 PM', label: 'Lungern sunset viewing', label_ko: '룽게른 일몰 감상', type: 'excursion' },
-      { day: 2, time: '8:30 PM', label: 'Sunset ends, return', label_ko: '일몰 종료, 복귀', type: 'excursion' },
+      { day: 2, time: '6:00 PM', label: 'Dinner at Hotel Restaurant Kaiserstuhl', label_ko: '저녁: Hotel Restaurant Kaiserstuhl', type: 'other' },
+      { day: 2, time: '7:30 PM', label: 'Lungern lake walk + golden hour', label_ko: '룽게른 호수 산책 + 황금시간대', type: 'excursion' },
+      { day: 2, time: '9:00 PM', label: 'Sunset', label_ko: '일몰', type: 'excursion' },
+      { day: 2, time: '9:30 PM', label: 'Return to Interlaken', label_ko: '인터라켄 복귀' },
       { day: 3, time: '10:00 AM', label: 'Checkout', label_ko: '체크아웃', type: 'checkout' }
     ]
   },
@@ -726,6 +753,7 @@ const i18n = {
     galleryTitle: (loc) => `Restaurants in ${loc}`,
     gallerySub: (n) => `${n} curated picks. Click any tile to open in Google Maps.`,
     viewMap: 'View on map →',
+    officialSite: 'Official site →',
     detailsBadge: 'Details',
     closeBtn: 'Close',
     arriveLabel: 'Arrival',
@@ -758,6 +786,7 @@ const i18n = {
     galleryTitle: (loc) => `${loc} 음식점`,
     gallerySub: (n) => `${n}개의 엄선 추천. 타일 클릭 시 구글 지도에서 열림.`,
     viewMap: '지도에서 보기 →',
+    officialSite: '공식 사이트 →',
     detailsBadge: '자세히',
     closeBtn: '닫기',
     arriveLabel: '도착',
@@ -1470,12 +1499,15 @@ blocks.forEach(b => {
     tile.className = 'rest-tile';
     const rname = (currentLang === 'ko' && r.name_ko) ? r.name_ko : r.name;
     const rdesc = (currentLang === 'ko' && r.desc_ko) ? r.desc_ko : r.desc;
+    const websiteLink = r.website
+      ? `<a href="${r.website}" target="_blank" rel="noopener" class="rest-tile-link" style="margin-left: 12px;">🌐 ${T().officialSite}</a>`
+      : '';
     tile.innerHTML = `
       <div class="rest-tile-img" style="background-image: url('${r.image}');"></div>
       <div class="rest-tile-body">
         <div class="rest-tile-name"><span class="num">${i+1}</span>${rname}</div>
         <div class="rest-tile-desc">${rdesc}</div>
-        <a href="${r.link}" target="_blank" rel="noopener" class="rest-tile-link">📍 ${T().viewMap}</a>
+        <a href="${r.link}" target="_blank" rel="noopener" class="rest-tile-link">📍 ${T().viewMap}</a>${websiteLink}
       </div>
     `;
     tilesDiv.appendChild(tile);
