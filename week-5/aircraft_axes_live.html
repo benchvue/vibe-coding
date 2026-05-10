@@ -496,9 +496,18 @@ function readControls(){
     //   axes[0] X = roll  (stick left/right)
     //   axes[1] Y = pitch (stick fwd/back)
     //   Yaw = stick twist (Rz axis): clockwise twist → right turn
+    // User's twist axis reports asymmetric range -1.0 .. +0.38.
+    // Scale each side independently so both directions reach full deflection.
+    const YAW_NEG_RANGE = 1.0;    // distance from center to negative max
+    const YAW_POS_RANGE = 0.38;   // distance from center to positive max
+    let yawDelta = rawZ - center.z;
+    if (yawDelta > 0) yawDelta = yawDelta / YAW_POS_RANGE;
+    else              yawDelta = yawDelta / YAW_NEG_RANGE;
+    yawDelta = Math.max(-1, Math.min(1, yawDelta));
+
     const jRoll  = clean(rawX - center.x, DEADZONE, false);
     const jPitch = clean(rawY - center.y, DEADZONE, false);
-    const jYaw   = clean(rawZ - center.z, DEADZONE_YAW, false);
+    const jYaw   = clean(yawDelta, DEADZONE_YAW, false);
     pitch = Math.max(-1, Math.min(1, pitch + jPitch));
     roll  = Math.max(-1, Math.min(1, roll  + jRoll));
     yaw   = Math.max(-1, Math.min(1, yaw   + jYaw));
