@@ -93,6 +93,7 @@
   #legend .axis-info.pitch b{color:var(--pitch)}
   #legend .axis-info.roll  b{color:var(--roll)}
   #legend .axis-info.yaw   b{color:var(--yaw)}
+  #legend .keys{margin-top:6px;font-size:10px;color:var(--ink);letter-spacing:.04em;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
   #legend .ang{font-size:14px;font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink);margin-top:4px;display:block}
   kbd{background:rgba(20,40,80,.08);border:1px solid var(--line);
     padding:1px 6px;border-radius:3px;color:var(--ink);font-size:10px;font-family:inherit}
@@ -141,16 +142,19 @@
     <div class="axis-info pitch">
       <b>PITCH</b>
       Nose up / down · rotation around the lateral axis (wingtip-to-wingtip).
+      <div class="keys">Stick fwd/back · <kbd>W</kbd> down / <kbd>S</kbd> up</div>
       <span class="ang" id="ang-pitch">0°</span>
     </div>
     <div class="axis-info roll">
       <b>ROLL</b>
       Bank left / right · rotation around the longitudinal axis (nose-to-tail).
+      <div class="keys">Stick left/right · <kbd>A</kbd> left / <kbd>D</kbd> right</div>
       <span class="ang" id="ang-roll">0°</span>
     </div>
     <div class="axis-info yaw">
       <b>YAW</b>
       Nose left / right · rotation around the vertical axis (use stick twist).
+      <div class="keys">Stick twist · <kbd>Q</kbd> left / <kbd>E</kbd> right</div>
       <span class="ang" id="ang-yaw">0°</span>
     </div>
   </div>
