@@ -427,10 +427,80 @@ const placesData = {
   },
   'Grindelwald': {
     restaurants: [
-      { en: "Restaurant Barry's — Swiss-Alpine", ko: "Restaurant Barry's — 스위스 알파인" },
-      { en: 'C and M — bistro & coffee', ko: 'C and M — 비스트로 & 커피' },
-      { en: "Onkel Tom's Hütte — pizza", ko: "Onkel Tom's Hütte — 피자" },
-      { en: 'Memory Restaurant — fondue & raclette', ko: 'Memory Restaurant — 퐁듀 & 라클렛' }
+      {
+        name: '[Traditional] Restaurant Pinte',
+        name_ko: '[전통] Restaurant Pinte',
+        desc: 'Hearty home-style cooking, famous for rösti and cheese fondue. Part of the historic Hotel Bellevue-Pinte (oldest hotel in Grindelwald, since 1843). ⚠️ Closed Mon & Tue.',
+        desc_ko: '푸짐한 가정식 요리. 뢰스티와 치즈 퐁듀로 유명. 그린델발트에서 가장 오래된 호텔(1843년부터)인 Hotel Bellevue-Pinte의 일부. ⚠️ 월·화 휴무.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJtXo__Vibj0cRXv0NpXsmnSg',
+        website: 'https://bellevue-pinte.ch/',
+        image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop'
+      },
+      {
+        name: '[Traditional] Stallbeizli Heuboden',
+        name_ko: '[전통] Stallbeizli Heuboden',
+        desc: 'Very rustic, popular for hearty rösti and fondue. Cozy converted barn with breathtaking village views. Family farm sourcing — alp cheese, dried meat, local sausages. Slightly outside the village (bus 123).',
+        desc_ko: '매우 러스틱한 분위기, 푸짐한 뢰스티와 퐁듀로 인기. 개조한 헛간의 아늑한 공간에서 마을 전망 감상. 가족 농장 직송 식재료 — 알프 치즈, 건조육, 수제 소시지. 마을에서 약간 떨어짐 (123번 버스).',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJ9aAn27Wej0cRW0WURgrB3CI',
+        website: 'https://www.stallbeizli-heuboden.ch/',
+        image: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=400&h=300&fit=crop'
+      },
+      {
+        name: '[Traditional] Hotel Restaurant Hirschen',
+        name_ko: '[전통] Hotel Restaurant Hirschen',
+        desc: 'Authentic, friendly atmosphere with great fondue. Open every day 8 AM–10 PM. Pizza, salads, and apple strudel also recommended.',
+        desc_ko: '정통적이고 친절한 분위기, 훌륭한 퐁듀. 매일 오전 8시~오후 10시 영업. 피자, 샐러드, 사과 슈트루델도 추천.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJ5d3MT_6bj0cR6imJg1DfLDA',
+        image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop'
+      },
+      {
+        name: '[Fine Dining] Restaurant Fiescherblick',
+        name_ko: '[파인 다이닝] Restaurant Fiescherblick',
+        desc: 'Modern Swiss cuisine at a high level. ⭐ 4.9/5. Located near Firstbahn and the Jungfraujoch train station. Tasting menu with wine pairing — multi-course experience.',
+        desc_ko: '높은 수준의 모던 스위스 요리. ⭐ 4.9/5. 피르스트반과 융프라우요흐 기차역 근처. 와인 페어링 테이스팅 메뉴 — 다양한 코스 경험.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJ89MgKfqbj0cRW9mn5EUQ0U4',
+        image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&h=300&fit=crop'
+      },
+      {
+        name: '[Fine Dining] 1910 · Gourmet by Hausers',
+        name_ko: '[파인 다이닝] 1910 · Gourmet by Hausers',
+        desc: 'Exquisite Michelin-quality experience at Hotel Belvedere. Only 6 tables — intimate, focused on local Swiss produce. Beer/wine pairing available.',
+        desc_ko: 'Hotel Belvedere의 미슐랭급 정교한 경험. 단 6테이블 — 친밀한 분위기, 스위스 현지 식재료에 집중. 맥주/와인 페어링 가능.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJeS5DIlOZj0cR6R3Z-bqvCs4',
+        image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop'
+      },
+      {
+        name: '[Fine Dining] Glacier',
+        name_ko: '[파인 다이닝] Glacier',
+        desc: 'Fine dining with stunning valley and mountain views at Boutique Hotel Glacier. Two restaurants in one — fine dining (tasting menu) and a simpler hotel restaurant. Open daily 12 PM–9 PM.',
+        desc_ko: 'Boutique Hotel Glacier의 멋진 계곡·산 전망 파인 다이닝. 두 개의 레스토랑 — 파인 다이닝(테이스팅 메뉴)과 간단한 호텔 레스토랑. 매일 오후 12시~9시 영업.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJxd5EDWyZj0cRHZ5-JzdfebM',
+        image: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=400&h=300&fit=crop'
+      },
+      {
+        name: "[Cozy] Barry's Restaurant, Bar & Lounge",
+        name_ko: '[아늑함] Barry\'s Restaurant, Bar & Lounge',
+        desc: 'Rustic chalet ambiance in the village center. Open early to late (7 AM–11:30 PM, weekends until 12:30 AM). Mongolian dinner, fondue, steak. One of few open late.',
+        desc_ko: '마을 중심에 위치한 러스틱 샬레 분위기. 이른 아침부터 늦은 밤까지 영업 (오전 7시~오후 11시 30분, 주말은 자정 12시 30분까지). 몽골리안 디너, 퐁듀, 스테이크. 늦게까지 여는 몇 안 되는 곳.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJN4PJJ_6bj0cRP9y69-gMsTM',
+        image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop'
+      },
+      {
+        name: "[Cozy] Onkel Tom's Hütte",
+        name_ko: '[아늑함] Onkel Tom\'s Hütte',
+        desc: 'Famous for the best wood-fired pizzas in town, often busy. Cozy chalet ambiance, family-run. Try the vanilla ice cream with pumpkin seed oil. ⚠️ Closed Wed.',
+        desc_ko: '마을 최고의 화덕 피자로 유명, 자주 붐빔. 아늑한 샬레 분위기, 가족 운영. 바닐라 아이스크림 + 호박씨 오일이 별미. ⚠️ 수요일 휴무.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJOcSSC1SZj0cR5NvpmUOSkGQ',
+        image: 'https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?w=400&h=300&fit=crop'
+      },
+      {
+        name: '[Cozy] Café 3692',
+        name_ko: '[아늑함] Café 3692',
+        desc: 'Tucked away from the bustle, cozy. Owned by Bruno and Myriam — locally foraged food, regional meat, refined traditional cuisine. ⚠️ Closed Mon–Wed. Reserve well in advance.',
+        desc_ko: '번잡한 곳에서 떨어진 아늑한 곳. Bruno & Myriam 부부 운영 — 현지에서 채집한 식재료, 지역 정육 고기, 세련된 전통 요리. ⚠️ 월~수요일 휴무. 미리 예약 필수.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJs7OeT_2bj0cR3mRJr4ga_xg',
+        image: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400&h=300&fit=crop'
+      }
     ],
     shopping: [
       { en: 'Dorfstrasse — village main street', ko: 'Dorfstrasse — 마을 중심 거리' },
