@@ -667,19 +667,16 @@ function recenter(){
   const pads = navigator.getGamepads ? navigator.getGamepads() : [];
   for (const p of pads){
     if (!p) continue;
-    // Strong recenter — restart calibration for 30 frames so we average current
-    // stick position. This is more robust than a single-frame snapshot, which
-    // is important on macOS / Linux where joystick noise/drift varies.
-    calibrated = false;
-    calibFrames = 0;
-    calibAccum.x = calibAccum.y = calibAccum.z = calibAccum.aim = 0;
-    status.textContent = '⏳ Re-zeroing · hold stick still…';
-    status.className = '';
-    // Visual flash on body
-    document.body.style.transition = 'background-color .15s';
-    const origBg = document.body.style.backgroundColor;
-    document.body.style.backgroundColor = '#cfe7d4';
-    setTimeout(()=>{ document.body.style.backgroundColor = origBg; }, 200);
+    center.x = p.axes[0] ?? 0;
+    center.y = p.axes[1] ?? 0;
+    let yawRaw = p.axes[2];
+    if (yawRaw === undefined || yawRaw === null) yawRaw = p.axes[3] ?? 0;
+    center.z = yawRaw ?? 0;
+    const aimAxis = getAimAxis(p);
+    center.aim = (aimAxis >= 0) ? (p.axes[aimAxis] ?? 0) : 0;
+    calibrated = true;
+    status.textContent = '✓ Re-centered · ' + p.id;
+    status.className = 'connected';
     return;
   }
 }
