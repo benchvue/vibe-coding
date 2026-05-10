@@ -340,7 +340,7 @@
     <div class="trigger" id="triggerInd">
       <div style="display:flex;gap:8px;align-items:center">
         <div class="dot"></div>
-        <div class="lab">A1 Trigger · Guns</div>
+        <div class="lab"><span id="weaponLabel">A1 Trigger · Guns</span></div>
       </div>
       <div style="font-size:10px;color:var(--dim)" id="shotsRow">SHOTS · <span id="shotCount">0</span></div>
     </div>
@@ -349,14 +349,14 @@
   </div>
 
   <div id="legend">
-    <b>CONTROLS · v12</b><br>
-    <kbd>W</kbd>/<kbd>S</kbd> pitch · <kbd>A</kbd>/<kbd>D</kbd> roll<br>
-    <kbd>Q</kbd>/<kbd>E</kbd> yaw · <kbd>↑</kbd>/<kbd>↓</kbd> throttle<br>
-    <kbd>SPACE</kbd> / <kbd>Trigger</kbd> fire<br>
+    <b>CONTROLS · v17</b><br>
+    <kbd>↑</kbd>/<kbd>↓</kbd> roll · <kbd>←</kbd>/<kbd>→</kbd> yaw<br>
+    <kbd>Q</kbd>/<kbd>E</kbd> pitch · <kbd>W</kbd>/<kbd>S</kbd> throttle<br>
+    <kbd>A1 trigger</kbd> / <kbd>SPACE</kbd> = guns<br>
+    <kbd>A2</kbd> / <kbd>A</kbd> = <span style="color:#c43030;font-weight:600">homing rockets</span><br>
     <kbd>L</kbd> auto-level · <kbd>Z</kbd> snap level<br>
     <kbd>C</kbd> recenter · <kbd>M</kbd> mute<br>
-    <span style="color:var(--ok)">Auto-level keeps wings flat. Z = instant level. Stick twist = yaw.</span><br>
-    <span style="color:var(--bad)">0 health = GAME OVER</span>
+    <span style="color:var(--ok)">A2 button (or A key) fires homing rockets directly — no need to hold trigger.</span>
   </div>
 
   <div id="gameOver">
@@ -616,7 +616,7 @@ stage.appendChild(renderer.domElement);
 
 // Lighting
 const sun = new THREE.DirectionalLight(0xfff4e0, 1.1);
-sun.position.set(200, 400, 100);
+sun.position.set(800, 600, 400);
 sun.castShadow = true;
 sun.shadow.mapSize.set(1024, 1024);
 sun.shadow.camera.left = -200;
@@ -706,21 +706,89 @@ for (let i=0; i<22; i++){
   addMountain(Math.cos(ang)*r, Math.sin(ang)*r);
 }
 
-// Clouds
+// Forests — clusters of trees for more realistic ground
+function addForest(cx, cz){
+  const grp = new THREE.Group();
+  for (let i=0; i<25; i++){
+    // Simple tree: brown trunk + green cone
+    const trunk = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.5, 0.6, 3, 6),
+      new THREE.MeshStandardMaterial({color:0x5a3a20, roughness:0.95})
+    );
+    trunk.position.set(
+      (Math.random()-0.5)*80,
+      1.5,
+      (Math.random()-0.5)*80
+    );
+    trunk.castShadow = true;
+    grp.add(trunk);
+    const foliage = new THREE.Mesh(
+      new THREE.ConeGeometry(2 + Math.random()*1, 6 + Math.random()*2, 8),
+      new THREE.MeshStandardMaterial({color: new THREE.Color().setHSL(0.28 + Math.random()*0.08, 0.55, 0.28 + Math.random()*0.1), roughness:0.9, flatShading:true})
+    );
+    foliage.position.copy(trunk.position);
+    foliage.position.y += 4;
+    foliage.castShadow = true;
+    grp.add(foliage);
+  }
+  grp.position.set(cx, 0, cz);
+  scene.add(grp);
+}
+for (let i=0; i<14; i++){
+  addForest((Math.random()-0.5)*2200, (Math.random()-0.5)*2200);
+}
+
+// Rivers / lakes — flat reflective blue patches
+function addLake(cx, cz){
+  const lake = new THREE.Mesh(
+    new THREE.CircleGeometry(40 + Math.random()*60, 24),
+    new THREE.MeshStandardMaterial({color:0x3a6a9a, roughness:0.2, metalness:0.5, transparent:true, opacity:0.85})
+  );
+  lake.rotation.x = -Math.PI/2;
+  lake.position.set(cx, 0.5, cz);
+  scene.add(lake);
+}
+for (let i=0; i<8; i++){
+  addLake((Math.random()-0.5)*2000, (Math.random()-0.5)*2000);
+}
+
+// Sun glow disk in the sky
+const sunDisk = new THREE.Mesh(
+  new THREE.SphereGeometry(40, 16, 12),
+  new THREE.MeshBasicMaterial({color:0xfff4d6, transparent:true, opacity:0.9, fog:false})
+);
+sunDisk.position.set(800, 600, 400);
+scene.add(sunDisk);
+// Soft halo around sun
+const sunHalo = new THREE.Mesh(
+  new THREE.SphereGeometry(80, 16, 12),
+  new THREE.MeshBasicMaterial({color:0xffe0a0, transparent:true, opacity:0.25, fog:false})
+);
+sunHalo.position.copy(sunDisk.position);
+scene.add(sunHalo);
+
+// Clouds — multi-layer for depth
 const cloudMat = new THREE.MeshBasicMaterial({color:0xffffff, transparent:true, opacity:0.85, fog:false});
-function addCloud(x,y,z){
+const cloudMatHigh = new THREE.MeshBasicMaterial({color:0xfaf8f0, transparent:true, opacity:0.55, fog:false});
+function addCloud(x,y,z, mat){
   const cloud = new THREE.Group();
-  for (let i=0; i<5+Math.random()*4; i++){
-    const s = 8 + Math.random()*14;
-    const puff = new THREE.Mesh(new THREE.SphereGeometry(s, 8, 6), cloudMat);
-    puff.position.set((Math.random()-0.5)*30, (Math.random()-0.5)*5, (Math.random()-0.5)*30);
+  const puffCount = 5 + Math.floor(Math.random()*5);
+  for (let i=0; i<puffCount; i++){
+    const s = 10 + Math.random()*18;
+    const puff = new THREE.Mesh(new THREE.SphereGeometry(s, 8, 6), mat || cloudMat);
+    puff.position.set((Math.random()-0.5)*40, (Math.random()-0.5)*6, (Math.random()-0.5)*40);
     cloud.add(puff);
   }
   cloud.position.set(x, y, z);
   scene.add(cloud);
 }
-for (let i=0; i<35; i++){
-  addCloud((Math.random()-0.5)*2400, 100 + Math.random()*120, (Math.random()-0.5)*2400);
+// Low cumulus
+for (let i=0; i<45; i++){
+  addCloud((Math.random()-0.5)*2600, 110 + Math.random()*80, (Math.random()-0.5)*2600);
+}
+// High cirrus / scattered
+for (let i=0; i<25; i++){
+  addCloud((Math.random()-0.5)*2800, 280 + Math.random()*150, (Math.random()-0.5)*2800, cloudMatHigh);
 }
 
 // ═══ AIRCRAFT BUILDER ═════════════════════════════════════════
@@ -976,6 +1044,168 @@ function fireBullet(fromPlane, isPlayer){
 let lastFireTime = 0;
 let shotCount = 0;
 
+// ═══ ROCKET SYSTEM ════════════════════════════════════════════
+const ROCKET_COOLDOWN = 0.7;     // slower fire rate than guns
+const ROCKET_SPEED = 110;
+const ROCKET_LIFE = 4.0;
+const ROCKET_TURN_RATE = 2.5;    // rad/s — how fast rocket can pursue target
+const ROCKET_DAMAGE = 4;          // big hit
+const ROCKET_LOCK_RANGE = 600;
+const ROCKET_LOCK_CONE = 0.85;   // cosine of half-cone — looser than gun lock
+const rockets = [];
+let lastRocketTime = 0;
+let rocketCount = 0;
+
+function playRocketLaunch(){
+  if (!audioCtx || !soundOn) return;
+  const t0 = audioCtx.currentTime;
+  // Whoosh — rising noise
+  const noise = makeNoiseBuffer(0.4);
+  const src = audioCtx.createBufferSource();
+  src.buffer = noise;
+  const bp = audioCtx.createBiquadFilter();
+  bp.type = 'bandpass';
+  bp.frequency.setValueAtTime(400, t0);
+  bp.frequency.exponentialRampToValueAtTime(1800, t0 + 0.35);
+  bp.Q.value = 3;
+  const g = audioCtx.createGain();
+  g.gain.setValueAtTime(0.0001, t0);
+  g.gain.exponentialRampToValueAtTime(0.5, t0 + 0.05);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.4);
+  src.connect(bp).connect(g).connect(masterGain);
+  src.start(t0);
+  // Low rumble
+  const o = audioCtx.createOscillator();
+  o.type = 'sawtooth';
+  o.frequency.setValueAtTime(80, t0);
+  o.frequency.exponentialRampToValueAtTime(50, t0 + 0.4);
+  const og = audioCtx.createGain();
+  og.gain.setValueAtTime(0.3, t0);
+  og.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.4);
+  o.connect(og).connect(masterGain);
+  o.start(t0); o.stop(t0 + 0.42);
+}
+
+function findBestRocketTarget(){
+  // Pick the closest enemy nearest to where the aim reticle is currently pointing.
+  // The aim reticle sits at aimReticle.position in world space — which is exactly
+  // where the player is aiming. So we score enemies by distance to that point.
+  if (!aimReticle) {
+    // Fallback if reticle not initialized yet
+    const fwd = new THREE.Vector3(1, 0, 0).applyQuaternion(plane.quaternion);
+    let best = null, bestScore = -Infinity;
+    for (const en of enemies){
+      if (!en.userData.alive) continue;
+      const to = new THREE.Vector3().subVectors(en.position, plane.position);
+      const dist = to.length();
+      if (dist > ROCKET_LOCK_RANGE || dist < 10) continue;
+      to.normalize();
+      const dotP = fwd.dot(to);
+      if (dotP < ROCKET_LOCK_CONE) continue;
+      const score = dotP * 2 - (dist / ROCKET_LOCK_RANGE);
+      if (score > bestScore){ bestScore = score; best = en; }
+    }
+    return best;
+  }
+
+  let best = null, bestScore = Infinity;
+  for (const en of enemies){
+    if (!en.userData.alive) continue;
+    const distFromPlane = en.position.distanceTo(plane.position);
+    if (distFromPlane > ROCKET_LOCK_RANGE || distFromPlane < 10) continue;
+    // Must be in front (dot product check)
+    const fwd = new THREE.Vector3(1, 0, 0).applyQuaternion(plane.quaternion);
+    const toEn = new THREE.Vector3().subVectors(en.position, plane.position).normalize();
+    if (fwd.dot(toEn) < ROCKET_LOCK_CONE) continue;
+    // Score by distance to where reticle is pointing
+    const distToReticle = en.position.distanceTo(aimReticle.position);
+    if (distToReticle < bestScore){
+      bestScore = distToReticle;
+      best = en;
+    }
+  }
+  return best;
+}
+
+function fireRocket(){
+  const target = findBestRocketTarget();   // closest enemy to reticle, or null
+
+  // Build rocket mesh — model points along +X by default
+  const grp = new THREE.Group();
+  const body = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.2, 0.18, 1.6, 12),
+    new THREE.MeshStandardMaterial({color:0x444444, roughness:0.4, metalness:0.6})
+  );
+  body.rotation.z = Math.PI/2;
+  grp.add(body);
+  const nc = new THREE.Mesh(
+    new THREE.ConeGeometry(0.2, 0.5, 12),
+    new THREE.MeshStandardMaterial({color:0xc43030, roughness:0.5, metalness:0.4})
+  );
+  nc.rotation.z = -Math.PI/2;
+  nc.position.x = 1.05;
+  grp.add(nc);
+  for (let i = 0; i < 4; i++){
+    const fin = new THREE.Mesh(
+      new THREE.BoxGeometry(0.4, 0.5, 0.04),
+      new THREE.MeshStandardMaterial({color:0x222222})
+    );
+    fin.position.x = -0.6;
+    fin.rotation.x = (i * Math.PI / 2);
+    grp.add(fin);
+  }
+  const exhaust = new THREE.Mesh(
+    new THREE.SphereGeometry(0.25, 8, 6),
+    new THREE.MeshBasicMaterial({color:0xffaa44, transparent:true, opacity:0.9})
+  );
+  exhaust.position.x = -0.95;
+  grp.add(exhaust);
+  const light = new THREE.PointLight(0xff7733, 1.0, 10);
+  grp.add(light);
+
+  // Initial position — at nose of plane
+  grp.position.copy(plane.position);
+  const offset = new THREE.Vector3(4.5, 0, 0).applyQuaternion(plane.quaternion);
+  grp.position.add(offset);
+
+  // Initial velocity vector — plane's forward direction, scaled by ROCKET_SPEED
+  const initFwd = new THREE.Vector3(1, 0, 0).applyQuaternion(plane.quaternion);
+  const velocity = initFwd.clone().multiplyScalar(ROCKET_SPEED);
+
+  // Orient mesh along initial velocity
+  const lookTarget = grp.position.clone().add(initFwd);
+  // Rotate so model's +X axis points at lookTarget. lookAt orients -Z toward target,
+  // so we rotate model 90° around Y first via the group's pre-rotation.
+  // Trick: we rotate the rocket model so its forward is +X, then use a helper.
+  grp.up.set(0, 1, 0);
+  // Use a simple manual orient: build a quaternion that rotates +X to velocity direction
+  const dir = initFwd.clone().normalize();
+  const xAxis = new THREE.Vector3(1, 0, 0);
+  grp.quaternion.setFromUnitVectors(xAxis, dir);
+
+  grp.userData = {
+    target: target,
+    velocity: velocity,        // world-space velocity vector
+    life: 0,
+    exhaust: exhaust,
+    isRocket: true,
+  };
+
+  scene.add(grp);
+  rockets.push(grp);
+
+  rocketCount++;
+  playRocketLaunch();
+}
+
+function tryFireRocket(){
+  if (gameOver) return;
+  const now = performance.now() / 1000;
+  if (now - lastRocketTime < ROCKET_COOLDOWN) return;
+  lastRocketTime = now;
+  fireRocket();
+}
+
 function tryFire(){
   if (gameOver) return;
   const now = performance.now() / 1000;
@@ -1045,20 +1275,27 @@ function triggerGameOver(){
 }
 
 // ═══ INPUT ════════════════════════════════════════════════════
-const keys = {pitchUp:false, pitchDn:false, rollL:false, rollR:false, yawL:false, yawR:false, thrUp:false, thrDn:false, fire:false};
+const keys = {pitchUp:false, pitchDn:false, rollL:false, rollR:false, yawL:false, yawR:false, thrUp:false, thrDn:false, fire:false, rocket:false};
 let instantLevelRequested = false;
-const movementKeys = ['w','a','s','d','q','e','arrowup','arrowdown','arrowleft','arrowright','c','l','z','m',' '];
+const movementKeys = ['w','s','q','e','a','arrowup','arrowdown','arrowleft','arrowright','c','l','z','m',' '];
 addEventListener('keydown', e=>{
   const k = e.key.toLowerCase();
   if (movementKeys.includes(k)) e.preventDefault();
-  if (k==='w') keys.pitchDn = true;
-  if (k==='s') keys.pitchUp = true;
-  if (k==='a') keys.rollL = true;
-  if (k==='d') keys.rollR = true;
-  if (k==='q') keys.yawL = true;
-  if (k==='e') keys.yawR = true;
-  if (k==='arrowup')   keys.thrUp = true;
-  if (k==='arrowdown') keys.thrDn = true;
+  // User-requested key mapping:
+  //   ↑/↓  = Roll (+/-)
+  //   ←/→  = Yaw  (+/-)
+  //   Q/E  = Pitch (-/+)
+  //   W/S  = Throttle
+  if (k==='arrowup')    keys.rollR = true;
+  if (k==='arrowdown')  keys.rollL = true;
+  if (k==='arrowleft')  keys.yawR = true;
+  if (k==='arrowright') keys.yawL = true;
+  if (k==='q') keys.pitchDn = true;
+  if (k==='e') keys.pitchUp = true;
+  if (k==='w') keys.thrUp = true;
+  if (k==='s') keys.thrDn = true;
+  // A = rocket modifier (hold A + trigger = launch homing rocket)
+  if (k==='a') keys.rocket = true;
   if (k==='c') recenter();
   if (k==='l' && !e.repeat){
     autoLevelOn = !autoLevelOn;
@@ -1082,14 +1319,15 @@ addEventListener('keydown', e=>{
 addEventListener('keyup', e=>{
   const k = e.key.toLowerCase();
   if (movementKeys.includes(k)) e.preventDefault();
-  if (k==='w') keys.pitchDn = false;
-  if (k==='s') keys.pitchUp = false;
-  if (k==='a') keys.rollL = false;
-  if (k==='d') keys.rollR = false;
-  if (k==='q') keys.yawL = false;
-  if (k==='e') keys.yawR = false;
-  if (k==='arrowup')   keys.thrUp = false;
-  if (k==='arrowdown') keys.thrDn = false;
+  if (k==='arrowup')    keys.rollR = false;
+  if (k==='arrowdown')  keys.rollL = false;
+  if (k==='arrowleft')  keys.yawR = false;
+  if (k==='arrowright') keys.yawL = false;
+  if (k==='q') keys.pitchDn = false;
+  if (k==='e') keys.pitchUp = false;
+  if (k==='w') keys.thrUp = false;
+  if (k==='s') keys.thrDn = false;
+  if (k==='a') keys.rocket = false;
   if (k===' ') keys.fire = false;
 });
 
@@ -1159,6 +1397,17 @@ function pollTrigger(){
   return false;
 }
 
+// A2 button — secondary trigger on NXT EVO grip (button index 1).
+// Hold A2 + pull A1 trigger = launch rocket. Same role as keyboard 'A' modifier.
+function pollA2(){
+  const pads = navigator.getGamepads ? navigator.getGamepads() : [];
+  for (const p of pads){
+    if (!p) continue;
+    return !!(p.buttons[1] && p.buttons[1].pressed);
+  }
+  return false;
+}
+
 function readControls(dt){
   let pitch = (keys.pitchUp?1:0) + (keys.pitchDn?-1:0);
   let roll  = (keys.rollR?1:0)  + (keys.rollL?-1:0);
@@ -1208,10 +1457,15 @@ function readControls(dt){
     }
   }
 
-  if (thrAbs !== null){
-    planeState.throttle += (thrAbs - planeState.throttle) * Math.min(1, dt * 2);
-  } else {
+  // Throttle input priority: keyboard arrows override joystick ministick.
+  // This prevents conflicts when the joystick ministick is slightly off-center
+  // and keeps drifting throttle while you press up/down arrows.
+  if (thrDelta !== 0){
+    // Keyboard active — use incremental, ignore joystick
     planeState.throttle = Math.max(0, Math.min(1, planeState.throttle + thrDelta * dt * 0.6));
+  } else if (thrAbs !== null){
+    // Joystick only — smoothly approach target
+    planeState.throttle += (thrAbs - planeState.throttle) * Math.min(1, dt * 2);
   }
 
   return {pitch, roll, yaw};
@@ -1317,10 +1571,32 @@ function tick(){
     const {pitch, roll, yaw} = readControls(dt);
 
     // Trigger / fire
+    // A1 trigger (button[0]) or SPACE = guns
+    // A2 button (button[1]) or A key = rocket (independent — no need to hold trigger)
     const triggerDown = pollTrigger() || keys.fire;
-    if (triggerDown) tryFire();
-    if (triggerDown) triggerInd.classList.add('fire');
+    const rocketDown  = pollA2() || keys.rocket;
+
+    if (triggerDown) tryFire();         // continuous gun fire
+    if (rocketDown)  tryFireRocket();   // continuous rocket fire (rate-limited by ROCKET_COOLDOWN)
+
+    // Light up trigger indicator for either weapon
+    if (triggerDown || rocketDown) triggerInd.classList.add('fire');
     else triggerInd.classList.remove('fire');
+
+    // Weapon-status label shows which weapon is currently active
+    const weaponLabel = document.getElementById('weaponLabel');
+    if (weaponLabel){
+      if (rocketDown){
+        weaponLabel.textContent = 'A2 · Rockets firing';
+        weaponLabel.style.color = '#c43030';
+      } else if (triggerDown){
+        weaponLabel.textContent = 'A1 · Guns firing';
+        weaponLabel.style.color = 'var(--hot)';
+      } else {
+        weaponLabel.textContent = 'A1 = guns · A2 = rockets';
+        weaponLabel.style.color = '';
+      }
+    }
 
     // Aircraft attitude — pilot input
     let dPitch = pitch * PITCH_RATE * dt;
@@ -1525,6 +1801,109 @@ function tick(){
       }
     }
 
+    // ── ROCKETS update + homing + hit detection ──
+    for (let i = rockets.length - 1; i >= 0; i--){
+      const r = rockets[i];
+      const ud = r.userData;
+      ud.life += dt;
+
+      // Lose lock if target dead/gone
+      if (ud.target && !ud.target.userData.alive) ud.target = null;
+
+      // Re-acquire target if we don't have one — pick closest enemy in front of rocket
+      if (!ud.target){
+        const rfwd = ud.velocity.clone().normalize();
+        let best = null, bestDist = 350;     // re-acquire range
+        for (const en of enemies){
+          if (!en.userData.alive) continue;
+          const toEn = new THREE.Vector3().subVectors(en.position, r.position);
+          const d = toEn.length();
+          if (d > bestDist || d < 5) continue;
+          toEn.normalize();
+          if (rfwd.dot(toEn) < 0.6) continue;   // must be roughly forward
+          if (d < bestDist){ bestDist = d; best = en; }
+        }
+        if (best) ud.target = best;
+      }
+
+      // ─ HOMING: bend velocity vector toward target ─
+      // This is much more stable than quaternion math because we never deal with
+      // the rocket model's local +X vs world coordinate system.
+      if (ud.target){
+        const toTarget = new THREE.Vector3().subVectors(ud.target.position, r.position);
+        const distToTarget = toTarget.length();
+        if (distToTarget > 0.5){
+          toTarget.normalize();   // unit vector pointing from rocket to target
+
+          // Current direction (unit vector)
+          const speed = ud.velocity.length();
+          const dir = ud.velocity.clone().divideScalar(speed);
+
+          // Lerp direction toward target direction, limited by turn rate
+          // Convert turn rate (rad/s) to a rough lerp factor — sin(angle) is small for small angles
+          const lerpFactor = Math.min(1, ROCKET_TURN_RATE * dt);
+          dir.lerp(toTarget, lerpFactor).normalize();
+
+          // Rebuild velocity at constant speed
+          ud.velocity.copy(dir).multiplyScalar(speed);
+        }
+      }
+
+      // ─ MOVE: position += velocity * dt ─
+      r.position.addScaledVector(ud.velocity, dt);
+
+      // ─ ORIENT MESH: align rocket model (+X is forward) along velocity ─
+      const dirNow = ud.velocity.clone().normalize();
+      const xAxis = new THREE.Vector3(1, 0, 0);
+      r.quaternion.setFromUnitVectors(xAxis, dirNow);
+
+      // Exhaust pulse
+      if (ud.exhaust){
+        const s = 1.0 + Math.sin(ud.life * 30) * 0.25;
+        ud.exhaust.scale.setScalar(s);
+        ud.exhaust.material.opacity = 0.85 + Math.random() * 0.15;
+      }
+
+      // Hit detection vs enemies
+      let hit = false;
+      for (const en of enemies){
+        if (!en.userData.alive) continue;
+        const ex = r.position.x - en.position.x;
+        const ey = r.position.y - en.position.y;
+        const ez = r.position.z - en.position.z;
+        if (ex*ex + ey*ey + ez*ez < 5*5){
+          hit = true;
+          en.userData.health -= ROCKET_DAMAGE;
+          if (en.userData.health <= 0){
+            en.userData.alive = false;
+            en.userData.deathTimer = 0;
+            en.traverse(obj => {
+              if (obj.material && obj.material.color){
+                obj.material = obj.material.clone();
+                obj.material.color.lerp(new THREE.Color(0x661111), 0.7);
+                if (obj.material.emissive) obj.material.emissive.setHex(0xff3a3a);
+              }
+            });
+            score += 200;
+            kills++;
+            scoreNum.textContent = score;
+            killsNum.textContent = kills;
+            playExplosion();
+          } else {
+            score += 20;
+            scoreNum.textContent = score;
+          }
+          break;
+        }
+      }
+
+      if (hit || ud.life > ROCKET_LIFE){
+        if (hit) playExplosion();
+        scene.remove(r);
+        rockets.splice(i, 1);
+      }
+    }
+
     // Muzzle flash decay
     if (muzzle.material.opacity > 0){
       muzzle.material.opacity -= dt * 8;
@@ -1613,6 +1992,9 @@ function tick(){
 
   // Sky follows camera
   sky.position.copy(camera.position);
+  // Keep sun glow and halo at fixed offset from camera so they stay "on the horizon"
+  sunDisk.position.set(camera.position.x + 800, camera.position.y + 400, camera.position.z + 400);
+  sunHalo.position.copy(sunDisk.position);
 
   // Throttle gauge
   vTh.textContent = Math.round(planeState.throttle*100) + '%';

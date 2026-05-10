@@ -223,8 +223,8 @@
   </div>
 
   <div id="legend">
-    <b>WW2 FLIGHT SIMULATOR · v12</b><br>
-    <kbd>W</kbd>/<kbd>S</kbd> pitch · <kbd>A</kbd>/<kbd>D</kbd> roll · <kbd>Q</kbd>/<kbd>E</kbd> yaw · <kbd>↑</kbd>/<kbd>↓</kbd> throttle<br>
+    <b>WW2 FLIGHT SIMULATOR · v15</b><br>
+    <kbd>↑</kbd>/<kbd>↓</kbd> roll · <kbd>←</kbd>/<kbd>→</kbd> yaw · <kbd>Q</kbd>/<kbd>E</kbd> pitch · <kbd>W</kbd>/<kbd>S</kbd> throttle<br>
     <kbd>L</kbd> auto-level · <kbd>Z</kbd> snap level · <kbd>C</kbd> recenter · <kbd>M</kbd> mute<br>
     <span style="color:var(--ok)">Auto-level holds wings flat when stick centered. Tap Z anytime to snap level.</span>
   </div>
@@ -596,18 +596,23 @@ const planeState = {
 // ═══ INPUT ════════════════════════════════════════════════════
 const keys = {pitchUp:false, pitchDn:false, rollL:false, rollR:false, yawL:false, yawR:false, thrUp:false, thrDn:false};
 let instantLevelRequested = false;
-const movementKeys = ['w','a','s','d','q','e','arrowup','arrowdown','arrowleft','arrowright','c','l','z','m'];
+const movementKeys = ['w','s','q','e','arrowup','arrowdown','arrowleft','arrowright','c','l','z','m'];
 addEventListener('keydown', e=>{
   const k = e.key.toLowerCase();
   if (movementKeys.includes(k)) e.preventDefault();
-  if (k==='w') keys.pitchDn = true;       // W = nose down (push stick fwd)
-  if (k==='s') keys.pitchUp = true;       // S = nose up (pull stick back)
-  if (k==='a') keys.rollL = true;
-  if (k==='d') keys.rollR = true;
-  if (k==='q') keys.yawL = true;
-  if (k==='e') keys.yawR = true;
-  if (k==='arrowup')   keys.thrUp = true;
-  if (k==='arrowdown') keys.thrDn = true;
+  // User-requested key mapping:
+  //   ↑/↓  = Roll (+/-)
+  //   ←/→  = Yaw  (+/-)
+  //   Q/E  = Pitch (-/+)
+  //   W/S  = Throttle
+  if (k==='arrowup')    keys.rollR = true;       // ↑ = roll right (+)
+  if (k==='arrowdown')  keys.rollL = true;       // ↓ = roll left  (-)
+  if (k==='arrowleft')  keys.yawR = true;        // ← = yaw right (+)
+  if (k==='arrowright') keys.yawL = true;        // → = yaw left  (-)
+  if (k==='q') keys.pitchDn = true;              // Q = pitch down (-)
+  if (k==='e') keys.pitchUp = true;              // E = pitch up   (+)
+  if (k==='w') keys.thrUp = true;
+  if (k==='s') keys.thrDn = true;
   if (k==='c') recenter();
   if (k==='l' && !e.repeat){
     autoLevelOn = !autoLevelOn;
@@ -626,14 +631,14 @@ addEventListener('keydown', e=>{
 addEventListener('keyup', e=>{
   const k = e.key.toLowerCase();
   if (movementKeys.includes(k)) e.preventDefault();
-  if (k==='w') keys.pitchDn = false;
-  if (k==='s') keys.pitchUp = false;
-  if (k==='a') keys.rollL = false;
-  if (k==='d') keys.rollR = false;
-  if (k==='q') keys.yawL = false;
-  if (k==='e') keys.yawR = false;
-  if (k==='arrowup')   keys.thrUp = false;
-  if (k==='arrowdown') keys.thrDn = false;
+  if (k==='arrowup')    keys.rollR = false;
+  if (k==='arrowdown')  keys.rollL = false;
+  if (k==='arrowleft')  keys.yawR = false;
+  if (k==='arrowright') keys.yawL = false;
+  if (k==='q') keys.pitchDn = false;
+  if (k==='e') keys.pitchUp = false;
+  if (k==='w') keys.thrUp = false;
+  if (k==='s') keys.thrDn = false;
 });
 
 // ── Joystick (Gladiator NXT EVO) ──
