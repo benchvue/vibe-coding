@@ -132,12 +132,169 @@
   .rest-tile-link:hover {
     text-decoration: underline;
   }
+  .lang-toggle {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 1000;
+    display: flex;
+    gap: 0;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  .lang-toggle button {
+    border: none;
+    background: #fff;
+    color: #555;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .lang-toggle button.active {
+    background: #222;
+    color: #fff;
+  }
+  .lang-toggle button:hover:not(.active) {
+    background: #f0f0f0;
+  }
+  /* ===== Detail modal ===== */
+  .detail-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 2000;
+    overflow-y: auto;
+    padding: 24px;
+    box-sizing: border-box;
+  }
+  .detail-modal-overlay.active {
+    display: block;
+  }
+  .detail-modal {
+    background: #fff;
+    max-width: 1100px;
+    margin: 0 auto;
+    border-radius: 12px;
+    padding: 28px 32px 36px;
+    box-shadow: 0 12px 48px rgba(0,0,0,0.25);
+    position: relative;
+  }
+  .detail-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: #f4f4f4;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 13px;
+    cursor: pointer;
+    color: #444;
+    font-weight: 500;
+    transition: background 0.15s;
+  }
+  .detail-modal-close:hover {
+    background: #e8e8e8;
+  }
+  .detail-modal-header {
+    border-bottom: 2px solid #eee;
+    padding-bottom: 16px;
+    margin-bottom: 20px;
+  }
+  .detail-modal-title {
+    margin: 0;
+    font-size: 28px;
+    color: #222;
+  }
+  .detail-modal-meta {
+    margin-top: 6px;
+    color: #666;
+    font-size: 14px;
+  }
+  .detail-transit {
+    background: #f5f9fc;
+    border-left: 4px solid #3498db;
+    padding: 12px 18px;
+    margin-bottom: 18px;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+  .detail-transit .transit-label {
+    font-weight: bold;
+    color: #2980b9;
+    margin-bottom: 4px;
+  }
+  .detail-transit .transit-leg {
+    color: #555;
+    margin-left: 4px;
+    margin-top: 2px;
+  }
+  .detail-day {
+    margin-bottom: 24px;
+  }
+  .detail-day-header {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    padding: 8px 12px;
+    background: #f0f0f0;
+    border-radius: 6px;
+    margin-bottom: 10px;
+  }
+  .detail-event {
+    display: flex;
+    padding: 8px 12px;
+    border-bottom: 1px solid #f0f0f0;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .detail-event:last-child { border-bottom: none; }
+  .detail-event-time {
+    font-weight: bold;
+    color: #444;
+    min-width: 80px;
+    font-variant-numeric: tabular-nums;
+  }
+  .detail-event-icon {
+    min-width: 24px;
+    font-size: 14px;
+    text-align: center;
+  }
+  .detail-event-label {
+    flex: 1;
+    color: #333;
+    line-height: 1.4;
+  }
+  .detail-event.checkin .detail-event-icon { color: #27ae60; }
+  .detail-event.checkout .detail-event-icon { color: #c0392b; }
+  .detail-event.excursion .detail-event-icon { color: #8e44ad; }
+  .detail-event.flight .detail-event-icon { color: #e67e22; }
+  .detail-event.other .detail-event-icon { color: #2980b9; }
 </style>
 </head>
 <body>
 
-<h1>Travel Schedule — Switzerland & Italy</h1>
-<p class="subtitle">May 23 – June 6, 2026 &nbsp;|&nbsp; Zurich → Interlaken → Grindelwald → Milano → Firenze → Rome</p>
+<div class="lang-toggle">
+  <button id="btn-ko" class="active" onclick="setLang('ko')">한글</button>
+  <button id="btn-en" onclick="setLang('en')">English</button>
+</div>
+
+<!-- Detail modal overlay -->
+<div id="detail-modal-overlay" class="detail-modal-overlay" onclick="closeDetailIfBackdrop(event)">
+  <div class="detail-modal" id="detail-modal-content">
+    <button class="detail-modal-close" id="detail-modal-close-btn" onclick="closeDetail()">✕ 닫기</button>
+    <div id="detail-modal-body"></div>
+  </div>
+</div>
+
+<h1 id="page-title">여행 일정 — 스위스 & 이탈리아</h1>
+<p class="subtitle" id="page-subtitle">2026년 5월 23일 – 6월 6일 &nbsp;|&nbsp; 취리히 → 인터라켄 → 그린델발트 → 밀라노 → 피렌체 → 로마</p>
 
 <div class="diagram-container">
 <svg id="diagram" width="2000" height="800" xmlns="http://www.w3.org/2000/svg">
@@ -173,142 +330,162 @@ const personColors = {
 const placesData = {
   'Zurich': {
     restaurants: [
-      'Zeughauskeller — traditional Swiss',
-      'Kronenhalle — classic, art-filled',
-      'Confiserie Sprüngli — chocolate & lunch',
-      'Hiltl — world\'s oldest vegetarian'
+      { en: 'Zeughauskeller — traditional Swiss', ko: 'Zeughauskeller — 전통 스위스 요리' },
+      { en: 'Kronenhalle — classic, art-filled', ko: 'Kronenhalle — 클래식, 미술 작품 가득' },
+      { en: 'Confiserie Sprüngli — chocolate & lunch', ko: 'Confiserie Sprüngli — 초콜릿 & 점심' },
+      { en: "Hiltl — world's oldest vegetarian", ko: 'Hiltl — 세계에서 가장 오래된 채식당' }
     ],
     shopping: [
-      'Bahnhofstrasse — luxury & main shops',
-      'Niederdorf — old town boutiques',
-      'Globus — department store',
-      'Sprüngli — Swiss chocolate'
+      { en: 'Bahnhofstrasse — luxury & main shops', ko: '반호프슈트라세 — 명품 & 메인 쇼핑가' },
+      { en: 'Niederdorf — old town boutiques', ko: 'Niederdorf — 구시가지 부티크' },
+      { en: 'Globus — department store', ko: 'Globus — 백화점' },
+      { en: 'Sprüngli — Swiss chocolate', ko: 'Sprüngli — 스위스 초콜릿' }
     ]
   },
   'Interlaken': {
     restaurants: [
-      'Restaurant Taverne — Swiss classics',
-      'Husi Bierhaus — local beer & food',
-      'Sapori — Italian',
-      'Benacus — modern Swiss'
+      { en: 'Restaurant Taverne — Swiss classics', ko: 'Restaurant Taverne — 스위스 정통' },
+      { en: 'Husi Bierhaus — local beer & food', ko: 'Husi Bierhaus — 현지 맥주 & 음식' },
+      { en: 'Sapori — Italian', ko: 'Sapori — 이탈리아 요리' },
+      { en: 'Benacus — modern Swiss', ko: 'Benacus — 모던 스위스' }
     ],
     shopping: [
-      'Höheweg — main shopping street',
-      'Kirchhofer — watches & souvenirs',
-      'Migros / Coop — supermarkets',
-      'Swiss Knife Valley — outdoor gear'
+      { en: 'Höheweg — main shopping street', ko: 'Höheweg — 메인 쇼핑 거리' },
+      { en: 'Kirchhofer — watches & souvenirs', ko: 'Kirchhofer — 시계 & 기념품' },
+      { en: 'Migros / Coop — supermarkets', ko: 'Migros / Coop — 슈퍼마켓' },
+      { en: 'Swiss Knife Valley — outdoor gear', ko: 'Swiss Knife Valley — 아웃도어 용품' }
     ]
   },
   'Grindelwald': {
     restaurants: [
-      'Restaurant Barry\'s — Swiss-Alpine',
-      'C and M — bistro & coffee',
-      'Onkel Tom\'s Hütte — pizza',
-      'Memory Restaurant — fondue & raclette'
+      { en: "Restaurant Barry's — Swiss-Alpine", ko: "Restaurant Barry's — 스위스 알파인" },
+      { en: 'C and M — bistro & coffee', ko: 'C and M — 비스트로 & 커피' },
+      { en: "Onkel Tom's Hütte — pizza", ko: "Onkel Tom's Hütte — 피자" },
+      { en: 'Memory Restaurant — fondue & raclette', ko: 'Memory Restaurant — 퐁듀 & 라클렛' }
     ],
     shopping: [
-      'Dorfstrasse — village main street',
-      'Bergsport Outlet — ski/hike gear',
-      'Coop — supermarket',
-      'Souvenir shops along Bahnhofplatz'
+      { en: 'Dorfstrasse — village main street', ko: 'Dorfstrasse — 마을 중심 거리' },
+      { en: 'Bergsport Outlet — ski/hike gear', ko: 'Bergsport Outlet — 스키/하이킹 용품' },
+      { en: 'Coop — supermarket', ko: 'Coop — 슈퍼마켓' },
+      { en: 'Souvenir shops along Bahnhofplatz', ko: '반호프플라츠 기념품 가게들' }
     ]
   },
   'Milano': {
     restaurants: [
-      'Trattoria Milanese — classic',
-      'Ratanà — modern Milanese',
-      'Luini Panzerotti — quick bite',
-      'Il Salumaio — Brera district'
+      { en: 'Trattoria Milanese — classic', ko: 'Trattoria Milanese — 클래식' },
+      { en: 'Ratanà — modern Milanese', ko: 'Ratanà — 모던 밀라노 요리' },
+      { en: 'Luini Panzerotti — quick bite', ko: 'Luini Panzerotti — 간단한 한 끼' },
+      { en: 'Il Salumaio — Brera district', ko: 'Il Salumaio — 브레라 지구' }
     ],
     shopping: [
-      'Quadrilatero della Moda — luxury',
-      'Galleria Vittorio Emanuele II',
-      'Corso Buenos Aires — high-street',
-      'La Rinascente — department store'
+      { en: 'Quadrilatero della Moda — luxury', ko: 'Quadrilatero della Moda — 명품 거리' },
+      { en: 'Galleria Vittorio Emanuele II', ko: '비토리오 에마누엘레 2세 갤러리아' },
+      { en: 'Corso Buenos Aires — high-street', ko: 'Corso Buenos Aires — 하이스트리트' },
+      { en: 'La Rinascente — department store', ko: 'La Rinascente — 백화점' }
     ]
   },
   'Firenze': {
     restaurants: [
       {
         name: 'Ristorante Perseus',
+        name_ko: 'Ristorante Perseus',
         desc: 'Famous T-bone (Bistecca Fiorentina) spot loved by locals. A bit far from the city center.',
+        desc_ko: '현지인이 사랑하는 유명 티본 스테이크(비스테카 피오렌티나) 맛집. 시내 중심부에서 조금 떨어져 있음.',
         link: 'https://www.google.com/maps/search/?api=1&query=Ristorante+Perseus+Firenze',
         image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=400&h=300&fit=crop'
       },
       {
         name: 'Ristorante Il Parione',
+        name_ko: 'Ristorante Il Parione',
         desc: 'Upscale restaurant near the luxury shopping street Via Tornabuoni.',
+        desc_ko: '명품 쇼핑 거리 비아 토르나부오니 근처의 고급 레스토랑.',
         link: 'https://www.google.com/maps/search/?api=1&query=Ristorante+Il+Parione+Firenze',
         image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop'
       },
       {
         name: 'La Falterona',
+        name_ko: 'La Falterona',
         desc: 'T-bone steak near Florence Central Station and San Lorenzo Market. Lobster spaghetti is also great.',
+        desc_ko: '피렌체 중앙역과 산 로렌초 시장 근처의 티본 스테이크집. 랍스터 스파게티도 훌륭함.',
         link: 'https://www.google.com/maps/search/?api=1&query=La+Falterona+Firenze',
         image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=300&fit=crop'
       },
       {
         name: 'Antico Fattore',
+        name_ko: 'Antico Fattore',
         desc: 'Historic restaurant near the Uffizi Gallery, recently featured on Korean travel TV (Tent Out: Italy).',
+        desc_ko: '우피치 미술관 근처의 역사 깊은 레스토랑. 한국 여행 예능(텐트 밖은 이탈리아)에 출연한 곳.',
         link: 'https://www.google.com/maps/search/?api=1&query=Antico+Fattore+Firenze',
         image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&h=300&fit=crop'
       },
       {
         name: 'La Bussola',
+        name_ko: 'La Bussola',
         desc: 'Famous downtown spot with variety — meat, fish, pizza, pasta — something for everyone.',
+        desc_ko: '시내의 유명 맛집. 고기, 생선, 피자, 파스타 등 다양한 메뉴 — 누구나 좋아할 만함.',
         link: 'https://www.google.com/maps/search/?api=1&query=La+Bussola+Firenze',
         image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&h=300&fit=crop'
       },
       {
         name: 'Ciro & Sons',
+        name_ko: 'Ciro & Sons',
         desc: 'Pizza spot near Central Station. Pizza, meat, and pasta — truffle pasta is a standout.',
+        desc_ko: '중앙역 근처 피자 맛집. 피자, 고기, 파스타 — 트러플 파스타가 일품.',
         link: 'https://www.google.com/maps/search/?api=1&query=Ciro+and+Sons+Firenze',
         image: 'https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?w=400&h=300&fit=crop'
       },
       {
         name: 'Osteria dei Centopoveri',
+        name_ko: 'Osteria dei Centopoveri',
         desc: 'Great-value popular spot near the Santa Maria Novella church.',
+        desc_ko: '산타 마리아 노벨라 성당 근처의 가성비 좋은 인기 맛집.',
         link: 'https://www.google.com/maps/search/?api=1&query=Osteria+dei+Centopoveri+Firenze',
         image: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=400&h=300&fit=crop'
       },
       {
         name: 'Trattoria la Gratella',
+        name_ko: 'Trattoria la Gratella',
         desc: 'T-bone spot near the Central Market. Friendly, popular with Korean visitors.',
+        desc_ko: '중앙시장 근처 티본 스테이크집. 친절하고 한국인 방문객에게 인기.',
         link: 'https://www.google.com/maps/search/?api=1&query=Trattoria+la+Gratella+Firenze',
         image: 'https://images.unsplash.com/photo-1558030006-450675393462?w=400&h=300&fit=crop'
       },
       {
         name: "I'Mangiarino",
+        name_ko: "I'Mangiarino",
         desc: 'Affordable home-style local restaurant near the Duomo. Great Antipasto, Ribollita (Tuscan home cooking), and handmade pasta. Well-known among locals.',
+        desc_ko: '두오모 근처의 합리적 가격 가정식 로컬 레스토랑. 안티파스토, 리볼리타(토스카나 가정식), 수제 파스타가 훌륭. 현지인들에게 잘 알려진 곳.',
         link: 'https://www.google.com/maps/search/?api=1&query=I+Mangiarino+Firenze',
         image: 'https://images.unsplash.com/photo-1481931098730-318b6f776db0?w=400&h=300&fit=crop'
       },
       {
         name: 'Matto Matto Firenze',
+        name_ko: 'Matto Matto Firenze',
         desc: 'Great-value Tuscan spot popular with locals near the Central Market. Especially good for pizza.',
+        desc_ko: '중앙시장 근처의 가성비 좋은 토스카나 맛집으로 현지인들에게 인기. 특히 피자가 훌륭.',
         link: 'https://www.google.com/maps/search/?api=1&query=Matto+Matto+Firenze',
         image: 'https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=400&h=300&fit=crop'
       }
     ],
     shopping: [
-      'Ponte Vecchio — gold & jewelry',
-      'Via de\' Tornabuoni — luxury',
-      'Mercato Centrale — food & crafts',
-      'San Lorenzo Market — leather'
+      { en: 'Ponte Vecchio — gold & jewelry', ko: '폰테 베키오 — 금 & 보석' },
+      { en: "Via de' Tornabuoni — luxury", ko: '비아 토르나부오니 — 명품' },
+      { en: 'Mercato Centrale — food & crafts', ko: '중앙시장 — 음식 & 공예품' },
+      { en: 'San Lorenzo Market — leather', ko: '산 로렌초 시장 — 가죽 제품' }
     ]
   },
   'Rome': {
     restaurants: [
-      'Roscioli — Roman classics',
-      'Pizzarium — pizza al taglio',
-      'Da Enzo al 29 — Trastevere',
-      'Giolitti — historic gelato'
+      { en: 'Roscioli — Roman classics', ko: 'Roscioli — 로마 정통 요리' },
+      { en: 'Pizzarium — pizza al taglio', ko: 'Pizzarium — 조각 피자' },
+      { en: 'Da Enzo al 29 — Trastevere', ko: 'Da Enzo al 29 — 트라스테베레' },
+      { en: 'Giolitti — historic gelato', ko: 'Giolitti — 역사적인 젤라토' }
     ],
     shopping: [
-      'Via del Corso — main shopping',
-      'Via Condotti — luxury near Spanish Steps',
-      'Campo de\' Fiori — market',
-      'Via del Governo Vecchio — vintage'
+      { en: 'Via del Corso — main shopping', ko: '비아 델 코르소 — 메인 쇼핑' },
+      { en: 'Via Condotti — luxury near Spanish Steps', ko: '비아 콘도티 — 스페인 광장 근처 명품' },
+      { en: "Campo de' Fiori — market", ko: '캄포 데 피오리 — 시장' },
+      { en: 'Via del Governo Vecchio — vintage', ko: '비아 델 고베르노 베키오 — 빈티지' }
     ]
   }
 };
@@ -316,86 +493,126 @@ const placesData = {
 const schedule = [
   {
     location: 'Zurich',
+    location_ko: '취리히',
     hotel: '(Day visit only)',
+    hotel_ko: '(당일 방문만)',
     people: ['P1','P2','P3','P4','P5'],
     dates: ['5/23 Sat'],
+    dates_ko: ['5/23 토'],
     days: 1,
     notes: [
-      { day: 0, time: '7:34 AM',  label: 'P3 arrives ZRH', type: 'flight' },
-      { day: 0, time: '11:30 AM', label: 'P1,2,4,5 arrive ZRH', type: 'flight' },
-      { day: 0, time: '12:30 PM', label: 'Airport → Zurich HB' },
-      { day: 0, time: '1:00 PM',  label: 'Lunch & city tour' },
-      { day: 0, time: '4:41 PM',  label: 'Train → Interlaken' }
+      { day: 0, time: '7:34 AM',  label: 'P3 arrives ZRH', label_ko: 'P3 ZRH 도착', type: 'flight' },
+      { day: 0, time: '11:30 AM', label: 'P1,2,4,5 arrive ZRH', label_ko: 'P1,2,4,5 ZRH 도착', type: 'flight' },
+      { day: 0, time: '12:30 PM', label: 'Airport → Zurich HB', label_ko: '공항 → 취리히 중앙역' },
+      { day: 0, time: '1:00 PM',  label: 'Lunch & city tour', label_ko: '점심 & 시내 관광' },
+      { day: 0, time: '4:41 PM',  label: 'Train → Interlaken', label_ko: '기차 → 인터라켄' }
     ]
   },
   {
     location: 'Interlaken',
+    location_ko: '인터라켄',
     hotel: 'Heart of Interlaken',
+    hotel_ko: 'Heart of Interlaken',
     people: ['P1','P2','P3','P4','P5'],
     dates: ['5/23 Sat','5/24 Sun','5/25 Mon','5/26 Tue'],
+    dates_ko: ['5/23 토','5/24 일','5/25 월','5/26 화'],
     days: 4,
     notes: [
-      { day: 0, time: '6:59 PM', label: 'Arrive Interlaken Ost' },
-      { day: 0, time: '4:00 PM', label: 'Check-in Hotel', type: 'checkin' },
-      { day: 2, time: '1:00 PM', label: 'Paragliding start', type: 'excursion' },
-      { day: 2, time: '3:00 PM', label: 'Paragliding end', type: 'excursion' },
-      { day: 3, time: '10:00 AM', label: 'Checkout', type: 'checkout' }
+      { day: 0, time: '6:59 PM', label: 'Arrive Interlaken Ost', label_ko: '인터라켄 오스트 도착' },
+      { day: 0, time: '4:00 PM', label: 'Check-in Hotel', label_ko: '호텔 체크인', type: 'checkin' },
+      { day: 1, time: '7:45 AM',  label: 'Depart Interlaken Ost', label_ko: '인터라켄 OST 출발', type: 'excursion' },
+      { day: 1, time: '8:00 AM',  label: 'Harder Kulm viewpoint', label_ko: '하더쿨룸 전망대', type: 'excursion' },
+      { day: 1, time: '9:35 AM',  label: 'Train → Brienz', label_ko: '브리엔츠 이동', type: 'excursion' },
+      { day: 1, time: '10:00 AM', label: 'Brienz village + Woodcarving Museum', label_ko: '브리엔츠 마을 산책 + 공예 박물관', type: 'excursion' },
+      { day: 1, time: '11:30 AM', label: 'Lunch in Brienz', label_ko: '브리엔츠 점심' },
+      { day: 1, time: '12:40 PM', label: 'Via Interlaken → Spiez', label_ko: '인터라켄 경유 → 슈피츠 이동', type: 'excursion' },
+      { day: 1, time: '1:30 PM',  label: 'Spiez sightseeing', label_ko: '슈피츠 관광', type: 'excursion' },
+      { day: 1, time: '3:10 PM',  label: 'Boat: Spiez → Oberhofen', label_ko: '유람선: 슈피츠 → 오버호펜', type: 'excursion' },
+      { day: 1, time: '3:40 PM',  label: 'Oberhofen Castle', label_ko: '오버호펜 성 관광', type: 'excursion' },
+      { day: 1, time: '5:10 PM',  label: 'Lake Thun scenic ride', label_ko: '툰호수 풍경 이동', type: 'excursion' },
+      { day: 1, time: '6:00 PM',  label: 'Dinner', label_ko: '저녁 식사' },
+      { day: 1, time: '8:00 PM',  label: 'Return to Interlaken', label_ko: '인터라켄 복귀' },
+      { day: 2, time: '7:30 AM', label: 'Depart Interlaken Ost', label_ko: '인터라켄 OST 출발', type: 'excursion' },
+      { day: 2, time: '7:55 AM', label: 'Arrive Spiez', label_ko: '슈피츠 도착', type: 'excursion' },
+      { day: 2, time: '8:00 AM', label: 'Spiez village & castle tour', label_ko: '슈피츠 마을 & 성 관광', type: 'excursion' },
+      { day: 2, time: '9:20 AM', label: 'Boat: Spiez → Oberhofen', label_ko: '유람선: 슈피츠 → 오버호펜', type: 'excursion' },
+      { day: 2, time: '10:00 AM', label: 'Oberhofen Castle', label_ko: '오버호펜 성 관광', type: 'excursion' },
+      { day: 2, time: '11:10 AM', label: 'Bus/train back to Interlaken', label_ko: '버스/기차로 인터라켄 복귀', type: 'excursion' },
+      { day: 2, time: '12:30 PM', label: 'Arrive Interlaken', label_ko: '인터라켄 도착', type: 'excursion' },
+      { day: 2, time: '1:00 PM', label: 'Paragliding start', label_ko: '패러글라이딩 시작', type: 'excursion' },
+      { day: 2, time: '3:00 PM', label: 'Paragliding end', label_ko: '패러글라이딩 종료', type: 'excursion' },
+      { day: 2, time: '3:30 PM', label: 'Train → Lungern', label_ko: '기차 → 룽게른', type: 'excursion' },
+      { day: 2, time: '7:00 PM', label: 'Lungern sunset viewing', label_ko: '룽게른 일몰 감상', type: 'excursion' },
+      { day: 2, time: '8:30 PM', label: 'Sunset ends, return', label_ko: '일몰 종료, 복귀', type: 'excursion' },
+      { day: 3, time: '10:00 AM', label: 'Checkout', label_ko: '체크아웃', type: 'checkout' }
     ]
   },
   {
     location: 'Grindelwald',
+    location_ko: '그린델발트',
     hotel: 'Chalet Carve',
+    hotel_ko: 'Chalet Carve',
     people: ['P1','P2','P3','P4','P5'],
     dates: ['5/26 Tue','5/27 Wed','5/28 Thu'],
+    dates_ko: ['5/26 화','5/27 수','5/28 목'],
     days: 3,
     notes: [
-      { day: 0, time: '4:00 PM',  label: 'Check-in Chalet Carve', type: 'checkin' },
-      { day: 0, time: '1:44 PM',  label: 'Train → Eigergletscher', type: 'excursion' },
-      { day: 0, time: '2:13 PM',  label: '→ Jungfraujoch', type: 'excursion' },
-      { day: 0, time: '4:45 PM',  label: 'Jungfraujoch → Eigergl.', type: 'excursion' },
-      { day: 0, time: '5:18 PM',  label: 'Arrive Grindelwald', type: 'excursion' },
-      { day: 1, time: '8:00 AM',  label: 'Lauterbrunnen tour start', type: 'excursion' },
-      { day: 1, time: '6:00 PM',  label: 'Lauterbrunnen tour end', type: 'excursion' },
-      { day: 2, time: '8:00 AM',  label: 'Checkout (Fri 5/29)', type: 'checkout' }
+      { day: 0, time: '4:00 PM',  label: 'Check-in Chalet Carve', label_ko: 'Chalet Carve 체크인', type: 'checkin' },
+      { day: 0, time: '1:44 PM',  label: 'Train → Eigergletscher', label_ko: '기차 → 아이거글레처', type: 'excursion' },
+      { day: 0, time: '2:13 PM',  label: '→ Jungfraujoch', label_ko: '→ 융프라우요흐', type: 'excursion' },
+      { day: 0, time: '4:45 PM',  label: 'Jungfraujoch → Eigergl.', label_ko: '융프라우요흐 → 아이거', type: 'excursion' },
+      { day: 0, time: '5:18 PM',  label: 'Arrive Grindelwald', label_ko: '그린델발트 도착', type: 'excursion' },
+      { day: 1, time: '8:00 AM',  label: 'Lauterbrunnen tour start', label_ko: '라우터브루넨 투어 시작', type: 'excursion' },
+      { day: 1, time: '6:00 PM',  label: 'Lauterbrunnen tour end', label_ko: '라우터브루넨 투어 종료', type: 'excursion' },
+      { day: 2, time: '8:00 AM',  label: 'Checkout (Fri 5/29)', label_ko: '체크아웃 (금 5/29)', type: 'checkout' }
     ]
   },
   {
     location: 'Milano',
+    location_ko: '밀라노',
     hotel: 'Hotel The Square',
+    hotel_ko: 'Hotel The Square',
     people: ['P1','P2','P3','P4','P5'],
     dates: ['5/29 Fri','5/30 Sat'],
+    dates_ko: ['5/29 금','5/30 토'],
     days: 2,
     notes: [
-      { day: 0, time: '6:00 PM',  label: 'Check-in Hotel', type: 'checkin' },
-      { day: 1, time: '12:00 PM', label: 'Checkout (Sun 5/31)', type: 'checkout' },
-      { day: 1, time: '2:55 PM',  label: 'P4-5 fly MIL → home (Sun 5/31)', type: 'flight' }
+      { day: 0, time: '6:00 PM',  label: 'Check-in Hotel', label_ko: '호텔 체크인', type: 'checkin' },
+      { day: 1, time: '12:00 PM', label: 'Checkout (Sun 5/31)', label_ko: '체크아웃 (일 5/31)', type: 'checkout' },
+      { day: 1, time: '2:55 PM',  label: 'P4-5 fly MIL → home (Sun 5/31)', label_ko: 'P4-5 밀라노 → 귀국 (일 5/31)', type: 'flight' }
     ]
   },
   {
     location: 'Firenze',
+    location_ko: '피렌체',
     hotel: 'FH55',
+    hotel_ko: 'FH55',
     people: ['P1','P2','P3'],
     dates: ['5/31 Sun','6/1 Mon','6/2 Tue'],
+    dates_ko: ['5/31 일','6/1 월','6/2 화'],
     days: 3,
     notes: [
-      { day: 0, time: '3:30 PM',  label: 'Check-in FH55', type: 'checkin' },
-      { day: 2, time: '9:00 AM',  label: 'Uffizi Gallery start', type: 'excursion' },
-      { day: 2, time: '6:00 PM',  label: 'Uffizi Gallery end', type: 'excursion' },
-      { day: 2, time: '11:00 AM', label: 'Checkout (Wed 6/3)', type: 'checkout' }
+      { day: 0, time: '3:30 PM',  label: 'Check-in FH55', label_ko: 'FH55 체크인', type: 'checkin' },
+      { day: 2, time: '9:00 AM',  label: 'Uffizi Gallery start', label_ko: '우피치 미술관 시작', type: 'excursion' },
+      { day: 2, time: '6:00 PM',  label: 'Uffizi Gallery end', label_ko: '우피치 미술관 종료', type: 'excursion' },
+      { day: 2, time: '11:00 AM', label: 'Checkout (Wed 6/3)', label_ko: '체크아웃 (수 6/3)', type: 'checkout' }
     ]
   },
   {
     location: 'Rome',
+    location_ko: '로마',
     hotel: 'Eitch Borromini',
+    hotel_ko: 'Eitch Borromini',
     people: ['P1','P2','P3'],
     dates: ['6/3 Wed','6/4 Thu','6/5 Fri','6/6 Sat'],
+    dates_ko: ['6/3 수','6/4 목','6/5 금','6/6 토'],
     days: 4,
     notes: [
-      { day: 0, time: '9:00 PM',  label: 'Arrive Rome / Check-in', type: 'checkin' },
-      { day: 2, time: '9:30 AM',  label: 'Vatican start', type: 'excursion' },
-      { day: 2, time: '2:40 PM',  label: 'Vatican end', type: 'excursion' },
-      { day: 3, time: '11:00 AM', label: 'Checkout', type: 'checkout' },
-      { day: 3, time: '1:35 PM',  label: 'P1-3 fly home', type: 'flight' }
+      { day: 0, time: '9:00 PM',  label: 'Arrive Rome / Check-in', label_ko: '로마 도착 / 체크인', type: 'checkin' },
+      { day: 2, time: '9:30 AM',  label: 'Vatican start', label_ko: '바티칸 시작', type: 'excursion' },
+      { day: 2, time: '2:40 PM',  label: 'Vatican end', label_ko: '바티칸 종료', type: 'excursion' },
+      { day: 3, time: '11:00 AM', label: 'Checkout', label_ko: '체크아웃', type: 'checkout' },
+      { day: 3, time: '1:35 PM',  label: 'P1-3 fly home', label_ko: 'P1-3 귀국', type: 'flight' }
     ]
   }
 ];
@@ -412,21 +629,100 @@ const BLOCK_HEIGHT = (HOUR_BOTTOM - HOUR_TOP) * HOUR_HEIGHT;
 const svg = document.getElementById('diagram');
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
+// ========== Language state & helpers ==========
+let currentLang = 'ko'; // default to Korean
+
+// Get the right text from an item, falling back to English when no translation exists
+function L(item, field) {
+  if (currentLang === 'ko') {
+    const koVal = item[field + '_ko'];
+    if (koVal !== undefined && koVal !== null && koVal !== '') return koVal;
+  }
+  return item[field];
+}
+
+// Get a localized string from a {en, ko} object or from a plain string
+function LS(item) {
+  if (typeof item === 'string') return item;
+  if (item && typeof item === 'object') {
+    if (currentLang === 'ko' && item.ko) return item.ko;
+    if (item.en) return item.en;
+  }
+  return '';
+}
+
+// UI strings used in the diagram (legend, headers, etc)
+const i18n = {
+  en: {
+    title: 'Travel Schedule — Switzerland & Italy',
+    subtitle: 'May 23 – June 6, 2026 &nbsp;|&nbsp; Zurich → Interlaken → Grindelwald → Milano → Firenze → Rome',
+    schedule: 'Schedule',
+    restaurants: 'Restaurants',
+    shopping: 'Shopping',
+    restaurantsHeader: 'Restaurants',
+    shoppingHeader: 'Shopping',
+    morePicks: (n) => `${n} picks — see tile view below ↓`,
+    legend: {
+      checkin: '✓ Check-in',
+      checkout: '✗ Checkout',
+      excursion: '★ Excursion / Transit',
+      flight: '✈ Flight',
+      other: '● Other event',
+      allTravelers: 'all 5 travelers',
+      continuing: 'travelers continuing',
+      departJoin: 'departs / joins'
+    },
+    flyHome: 'P1-3 ✈ home',
+    flyHomeBubble: (label) => `${label} fly home ✈`,
+    joins: (label) => `${label} joins`,
+    galleryTitle: (loc) => `Restaurants in ${loc}`,
+    gallerySub: (n) => `${n} curated picks. Click any tile to open in Google Maps.`,
+    viewMap: 'View on map →',
+    detailsBadge: 'Details',
+    closeBtn: 'Close',
+    arriveLabel: 'Arrival',
+    departLabel: 'Departure'
+  },
+  ko: {
+    title: '여행 일정 — 스위스 & 이탈리아',
+    subtitle: '2026년 5월 23일 – 6월 6일 &nbsp;|&nbsp; 취리히 → 인터라켄 → 그린델발트 → 밀라노 → 피렌체 → 로마',
+    schedule: '일정',
+    restaurants: '음식점',
+    shopping: '쇼핑',
+    restaurantsHeader: '음식점',
+    shoppingHeader: '쇼핑',
+    morePicks: (n) => `${n}개 추천 — 아래 타일 보기 ↓`,
+    legend: {
+      checkin: '✓ 체크인',
+      checkout: '✗ 체크아웃',
+      excursion: '★ 관광 / 이동',
+      flight: '✈ 비행',
+      other: '● 기타 일정'
+    },
+    legendWires: {
+      allTravelers: '5인 전원',
+      continuing: '계속 여행 인원',
+      departJoin: '출발 / 합류'
+    },
+    flyHome: 'P1-3 ✈ 귀국',
+    flyHomeBubble: (label) => `${label} 귀국 ✈`,
+    joins: (label) => `${label} 합류`,
+    galleryTitle: (loc) => `${loc} 음식점`,
+    gallerySub: (n) => `${n}개의 엄선 추천. 타일 클릭 시 구글 지도에서 열림.`,
+    viewMap: '지도에서 보기 →',
+    detailsBadge: '자세히',
+    closeBtn: '닫기',
+    arriveLabel: '도착',
+    departLabel: '출발'
+  }
+};
+
+function T() {
+  return i18n[currentLang];
+}
+
+// Module-scope helpers (accessible from modal functions too)
 const blocks = [];
-let currentX = BLOCK_X_START;
-
-schedule.forEach((item, idx) => {
-  const width = COL_WIDTH * item.days;
-  blocks.push({
-    ...item, idx,
-    x: currentX, y: BLOCK_Y,
-    width: width, height: BLOCK_HEIGHT
-  });
-  currentX += width + BLOCK_GAP;
-});
-
-svg.setAttribute('width', currentX + 180);
-svg.setAttribute('height', BLOCK_Y + BLOCK_HEIGHT + 130);
 
 function createEl(tag, attrs) {
   const el = document.createElementNS(SVG_NS, tag);
@@ -446,6 +742,50 @@ function timeToY(timeStr, blockY) {
   return blockY + (totalHours - HOUR_TOP) * HOUR_HEIGHT;
 }
 
+function noteStyle(type) {
+  if (type === 'checkin')   return { color: '#27ae60', label: '✓ IN' };
+  if (type === 'checkout')  return { color: '#c0392b', label: '✗ OUT' };
+  if (type === 'excursion') return { color: '#8e44ad', label: '★' };
+  if (type === 'flight')    return { color: '#e67e22', label: '✈' };
+  return { color: '#2980b9', label: '' };
+}
+
+function buildDiagram() {
+  // Clear existing SVG content (keep <defs>)
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+  // Re-insert defs
+  const defs = document.createElementNS(SVG_NS, 'defs');
+  defs.innerHTML = `
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+      <feOffset dx="0" dy="2" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.15"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>`;
+  svg.appendChild(defs);
+
+  // Reset blocks array
+  blocks.length = 0;
+  let currentX = BLOCK_X_START;
+
+  schedule.forEach((item, idx) => {
+    const width = COL_WIDTH * item.days;
+    blocks.push({
+      ...item, idx,
+      x: currentX, y: BLOCK_Y,
+      width: width, height: BLOCK_HEIGHT
+    });
+    currentX += width + BLOCK_GAP;
+  });
+
+  svg.setAttribute('width', currentX + 180);
+  svg.setAttribute('height', BLOCK_Y + BLOCK_HEIGHT + 130);
+
 // Time axis
 const axisX = 50;
 for (let h = HOUR_TOP; h <= HOUR_BOTTOM; h += 2) {
@@ -461,17 +801,9 @@ for (let h = HOUR_TOP; h <= HOUR_BOTTOM; h += 2) {
   svg.appendChild(label);
 }
 
-// Note color/style by type
-function noteStyle(type) {
-  if (type === 'checkin')   return { color: '#27ae60', label: '✓ IN' };
-  if (type === 'checkout')  return { color: '#c0392b', label: '✗ OUT' };
-  if (type === 'excursion') return { color: '#8e44ad', label: '★' };
-  if (type === 'flight')    return { color: '#e67e22', label: '✈' };
-  return { color: '#2980b9', label: '' };
-}
-
 // Draw blocks
 blocks.forEach((b) => {
+  const datesArr = L(b, 'dates') || b.dates;
   for (let d = 0; d < b.days; d++) {
     const dateLabel = createEl('text', {
       x: b.x + d * COL_WIDTH + COL_WIDTH/2,
@@ -480,7 +812,7 @@ blocks.forEach((b) => {
       'font-size': 11, fill: '#666',
       'font-weight': 'bold'
     });
-    dateLabel.textContent = b.dates[d] || '';
+    dateLabel.textContent = datesArr[d] || '';
     svg.appendChild(dateLabel);
   }
 
@@ -489,7 +821,7 @@ blocks.forEach((b) => {
     'text-anchor': 'middle',
     'font-size': 17, 'font-weight': 'bold', fill: '#222'
   });
-  locLabel.textContent = b.location;
+  locLabel.textContent = L(b, 'location');
   svg.appendChild(locLabel);
 
   const hotelLabel = createEl('text', {
@@ -497,7 +829,7 @@ blocks.forEach((b) => {
     'text-anchor': 'middle',
     'font-size': 11, 'font-style': 'italic', fill: '#777'
   });
-  hotelLabel.textContent = b.hotel;
+  hotelLabel.textContent = L(b, 'hotel');
   svg.appendChild(hotelLabel);
 
   const peopleLabel = createEl('text', {
@@ -507,6 +839,33 @@ blocks.forEach((b) => {
   });
   peopleLabel.textContent = b.people.join(', ');
   svg.appendChild(peopleLabel);
+
+  // ===== "Details" badge: clickable, opens fullscreen modal =====
+  const badgeLabel = T().detailsBadge;
+  const badgeW = currentLang === 'ko' ? 52 : 60;
+  const badgeH = 18;
+  const badgeX = b.x + b.width/2 - badgeW/2;
+  const badgeY = b.y - 30;
+
+  const badgeRect = createEl('rect', {
+    x: badgeX, y: badgeY,
+    width: badgeW, height: badgeH,
+    fill: '#fff7e6', stroke: '#e67e22',
+    'stroke-width': 1.2, rx: 9,
+    style: 'cursor: pointer;',
+    'data-detail-block': b.idx,
+    'class': 'detail-badge'
+  });
+  svg.appendChild(badgeRect);
+
+  const badgeText = createEl('text', {
+    x: badgeX + badgeW/2, y: badgeY + 13,
+    'text-anchor': 'middle',
+    'font-size': 10, 'font-weight': 'bold', fill: '#d35400',
+    style: 'cursor: pointer; pointer-events: none;'
+  });
+  badgeText.textContent = '🔍 ' + badgeLabel;
+  svg.appendChild(badgeText);
 
   const rect = createEl('rect', {
     x: b.x, y: b.y,
@@ -523,9 +882,9 @@ blocks.forEach((b) => {
   const tabH = 18;
   const tabGap = 4;
   const tabs = [
-    { id: 'schedule',    label: 'Schedule',    icon: '📅' },
-    { id: 'restaurants', label: 'Restaurants', icon: '🍽' },
-    { id: 'shopping',    label: 'Shopping',    icon: '🛍' }
+    { id: 'schedule',    label: T().schedule },
+    { id: 'restaurants', label: T().restaurants },
+    { id: 'shopping',    label: T().shopping }
   ];
 
   // Calculate tab widths so all 3 fit within block width
@@ -560,7 +919,7 @@ blocks.forEach((b) => {
       'data-tab': tab.id,
       style: 'cursor: pointer; pointer-events: none;'
     });
-    tabText.textContent = `${tab.icon} ${tab.label}`;
+    tabText.textContent = tab.label;
     svg.appendChild(tabText);
   });
 
@@ -622,34 +981,196 @@ blocks.forEach((b) => {
   scheduleGroup.appendChild(endLbl);
 
   // Event notes - draw with type-based styling
+  // Inline layout: time + label on the same first line. If label is too long,
+  // wrap remaining words to additional lines BUT only if there's vertical room
+  // before the next note. If no room, truncate the last visible line with "…".
+  const MIN_LABEL_GAP = 11;     // minimum vertical px between rows
+  const LINE_HEIGHT = 10;       // px between wrapped lines
+  const CHAR_WIDTH = 4.5;       // approx px per char for the label font (8.5px)
+
+  // Group by day and sort by time
+  const notesByDay = {};
   b.notes.forEach(n => {
-    const ny = timeToY(n.time, b.y);
-    const colX = b.x + n.day * COL_WIDTH;
-    const style = noteStyle(n.type);
+    if (!notesByDay[n.day]) notesByDay[n.day] = [];
+    notesByDay[n.day].push(n);
+  });
+  Object.keys(notesByDay).forEach(d => {
+    notesByDay[d].sort((a,c) => timeToY(a.time, 0) - timeToY(c.time, 0));
+  });
 
-    scheduleGroup.appendChild(createEl('line', {
-      x1: colX, y1: ny,
-      x2: colX + COL_WIDTH, y2: ny,
-      stroke: style.color, 'stroke-width': 1, opacity: 0.5
-    }));
+  // Word-wrap helper: given a width in chars, split text into lines on word boundaries
+  function wrapWords(text, maxChars) {
+    if (text.length <= maxChars) return [text];
+    const words = text.split(/\s+/);
+    const lines = [];
+    let cur = '';
+    for (const w of words) {
+      if (!cur) {
+        cur = w;
+      } else if ((cur + ' ' + w).length <= maxChars) {
+        cur = cur + ' ' + w;
+      } else {
+        lines.push(cur);
+        cur = w;
+      }
+      // Hard-break a single word that's longer than maxChars
+      while (cur.length > maxChars) {
+        lines.push(cur.substring(0, maxChars));
+        cur = cur.substring(maxChars);
+      }
+    }
+    if (cur) lines.push(cur);
+    return lines;
+  }
 
-    scheduleGroup.appendChild(createEl('circle', {
-      cx: colX + 3, cy: ny, r: 2.5, fill: style.color
-    }));
+  Object.keys(notesByDay).forEach(dayKey => {
+    const dayNotes = notesByDay[dayKey];
+    let lastRowBottomY = -Infinity; // y position of bottom-most line of previous note
 
-    const noteTime = createEl('text', {
-      x: colX + 8, y: ny - 2,
-      'font-size': 9, 'font-weight': 'bold', fill: style.color
+    dayNotes.forEach((n, idx) => {
+      const ny = timeToY(n.time, b.y);
+      const colX = b.x + n.day * COL_WIDTH;
+      const style = noteStyle(n.type);
+
+      // Anchor line + dot always at the actual time
+      scheduleGroup.appendChild(createEl('line', {
+        x1: colX, y1: ny,
+        x2: colX + COL_WIDTH, y2: ny,
+        stroke: style.color, 'stroke-width': 1, opacity: 0.5
+      }));
+
+      scheduleGroup.appendChild(createEl('circle', {
+        cx: colX + 3, cy: ny, r: 2.5, fill: style.color
+      }));
+
+      // First-row position: ideally just below the anchor line.
+      // Push down if too close to the previous note's bottom line.
+      let rowY = ny + 8;
+      if (rowY < lastRowBottomY + MIN_LABEL_GAP) {
+        rowY = lastRowBottomY + MIN_LABEL_GAP;
+      }
+
+      // Compute time label width (used to indent the label on row 1)
+      const timeWidth = n.time.length * 5.2 + 4;
+
+      // Time label (always on the first row)
+      const noteTime = createEl('text', {
+        x: colX + 8, y: rowY,
+        'font-size': 9, 'font-weight': 'bold', fill: style.color
+      });
+      noteTime.textContent = n.time;
+      scheduleGroup.appendChild(noteTime);
+
+      // Determine vertical room for label lines.
+      // Find next note's anchor (or block bottom) to decide how many extra lines fit.
+      let nextNy;
+      if (idx + 1 < dayNotes.length) {
+        nextNy = timeToY(dayNotes[idx + 1].time, b.y);
+      } else {
+        nextNy = b.y + b.height;
+      }
+      // Available room below rowY before bumping into next note
+      const roomBelow = Math.max(0, nextNy - rowY - 2);
+      // Max wrapped lines we can show (first line is always shown; extras go below)
+      const maxExtraLines = Math.max(0, Math.floor((roomBelow - 4) / LINE_HEIGHT));
+
+      // Localized label and a per-language character width estimate
+      const labelText = L(n, 'label');
+      const isKo = currentLang === 'ko';
+      // Korean characters are roughly twice as wide as Latin chars in our font
+      const charW = isKo ? 9 : CHAR_WIDTH;
+
+      // First line uses narrow width (after time); subsequent lines use full column width
+      const firstLineMaxChars = Math.max(2, Math.floor((COL_WIDTH - timeWidth - 14) / charW));
+      const otherLineMaxChars = Math.max(4, Math.floor((COL_WIDTH - 14) / charW));
+
+      // Build wrapped lines: split on spaces (works for both en and ko).
+      // For long unbroken Korean strings without spaces, we'll fall back to char-level wrap.
+      const lines = [];
+      const tokens = labelText.split(/(\s+)/).filter(t => t.length > 0);
+      let cur = '';
+      let onFirstLine = true;
+      for (let ti = 0; ti < tokens.length; ti++) {
+        const t = tokens[ti];
+        if (/^\s+$/.test(t)) {
+          // whitespace token - only add if we already have content on the line
+          if (cur) cur = cur + ' ';
+          continue;
+        }
+        const limit = onFirstLine ? firstLineMaxChars : otherLineMaxChars;
+        const candidate = cur + t;
+        if (candidate.length <= limit) {
+          cur = candidate;
+        } else {
+          // Push the current line and start new
+          if (cur.trim()) lines.push(cur.trim());
+          cur = t;
+          onFirstLine = false;
+          // Hard-break very long words (or Korean strings without spaces)
+          while (cur.length > otherLineMaxChars) {
+            lines.push(cur.substring(0, otherLineMaxChars));
+            cur = cur.substring(otherLineMaxChars);
+          }
+        }
+      }
+      if (cur.trim()) lines.push(cur.trim());
+
+      // Allowed total lines = 1 (the first/inline line) + maxExtraLines
+      const allowedLines = 1 + maxExtraLines;
+      let visibleLines = lines.slice(0, allowedLines);
+
+      // If we had to drop lines, append "…" to the last visible line
+      if (visibleLines.length < lines.length) {
+        const lastIdx = visibleLines.length - 1;
+        const limit = lastIdx === 0 ? firstLineMaxChars : otherLineMaxChars;
+        let lastLine = visibleLines[lastIdx];
+        if (lastLine.length >= limit) {
+          lastLine = lastLine.substring(0, limit - 1) + '…';
+        } else {
+          lastLine = lastLine + '…';
+        }
+        visibleLines[lastIdx] = lastLine;
+      }
+
+      // Render line 1 inline next to time
+      const firstText = createEl('text', {
+        x: colX + 8 + timeWidth, y: rowY,
+        'font-size': 8.5, fill: '#444'
+      });
+      firstText.textContent = visibleLines[0] || '';
+      const tt = createEl('title');
+      tt.textContent = `${n.time} — ${labelText}`;
+      firstText.appendChild(tt);
+      scheduleGroup.appendChild(firstText);
+
+      // Render remaining lines below, full column width
+      let bottomY = rowY;
+      for (let li = 1; li < visibleLines.length; li++) {
+        const lineY = rowY + li * LINE_HEIGHT;
+        const wrapText = createEl('text', {
+          x: colX + 8, y: lineY,
+          'font-size': 8.5, fill: '#444'
+        });
+        wrapText.textContent = visibleLines[li];
+        const tt2 = createEl('title');
+        tt2.textContent = `${n.time} — ${labelText}`;
+        wrapText.appendChild(tt2);
+        scheduleGroup.appendChild(wrapText);
+        bottomY = lineY;
+      }
+
+      // If first line was pushed down significantly from the anchor, draw a faint connector
+      if (rowY > ny + 14) {
+        scheduleGroup.appendChild(createEl('line', {
+          x1: colX + 3, y1: ny + 2,
+          x2: colX + 3, y2: rowY - 3,
+          stroke: style.color, 'stroke-width': 0.6,
+          opacity: 0.4, 'stroke-dasharray': '2,2'
+        }));
+      }
+
+      lastRowBottomY = bottomY;
     });
-    noteTime.textContent = n.time;
-    scheduleGroup.appendChild(noteTime);
-
-    const noteText = createEl('text', {
-      x: colX + 8, y: ny + 10,
-      'font-size': 8.5, fill: '#444'
-    });
-    noteText.textContent = n.label;
-    scheduleGroup.appendChild(noteText);
   });
 
   // ===== Populate Restaurants group =====
@@ -660,11 +1181,11 @@ blocks.forEach((b) => {
     'text-anchor': 'middle',
     'font-size': 12, 'font-weight': 'bold', fill: '#c0392b'
   });
-  restHeader.textContent = '🍽 Restaurants';
+  restHeader.textContent = T().restaurantsHeader;
   restGroup.appendChild(restHeader);
 
-  // Check if any restaurant is an object (rich format with image+link)
-  const hasRichRestaurants = places.restaurants.some(r => typeof r === 'object');
+  // Check if any restaurant is an object with rich format (has 'name' field)
+  const hasRichRestaurants = places.restaurants.some(r => typeof r === 'object' && r.name);
 
   if (hasRichRestaurants) {
     // Show a hint text inside the small SVG block; full tile view renders as HTML overlay
@@ -673,7 +1194,7 @@ blocks.forEach((b) => {
       'text-anchor': 'middle',
       'font-size': 10, fill: '#666'
     });
-    hint.textContent = `${places.restaurants.length} picks — see tile view below ↓`;
+    hint.textContent = T().morePicks(places.restaurants.length);
     restGroup.appendChild(hint);
 
     // List restaurant names compactly
@@ -684,7 +1205,8 @@ blocks.forEach((b) => {
         x: b.x + 10, y: ry,
         'font-size': 9, fill: '#444'
       });
-      txt.textContent = `${i+1}. ${r.name}`;
+      const rname = (currentLang === 'ko' && r.name_ko) ? r.name_ko : r.name;
+      txt.textContent = `${i+1}. ${rname}`;
       restGroup.appendChild(txt);
     });
   } else {
@@ -700,11 +1222,13 @@ blocks.forEach((b) => {
         x: b.x + 14, y: ry + 4,
         'font-size': 9.5, fill: '#333'
       });
-      const maxChars = Math.floor((b.width - 24) / 5);
-      const txt = typeof r === 'string' ? r : r.name;
-      rTxt.textContent = txt.length > maxChars ? txt.substring(0, maxChars - 1) + '…' : txt;
+      // Korean text needs more width per char
+      const charPx = currentLang === 'ko' ? 9.5 : 5;
+      const maxChars = Math.floor((b.width - 24) / charPx);
+      const fullTxt = LS(r);
+      rTxt.textContent = fullTxt.length > maxChars ? fullTxt.substring(0, maxChars - 1) + '…' : fullTxt;
       const title = createEl('title');
-      title.textContent = txt;
+      title.textContent = fullTxt;
       rTxt.appendChild(title);
       restGroup.appendChild(rTxt);
     });
@@ -716,7 +1240,7 @@ blocks.forEach((b) => {
     'text-anchor': 'middle',
     'font-size': 12, 'font-weight': 'bold', fill: '#8e44ad'
   });
-  shopHeader.textContent = '🛍 Shopping';
+  shopHeader.textContent = T().shoppingHeader;
   shopGroup.appendChild(shopHeader);
 
   places.shopping.forEach((s, i) => {
@@ -731,10 +1255,12 @@ blocks.forEach((b) => {
       x: b.x + 14, y: sy + 4,
       'font-size': 9.5, fill: '#333'
     });
-    const maxChars = Math.floor((b.width - 24) / 5);
-    sTxt.textContent = s.length > maxChars ? s.substring(0, maxChars - 1) + '…' : s;
+    const charPx = currentLang === 'ko' ? 9.5 : 5;
+    const maxChars = Math.floor((b.width - 24) / charPx);
+    const fullTxt = LS(s);
+    sTxt.textContent = fullTxt.length > maxChars ? fullTxt.substring(0, maxChars - 1) + '…' : fullTxt;
     const title = createEl('title');
-    title.textContent = s;
+    title.textContent = fullTxt;
     sTxt.appendChild(title);
     shopGroup.appendChild(sTxt);
   });
@@ -742,10 +1268,11 @@ blocks.forEach((b) => {
 
 // ===== Build HTML restaurant galleries for blocks with rich restaurant data =====
 const galleryContainer = document.getElementById('rest-galleries');
+galleryContainer.innerHTML = ''; // clear previous galleries before rebuild
 blocks.forEach(b => {
   const places = placesData[b.location];
   if (!places || !places.restaurants || !places.restaurants.length) return;
-  const hasRich = places.restaurants.some(r => typeof r === 'object');
+  const hasRich = places.restaurants.some(r => typeof r === 'object' && r.name);
   if (!hasRich) return;
 
   const gallery = document.createElement('div');
@@ -753,8 +1280,8 @@ blocks.forEach(b => {
   gallery.id = `gallery-${b.idx}`;
 
   gallery.innerHTML = `
-    <h2>🍽 ${b.location} — Restaurant Picks</h2>
-    <div class="gallery-sub">${places.restaurants.length} recommended spots · click to open in Google Maps</div>
+    <h2>${T().galleryTitle(L(b, 'location'))}</h2>
+    <div class="gallery-sub">${T().gallerySub(places.restaurants.length)}</div>
     <div class="rest-tiles"></div>
   `;
   const tilesDiv = gallery.querySelector('.rest-tiles');
@@ -762,12 +1289,14 @@ blocks.forEach(b => {
   places.restaurants.forEach((r, i) => {
     const tile = document.createElement('div');
     tile.className = 'rest-tile';
+    const rname = (currentLang === 'ko' && r.name_ko) ? r.name_ko : r.name;
+    const rdesc = (currentLang === 'ko' && r.desc_ko) ? r.desc_ko : r.desc;
     tile.innerHTML = `
       <div class="rest-tile-img" style="background-image: url('${r.image}');"></div>
       <div class="rest-tile-body">
-        <div class="rest-tile-name"><span class="num">${i+1}</span>${r.name}</div>
-        <div class="rest-tile-desc">${r.desc}</div>
-        <a href="${r.link}" target="_blank" rel="noopener" class="rest-tile-link">📍 View on Google Maps →</a>
+        <div class="rest-tile-name"><span class="num">${i+1}</span>${rname}</div>
+        <div class="rest-tile-desc">${rdesc}</div>
+        <a href="${r.link}" target="_blank" rel="noopener" class="rest-tile-link">📍 ${T().viewMap}</a>
       </div>
     `;
     tilesDiv.appendChild(tile);
@@ -787,22 +1316,28 @@ for (let i = 0; i < blocks.length - 1; i++) {
 
   // Determine output and input Y based on actual departure / arrival times
   let outY, inY, transitInfo = null;
+  const trainLabel = currentLang === 'ko' ? '기차' : 'Train';
 
   if (from.location === 'Zurich' && to.location === 'Interlaken') {
     outY = timeToY('4:41 PM', from.y);
     inY  = timeToY('6:59 PM', to.y);
-    transitInfo = { label: 'Train', sub: '4:41 PM → 6:59 PM' };
+    transitInfo = { label: trainLabel, sub: '4:41 PM → 6:59 PM' };
   } else if (from.location === 'Interlaken' && to.location === 'Grindelwald') {
     outY = timeToY('10:00 AM', from.y);
     inY  = timeToY('11:00 AM', to.y);
-    transitInfo = { label: 'Train', sub: '10:00 AM → 11:00 AM' };
+    transitInfo = { label: trainLabel, sub: '10:00 AM → 11:00 AM' };
   } else if (from.location === 'Grindelwald' && to.location === 'Milano') {
     outY = timeToY('1:17 PM', from.y);
     inY  = timeToY('5:50 PM', to.y);
     transitInfo = {
-      label: 'Train',
+      label: trainLabel,
       sub: '1:17 PM → 5:50 PM',
-      legs: [
+      legs: currentLang === 'ko' ? [
+        '그린델발트 13:17 → 인터라켄 오스트 13:54',
+        '인터라켄 오스트 13:59 → 슈피츠 14:23',
+        '슈피츠 14:38 → 브리크 15:13',
+        '브리크 15:41 → 밀라노 중앙역 17:50'
+      ] : [
         'Grindelwald 13:17 → Interlaken Ost 13:54',
         'Interlaken Ost 13:59 → Spiez 14:23',
         'Spiez 14:38 → Brig 15:13',
@@ -813,13 +1348,13 @@ for (let i = 0; i < blocks.length - 1; i++) {
     outY = timeToY('1:10 PM', from.y);
     inY  = timeToY('3:04 PM', to.y);
     transitInfo = {
-      label: 'Train',
-      sub: '1:10 PM → 3:04 PM (1h 54m)'
+      label: trainLabel,
+      sub: currentLang === 'ko' ? '1:10 PM → 3:04 PM (1시간 54분)' : '1:10 PM → 3:04 PM (1h 54m)'
     };
   } else if (from.location === 'Firenze' && to.location === 'Rome') {
     outY = timeToY('7:33 PM', from.y);
     inY  = timeToY('8:59 PM', to.y);
-    transitInfo = { label: 'Train', sub: '7:33 PM → 8:59 PM' };
+    transitInfo = { label: trainLabel, sub: '7:33 PM → 8:59 PM' };
   } else {
     outY = from.y + from.height/2;
     inY  = to.y + to.height/2;
@@ -957,7 +1492,7 @@ for (let i = 0; i < blocks.length - 1; i++) {
       x: x2 + 4, y: y2 + 4,
       'font-size': 11, 'font-weight': 'bold', fill: '#e67e22'
     });
-    exitLabel.textContent = `${buildGroupLabel2(leavingPeople)} fly home ✈`;
+    exitLabel.textContent = T().flyHomeBubble(buildGroupLabel2(leavingPeople));
     svg.appendChild(exitLabel);
   }
 
@@ -980,7 +1515,7 @@ for (let i = 0; i < blocks.length - 1; i++) {
       'font-size': 11, 'font-weight': 'bold',
       fill: '#666', 'text-anchor': 'end'
     });
-    enterLabel.textContent = `${buildGroupLabel2(enteringPeople)} joins`;
+    enterLabel.textContent = T().joins(buildGroupLabel2(enteringPeople));
     svg.appendChild(enterLabel);
   }
 }
@@ -1025,7 +1560,7 @@ const lastBlock = blocks[blocks.length - 1];
     'text-anchor': 'middle',
     'font-size': 10, 'font-weight': 'bold', fill: '#d35400'
   });
-  flbl.textContent = 'P1-3 ✈ home';
+  flbl.textContent = T().flyHome;
   svg.appendChild(flbl);
 }
 
@@ -1036,10 +1571,19 @@ const legendY1 = BLOCK_Y + BLOCK_HEIGHT + 40;
 const legendY2 = BLOCK_Y + BLOCK_HEIGHT + 70;
 
 // Row 1: Wire / connection legend (single line with group label)
+const wireLabels = currentLang === 'ko' ? {
+  all: '5인 전원',
+  cont: '계속 여행 인원',
+  depart: '출발 / 합류'
+} : {
+  all: 'all 5 travelers',
+  cont: 'travelers continuing',
+  depart: 'departs / joins'
+};
 const wireLegend = [
-  { type: 'solid',  label: 'P1-5', desc: 'all 5 travelers' },
-  { type: 'solid',  label: 'P1-3', desc: 'travelers continuing' },
-  { type: 'dashed', label: 'P4-5', desc: 'departs / joins' }
+  { type: 'solid',  label: 'P1-5', desc: wireLabels.all },
+  { type: 'solid',  label: 'P1-3', desc: wireLabels.cont },
+  { type: 'dashed', label: 'P4-5', desc: wireLabels.depart }
 ];
 
 let plx = BLOCK_X_START;
@@ -1079,11 +1623,11 @@ wireLegend.forEach(item => {
 });
 
 const legendItems = [
-  { color: '#27ae60', label: '✓ Check-in' },
-  { color: '#c0392b', label: '✗ Checkout' },
-  { color: '#8e44ad', label: '★ Excursion / Transit' },
-  { color: '#e67e22', label: '✈ Flight' },
-  { color: '#2980b9', label: '● Other event' }
+  { color: '#27ae60', label: T().legend.checkin },
+  { color: '#c0392b', label: T().legend.checkout },
+  { color: '#8e44ad', label: T().legend.excursion },
+  { color: '#e67e22', label: T().legend.flight },
+  { color: '#2980b9', label: T().legend.other }
 ];
 let lx = BLOCK_X_START;
 legendItems.forEach(item => {
@@ -1131,6 +1675,204 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     });
   });
 });
+
+// ===== Detail badge click handlers =====
+document.querySelectorAll('.detail-badge').forEach(badge => {
+  badge.addEventListener('click', e => {
+    const idx = parseInt(badge.getAttribute('data-detail-block'), 10);
+    openDetail(idx);
+  });
+});
+
+// Update modal close button text
+const closeBtn = document.getElementById('detail-modal-close-btn');
+if (closeBtn) closeBtn.textContent = '✕ ' + T().closeBtn;
+
+} // end of buildDiagram()
+
+// ========== Language toggle ==========
+function setLang(lang) {
+  currentLang = lang;
+  // Update page title and subtitle
+  const titleEl = document.getElementById('page-title');
+  const subEl = document.getElementById('page-subtitle');
+  if (titleEl) titleEl.textContent = T().title;
+  if (subEl) subEl.innerHTML = T().subtitle;
+  document.title = T().title;
+  // Update toggle button states
+  const btnKo = document.getElementById('btn-ko');
+  const btnEn = document.getElementById('btn-en');
+  if (btnKo && btnEn) {
+    btnKo.classList.toggle('active', lang === 'ko');
+    btnEn.classList.toggle('active', lang === 'en');
+  }
+  // Re-render the SVG diagram with the new language
+  buildDiagram();
+  // If modal is open, refresh its content too
+  const modal = document.getElementById('detail-modal-overlay');
+  if (modal && modal.classList.contains('active')) {
+    const idx = parseInt(modal.getAttribute('data-current-block') || '-1', 10);
+    if (idx >= 0) renderDetailModal(idx);
+  }
+}
+
+// ========== Detail modal ==========
+function getTransitInfo(fromIdx, toIdx) {
+  // Returns transit info between two blocks (by index in schedule), or null
+  const from = schedule[fromIdx];
+  const to = schedule[toIdx];
+  if (!from || !to) return null;
+  const trainLabel = currentLang === 'ko' ? '기차' : 'Train';
+  const route = `${from.location}→${to.location}`;
+  if (route === 'Zurich→Interlaken') return { label: trainLabel, sub: '4:41 PM → 6:59 PM', legs: [] };
+  if (route === 'Interlaken→Grindelwald') return { label: trainLabel, sub: '10:00 AM → 11:00 AM', legs: [] };
+  if (route === 'Grindelwald→Milano') return {
+    label: trainLabel, sub: '1:17 PM → 5:50 PM',
+    legs: currentLang === 'ko' ? [
+      '그린델발트 13:17 → 인터라켄 오스트 13:54',
+      '인터라켄 오스트 13:59 → 슈피츠 14:23',
+      '슈피츠 14:38 → 브리크 15:13',
+      '브리크 15:41 → 밀라노 중앙역 17:50'
+    ] : [
+      'Grindelwald 13:17 → Interlaken Ost 13:54',
+      'Interlaken Ost 13:59 → Spiez 14:23',
+      'Spiez 14:38 → Brig 15:13',
+      'Brig 15:41 → Milano Centrale 17:50'
+    ]
+  };
+  if (route === 'Milano→Firenze') return {
+    label: trainLabel,
+    sub: currentLang === 'ko' ? '1:10 PM → 3:04 PM (1시간 54분)' : '1:10 PM → 3:04 PM (1h 54m)',
+    legs: []
+  };
+  if (route === 'Firenze→Rome') return { label: trainLabel, sub: '7:33 PM → 8:59 PM', legs: [] };
+  return null;
+}
+
+function eventTypeIcon(type) {
+  if (type === 'checkin')   return '✓';
+  if (type === 'checkout')  return '✗';
+  if (type === 'excursion') return '★';
+  if (type === 'flight')    return '✈';
+  return '●';
+}
+
+function openDetail(blockIdx) {
+  const modal = document.getElementById('detail-modal-overlay');
+  modal.setAttribute('data-current-block', String(blockIdx));
+  renderDetailModal(blockIdx);
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden'; // prevent background scroll
+}
+
+function closeDetail() {
+  const modal = document.getElementById('detail-modal-overlay');
+  modal.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function closeDetailIfBackdrop(event) {
+  // Close only when clicking the dark backdrop, not the modal content
+  if (event.target.id === 'detail-modal-overlay') closeDetail();
+}
+
+function renderDetailModal(blockIdx) {
+  const item = schedule[blockIdx];
+  if (!item) return;
+  const body = document.getElementById('detail-modal-body');
+  const closeBtn = document.getElementById('detail-modal-close-btn');
+  if (closeBtn) closeBtn.textContent = '✕ ' + T().closeBtn;
+
+  const datesArr = L(item, 'dates') || item.dates;
+  const locName = L(item, 'location');
+  const hotelName = L(item, 'hotel');
+
+  // Build header
+  let html = `
+    <div class="detail-modal-header">
+      <h2 class="detail-modal-title">${locName}</h2>
+      <div class="detail-modal-meta">
+        <span style="font-style: italic;">${hotelName}</span>
+        &nbsp;·&nbsp; ${datesArr.join(' &nbsp; ')}
+        &nbsp;·&nbsp; ${item.people.join(', ')}
+      </div>
+    </div>
+  `;
+
+  // Inbound transit (if any)
+  const inbound = blockIdx > 0 ? getTransitInfo(blockIdx - 1, blockIdx) : null;
+  if (inbound) {
+    const fromLoc = L(schedule[blockIdx - 1], 'location');
+    html += `
+      <div class="detail-transit">
+        <div class="transit-label">${T().arriveLabel}: ${fromLoc} → ${locName} (${inbound.label}, ${inbound.sub})</div>
+        ${inbound.legs.map(leg => `<div class="transit-leg">• ${leg}</div>`).join('')}
+      </div>
+    `;
+  }
+
+  // Group notes by day
+  const notesByDay = {};
+  item.notes.forEach(n => {
+    if (!notesByDay[n.day]) notesByDay[n.day] = [];
+    notesByDay[n.day].push(n);
+  });
+
+  // Sort each day chronologically
+  Object.keys(notesByDay).forEach(d => {
+    notesByDay[d].sort((a, b) => timeToY(a.time, 0) - timeToY(b.time, 0));
+  });
+
+  // Render each day
+  for (let d = 0; d < item.days; d++) {
+    const dayNotes = notesByDay[d] || [];
+    const dateStr = datesArr[d] || '';
+    html += `<div class="detail-day">`;
+    html += `<div class="detail-day-header">${dateStr}</div>`;
+    if (dayNotes.length === 0) {
+      html += `<div style="color: #999; padding: 8px 12px; font-size: 13px;">—</div>`;
+    } else {
+      dayNotes.forEach(n => {
+        const type = n.type || 'other';
+        const icon = eventTypeIcon(n.type);
+        const labelText = L(n, 'label');
+        html += `
+          <div class="detail-event ${type}">
+            <div class="detail-event-time">${n.time}</div>
+            <div class="detail-event-icon">${icon}</div>
+            <div class="detail-event-label">${labelText}</div>
+          </div>
+        `;
+      });
+    }
+    html += `</div>`;
+  }
+
+  // Outbound transit (if any)
+  const outbound = blockIdx < schedule.length - 1 ? getTransitInfo(blockIdx, blockIdx + 1) : null;
+  if (outbound) {
+    const toLoc = L(schedule[blockIdx + 1], 'location');
+    html += `
+      <div class="detail-transit">
+        <div class="transit-label">${T().departLabel}: ${locName} → ${toLoc} (${outbound.label}, ${outbound.sub})</div>
+        ${outbound.legs.map(leg => `<div class="transit-leg">• ${leg}</div>`).join('')}
+      </div>
+    `;
+  }
+
+  body.innerHTML = html;
+}
+
+// Allow ESC key to close
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    const modal = document.getElementById('detail-modal-overlay');
+    if (modal && modal.classList.contains('active')) closeDetail();
+  }
+});
+
+// Initial render (Korean is the default)
+buildDiagram();
 
 </script>
 
