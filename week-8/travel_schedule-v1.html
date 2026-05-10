@@ -520,18 +520,19 @@ const schedule = [
     notes: [
       { day: 0, time: '6:59 PM', label: 'Arrive Interlaken Ost', label_ko: '인터라켄 오스트 도착' },
       { day: 0, time: '4:00 PM', label: 'Check-in Hotel', label_ko: '호텔 체크인', type: 'checkin' },
-      { day: 1, time: '7:45 AM',  label: 'Depart Interlaken Ost', label_ko: '인터라켄 OST 출발', type: 'excursion' },
-      { day: 1, time: '8:00 AM',  label: 'Harder Kulm viewpoint', label_ko: '하더쿨룸 전망대', type: 'excursion' },
-      { day: 1, time: '9:35 AM',  label: 'Train → Brienz', label_ko: '브리엔츠 이동', type: 'excursion' },
-      { day: 1, time: '10:00 AM', label: 'Brienz village + Woodcarving Museum', label_ko: '브리엔츠 마을 산책 + 공예 박물관', type: 'excursion' },
-      { day: 1, time: '11:30 AM', label: 'Lunch in Brienz', label_ko: '브리엔츠 점심' },
-      { day: 1, time: '12:40 PM', label: 'Via Interlaken → Spiez', label_ko: '인터라켄 경유 → 슈피츠 이동', type: 'excursion' },
-      { day: 1, time: '1:30 PM',  label: 'Spiez sightseeing', label_ko: '슈피츠 관광', type: 'excursion' },
-      { day: 1, time: '3:10 PM',  label: 'Boat: Spiez → Oberhofen', label_ko: '유람선: 슈피츠 → 오버호펜', type: 'excursion' },
-      { day: 1, time: '3:40 PM',  label: 'Oberhofen Castle', label_ko: '오버호펜 성 관광', type: 'excursion' },
-      { day: 1, time: '5:10 PM',  label: 'Lake Thun scenic ride', label_ko: '툰호수 풍경 이동', type: 'excursion' },
-      { day: 1, time: '6:00 PM',  label: 'Dinner', label_ko: '저녁 식사' },
-      { day: 1, time: '8:00 PM',  label: 'Return to Interlaken', label_ko: '인터라켄 복귀' },
+      { day: 1, time: '8:30 AM',  label: 'Depart Interlaken Ost', label_ko: '인터라켄 OST 출발', type: 'excursion' },
+      { day: 1, time: '9:00 AM',  label: 'Harder Kulm viewpoint', label_ko: '하더쿨룸 전망대', type: 'excursion' },
+      { day: 1, time: '10:30 AM', label: 'Train → Brienz', label_ko: '브리엔츠 이동', type: 'excursion' },
+      { day: 1, time: '11:00 AM', label: 'Ballenberg Open-Air Museum', label_ko: '발렌베르크 야외 박물관', type: 'excursion' },
+      { day: 1, time: '12:30 PM', label: 'Lunch near museum', label_ko: '박물관 근처 점심', type: 'other' },
+      { day: 1, time: '2:00 PM',  label: 'Boat → Iseltwald', label_ko: '유람선 → 이젤트발트', type: 'excursion' },
+      { day: 1, time: '2:40 PM',  label: 'Iseltwald: CLOY pier', label_ko: '이젤트발트: 사랑의 불시착 선착장', type: 'excursion' },
+      { day: 1, time: '3:40 PM',  label: 'Boat → Giessbach', label_ko: '유람선 → 기스바흐', type: 'excursion' },
+      { day: 1, time: '4:00 PM',  label: 'Giessbach Falls + funicular', label_ko: '기스바흐 폭포 + 푸니쿨라', type: 'excursion' },
+      { day: 1, time: '5:30 PM',  label: 'Boat → Brienz', label_ko: '유람선 → 브리엔츠', type: 'excursion' },
+      { day: 1, time: '6:00 PM',  label: 'Brienz village walk', label_ko: '브리엔츠 마을 산책', type: 'excursion' },
+      { day: 1, time: '7:00 PM',  label: 'Dinner', label_ko: '저녁 식사' },
+      { day: 1, time: '8:30 PM',  label: 'Return to Interlaken', label_ko: '인터라켄 복귀' },
       { day: 2, time: '7:30 AM', label: 'Depart Interlaken Ost', label_ko: '인터라켄 OST 출발', type: 'excursion' },
       { day: 2, time: '7:55 AM', label: 'Arrive Spiez', label_ko: '슈피츠 도착', type: 'excursion' },
       { day: 2, time: '8:00 AM', label: 'Spiez village & castle tour', label_ko: '슈피츠 마을 & 성 관광', type: 'excursion' },
@@ -539,9 +540,12 @@ const schedule = [
       { day: 2, time: '10:00 AM', label: 'Oberhofen Castle', label_ko: '오버호펜 성 관광', type: 'excursion' },
       { day: 2, time: '11:10 AM', label: 'Bus/train back to Interlaken', label_ko: '버스/기차로 인터라켄 복귀', type: 'excursion' },
       { day: 2, time: '12:30 PM', label: 'Arrive Interlaken', label_ko: '인터라켄 도착', type: 'excursion' },
-      { day: 2, time: '1:00 PM', label: 'Paragliding start', label_ko: '패러글라이딩 시작', type: 'excursion' },
-      { day: 2, time: '3:00 PM', label: 'Paragliding end', label_ko: '패러글라이딩 종료', type: 'excursion' },
-      { day: 2, time: '3:30 PM', label: 'Train → Lungern', label_ko: '기차 → 룽게른', type: 'excursion' },
+      { day: 2, time: '1:00 PM', team: 'A', label: '[Paraglide team] Paragliding start', label_ko: '[패러팀] 패러글라이딩 시작', type: 'excursion' },
+      { day: 2, time: '1:10 PM', team: 'B', label: '[Lungern team] Train → Lungern', label_ko: '[룽게른팀] 기차 → 룽게른', type: 'excursion' },
+      { day: 2, time: '3:00 PM', team: 'A', label: '[Paraglide team] Paragliding end', label_ko: '[패러팀] 패러글라이딩 종료', type: 'excursion' },
+      { day: 2, time: '3:10 PM', team: 'A', label: '[Paraglide team] Train → Lungern', label_ko: '[패러팀] 기차 → 룽게른', type: 'excursion' },
+      { day: 2, time: '4:10 PM', team: 'A', label: '[Paraglide team] Arrive Lungern, join', label_ko: '[패러팀] 룽게른 도착, 합류', type: 'excursion' },
+      { day: 2, time: '4:30 PM', label: 'All together: explore Lungern', label_ko: '전원 합류: 룽게른 산책', type: 'excursion' },
       { day: 2, time: '7:00 PM', label: 'Lungern sunset viewing', label_ko: '룽게른 일몰 감상', type: 'excursion' },
       { day: 2, time: '8:30 PM', label: 'Sunset ends, return', label_ko: '일몰 종료, 복귀', type: 'excursion' },
       { day: 3, time: '10:00 AM', label: 'Checkout', label_ko: '체크아웃', type: 'checkout' }
@@ -1025,29 +1029,49 @@ blocks.forEach((b) => {
 
   Object.keys(notesByDay).forEach(dayKey => {
     const dayNotes = notesByDay[dayKey];
-    let lastRowBottomY = -Infinity; // y position of bottom-most line of previous note
+
+    // Detect "split mode": this day has notes tagged with team A or B.
+    // In split mode, team A goes on left half of column, team B on right half,
+    // and untagged (common) notes use full width.
+    const hasTeam = dayNotes.some(n => n.team);
+    const colXBase = b.x + parseInt(dayKey) * COL_WIDTH;
+
+    // Last-row trackers per "lane": A, B, or full (untagged)
+    const laneLastY = { A: -Infinity, B: -Infinity, full: -Infinity };
 
     dayNotes.forEach((n, idx) => {
       const ny = timeToY(n.time, b.y);
-      const colX = b.x + n.day * COL_WIDTH;
+      const lane = n.team || 'full';
       const style = noteStyle(n.type);
 
-      // Anchor line + dot always at the actual time
+      // Determine x offset and width for this note
+      let noteX, noteW;
+      if (hasTeam && lane === 'A') {
+        noteX = colXBase;
+        noteW = COL_WIDTH / 2;
+      } else if (hasTeam && lane === 'B') {
+        noteX = colXBase + COL_WIDTH / 2;
+        noteW = COL_WIDTH / 2;
+      } else {
+        noteX = colXBase;
+        noteW = COL_WIDTH;
+      }
+
+      // Anchor line + dot at actual time
       scheduleGroup.appendChild(createEl('line', {
-        x1: colX, y1: ny,
-        x2: colX + COL_WIDTH, y2: ny,
+        x1: noteX, y1: ny,
+        x2: noteX + noteW, y2: ny,
         stroke: style.color, 'stroke-width': 1, opacity: 0.5
       }));
 
       scheduleGroup.appendChild(createEl('circle', {
-        cx: colX + 3, cy: ny, r: 2.5, fill: style.color
+        cx: noteX + 3, cy: ny, r: 2.5, fill: style.color
       }));
 
-      // First-row position: ideally just below the anchor line.
-      // Push down if too close to the previous note's bottom line.
+      // Push down if too close to previous note in the same lane
       let rowY = ny + 8;
-      if (rowY < lastRowBottomY + MIN_LABEL_GAP) {
-        rowY = lastRowBottomY + MIN_LABEL_GAP;
+      if (rowY < laneLastY[lane] + MIN_LABEL_GAP) {
+        rowY = laneLastY[lane] + MIN_LABEL_GAP;
       }
 
       // Compute time label width (used to indent the label on row 1)
@@ -1055,23 +1079,35 @@ blocks.forEach((b) => {
 
       // Time label (always on the first row)
       const noteTime = createEl('text', {
-        x: colX + 8, y: rowY,
+        x: noteX + 6, y: rowY,
         'font-size': 9, 'font-weight': 'bold', fill: style.color
       });
       noteTime.textContent = n.time;
       scheduleGroup.appendChild(noteTime);
 
-      // Determine vertical room for label lines.
-      // Find next note's anchor (or block bottom) to decide how many extra lines fit.
+      // Determine vertical room: find next note in same lane
       let nextNy;
-      if (idx + 1 < dayNotes.length) {
-        nextNy = timeToY(dayNotes[idx + 1].time, b.y);
+      let nextSameLane = null;
+      for (let j = idx + 1; j < dayNotes.length; j++) {
+        const candLane = dayNotes[j].team || 'full';
+        // For "full" notes, next is the very next note (any lane).
+        // For team notes, next is the next note in same lane OR any "full" note (which spans full width).
+        if (lane === 'full') {
+          nextSameLane = dayNotes[j];
+          break;
+        } else {
+          if (candLane === lane || candLane === 'full') {
+            nextSameLane = dayNotes[j];
+            break;
+          }
+        }
+      }
+      if (nextSameLane) {
+        nextNy = timeToY(nextSameLane.time, b.y);
       } else {
         nextNy = b.y + b.height;
       }
-      // Available room below rowY before bumping into next note
       const roomBelow = Math.max(0, nextNy - rowY - 2);
-      // Max wrapped lines we can show (first line is always shown; extras go below)
       const maxExtraLines = Math.max(0, Math.floor((roomBelow - 4) / LINE_HEIGHT));
 
       // Localized label and a per-language character width estimate
@@ -1080,9 +1116,9 @@ blocks.forEach((b) => {
       // Korean characters are roughly twice as wide as Latin chars in our font
       const charW = isKo ? 9 : CHAR_WIDTH;
 
-      // First line uses narrow width (after time); subsequent lines use full column width
-      const firstLineMaxChars = Math.max(2, Math.floor((COL_WIDTH - timeWidth - 14) / charW));
-      const otherLineMaxChars = Math.max(4, Math.floor((COL_WIDTH - 14) / charW));
+      // First line uses narrow width (after time); subsequent lines use full lane width
+      const firstLineMaxChars = Math.max(2, Math.floor((noteW - timeWidth - 12) / charW));
+      const otherLineMaxChars = Math.max(4, Math.floor((noteW - 12) / charW));
 
       // Build wrapped lines: split on spaces (works for both en and ko).
       // For long unbroken Korean strings without spaces, we'll fall back to char-level wrap.
@@ -1134,7 +1170,7 @@ blocks.forEach((b) => {
 
       // Render line 1 inline next to time
       const firstText = createEl('text', {
-        x: colX + 8 + timeWidth, y: rowY,
+        x: noteX + 6 + timeWidth, y: rowY,
         'font-size': 8.5, fill: '#444'
       });
       firstText.textContent = visibleLines[0] || '';
@@ -1143,12 +1179,12 @@ blocks.forEach((b) => {
       firstText.appendChild(tt);
       scheduleGroup.appendChild(firstText);
 
-      // Render remaining lines below, full column width
+      // Render remaining lines below
       let bottomY = rowY;
       for (let li = 1; li < visibleLines.length; li++) {
         const lineY = rowY + li * LINE_HEIGHT;
         const wrapText = createEl('text', {
-          x: colX + 8, y: lineY,
+          x: noteX + 6, y: lineY,
           'font-size': 8.5, fill: '#444'
         });
         wrapText.textContent = visibleLines[li];
@@ -1162,15 +1198,26 @@ blocks.forEach((b) => {
       // If first line was pushed down significantly from the anchor, draw a faint connector
       if (rowY > ny + 14) {
         scheduleGroup.appendChild(createEl('line', {
-          x1: colX + 3, y1: ny + 2,
-          x2: colX + 3, y2: rowY - 3,
+          x1: noteX + 3, y1: ny + 2,
+          x2: noteX + 3, y2: rowY - 3,
           stroke: style.color, 'stroke-width': 0.6,
           opacity: 0.4, 'stroke-dasharray': '2,2'
         }));
       }
 
-      lastRowBottomY = bottomY;
+      laneLastY[lane] = bottomY;
     });
+
+    // For days that have team-tagged notes, draw a vertical separator between lanes
+    if (hasTeam) {
+      const sepX = colXBase + COL_WIDTH / 2;
+      scheduleGroup.appendChild(createEl('line', {
+        x1: sepX, y1: b.y,
+        x2: sepX, y2: b.y + b.height,
+        stroke: '#ccc', 'stroke-width': 1,
+        'stroke-dasharray': '2,3', opacity: 0.7
+      }));
+    }
   });
 
   // ===== Populate Restaurants group =====
