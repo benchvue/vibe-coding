@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Aircraft Principal Axes · Joystick Live</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+  :root{
+    --bg:#f3f5f8;
+    --panel:rgba(255,255,255,.92);
+    --line:rgba(20,40,80,.14);
+    --ink:#1a2230;
+    --dim:#6a7686;
+    --sub:#9aa3b2;
+    --pitch:#D14520;
+    --roll:#185FA5;
+    --yaw:#0F6E56;
+    --ok:#1a8a4a;
+    --warn:#b8821a;
+    --bad:#c43030;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);
+    font-family:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+    overflow:hidden;
+  }
+  #stage{position:fixed;inset:0}
+
+  #title{
+    position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:10;
+    background:var(--panel);border:1px solid var(--line);
+    padding:8px 22px;border-radius:24px;backdrop-filter:blur(10px);
+    font-size:11px;letter-spacing:.22em;color:var(--ink);
+    box-shadow:0 4px 16px rgba(20,40,80,.08);
+  }
+
+  #status-panel{
+    position:fixed;top:14px;left:14px;z-index:10;
+    background:var(--panel);border:1px solid var(--line);
+    padding:14px 16px;border-radius:10px;backdrop-filter:blur(10px);
+    min-width:240px;
+    box-shadow:0 8px 24px rgba(20,40,80,.10);
+  }
+  #status-panel h1{
+    margin:0 0 8px;font-size:10px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--dim);font-weight:600;
+  }
+  .row{display:flex;justify-content:space-between;align-items:center;margin:6px 0;font-size:11px}
+  .row .lab{color:var(--dim);letter-spacing:.06em;display:flex;align-items:center;gap:8px}
+  .row .lab .dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+  .row .val{font-variant-numeric:tabular-nums;font-weight:600}
+  .row.pitch .dot{background:var(--pitch)} .row.pitch .val{color:var(--pitch)}
+  .row.roll  .dot{background:var(--roll)}  .row.roll  .val{color:var(--roll)}
+  .row.yaw   .dot{background:var(--yaw)}   .row.yaw   .val{color:var(--yaw)}
+  .bar{position:relative;height:5px;background:rgba(20,40,80,.08);border-radius:3px;overflow:hidden;margin-bottom:8px}
+  .bar::before{content:"";position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:rgba(20,40,80,.22)}
+  .bar i{position:absolute;top:0;bottom:0;left:50%;width:2px;transform-origin:left center;transition:transform .05s linear}
+  .bar i.pitch{background:var(--pitch)} .bar i.roll{background:var(--roll)} .bar i.yaw{background:var(--yaw)}
+
+  #status{
+    margin-top:10px;padding-top:10px;border-top:1px solid var(--line);
+    font-size:10px;letter-spacing:.05em;color:var(--warn);
+  }
+  #status.connected{color:var(--ok)}
+  #status.error{color:var(--bad)}
+
+  #controls{
+    position:fixed;top:14px;right:14px;z-index:10;
+    display:flex;gap:8px;
+  }
+  .btn{
+    background:var(--panel);border:1px solid var(--line);
+    border-radius:6px;padding:8px 14px;cursor:pointer;
+    font-family:inherit;font-size:11px;letter-spacing:.1em;color:var(--dim);
+    transition:all .15s;
+  }
+  .btn:hover{color:var(--ink);border-color:rgba(20,40,80,.3)}
+  .btn:active{transform:scale(0.97)}
+
+  #legend{
+    position:fixed;bottom:14px;left:14px;right:14px;z-index:10;
+    background:var(--panel);border:1px solid var(--line);
+    padding:14px 18px;border-radius:10px;backdrop-filter:blur(10px);
+    font-size:11px;color:var(--dim);line-height:1.7;letter-spacing:.04em;
+    box-shadow:0 8px 24px rgba(20,40,80,.10);
+    display:grid;grid-template-columns:repeat(3,1fr);gap:18px;
+  }
+  #legend .axis-info{padding-left:14px;border-left:3px solid}
+  #legend .axis-info.pitch{border-color:var(--pitch)}
+  #legend .axis-info.roll{border-color:var(--roll)}
+  #legend .axis-info.yaw{border-color:var(--yaw)}
+  #legend .axis-info b{font-size:13px;display:block;margin-bottom:4px;letter-spacing:.1em}
+  #legend .axis-info.pitch b{color:var(--pitch)}
+  #legend .axis-info.roll  b{color:var(--roll)}
+  #legend .axis-info.yaw   b{color:var(--yaw)}
+  #legend .ang{font-size:14px;font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink);margin-top:4px;display:block}
+  kbd{background:rgba(20,40,80,.08);border:1px solid var(--line);
+    padding:1px 6px;border-radius:3px;color:var(--ink);font-size:10px;font-family:inherit}
+
+  #footer{
+    position:fixed;bottom:14px;right:14px;z-index:10;
+    font-size:10px;color:var(--sub);letter-spacing:.1em;
+    display:none;  /* hidden — legend takes the space */
+  }
+</style>
+</head>
+<body>
+  <div id="stage"></div>
+
+  <div id="title">◢ AIRCRAFT PRINCIPAL AXES · LIVE</div>
+
+  <div id="status-panel">
+    <h1>Stick Input</h1>
+    <div class="row pitch">
+      <span class="lab"><span class="dot"></span>Pitch</span>
+      <span class="val" id="pitch-val">+0.00</span>
+    </div>
+    <div class="bar"><i class="pitch" id="bar-pitch"></i></div>
+
+    <div class="row roll">
+      <span class="lab"><span class="dot"></span>Roll</span>
+      <span class="val" id="roll-val">+0.00</span>
+    </div>
+    <div class="bar"><i class="roll" id="bar-roll"></i></div>
+
+    <div class="row yaw">
+      <span class="lab"><span class="dot"></span>Yaw (twist)</span>
+      <span class="val" id="yaw-val">+0.00</span>
+    </div>
+    <div class="bar"><i class="yaw" id="bar-yaw"></i></div>
+
+    <div id="status">⏳ Waiting for joystick — keyboard works too</div>
+  </div>
+
+  <div id="controls">
+    <button class="btn" id="reset-btn">RECENTER (C)</button>
+    <button class="btn" id="view-btn">RESET VIEW</button>
+  </div>
+
+  <div id="legend">
+    <div class="axis-info pitch">
+      <b>PITCH</b>
+      Nose up / down · rotation around the lateral axis (wingtip-to-wingtip).
+      <span class="ang" id="ang-pitch">0°</span>
+    </div>
+    <div class="axis-info roll">
+      <b>ROLL</b>
+      Bank left / right · rotation around the longitudinal axis (nose-to-tail).
+      <span class="ang" id="ang-roll">0°</span>
+    </div>
+    <div class="axis-info yaw">
+      <b>YAW</b>
+      Nose left / right · rotation around the vertical axis (use stick twist).
+      <span class="ang" id="ang-yaw">0°</span>
+    </div>
+  </div>
+
+<script type="importmap">
+{ "imports": { "three": "https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.module.min.js" } }
+</script>
+<script type="module">
+import * as THREE from 'three';
+
+// ═══ INPUT FEEL (matches flight_sim_v12) ═══════════════════
+const DEADZONE = 0.18;
+const DEADZONE_YAW = 0.22;
+const EXPO = 2.5;
+const MAX_DEFLECT = 45 * Math.PI / 180;   // ±45° at full deflection
+const SMOOTH = 0.18;                      // visual smoothing factor
+
+// ═══ THREE.JS SETUP ═════════════════════════════════════════
+const stage = document.getElementById('stage');
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xf3f5f8);
+
+const camera = new THREE.PerspectiveCamera(40, innerWidth/innerHeight, 0.1, 100);
+
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.setClearColor(0xf3f5f8, 1);
+stage.appendChild(renderer.domElement);
+
+const sun = new THREE.DirectionalLight(0xffffff, 1.0);
+sun.position.set(5, 8, 5);
+scene.add(sun);
+scene.add(new THREE.AmbientLight(0xffffff, 0.65));
+scene.add(new THREE.HemisphereLight(0xb8d4e8, 0xddddd0, 0.4));
+
+// Light grid floor for spatial reference
+const grid = new THREE.GridHelper(20, 20, 0xcccccc, 0xeeeeee);
+grid.position.y = -3;
+scene.add(grid);
+
+// ═══ AIRCRAFT MODEL ═════════════════════════════════════════
+const plane = new THREE.Group();
+const matBody = new THREE.MeshStandardMaterial({color:0xc8c8c8, roughness:0.5, metalness:0.3});
+const matWing = new THREE.MeshStandardMaterial({color:0xa8a8a8, roughness:0.55, metalness:0.25});
+const matAccent = new THREE.MeshStandardMaterial({color:0x1a6db5, roughness:0.4, metalness:0.4});
+
+// Fuselage — nose along +X
+const fuselage = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.14, 4.6, 16), matBody);
+fuselage.rotation.z = Math.PI/2;
+plane.add(fuselage);
+
+// Nose cone
+const nose = new THREE.Mesh(new THREE.ConeGeometry(0.28, 0.7, 16), matBody);
+nose.rotation.z = -Math.PI/2;
+nose.position.x = 2.65;
+plane.add(nose);
+
+// Tail cone
+const tail = new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.4, 12), matBody);
+tail.rotation.z = Math.PI/2;
+tail.position.x = -2.5;
+plane.add(tail);
+
+// Main wing (wingtip to wingtip = ±Z)
+const wing = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.08, 5.4), matWing);
+wing.position.set(0.1, -0.05, 0);
+plane.add(wing);
+
+// Wingtip accents (red — easy to spot which side is which)
+[-2.5, 2.5].forEach(z => {
+  const tip = new THREE.Mesh(
+    new THREE.BoxGeometry(0.7, 0.085, 0.3),
+    new THREE.MeshStandardMaterial({color:0xD14520, roughness:0.5})
+  );
+  tip.position.set(0.1, -0.05, z);
+  plane.add(tip);
+});
+
+// Vertical stabilizer
+const vstab = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.7, 0.06), matWing);
+vstab.position.set(-1.95, 0.35, 0);
+plane.add(vstab);
+
+// Horizontal stabilizers
+const hstab = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.06, 1.6), matWing);
+hstab.position.set(-2.0, 0.05, 0);
+plane.add(hstab);
+
+// Cockpit canopy
+const canopy = new THREE.Mesh(
+  new THREE.SphereGeometry(0.32, 16, 10, 0, Math.PI*2, 0, Math.PI/2),
+  matAccent
+);
+canopy.position.set(0.6, 0.25, 0);
+canopy.scale.set(1.5, 0.7, 0.85);
+plane.add(canopy);
+
+scene.add(plane);
+
+// ═══ AXIS LINES, ARROWS, LABELS ═════════════════════════════
+const axisLength = 4.2;
+
+function makeAxisLine(color, dir){
+  const geom = new THREE.BufferGeometry();
+  const a = new THREE.Vector3().copy(dir).multiplyScalar(-axisLength);
+  const b = new THREE.Vector3().copy(dir).multiplyScalar(axisLength);
+  geom.setFromPoints([a, b]);
+  const mat = new THREE.LineDashedMaterial({color, dashSize:0.2, gapSize:0.14, transparent:true, opacity:0.85});
+  const line = new THREE.Line(geom, mat);
+  line.computeLineDistances();
+  return line;
+}
+
+const rollAxis  = makeAxisLine(0x185FA5, new THREE.Vector3(1,0,0));
+const pitchAxis = makeAxisLine(0xD14520, new THREE.Vector3(0,0,1));
+const yawAxis   = makeAxisLine(0x0F6E56, new THREE.Vector3(0,1,0));
+scene.add(rollAxis, pitchAxis, yawAxis);
+
+function makeArrowHead(color, position, dir){
+  const cone = new THREE.Mesh(
+    new THREE.ConeGeometry(0.15, 0.4, 12),
+    new THREE.MeshBasicMaterial({color})
+  );
+  cone.position.copy(position);
+  const up = new THREE.Vector3(0,1,0);
+  const target = new THREE.Vector3().copy(dir).normalize();
+  cone.quaternion.setFromUnitVectors(up, target);
+  return cone;
+}
+scene.add(makeArrowHead(0x185FA5, new THREE.Vector3(axisLength, 0, 0),  new THREE.Vector3(1,0,0)));
+scene.add(makeArrowHead(0xD14520, new THREE.Vector3(0, 0, axisLength),  new THREE.Vector3(0,0,1)));
+scene.add(makeArrowHead(0x0F6E56, new THREE.Vector3(0, axisLength, 0),  new THREE.Vector3(0,1,0)));
+
+function makeLabel(text, color){
+  const c = document.createElement('canvas');
+  c.width = 256; c.height = 96;
+  const g = c.getContext('2d');
+  g.font = '600 44px sans-serif';
+  g.fillStyle = color;
+  g.textAlign = 'center';
+  g.textBaseline = 'middle';
+  g.fillText(text, 128, 48);
+  const tex = new THREE.CanvasTexture(c);
+  tex.minFilter = THREE.LinearFilter;
+  const sprite = new THREE.Sprite(new THREE.SpriteMaterial({map:tex, transparent:true}));
+  sprite.scale.set(1.6, 0.5, 1);
+  return sprite;
+}
+const rollLabel  = makeLabel('Roll',  '#185FA5'); rollLabel.position.set(axisLength + 0.8, 0, 0); scene.add(rollLabel);
+const pitchLabel = makeLabel('Pitch', '#D14520'); pitchLabel.position.set(0, 0, axisLength + 0.8); scene.add(pitchLabel);
+const yawLabel   = makeLabel('Yaw',   '#0F6E56'); yawLabel.position.set(0, axisLength + 0.6, 0); scene.add(yawLabel);
+
+// ═══ CAMERA ORBIT (drag to rotate) ══════════════════════════
+let cameraTheta = Math.atan2(7, 9);
+let cameraPhi = Math.atan2(5, Math.hypot(7, 9));
+let cameraRadius = Math.hypot(7, 5, 9);
+
+function updateCamera(){
+  camera.position.x = cameraRadius * Math.cos(cameraPhi) * Math.sin(cameraTheta);
+  camera.position.y = cameraRadius * Math.sin(cameraPhi);
+  camera.position.z = cameraRadius * Math.cos(cameraPhi) * Math.cos(cameraTheta);
+  camera.lookAt(0, 0, 0);
+}
+updateCamera();
+
+let dragging = false, lastX = 0, lastY = 0;
+renderer.domElement.style.cursor = 'grab';
+renderer.domElement.addEventListener('pointerdown', e => {
+  dragging = true; lastX = e.clientX; lastY = e.clientY;
+  renderer.domElement.style.cursor = 'grabbing';
+  renderer.domElement.setPointerCapture(e.pointerId);
+});
+renderer.domElement.addEventListener('pointermove', e => {
+  if (!dragging) return;
+  const dx = e.clientX - lastX, dy = e.clientY - lastY;
+  lastX = e.clientX; lastY = e.clientY;
+  cameraTheta -= dx * 0.008;
+  cameraPhi = Math.max(-Math.PI/2 + 0.1, Math.min(Math.PI/2 - 0.1, cameraPhi + dy * 0.008));
+  updateCamera();
+});
+renderer.domElement.addEventListener('pointerup', () => {
+  dragging = false; renderer.domElement.style.cursor = 'grab';
+});
+addEventListener('wheel', e => {
+  cameraRadius = Math.max(5, Math.min(25, cameraRadius + e.deltaY * 0.01));
+  updateCamera();
+}, {passive:true});
+
+document.getElementById('view-btn').addEventListener('click', () => {
+  cameraTheta = Math.atan2(7, 9);
+  cameraPhi = Math.atan2(5, Math.hypot(7, 9));
+  cameraRadius = Math.hypot(7, 5, 9);
+  updateCamera();
+});
+
+// ═══ INPUT ═══════════════════════════════════════════════════
+function clean(raw, dz, invert){
+  let v = invert ? -raw : raw;
+  if (Math.abs(v) < dz) return 0;
+  v = (v - Math.sign(v)*dz) / (1 - dz);
+  v = Math.max(-1, Math.min(1, v));
+  const sign = Math.sign(v);
+  return sign * Math.pow(Math.abs(v), EXPO);
+}
+
+const center = {x:0, y:0, z:0};
+let calibrated = false, calibFrames = 0;
+const CALIB_NEEDED = 30;
+const calibAccum = {x:0, y:0, z:0};
+
+const keys = {pitchUp:false, pitchDn:false, rollL:false, rollR:false, yawL:false, yawR:false};
+const movementKeys = ['w','a','s','d','q','e','c'];
+addEventListener('keydown', e => {
+  const k = e.key.toLowerCase();
+  if (movementKeys.includes(k)) e.preventDefault();
+  if (k==='w') keys.pitchDn = true;
+  if (k==='s') keys.pitchUp = true;
+  if (k==='a') keys.rollL = true;
+  if (k==='d') keys.rollR = true;
+  if (k==='q') keys.yawL = true;
+  if (k==='e') keys.yawR = true;
+  if (k==='c') recenter();
+});
+addEventListener('keyup', e => {
+  const k = e.key.toLowerCase();
+  if (movementKeys.includes(k)) e.preventDefault();
+  if (k==='w') keys.pitchDn = false;
+  if (k==='s') keys.pitchUp = false;
+  if (k==='a') keys.rollL = false;
+  if (k==='d') keys.rollR = false;
+  if (k==='q') keys.yawL = false;
+  if (k==='e') keys.yawR = false;
+});
+
+const status = document.getElementById('status');
+
+addEventListener('gamepadconnected', e => {
+  status.textContent = '⏳ Calibrating ' + e.gamepad.id;
+  status.className = '';
+  calibrated = false; calibFrames = 0;
+  calibAccum.x = calibAccum.y = calibAccum.z = 0;
+});
+addEventListener('gamepaddisconnected', () => {
+  status.textContent = '✗ Joystick disconnected — keyboard still works';
+  status.className = 'error';
+});
+
+function recenter(){
+  const pads = navigator.getGamepads ? navigator.getGamepads() : [];
+  for (const p of pads){
+    if (!p) continue;
+    center.x = p.axes[0] ?? 0;
+    center.y = p.axes[1] ?? 0;
+    let yawRaw = p.axes[2];
+    if (yawRaw === undefined || yawRaw === null) yawRaw = p.axes[3] ?? 0;
+    center.z = yawRaw ?? 0;
+    calibrated = true;
+    status.textContent = '✓ Re-centered · ' + p.id;
+    status.className = 'connected';
+    return;
+  }
+}
+
+document.getElementById('reset-btn').addEventListener('click', recenter);
+
+function readControls(){
+  let pitch = (keys.pitchUp?1:0) + (keys.pitchDn?-1:0);
+  let roll  = (keys.rollR?1:0)   + (keys.rollL?-1:0);
+  let yaw   = (keys.yawR?1:0)    + (keys.yawL?-1:0);
+
+  const pads = navigator.getGamepads ? navigator.getGamepads() : [];
+  for (const p of pads){
+    if (!p) continue;
+
+    const rawX = p.axes[0] ?? 0;
+    const rawY = p.axes[1] ?? 0;
+    let rawZ = p.axes[2];
+    if (rawZ === undefined || rawZ === null) rawZ = p.axes[3] ?? 0;
+    rawZ = rawZ ?? 0;
+
+    if (!calibrated){
+      calibAccum.x += rawX; calibAccum.y += rawY; calibAccum.z += rawZ;
+      calibFrames++;
+      if (calibFrames >= CALIB_NEEDED){
+        center.x = calibAccum.x / calibFrames;
+        center.y = calibAccum.y / calibFrames;
+        center.z = calibAccum.z / calibFrames;
+        calibrated = true;
+        status.textContent = '✓ Connected · ' + p.id;
+        status.className = 'connected';
+      }
+      break;
+    }
+
+    // Standard joystick mapping:
+    //   axes[0] X = roll  (stick left/right)
+    //   axes[1] Y = pitch (stick fwd/back)
+    //   Yaw = stick twist (Rz axis): clockwise twist → right turn
+    const jRoll  = clean(rawX - center.x, DEADZONE, false);
+    const jPitch = clean(rawY - center.y, DEADZONE, false);
+    const jYaw   = clean(rawZ - center.z, DEADZONE_YAW, false);
+    pitch = Math.max(-1, Math.min(1, pitch + jPitch));
+    roll  = Math.max(-1, Math.min(1, roll  + jRoll));
+    yaw   = Math.max(-1, Math.min(1, yaw   + jYaw));
+    break;
+  }
+
+  return {pitch, roll, yaw};
+}
+
+// ═══ HUD REFS ════════════════════════════════════════════════
+const pitchValEl = document.getElementById('pitch-val');
+const rollValEl = document.getElementById('roll-val');
+const yawValEl = document.getElementById('yaw-val');
+const barPitch = document.getElementById('bar-pitch');
+const barRoll = document.getElementById('bar-roll');
+const barYaw = document.getElementById('bar-yaw');
+const angPitch = document.getElementById('ang-pitch');
+const angRoll = document.getElementById('ang-roll');
+const angYaw = document.getElementById('ang-yaw');
+
+function fmt(n){ return (n >= 0 ? '+' : '') + n.toFixed(2); }
+
+// ═══ ANIMATION LOOP ══════════════════════════════════════════
+let smoothPitch = 0, smoothRoll = 0, smoothYaw = 0;
+
+function tick(){
+  const {pitch, roll, yaw} = readControls();
+
+  smoothPitch += (pitch - smoothPitch) * SMOOTH;
+  smoothRoll  += (roll  - smoothRoll)  * SMOOTH;
+  smoothYaw   += (yaw   - smoothYaw)   * SMOOTH;
+
+  // Plane geometry: nose +X, wings ±Z, vertical Y
+  //   Pitch = around Z (lateral) — positive = nose up
+  //   Roll  = around X (longitudinal) — positive = right wing down
+  //   Yaw   = around Y (vertical) — clockwise from above = nose right
+  plane.rotation.set(0, 0, 0);
+  plane.rotation.order = 'YXZ';
+  plane.rotation.y = -smoothYaw * MAX_DEFLECT;
+  plane.rotation.z =  smoothPitch * MAX_DEFLECT;
+  plane.rotation.x =  smoothRoll * MAX_DEFLECT;
+
+  // HUD update
+  pitchValEl.textContent = fmt(pitch);
+  rollValEl.textContent  = fmt(roll);
+  yawValEl.textContent   = fmt(yaw);
+  barPitch.style.transform = `scaleX(${pitch * 100})`;
+  barRoll.style.transform  = `scaleX(${roll * 100})`;
+  barYaw.style.transform   = `scaleX(${yaw * 100})`;
+  angPitch.textContent = (smoothPitch * 45).toFixed(0) + '°';
+  angRoll.textContent  = (smoothRoll * 45).toFixed(0) + '°';
+  angYaw.textContent   = (smoothYaw * 45).toFixed(0) + '°';
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(tick);
+}
+tick();
+
+addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+</script>
+</body>
+</html>
