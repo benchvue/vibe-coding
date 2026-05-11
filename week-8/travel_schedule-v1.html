@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Travel Schedule — Switzerland & Italy 2026</title>
+<link rel="stylesheet" href="https://unpkg.com/[email protected]/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<script src="https://unpkg.com/[email protected]/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <style>
   body {
     font-family: 'Segoe UI', Tahoma, sans-serif;
@@ -326,6 +328,136 @@
   .detail-event.excursion .detail-event-icon { color: #8e44ad; }
   .detail-event.flight .detail-event-icon { color: #e67e22; }
   .detail-event.other .detail-event-icon { color: #2980b9; }
+  /* ===== Map modal ===== */
+  .map-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 2000;
+    padding: 24px;
+    box-sizing: border-box;
+  }
+  .map-modal-overlay.active { display: block; }
+  .map-modal {
+    background: #fff;
+    max-width: 1200px;
+    height: calc(100vh - 48px);
+    margin: 0 auto;
+    border-radius: 12px;
+    box-shadow: 0 12px 48px rgba(0,0,0,0.25);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .map-modal-header {
+    padding: 16px 24px;
+    border-bottom: 2px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .map-modal-title {
+    margin: 0;
+    font-size: 22px;
+    color: #222;
+  }
+  .map-modal-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .map-modal-actions a {
+    background: #f4f4f4;
+    border: 1px solid #ccc;
+    border-radius: 18px;
+    padding: 6px 14px;
+    font-size: 12px;
+    color: #444;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .map-modal-actions a:hover { background: #e8e8e8; }
+  .map-modal-close {
+    background: #f4f4f4;
+    border: 1px solid #ccc;
+    border-radius: 18px;
+    padding: 6px 14px;
+    font-size: 12px;
+    cursor: pointer;
+    color: #444;
+    font-weight: 500;
+  }
+  .map-modal-close:hover { background: #e8e8e8; }
+  .map-legend {
+    padding: 8px 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 12px;
+    color: #555;
+    border-bottom: 1px solid #f0f0f0;
+    background: #fafafa;
+  }
+  .map-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .map-legend-dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.3);
+  }
+  #map-canvas {
+    flex: 1;
+    width: 100%;
+    min-height: 400px;
+  }
+  /* Custom Leaflet pin */
+  .custom-pin {
+    width: 28px;
+    height: 36px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+  }
+  .custom-pin-body {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    line-height: 1;
+  }
+  .custom-pin-tip {
+    position: absolute;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 8px solid currentColor;
+  }
+  /* Leaflet popup styling */
+  .leaflet-popup-content {
+    margin: 10px 12px;
+    font-family: 'Inter', system-ui, sans-serif;
+    line-height: 1.4;
+  }
+  .leaflet-popup-content a {
+    color: #0066cc;
+    text-decoration: none;
+    font-size: 12px;
+  }
 </style>
 </head>
 <body>
@@ -340,6 +472,21 @@
   <div class="detail-modal" id="detail-modal-content">
     <button class="detail-modal-close" id="detail-modal-close-btn" onclick="closeDetail()">✕ 닫기</button>
     <div id="detail-modal-body"></div>
+  </div>
+</div>
+
+<!-- Map modal overlay -->
+<div id="map-modal-overlay" class="map-modal-overlay" onclick="closeMapIfBackdrop(event)">
+  <div class="map-modal" id="map-modal-content">
+    <div class="map-modal-header">
+      <h2 class="map-modal-title" id="map-modal-title">Map</h2>
+      <div class="map-modal-actions">
+        <a id="map-modal-google" href="#" target="_blank" rel="noopener">🌐 Google Maps</a>
+        <button class="map-modal-close" id="map-modal-close-btn" onclick="closeMapModal()">✕</button>
+      </div>
+    </div>
+    <div class="map-legend" id="map-legend"></div>
+    <div id="map-canvas"></div>
   </div>
 </div>
 
@@ -390,6 +537,24 @@ const placesData = {
       { en: 'Niederdorf — old town boutiques', ko: 'Niederdorf — 구시가지 부티크' },
       { en: 'Globus — department store', ko: 'Globus — 백화점' },
       { en: 'Sprüngli — Swiss chocolate', ko: 'Sprüngli — 스위스 초콜릿' }
+    ],
+    terminals: [
+      {
+        name: 'Zurich Airport (ZRH)',
+        name_ko: '취리히 공항 (ZRH)',
+        desc: 'Switzerland\'s main international airport. ⭐ 4.3. Quick 10-15 min train ride to Zurich HB. P3, P4, P5 arrive here 5/23. Open daily 4 AM-11 PM.',
+        desc_ko: '스위스의 주요 국제공항. ⭐ 4.3. 취리히 중앙역까지 기차로 10-15분. P3, P4, P5가 5/23에 여기 도착. 매일 오전 4시-오후 11시.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJfXVSQEJ1kEcRWHaIRtZ3a8Y',
+        image: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=400&h=300&fit=crop'
+      },
+      {
+        name: 'Zurich Hauptbahnhof (Zürich HB)',
+        name_ko: '취리히 중앙역 (Zürich HB)',
+        desc: 'Largest train station in Switzerland — stunning architecture, two-level shopping/dining. Hub for trains across Europe. Catch the 4:41 PM train to Interlaken from here.',
+        desc_ko: '스위스 최대 기차역 — 멋진 건축물, 2층 쇼핑/식당. 유럽 전역 기차 허브. 인터라켄행 16:41 기차를 여기서 탑승.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJQW4OzAgKkEcRp1KMX7aYxvU',
+        image: 'https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=400&h=300&fit=crop'
+      }
     ]
   },
   'Interlaken': {
@@ -516,6 +681,32 @@ const placesData = {
         desc_ko: '인터라켄 중심부의 환상적인 스위스 장인 치즈 상점. 다양한 지역 치즈 — 그뤼에르, 에멘탈, Gabelspitz 퐁듀 믹스, 라클렛 치즈. 와인, 가공육, 퐁듀 액세서리도 판매. ⭐ 4.7/5. ⚠️ 일 휴무.',
         link: 'https://www.google.com/maps/place/?q=place_id:ChIJdWHmppukj0cRfYqljOeRJS0',
         image: 'https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=400&h=300&fit=crop'
+      }
+    ],
+    terminals: [
+      {
+        name: 'Interlaken West Station',
+        name_ko: '인터라켄 베스트 (서역)',
+        desc: 'Smaller of the two Interlaken stations — in the heart of the city, very walkable. Single platform, no stairs. Convenient for Höheweg shopping. Boat dock for Lake Thun cruises nearby. ⭐ 4.4.',
+        desc_ko: '인터라켄의 두 역 중 작은 곳 — 시내 중심부, 걸어 다니기 편리. 단일 플랫폼, 계단 없음. Höheweg 쇼핑 거리에 편리. 툰 호수 유람선 선착장 근처. ⭐ 4.4.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJ0afqGZCkj0cRXtI2fB4YKv8',
+        image: 'https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=400&h=300&fit=crop'
+      },
+      {
+        name: 'Interlaken Ost Station',
+        name_ko: '인터라켄 오스트 (동역)',
+        desc: 'Main gateway to Jungfrau region — trains to Lauterbrunnen, Grindelwald, Jungfraujoch, Lucerne. Hotel Heart of Interlaken is here. Lake Brienz boat dock nearby. Trains depart for daily excursions (5/24-5/26). ⭐ 4.4.',
+        desc_ko: '융프라우 지역의 주요 관문 — 라우터브루넨, 그린델발트, 융프라우요흐, 루체른행 기차. Hotel Heart of Interlaken이 여기. 브리엔츠 호수 유람선 선착장 근처. 매일 일정의 기차가 여기서 출발 (5/24-5/26). ⭐ 4.4.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJF__xeGCjj0cR6cC5jsbvmRU',
+        image: 'https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=400&h=300&fit=crop'
+      },
+      {
+        name: 'Lungern Station',
+        name_ko: '룽게른역',
+        desc: 'Small scenic station on the Interlaken-Lucerne route. Walk down to the lake for the Hotel Restaurant Kaiserstuhl and sunset viewing on 5/25. ⭐ 4.7.',
+        desc_ko: '인터라켄-루체른 노선의 작은 풍경 좋은 역. 호수까지 걸어 내려가 Hotel Restaurant Kaiserstuhl과 5/25 일몰 감상. ⭐ 4.7.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJsahfyRKSj0cRJLac_fbPO5I',
+        image: 'https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=400&h=300&fit=crop'
       }
     ]
   },
@@ -653,6 +844,40 @@ const placesData = {
         link: 'https://www.google.com/maps/place/?q=place_id:ChIJWwt9-AOZj0cRVosded7KAV8',
         image: 'https://images.unsplash.com/photo-1481391319762-47dff72954d9?w=400&h=300&fit=crop'
       }
+    ],
+    terminals: [
+      {
+        name: 'Lauterbrunnen Station',
+        name_ko: '라우터브루넨역',
+        desc: 'Gateway to the Lauterbrunnen valley with 72 waterfalls. Connection point for Mürren, Gimmelwald, Schilthorn cable cars. ~30 min from Interlaken Ost. 5/27 valley tour day starts here. ⭐ 4.7.',
+        desc_ko: '72개 폭포가 있는 라우터브루넨 계곡의 관문. 뮈렌, 김멜발트, 쉴트호른 케이블카 환승지. 인터라켄 오스트에서 약 30분. 5/27 계곡 투어 시작점. ⭐ 4.7.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJr_xuBLehj0cRF1G9OEzFvWw',
+        image: 'https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=400&h=300&fit=crop'
+      },
+      {
+        name: 'Jungfraujoch — Top of Europe',
+        name_ko: '융프라우요흐 - 유럽의 정상',
+        desc: 'Highest railway station in Europe (3,454m), built deep inside a mountain beneath glaciers. The 5/26 destination. Wear winter clothing — temperature in minus. Bring sunglasses. Acclimatize for altitude. ⭐ 4.4.',
+        desc_ko: '유럽에서 가장 높은 기차역 (3,454m), 빙하 아래 산 깊숙이 건설. 5/26 목적지. 겨울 옷 착용 필수 — 영하 기온. 선글라스 지참. 고도 적응 시간 필요. ⭐ 4.4.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJISNLgyeej0cRkSxye45YaJw',
+        image: 'https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=400&h=300&fit=crop'
+      },
+      {
+        name: 'Spiez Station',
+        name_ko: '슈피츠역',
+        desc: 'Major transport hub in Bernese Oberland — connections to Interlaken, Bern, Brig, Zermatt. Lake Thun and Spiez Castle visible from station. Key transfer point on 5/25 (Spiez sightseeing) and 5/29 (Grindelwald→Milano route). ⭐ 4.5.',
+        desc_ko: '베르너 오버란트의 주요 교통 허브 — 인터라켄, 베른, 브리크, 체르마트 연결. 역에서 툰 호수와 슈피츠 성 보임. 5/25 (슈피츠 관광)과 5/29 (그린델발트→밀라노 노선)의 핵심 환승지. ⭐ 4.5.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJ3_FJRnyuj0cRENj0PA5DqJ0',
+        image: 'https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=400&h=300&fit=crop'
+      },
+      {
+        name: 'Brig Station',
+        name_ko: '브리크역',
+        desc: 'Major Swiss transfer station — gateway between Switzerland and Italy via the Simplon Tunnel. Last Swiss transfer point on 5/29 before Milano Centrale (15:41 → 17:50). Open 24 hours. ⭐ 4.4.',
+        desc_ko: '주요 스위스 환승역 — 심플론 터널을 통해 스위스와 이탈리아 사이의 관문. 5/29 밀라노 중앙역 가기 전 마지막 스위스 환승지 (15:41 → 17:50). 24시간 운영. ⭐ 4.4.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJ35XHhtFuj0cRRKIZGnXiy2c',
+        image: 'https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=400&h=300&fit=crop'
+      }
     ]
   },
   'Milano': {
@@ -710,6 +935,34 @@ const placesData = {
         desc_ko: '두오모 근처의 아름다운 초콜릿·젤라토 카페. 멋진 프레젠테이션, 마시멜로 핫 초콜릿, 레이어드 젤라토 콘, 프리미엄 초콜릿. 매일 오전 8시-오후 11시. ⭐ 4.4/5 (리뷰 9,687개).',
         link: 'https://www.google.com/maps/place/?q=place_id:ChIJ_8oKaK7GhkcRnrGHAR4a0W8',
         image: 'https://images.unsplash.com/photo-1481391319762-47dff72954d9?w=400&h=300&fit=crop'
+      }
+    ],
+    pasta: [
+      {
+        name: '🍝 Via Pasteria - Daniele Crespi',
+        name_ko: '🍝 Via Pasteria - Daniele Crespi',
+        desc: 'Pasta from different regions of Italy — fresh handmade pasta with rich textures. Carbonara, Sardinian gnocchetta, aglio e olio. Open daily 12-10:30 PM. Polyglot staff. Save room for tiramisu. ⭐ 4.8/5 (6,479 reviews).',
+        desc_ko: '이탈리아 각 지역의 파스타 — 풍부한 식감의 신선한 수제 파스타. 카르보나라, 사르데냐식 뇨케타, 알리오 에 올리오. 매일 12시-22:30 영업. 다국어 직원. 티라미수도 꼭 시도. ⭐ 4.8/5 (리뷰 6,479개).',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJsaKEAjXDhkcRb7zCr6IRCXI',
+        image: 'https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=400&h=300&fit=crop'
+      },
+      {
+        name: '🍝 Gloria Osteria Milano',
+        name_ko: '🍝 Gloria Osteria 밀라노',
+        desc: 'Modern Italian luxury — stunning beautiful décor. Perfectly executed cacio e pepe, juicy steak filet, lemon meringue pie to die for. Brera district. Excellent wine, attentive service. ⭐ 4.8/5 (10,581 reviews). Reservations recommended.',
+        desc_ko: '모던 이탈리아 럭셔리 — 멋진 인테리어. 완벽하게 만든 카치오 에 페페, 육즙 가득한 스테이크 필레, 일품 레몬 머랭 파이. 브레라 지구. 훌륭한 와인, 세심한 서비스. ⭐ 4.8/5 (리뷰 10,581개). 예약 권장.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJ1Uy5okrBhkcRBrw9t2Rrd58',
+        image: 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=400&h=300&fit=crop'
+      }
+    ],
+    terminals: [
+      {
+        name: 'Milano Centrale Station',
+        name_ko: '밀라노 중앙역',
+        desc: 'One of Europe\'s most stunning train stations — 1931 Art Deco masterpiece with marble halls and intricate carvings. Arrival point on 5/29 from Brig (17:50), departure point on 5/31 to Firenze (13:10). ⭐ 4.2 (12,053 reviews).',
+        desc_ko: '유럽에서 가장 멋진 기차역 중 하나 — 1931년 아르 데코 걸작, 대리석 홀과 정교한 조각. 5/29 브리크에서 도착 (17:50), 5/31 피렌체로 출발 (13:10). ⭐ 4.2 (리뷰 12,053개).',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJQ1j3T8XGhkcRKs-XGhSxJiI',
+        image: 'https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=400&h=300&fit=crop'
       }
     ]
   },
@@ -845,6 +1098,34 @@ const placesData = {
         link: 'https://www.google.com/maps/place/?q=place_id:ChIJgyEg8FRRKhMRoPcs9NiGQf8',
         image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=300&fit=crop'
       }
+    ],
+    pasta: [
+      {
+        name: '🍝 Cacio & Pepe (Via Martelli)',
+        name_ko: '🍝 Cacio & Pepe (Via Martelli)',
+        desc: 'The namesake dish is exceptional — perfectly executed cacio e pepe with pici pasta and deep pecorino flavor. Also try the gnocchi a la arrabbiata (off-menu request!) and gnocchi a la sorrentina. Limoncello on the house. ⭐ 4.8/5.',
+        desc_ko: '동명의 요리가 압권 — 피치 파스타와 깊은 페코리노 풍미의 완벽한 카치오 에 페페. 그리고 뇨키 아라비아타(메뉴에 없으니 요청!) 와 뇨키 소렌티나도 시도. 리몬첼로 서비스. ⭐ 4.8/5.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJpYLnYe5VKhMRwkJW8J571g0',
+        image: 'https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=400&h=300&fit=crop'
+      },
+      {
+        name: '🍝 Trattoria Dalloste',
+        name_ko: '🍝 Trattoria Dalloste',
+        desc: 'Florentine steak temple but their truffle pasta and pici are also outstanding. Antipasti like crostini Toscani (chicken liver pâté, ragù, etc.) are a beautiful intro. Borgo S. Lorenzo. ⭐ 4.7/5 (27,937 reviews). Reservation recommended.',
+        desc_ko: '피렌체 스테이크의 성지이지만 트러플 파스타와 피치도 탁월. 크로스티니 토스카니(닭간 파테, 라구 등) 등의 안티파스토는 멋진 시작. Borgo S. Lorenzo. ⭐ 4.7/5 (리뷰 27,937개). 예약 권장.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJn5PAjZlVKhMRPD8-PTYWNXU',
+        image: 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=400&h=300&fit=crop'
+      }
+    ],
+    terminals: [
+      {
+        name: 'Firenze Santa Maria Novella (SMN)',
+        name_ko: '피렌체 산타 마리아 노벨라 (SMN)',
+        desc: 'Florence\'s main station — one of Italy\'s busiest (160,000+ daily passengers). 1935 building with glass-steel roof. Direct gateway to historic center, FH55 hotel just minutes away. Arrival on 5/31 from Milano (15:04), departure on 6/3 to Rome (19:33). ⭐ 4.1.',
+        desc_ko: '피렌체 메인 역 — 이탈리아에서 가장 붐비는 곳 중 하나 (일일 16만+). 1935년 건물, 유리·강철 지붕. 역사 중심부 직접 통하는 관문, FH55 호텔까지 몇 분. 5/31 밀라노에서 도착 (15:04), 6/3 로마로 출발 (19:33). ⭐ 4.1.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJiVAKEaVWKhMRKcPGvSboWBk',
+        image: 'https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=400&h=300&fit=crop'
+      }
     ]
   },
   'Rome': {
@@ -910,6 +1191,34 @@ const placesData = {
         desc_ko: '세계적으로 유명한 조각 피자(피자 알 탈리오 - 사각형, 무게로 판매). 독특한 맛 조합, 가볍고 바삭한 크러스트. 좌석 없음 — 외부에서 식사. 바티칸 근처 (호텔에서 약 15분). 야채 슬라이스 추천. ⭐ 4.1/5 (리뷰 13,986개 — 붐비지만 가치 있음).',
         link: 'https://www.google.com/maps/place/?q=place_id:ChIJr76feHtgLxMRSpUk8Ed4h24',
         image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=300&fit=crop'
+      }
+    ],
+    pasta: [
+      {
+        name: '🍝 Osteria da Fortunata',
+        name_ko: '🍝 Osteria da Fortunata',
+        desc: 'Famous for "the best carbonara on earth" — pasta made fresh by hand in the window. ~5 min walk from Eitch Borromini hotel. Also amazing oxtail pasta, amatriciana, tiramisu. Open daily 11:30 AM–12:30 AM. ⭐ 4.4/5 (30,924 reviews).',
+        desc_ko: '"세계 최고의 카르보나라" 명성 — 창가에서 손으로 직접 빚는 파스타. Eitch Borromini 호텔에서 도보 약 5분. 옥스테일 파스타, 아마트리치아나, 티라미수도 환상적. 매일 오전 11:30-자정 12:30. ⭐ 4.4/5 (리뷰 30,924개).',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJJ_LhjUVgLxMRiRPTJRtTk-M',
+        image: 'https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=400&h=300&fit=crop'
+      },
+      {
+        name: '🍝 Tonnarello (Trastevere)',
+        name_ko: '🍝 Tonnarello (트라스테베레)',
+        desc: 'Trastevere institution with massive following (104,000+ reviews, ⭐ 4.7). Outstanding carbonara, tonnarello with meatballs, lively atmosphere. Expect a 15-20 min queue but worth the wait. Open daily 11:30 AM–11 PM. Authentic Roman experience.',
+        desc_ko: '트라스테베레의 명소 — 104,000+ 리뷰, ⭐ 4.7. 환상적인 카르보나라, 미트볼 토나렐로, 활기찬 분위기. 15-20분 대기 예상되지만 기다릴 가치 있음. 매일 오전 11:30-오후 11시. 정통 로마 경험.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJVTkQgThgLxMRWM0saoiZzkA',
+        image: 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=400&h=300&fit=crop'
+      }
+    ],
+    terminals: [
+      {
+        name: 'Roma Tiburtina Station',
+        name_ko: '로마 티부르티나역',
+        desc: 'Modern high-tech Rome station with airport-vibe interior. Less crowded than Termini. High-speed connections to Florence, Naples, Milan. Arrival point on 6/3 from Firenze (20:59). ⭐ 3.9. ⚠️ Watch for pickpockets.',
+        desc_ko: '공항 같은 인테리어의 모던하고 첨단 기술 로마 역. 테르미니역보다 덜 혼잡. 피렌체, 나폴리, 밀라노 고속 연결. 6/3 피렌체에서 도착 (20:59). ⭐ 3.9. ⚠️ 소매치기 주의.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJRWIi_NdjLxMRQ3sizgc4s5E',
+        image: 'https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=400&h=300&fit=crop'
       }
     ]
   }
@@ -1020,8 +1329,16 @@ const schedule = [
     dates_ko: ['5/29 금','5/30 토'],
     days: 2,
     notes: [
-      { day: 0, time: '6:00 PM',  label: 'Check-in Hotel', label_ko: '호텔 체크인', type: 'checkin' },
+      { day: 0, time: '6:00 PM',  label: 'Check-in Hotel The Square', label_ko: 'Hotel The Square 체크인', type: 'checkin' },
+      { day: 0, time: '7:30 PM',  label: 'Walk to Navigli canals', label_ko: 'Navigli 운하 지역 이동', type: 'excursion' },
+      { day: 0, time: '8:00 PM',  label: 'Aperitivo + dinner along canals', label_ko: '아페리티보 + 운하변 저녁 식사' },
+      { day: 0, time: '10:30 PM', label: 'Return to hotel', label_ko: '호텔 복귀' },
+      { day: 1, time: '8:30 AM',  label: 'Duomo di Milano (interior + rooftop)', label_ko: '두오모 대성당 (내부 + 옥상 테라스)', type: 'excursion' },
+      { day: 1, time: '10:30 AM', label: 'Galleria Vittorio Emanuele II', label_ko: '갤러리아 비토리오 에마누엘레 2세', type: 'excursion' },
+      { day: 1, time: '11:30 AM', label: 'Lunch: risotto alla Milanese / ossobuco', label_ko: '점심: 리소토 알라 밀라네제 / 오소부코' },
       { day: 1, time: '12:00 PM', label: 'Checkout (Sun 5/31)', label_ko: '체크아웃 (일 5/31)', type: 'checkout' },
+      { day: 1, time: '2:00 PM',  label: 'Sforza Castle + Sempione Park', label_ko: '스포르체스코 성 + 셈피오네 공원', type: 'excursion' },
+      { day: 1, time: '4:00 PM',  label: 'Brera district stroll', label_ko: '브레라 거리 산책', type: 'excursion' },
       { day: 1, time: '2:55 PM',  label: 'P4-5 fly MIL → home (Sun 5/31)', label_ko: 'P4-5 밀라노 → 귀국 (일 5/31)', type: 'flight' }
     ]
   },
@@ -1075,7 +1392,7 @@ const schedule = [
 const COL_WIDTH = 115;
 const BLOCK_GAP = 95;
 const BLOCK_X_START = 70;
-const BLOCK_Y = 170;
+const BLOCK_Y = 220;
 const HOUR_TOP = 6;
 const HOUR_BOTTOM = 22;
 const HOUR_HEIGHT = 30;
@@ -1116,11 +1433,15 @@ const i18n = {
     shopping: 'Shopping',
     groceries: 'Groceries',
     specialties: 'Specialties',
+    pasta: 'Pasta',
+    terminal: 'Terminal',
     hotels: 'Hotel',
     restaurantsHeader: 'Restaurants',
     shoppingHeader: 'Shopping',
     groceriesHeader: 'Groceries',
     specialtiesHeader: 'Specialties',
+    pastaHeader: 'Pasta',
+    terminalHeader: 'Terminal',
     morePicks: (n) => `${n} picks — see tile view below ↓`,
     legend: {
       checkin: '✓ Check-in',
@@ -1140,6 +1461,7 @@ const i18n = {
     viewMap: 'View on map →',
     officialSite: 'Official site →',
     detailsBadge: 'Details',
+    mapBadge: 'Map',
     closeBtn: 'Close',
     arriveLabel: 'Arrival',
     departLabel: 'Departure'
@@ -1152,11 +1474,15 @@ const i18n = {
     shopping: '쇼핑',
     groceries: '식품점',
     specialties: '특별식',
+    pasta: '파스타',
+    terminal: '터미널',
     hotels: '호텔',
     restaurantsHeader: '음식점',
     shoppingHeader: '쇼핑',
     groceriesHeader: '식품점',
     specialtiesHeader: '특별식',
+    pastaHeader: '파스타',
+    terminalHeader: '터미널',
     morePicks: (n) => `${n}개 추천 — 아래 타일 보기 ↓`,
     legend: {
       checkin: '✓ 체크인',
@@ -1178,6 +1504,7 @@ const i18n = {
     viewMap: '지도에서 보기 →',
     officialSite: '공식 사이트 →',
     detailsBadge: '자세히',
+    mapBadge: '지도',
     closeBtn: '닫기',
     arriveLabel: '도착',
     departLabel: '출발'
@@ -1232,6 +1559,114 @@ const cityPalette = {
 function paletteFor(loc) {
   return cityPalette[loc] || { base: '#ffffff', zebra: ['#ffffff', '#f5f5f5'], laneA: 'rgba(0,0,0,0.04)', laneB: 'rgba(0,0,0,0.08)' };
 }
+
+// ===== Coordinates lookup: extract Google place_id from a maps URL, find [lat, lng] =====
+const coordsByPlaceId = {
+  // Zurich
+  'ChIJfXVSQEJ1kEcRWHaIRtZ3a8Y': [47.4617142, 8.5508599],     // Zurich Airport
+  'ChIJQW4OzAgKkEcRp1KMX7aYxvU': [47.3780356, 8.5403767],     // Zurich HB
+  // Interlaken
+  'ChIJ0afqGZCkj0cRXtI2fB4YKv8': [46.682665, 7.8515868],      // Interlaken West
+  'ChIJF__xeGCjj0cR6cC5jsbvmRU': [46.6904314, 7.869051],      // Interlaken Ost
+  'ChIJsahfyRKSj0cRJLac_fbPO5I': [46.7863475, 8.1635323],     // Lungern station
+  'ChIJ-1UViGCjj0cRbKT1IcChKa4': [46.6873, 7.8694],           // Coop Interlaken Ost (approx)
+  'ChIJWYkJ_Y-kj0cRD_tcqJZHa60': [46.685, 7.856],             // Migros Interlaken
+  'ChIJAQDAdGijj0cRI4k0It2ljFw': [46.683, 7.851],             // ALDI Interlaken
+  'ChIJ3yVbspukj0cRd0H62JirdVo': [46.6859704, 7.8549294],     // Funky Chocolate
+  'ChIJdWHmppukj0cRfYqljOeRJS0': [46.6842535, 7.8570825],     // Chäs Fritz
+  'ChIJr9QTVfKWj0cRECGi9jNiW1s': [46.755, 8.038],             // Steinbock Brienz
+  'ChIJzd_iSACXj0cR8CFCIpnzgA4': [46.751, 8.040],             // Walz Wine Cafe Brienz
+  'ChIJYzXd2nKTj0cRaCrsQm7d-BE': [46.786, 8.158],             // Kaiserstuhl Lungernsee
+  'ChIJh2HKMm2Sj0cRZysV6Tl1VRg': [46.788, 8.163],             // Bahnhöfli Lungern
+  'ChIJ-ROAFyWSj0cRGrvpNzUbLb4': [46.776, 8.196],             // Cantina Caverna
+  // Grindelwald
+  'ChIJr_xuBLehj0cRF1G9OEzFvWw': [46.5984189, 7.9080885],     // Lauterbrunnen station
+  'ChIJISNLgyeej0cRkSxye45YaJw': [46.547468, 7.982085],       // Jungfraujoch
+  'ChIJ3_FJRnyuj0cRENj0PA5DqJ0': [46.6866561, 7.6799274],     // Spiez station
+  'ChIJ35XHhtFuj0cRRKIZGnXiy2c': [46.319452, 7.9881232],      // Brig station
+  'ChIJ3YQYxiSZj0cRVBn3u9CG9HY': [46.6245007, 8.0343837],     // Swiss Chocolate Chalet
+  'ChIJWwt9-AOZj0cRVosded7KAV8': [46.62468, 8.0189868],       // Lindt Grindelwald
+  'ChIJextEgauej0cRGv7eOIpL9c0': [46.6184804, 8.0291325],     // Eigermilch
+  'ChIJxYfZjFWZj0cRU12KXy7w1Bg': [46.624, 8.035],             // Coop Grindelwald
+  'ChIJ80ZBVP6bj0cRCeRARAhNgmE': [46.622, 8.033],             // VOI Grindelwald
+  'ChIJO1VvhPWZj0cR30xZkI9DXM8': [46.628, 8.035],             // Chalet Carve hotel
+  'ChIJtXo__Vibj0cRXv0NpXsmnSg': [46.624, 8.034],             // Restaurant Pinte
+  'ChIJ9aAn27Wej0cRW0WURgrB3CI': [46.625, 8.040],             // Stallbeizli Heuboden
+  'ChIJ5d3MT_6bj0cR6imJg1DfLDA': [46.624, 8.035],             // Hirschen
+  'ChIJ89MgKfqbj0cRW9mn5EUQ0U4': [46.624, 8.030],             // Fiescherblick
+  'ChIJeS5DIlOZj0cR6R3Z-bqvCs4': [46.623, 8.034],             // 1910 Hausers
+  'ChIJxd5EDWyZj0cRHZ5-JzdfebM': [46.624, 8.034],             // Glacier
+  'ChIJN4PJJ_6bj0cRP9y69-gMsTM': [46.624, 8.034],             // Barry's
+  'ChIJOcSSC1SZj0cR5NvpmUOSkGQ': [46.624, 8.034],             // Onkel Tom's
+  'ChIJs7OeT_2bj0cR3mRJr4ga_xg': [46.624, 8.035],             // Café 3692
+  // Milano
+  'ChIJQ1j3T8XGhkcRKs-XGhSxJiI': [45.487137, 9.204822],       // Milano Centrale
+  'ChIJvZrqeqnGhkcR3vPZgptLlhI': [45.464, 9.190],             // Hotel The Square
+  'ChIJ49FuRq7GhkcRFRAAacn5qPU': [45.466, 9.190],             // La Rinascente
+  'ChIJzZsK8MPHhkcRyglQukFAzOs': [45.465, 9.189],             // Giusti
+  'ChIJv4rBRxrBhkcRd2O8P6NvypI': [45.472, 9.187],             // laESSE
+  'ChIJH_gyYqzGhkcRe6BjXrAbilY': [45.4637013, 9.1868304],     // Ciacco
+  'ChIJ_8oKaK7GhkcRnrGHAR4a0W8': [45.465787, 9.191412],       // Cioccolatitaliani
+  'ChIJsaKEAjXDhkcRb7zCr6IRCXI': [45.4569032, 9.1734745],     // Via Pasteria Crespi
+  'ChIJ1Uy5okrBhkcRBrw9t2Rrd58': [45.471816, 9.1834434],      // Gloria Osteria
+  // Firenze
+  'ChIJiVAKEaVWKhMRKcPGvSboWBk': [43.7766715, 11.2479159],    // Firenze SMN
+  'ChIJ3VyxAAFUKhMRFKC_06cNqUc': [43.770, 11.255],            // FH55
+  'ChIJT6FJRAFUKhMRZKAvNWasLs4': [43.773, 11.254],            // Pegna
+  'ChIJowAaZwBUKhMRyyZHbcRZUa0': [43.768, 11.256],            // Alimentari Uffizi
+  'ChIJScSLTyRVKhMRbF_yMjGZ85Q': [43.769, 11.255],            // SchiacciaMatta
+  'ChIJg6kOnalWKhMRs-D-wrDp7a0': [43.7699351, 11.2600892],    // Vivoli
+  'ChIJgyEg8FRRKhMRoPcs9NiGQf8': [43.766499, 11.2487],        // Gustapizza
+  'ChIJpYLnYe5VKhMRwkJW8J571g0': [43.7742773, 11.2557663],    // Cacio & Pepe
+  'ChIJn5PAjZlVKhMRPD8-PTYWNXU': [43.7741946, 11.2547378],    // Trattoria Dalloste
+  'ChIJoScB0AJUKhMRO8uE_Tl8zn0': [43.7763546, 11.2544485],    // Trattoria Zà Zà (not in our data but might help)
+  // Rome
+  'ChIJRWIi_NdjLxMRQ3sizgc4s5E': [41.9108193, 12.5308661],    // Roma Tiburtina
+  'ChIJd8jCVUVgLxMR4nw75MhqRkc': [41.899, 12.473],            // Eitch Borromini
+  'ChIJGbpKSkVgLxMRbWsQMqX_myI': [41.899, 12.471],            // Antica Bottega Ruggeri
+  'ChIJv7LkTV5gLxMRBEUnhwi7rvU': [41.907, 12.465],            // Castroni
+  'ChIJzeFj-C1gLxMRoIn__UbjP2I': [41.881, 12.476],            // Volpetti
+  'ChIJkWu2F0VgLxMRTxb3BAW44A0': [41.8982333, 12.4704548],    // Frigidarium
+  'ChIJe3P6nFFgLxMRB4GPokAKYTg': [41.9010245, 12.4772026],    // Giolitti
+  'ChIJr76feHtgLxMRSpUk8Ed4h24': [41.9066758, 12.4466709],    // Bonci Pizzarium
+  'ChIJJ_LhjUVgLxMRiRPTJRtTk-M': [41.8961166, 12.4716707],    // Osteria da Fortunata
+  'ChIJVTkQgThgLxMRWM0saoiZzkA': [41.889804, 12.4693004],     // Tonnarello
+};
+
+// Extract place_id from a Google Maps URL
+function extractPlaceId(url) {
+  if (!url) return null;
+  const m = url.match(/place_id:([A-Za-z0-9_-]+)/);
+  return m ? m[1] : null;
+}
+
+// Get [lat, lng] for an item, returns null if unknown
+function getCoords(item) {
+  if (!item) return null;
+  if (item.lat !== undefined && item.lng !== undefined) return [item.lat, item.lng];
+  const pid = extractPlaceId(item.link);
+  return pid ? coordsByPlaceId[pid] : null;
+}
+
+// City center coords (map default view)
+const cityCenters = {
+  'Zurich':      [47.378, 8.541],
+  'Interlaken':  [46.686, 7.860],
+  'Grindelwald': [46.624, 8.034],
+  'Milano':      [45.466, 9.190],
+  'Firenze':     [43.770, 11.255],
+  'Rome':        [41.899, 12.471]
+};
+
+// Category styles (pin color + label)
+const categoryStyles = {
+  hotel:       { color: '#d35400', emoji: '🏨', label_en: 'Hotel',       label_ko: '호텔' },
+  restaurant:  { color: '#c0392b', emoji: '🍽️', label_en: 'Restaurant', label_ko: '음식점' },
+  grocery:     { color: '#16a085', emoji: '🛒', label_en: 'Grocery',     label_ko: '식품점' },
+  specialty:   { color: '#8e44ad', emoji: '🍫', label_en: 'Specialty',   label_ko: '특별식' },
+  pasta:       { color: '#b8860b', emoji: '🍝', label_en: 'Pasta',       label_ko: '파스타' },
+  terminal:    { color: '#2980b9', emoji: '🚆', label_en: 'Terminal',    label_ko: '터미널' }
+};
 
 function buildDiagram() {
   // Clear existing SVG content (keep <defs>)
@@ -1299,37 +1734,34 @@ blocks.forEach((b) => {
     svg.appendChild(dateLabel);
   }
 
-  const locLabel = createEl('text', {
-    x: b.x + b.width/2, y: b.y - 100,
-    'text-anchor': 'middle',
-    'font-size': 17, 'font-weight': 'bold', fill: '#222'
-  });
-  locLabel.textContent = L(b, 'location');
-  svg.appendChild(locLabel);
-
-  const hotelLabel = createEl('text', {
-    x: b.x + b.width/2, y: b.y - 84,
-    'text-anchor': 'middle',
-    'font-size': 11, 'font-style': 'italic', fill: '#777'
-  });
-  hotelLabel.textContent = L(b, 'hotel');
-  svg.appendChild(hotelLabel);
-
-  const peopleLabel = createEl('text', {
-    x: b.x + b.width/2, y: b.y - 68,
-    'text-anchor': 'middle',
-    'font-size': 10, fill: '#999'
-  });
-  peopleLabel.textContent = b.people.join(', ');
-  svg.appendChild(peopleLabel);
-
-  // ===== "Details" badge: clickable, opens fullscreen modal =====
+  // Estimate location label text width
+  const locText = L(b, 'location');
+  const locFontPx = currentLang === 'ko' ? 16 : 10;
+  const locTextWidth = locText.length * locFontPx;
   const badgeLabel = T().detailsBadge;
   const badgeW = currentLang === 'ko' ? 52 : 60;
   const badgeH = 18;
-  const badgeX = b.x + b.width/2 - badgeW/2;
-  const badgeY = b.y - 30;
+  const mapBadgeLabel = T().mapBadge;
+  const mapBadgeW = currentLang === 'ko' ? 48 : 52;
+  const gap = 8;
 
+  // Calculate combined width and center the trio (city name + details badge + map badge)
+  const combinedW = locTextWidth + gap + badgeW + gap + mapBadgeW;
+  const pairStartX = b.x + b.width/2 - combinedW/2;
+  const locCenterX = pairStartX + locTextWidth/2;
+  const badgeX = pairStartX + locTextWidth + gap;
+  const mapBadgeX = badgeX + badgeW + gap;
+
+  const locLabel = createEl('text', {
+    x: locCenterX, y: b.y - 100,
+    'text-anchor': 'middle',
+    'font-size': 17, 'font-weight': 'bold', fill: '#222'
+  });
+  locLabel.textContent = locText;
+  svg.appendChild(locLabel);
+
+  // ===== "Details" badge =====
+  const badgeY = b.y - 113;
   const badgeRect = createEl('rect', {
     x: badgeX, y: badgeY,
     width: badgeW, height: badgeH,
@@ -1349,6 +1781,43 @@ blocks.forEach((b) => {
   });
   badgeText.textContent = '🔍 ' + badgeLabel;
   svg.appendChild(badgeText);
+
+  // ===== "Map" badge =====
+  const mapBadgeRect = createEl('rect', {
+    x: mapBadgeX, y: badgeY,
+    width: mapBadgeW, height: badgeH,
+    fill: '#e6f3fb', stroke: '#2980b9',
+    'stroke-width': 1.2, rx: 9,
+    style: 'cursor: pointer;',
+    'data-map-block': b.idx,
+    'class': 'map-badge'
+  });
+  svg.appendChild(mapBadgeRect);
+
+  const mapBadgeText = createEl('text', {
+    x: mapBadgeX + mapBadgeW/2, y: badgeY + 13,
+    'text-anchor': 'middle',
+    'font-size': 10, 'font-weight': 'bold', fill: '#1e6091',
+    style: 'cursor: pointer; pointer-events: none;'
+  });
+  mapBadgeText.textContent = '🗺️ ' + mapBadgeLabel;
+  svg.appendChild(mapBadgeText);
+
+  const hotelLabel = createEl('text', {
+    x: b.x + b.width/2, y: b.y - 84,
+    'text-anchor': 'middle',
+    'font-size': 11, 'font-style': 'italic', fill: '#777'
+  });
+  hotelLabel.textContent = L(b, 'hotel');
+  svg.appendChild(hotelLabel);
+
+  const peopleLabel = createEl('text', {
+    x: b.x + b.width/2, y: b.y - 68,
+    'text-anchor': 'middle',
+    'font-size': 10, fill: '#999'
+  });
+  peopleLabel.textContent = b.people.join(', ');
+  svg.appendChild(peopleLabel);
 
   const palette = paletteFor(b.location);
 
@@ -1424,11 +1893,7 @@ blocks.forEach((b) => {
     }));
   });
 
-  // ===== Tab badges (Schedule / Restaurants / Shopping) =====
-  // Place them between people row and date row, above the block
-  const tabY = b.y - 48;
-  const tabH = 18;
-  const tabGap = 4;
+  // ===== Tab badges (Schedule / Restaurants / Shopping / ...) =====
   // Build tab list - only include groceries/specialties tab if data exists
   const cityPlaces = placesData[b.location] || {};
   const tabs = [
@@ -1442,17 +1907,39 @@ blocks.forEach((b) => {
   if (cityPlaces.specialties && cityPlaces.specialties.length > 0) {
     tabs.push({ id: 'specialties', label: T().specialties });
   }
+  if (cityPlaces.pasta && cityPlaces.pasta.length > 0) {
+    tabs.push({ id: 'pasta', label: T().pasta });
+  }
+  if (cityPlaces.terminals && cityPlaces.terminals.length > 0) {
+    tabs.push({ id: 'terminal', label: T().terminal });
+  }
 
-  // Calculate tab widths so all 3 fit within block width
-  const totalTabSpace = b.width - (tabs.length - 1) * tabGap;
-  const tabW = Math.max(60, totalTabSpace / tabs.length);
+  // ===== Tab badges in 2-row grid (max 3 tabs per row) =====
+  const tabsPerRow = 3;
+  const tabH = 18;
+  const tabGap = 4;
+  const rowGap = 3;
+  const totalRows = Math.ceil(tabs.length / tabsPerRow);
+  // Tabs go ABOVE the city title to keep title+badge+hotel+people visible
+  const tabGridHeight = totalRows * tabH + (totalRows - 1) * rowGap;
+  const tabY = b.y - 120 - tabGridHeight; // title is at b.y - 100, leave 20px gap
 
+  // Each row may have different number of tabs (last row may have fewer)
+  // Tab width per row: divide block width across the tabs in that row
   tabs.forEach((tab, ti) => {
-    const tx = b.x + ti * (tabW + tabGap);
+    const rowIdx = Math.floor(ti / tabsPerRow);
+    const colIdx = ti % tabsPerRow;
+    // How many tabs in this row?
+    const tabsInThisRow = Math.min(tabsPerRow, tabs.length - rowIdx * tabsPerRow);
+    const rowTotalSpace = b.width - (tabsInThisRow - 1) * tabGap;
+    const tabW = Math.max(50, rowTotalSpace / tabsInThisRow);
+
+    const tx = b.x + colIdx * (tabW + tabGap);
+    const ty = tabY + rowIdx * (tabH + rowGap);
     const isActive = tab.id === 'schedule';
 
     const tabRect = createEl('rect', {
-      x: tx, y: tabY,
+      x: tx, y: ty,
       width: tabW, height: tabH,
       fill: isActive ? '#222' : '#fff',
       stroke: '#444',
@@ -1464,10 +1951,11 @@ blocks.forEach((b) => {
     });
     svg.appendChild(tabRect);
 
+    const tabFontSize = tabW < 55 ? 8.5 : (tabW < 70 ? 9.5 : 10);
     const tabText = createEl('text', {
-      x: tx + tabW/2, y: tabY + 13,
+      x: tx + tabW/2, y: ty + 13,
       'text-anchor': 'middle',
-      'font-size': 10,
+      'font-size': tabFontSize,
       'font-weight': isActive ? 'bold' : 'normal',
       fill: isActive ? '#fff' : '#444',
       'class': 'tab-text',
@@ -1522,6 +2010,24 @@ blocks.forEach((b) => {
     style: 'display: none;'
   });
   svg.appendChild(specialtiesGroup);
+
+  // ===== Pasta view group (hidden by default) =====
+  const pastaGroup = createEl('g', {
+    id: `pasta-${b.idx}`,
+    'data-block': b.idx,
+    'data-view': 'pasta',
+    style: 'display: none;'
+  });
+  svg.appendChild(pastaGroup);
+
+  // ===== Terminal view group (hidden by default) =====
+  const terminalGroup = createEl('g', {
+    id: `terminal-${b.idx}`,
+    'data-block': b.idx,
+    'data-view': 'terminal',
+    style: 'display: none;'
+  });
+  svg.appendChild(terminalGroup);
 
   for (let d = 1; d < b.days; d++) {
     const sepX = b.x + d * COL_WIDTH;
@@ -1939,7 +2445,6 @@ blocks.forEach((b) => {
     specialtiesHeader.textContent = T().specialtiesHeader;
     specialtiesGroup.appendChild(specialtiesHeader);
 
-    // Hint to look at the gallery below
     const specialtiesHint = createEl('text', {
       x: b.x + b.width/2, y: b.y + 50,
       'text-anchor': 'middle',
@@ -1948,7 +2453,6 @@ blocks.forEach((b) => {
     specialtiesHint.textContent = T().morePicks(places.specialties.length);
     specialtiesGroup.appendChild(specialtiesHint);
 
-    // Compact name list
     places.specialties.forEach((s, i) => {
       const sy = b.y + 75 + i * 18;
       if (sy > b.y + b.height - 20) return;
@@ -1965,6 +2469,80 @@ blocks.forEach((b) => {
       tt.textContent = sname;
       txt.appendChild(tt);
       specialtiesGroup.appendChild(txt);
+    });
+  }
+
+  // ===== Populate Pasta group =====
+  if (places.pasta && places.pasta.length > 0) {
+    const pastaHeader = createEl('text', {
+      x: b.x + b.width/2, y: b.y + 26,
+      'text-anchor': 'middle',
+      'font-size': 12, 'font-weight': 'bold', fill: '#b8860b'
+    });
+    pastaHeader.textContent = T().pastaHeader;
+    pastaGroup.appendChild(pastaHeader);
+
+    const pastaHint = createEl('text', {
+      x: b.x + b.width/2, y: b.y + 50,
+      'text-anchor': 'middle',
+      'font-size': 10, fill: '#666'
+    });
+    pastaHint.textContent = T().morePicks(places.pasta.length);
+    pastaGroup.appendChild(pastaHint);
+
+    places.pasta.forEach((p, i) => {
+      const py = b.y + 75 + i * 18;
+      if (py > b.y + b.height - 20) return;
+      const txt = createEl('text', {
+        x: b.x + 10, y: py,
+        'font-size': 9, fill: '#444'
+      });
+      const pname = (currentLang === 'ko' && p.name_ko) ? p.name_ko : p.name;
+      const charPx = currentLang === 'ko' ? 9.5 : 5;
+      const maxChars = Math.floor((b.width - 18) / charPx);
+      const numbered = `${i+1}. ${pname}`;
+      txt.textContent = numbered.length > maxChars ? numbered.substring(0, maxChars - 1) + '…' : numbered;
+      const tt = createEl('title');
+      tt.textContent = pname;
+      txt.appendChild(tt);
+      pastaGroup.appendChild(txt);
+    });
+  }
+
+  // ===== Populate Terminal group =====
+  if (places.terminals && places.terminals.length > 0) {
+    const terminalHeader = createEl('text', {
+      x: b.x + b.width/2, y: b.y + 26,
+      'text-anchor': 'middle',
+      'font-size': 12, 'font-weight': 'bold', fill: '#2980b9'
+    });
+    terminalHeader.textContent = T().terminalHeader;
+    terminalGroup.appendChild(terminalHeader);
+
+    const terminalHint = createEl('text', {
+      x: b.x + b.width/2, y: b.y + 50,
+      'text-anchor': 'middle',
+      'font-size': 10, fill: '#666'
+    });
+    terminalHint.textContent = T().morePicks(places.terminals.length);
+    terminalGroup.appendChild(terminalHint);
+
+    places.terminals.forEach((tm, i) => {
+      const ty = b.y + 75 + i * 18;
+      if (ty > b.y + b.height - 20) return;
+      const txt = createEl('text', {
+        x: b.x + 10, y: ty,
+        'font-size': 9, fill: '#444'
+      });
+      const tname = (currentLang === 'ko' && tm.name_ko) ? tm.name_ko : tm.name;
+      const charPx = currentLang === 'ko' ? 9.5 : 5;
+      const maxChars = Math.floor((b.width - 18) / charPx);
+      const numbered = `${i+1}. ${tname}`;
+      txt.textContent = numbered.length > maxChars ? numbered.substring(0, maxChars - 1) + '…' : numbered;
+      const tt = createEl('title');
+      tt.textContent = tname;
+      txt.appendChild(tt);
+      terminalGroup.appendChild(txt);
     });
   }
 });
@@ -2094,7 +2672,6 @@ blocks.forEach(b => {
   `;
   const tilesDiv = gallery.querySelector('.rest-tiles');
 
-  // Insert hotel card just before the tiles
   const hotelCard = buildHotelCard(b);
   if (hotelCard && tilesDiv) {
     gallery.insertBefore(hotelCard, tilesDiv);
@@ -2114,6 +2691,92 @@ blocks.forEach(b => {
         <div class="rest-tile-name"><span class="num">${i+1}</span>${sname}</div>
         <div class="rest-tile-desc">${sdesc}</div>
         <a href="${s.link}" target="_blank" rel="noopener" class="rest-tile-link">📍 ${T().viewMap}</a>${websiteLink}
+      </div>
+    `;
+    tilesDiv.appendChild(tile);
+  });
+
+  galleryContainer.appendChild(gallery);
+});
+
+// ===== Build HTML pasta galleries =====
+blocks.forEach(b => {
+  const places = placesData[b.location];
+  if (!places || !places.pasta || !places.pasta.length) return;
+
+  const gallery = document.createElement('div');
+  gallery.className = 'rest-gallery';
+  gallery.id = `pasta-gallery-${b.idx}`;
+
+  gallery.innerHTML = `
+    <h2>${currentLang === 'ko' ? L(b, 'location') + ' 파스타' : 'Pasta in ' + L(b, 'location')}</h2>
+    <div class="gallery-sub">${T().gallerySub(places.pasta.length)}</div>
+    <div class="rest-tiles"></div>
+  `;
+  const tilesDiv = gallery.querySelector('.rest-tiles');
+
+  const hotelCard = buildHotelCard(b);
+  if (hotelCard && tilesDiv) {
+    gallery.insertBefore(hotelCard, tilesDiv);
+  }
+
+  places.pasta.forEach((p, i) => {
+    const tile = document.createElement('div');
+    tile.className = 'rest-tile';
+    const pname = (currentLang === 'ko' && p.name_ko) ? p.name_ko : p.name;
+    const pdesc = (currentLang === 'ko' && p.desc_ko) ? p.desc_ko : p.desc;
+    const websiteLink = p.website
+      ? `<a href="${p.website}" target="_blank" rel="noopener" class="rest-tile-link" style="margin-left: 12px;">🌐 ${T().officialSite}</a>`
+      : '';
+    tile.innerHTML = `
+      <div class="rest-tile-img" style="background-image: url('${p.image}');"></div>
+      <div class="rest-tile-body">
+        <div class="rest-tile-name"><span class="num">${i+1}</span>${pname}</div>
+        <div class="rest-tile-desc">${pdesc}</div>
+        <a href="${p.link}" target="_blank" rel="noopener" class="rest-tile-link">📍 ${T().viewMap}</a>${websiteLink}
+      </div>
+    `;
+    tilesDiv.appendChild(tile);
+  });
+
+  galleryContainer.appendChild(gallery);
+});
+
+// ===== Build HTML terminal galleries =====
+blocks.forEach(b => {
+  const places = placesData[b.location];
+  if (!places || !places.terminals || !places.terminals.length) return;
+
+  const gallery = document.createElement('div');
+  gallery.className = 'rest-gallery';
+  gallery.id = `terminal-gallery-${b.idx}`;
+
+  gallery.innerHTML = `
+    <h2>${currentLang === 'ko' ? L(b, 'location') + ' 터미널' : 'Terminals in ' + L(b, 'location')}</h2>
+    <div class="gallery-sub">${T().gallerySub(places.terminals.length)}</div>
+    <div class="rest-tiles"></div>
+  `;
+  const tilesDiv = gallery.querySelector('.rest-tiles');
+
+  const hotelCard = buildHotelCard(b);
+  if (hotelCard && tilesDiv) {
+    gallery.insertBefore(hotelCard, tilesDiv);
+  }
+
+  places.terminals.forEach((tm, i) => {
+    const tile = document.createElement('div');
+    tile.className = 'rest-tile';
+    const tname = (currentLang === 'ko' && tm.name_ko) ? tm.name_ko : tm.name;
+    const tdesc = (currentLang === 'ko' && tm.desc_ko) ? tm.desc_ko : tm.desc;
+    const websiteLink = tm.website
+      ? `<a href="${tm.website}" target="_blank" rel="noopener" class="rest-tile-link" style="margin-left: 12px;">🌐 ${T().officialSite}</a>`
+      : '';
+    tile.innerHTML = `
+      <div class="rest-tile-img" style="background-image: url('${tm.image}');"></div>
+      <div class="rest-tile-body">
+        <div class="rest-tile-name"><span class="num">${i+1}</span>${tname}</div>
+        <div class="rest-tile-desc">${tdesc}</div>
+        <a href="${tm.link}" target="_blank" rel="noopener" class="rest-tile-link">📍 ${T().viewMap}</a>${websiteLink}
       </div>
     `;
     tilesDiv.appendChild(tile);
@@ -2483,7 +3146,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     const tabId = btn.getAttribute('data-tab');
 
     // Hide all view groups for this block
-    ['schedule','restaurants','shopping','groceries','specialties'].forEach(v => {
+    ['schedule','restaurants','shopping','groceries','specialties','pasta','terminal'].forEach(v => {
       const g = document.getElementById(`${v}-${blockIdx}`);
       if (g) g.style.display = (v === tabId) ? '' : 'none';
     });
@@ -2509,6 +3172,20 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
       else specGallery.classList.remove('active');
     }
 
+    // Toggle the HTML pasta gallery (only shows on Pasta tab)
+    const pastaGallery = document.getElementById(`pasta-gallery-${blockIdx}`);
+    if (pastaGallery) {
+      if (tabId === 'pasta') pastaGallery.classList.add('active');
+      else pastaGallery.classList.remove('active');
+    }
+
+    // Toggle the HTML terminal gallery (only shows on Terminal tab)
+    const termGallery = document.getElementById(`terminal-gallery-${blockIdx}`);
+    if (termGallery) {
+      if (tabId === 'terminal') termGallery.classList.add('active');
+      else termGallery.classList.remove('active');
+    }
+
     // Update tab visuals
     document.querySelectorAll(`.tab-btn[data-block="${blockIdx}"]`).forEach(t => {
       const isActive = t.getAttribute('data-tab') === tabId;
@@ -2527,6 +3204,14 @@ document.querySelectorAll('.detail-badge').forEach(badge => {
   badge.addEventListener('click', e => {
     const idx = parseInt(badge.getAttribute('data-detail-block'), 10);
     openDetail(idx);
+  });
+});
+
+// ===== Map badge click handlers =====
+document.querySelectorAll('.map-badge').forEach(badge => {
+  badge.addEventListener('click', e => {
+    const idx = parseInt(badge.getAttribute('data-map-block'), 10);
+    openMapModal(idx);
   });
 });
 
@@ -2721,8 +3406,157 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     const modal = document.getElementById('detail-modal-overlay');
     if (modal && modal.classList.contains('active')) closeDetail();
+    const mapModal = document.getElementById('map-modal-overlay');
+    if (mapModal && mapModal.classList.contains('active')) closeMapModal();
   }
 });
+
+// ===== Map modal =====
+let leafletMapInstance = null;
+
+function openMapModal(blockIdx) {
+  const modal = document.getElementById('map-modal-overlay');
+  modal.setAttribute('data-current-block', String(blockIdx));
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+  // Use setTimeout so the modal renders before Leaflet tries to size itself
+  setTimeout(() => renderMapModal(blockIdx), 50);
+}
+
+function closeMapModal() {
+  const modal = document.getElementById('map-modal-overlay');
+  modal.classList.remove('active');
+  document.body.style.overflow = '';
+  // Clean up the map so it can re-initialize next time
+  if (leafletMapInstance) {
+    leafletMapInstance.remove();
+    leafletMapInstance = null;
+  }
+}
+
+function closeMapIfBackdrop(event) {
+  if (event.target.id === 'map-modal-overlay') closeMapModal();
+}
+
+function renderMapModal(blockIdx) {
+  const block = schedule[blockIdx];
+  if (!block) return;
+  const places = placesData[block.location] || {};
+  const locName = L(block, 'location');
+
+  // Update title
+  document.getElementById('map-modal-title').textContent = `🗺️ ${locName}`;
+
+  // Collect all places with coords + category
+  const points = [];
+  function pushItems(arr, category) {
+    if (!arr) return;
+    arr.forEach(item => {
+      const coords = getCoords(item);
+      if (!coords) return; // skip items without known coords
+      const name = (currentLang === 'ko' && item.name_ko) ? item.name_ko : item.name;
+      const desc = (currentLang === 'ko' && item.desc_ko) ? item.desc_ko : (item.desc || '');
+      points.push({ coords, name, desc, link: item.link, category });
+    });
+  }
+  // Hotel goes first (from hotelInfo on schedule item)
+  if (block.hotelInfo) {
+    const coords = getCoords(block.hotelInfo);
+    if (coords) {
+      const hname = L(block, 'hotel');
+      const hdesc = (currentLang === 'ko' && block.hotelInfo.desc_ko) ? block.hotelInfo.desc_ko : block.hotelInfo.desc;
+      points.push({ coords, name: hname, desc: hdesc, link: block.hotelInfo.link, category: 'hotel' });
+    }
+  }
+  pushItems(places.restaurants,  'restaurant');
+  pushItems(places.groceries,    'grocery');
+  pushItems(places.specialties,  'specialty');
+  pushItems(places.pasta,        'pasta');
+  pushItems(places.terminals,    'terminal');
+
+  // Build legend (only show categories that have at least one pinned item)
+  const presentCats = new Set(points.map(p => p.category));
+  const legendDiv = document.getElementById('map-legend');
+  legendDiv.innerHTML = '';
+  Object.keys(categoryStyles).forEach(cat => {
+    if (!presentCats.has(cat)) return;
+    const s = categoryStyles[cat];
+    const item = document.createElement('span');
+    item.className = 'map-legend-item';
+    item.innerHTML = `<span class="map-legend-dot" style="background: ${s.color};"></span>${s.emoji} ${currentLang === 'ko' ? s.label_ko : s.label_en}`;
+    legendDiv.appendChild(item);
+  });
+
+  // Build Google Maps "search all" URL — opens a Google Maps search showing all points
+  // Use a multi-stop directions URL since Google Maps URLs API doesn't support multi-marker easily
+  const googleUrl = buildGoogleMapsUrl(locName, points);
+  document.getElementById('map-modal-google').href = googleUrl;
+
+  // Initialize Leaflet
+  if (leafletMapInstance) {
+    leafletMapInstance.remove();
+    leafletMapInstance = null;
+  }
+  const center = cityCenters[block.location] || [points[0]?.coords[0] || 0, points[0]?.coords[1] || 0];
+  leafletMapInstance = L.map('map-canvas', {
+    zoomControl: true,
+    scrollWheelZoom: true
+  }).setView(center, 14);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap'
+  }).addTo(leafletMapInstance);
+
+  // Add a custom pin per point
+  const markerBounds = [];
+  points.forEach((p, i) => {
+    const style = categoryStyles[p.category] || categoryStyles.restaurant;
+    const icon = L.divIcon({
+      className: 'custom-pin-wrapper',
+      html: `<div class="custom-pin" style="color: ${style.color};">
+               <div class="custom-pin-body" style="background: ${style.color}; color: #fff;">${style.emoji}</div>
+               <div class="custom-pin-tip"></div>
+             </div>`,
+      iconSize: [28, 36],
+      iconAnchor: [14, 36],
+      popupAnchor: [0, -32]
+    });
+    const marker = L.marker(p.coords, { icon }).addTo(leafletMapInstance);
+    const linkHtml = p.link ? `<br><a href="${p.link}" target="_blank" rel="noopener">📍 Google Maps</a>` : '';
+    const catLabel = currentLang === 'ko' ? style.label_ko : style.label_en;
+    marker.bindPopup(`
+      <div style="max-width: 260px;">
+        <div style="font-size: 10px; color: ${style.color}; font-weight: bold; text-transform: uppercase; margin-bottom: 4px;">${style.emoji} ${catLabel}</div>
+        <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px;">${p.name}</div>
+        ${p.desc ? `<div style="font-size: 12px; color: #555; line-height: 1.4;">${p.desc.length > 200 ? p.desc.substring(0, 200) + '…' : p.desc}</div>` : ''}
+        ${linkHtml}
+      </div>
+    `);
+    markerBounds.push(p.coords);
+  });
+
+  // Fit map to all markers
+  if (markerBounds.length > 1) {
+    leafletMapInstance.fitBounds(markerBounds, { padding: [40, 40] });
+  } else if (markerBounds.length === 1) {
+    leafletMapInstance.setView(markerBounds[0], 15);
+  }
+}
+
+// Build a Google Maps URL that opens a search for the city with all locations visible
+function buildGoogleMapsUrl(locName, points) {
+  // The most reliable Google Maps multi-marker approach is the "dir" (directions) URL.
+  // But that forces a route. A simpler approach: open a "search" URL centered on the city.
+  // For multiple custom markers, Google Maps doesn't offer a public ad-hoc URL.
+  // Fallback: just open Google Maps centered on the city.
+  if (points.length === 0) {
+    return `https://www.google.com/maps/search/${encodeURIComponent(locName)}`;
+  }
+  // Center the search on the average of all points
+  const avgLat = points.reduce((s, p) => s + p.coords[0], 0) / points.length;
+  const avgLng = points.reduce((s, p) => s + p.coords[1], 0) / points.length;
+  return `https://www.google.com/maps/search/${encodeURIComponent(locName)}/@${avgLat},${avgLng},14z`;
+}
 
 // Initial render (Korean is the default)
 buildDiagram();
