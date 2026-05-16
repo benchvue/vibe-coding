@@ -458,6 +458,115 @@
     text-decoration: none;
     font-size: 12px;
   }
+  /* ===== Weather cards ===== */
+  .weather-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .weather-stack-label {
+    font-size: 13px;
+    font-weight: bold;
+    color: #555;
+    margin-top: 10px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #e8e8e8;
+  }
+  .weather-card {
+    background: linear-gradient(135deg, #5b9bd5, #7eb6e8);
+    color: #fff;
+    border-radius: 14px;
+    padding: 16px 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  }
+  .weather-card-main {
+    background: linear-gradient(135deg, #3a7bd5, #5b9bd5);
+    padding: 20px 24px;
+  }
+  .weather-card-badgerow {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 6px;
+  }
+  .wx-badge {
+    font-size: 11px;
+    font-weight: bold;
+    padding: 3px 10px;
+    border-radius: 10px;
+    letter-spacing: 0.3px;
+  }
+  .wx-badge-live {
+    background: rgba(46, 204, 113, 0.25);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.5);
+  }
+  .wx-badge-avg {
+    background: rgba(255,255,255,0.18);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.35);
+  }
+  .weather-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .weather-card-name {
+    font-size: 20px;
+    font-weight: bold;
+  }
+  .weather-card-main .weather-card-name { font-size: 24px; }
+  .weather-card-cond {
+    font-size: 13px;
+    opacity: 0.95;
+    margin-top: 4px;
+  }
+  .weather-card-note {
+    font-size: 12px;
+    margin-top: 6px;
+    background: rgba(255,255,255,0.22);
+    padding: 3px 8px;
+    border-radius: 8px;
+    display: inline-block;
+  }
+  .weather-card-temp {
+    font-size: 40px;
+    font-weight: 200;
+    line-height: 1;
+    text-align: right;
+  }
+  .weather-card-main .weather-card-temp { font-size: 52px; }
+  .weather-card-hilo {
+    font-size: 12px;
+    opacity: 0.9;
+    text-align: right;
+    margin-top: 4px;
+  }
+  .weather-hourly {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255,255,255,0.25);
+  }
+  .weather-hour {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .wh-time { font-size: 12px; opacity: 0.9; }
+  .wh-icon { font-size: 18px; }
+  .wh-temp { font-size: 14px; font-weight: bold; }
+  .weather-card-sun {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255,255,255,0.25);
+    font-size: 12px;
+    opacity: 0.95;
+  }
 </style>
 </head>
 <body>
@@ -1497,7 +1606,7 @@ const schedule = [
 const COL_WIDTH = 115;
 const BLOCK_GAP = 95;
 const BLOCK_X_START = 70;
-const BLOCK_Y = 220;
+const BLOCK_Y = 260;
 const HOUR_TOP = 6;
 const HOUR_BOTTOM = 22;
 const HOUR_HEIGHT = 30;
@@ -1540,6 +1649,7 @@ const i18n = {
     specialties: 'Specialties',
     pasta: 'Pasta',
     terminal: 'Terminal',
+    weather: 'Weather',
     hotels: 'Hotel',
     restaurantsHeader: 'Restaurants',
     shoppingHeader: 'Shopping',
@@ -1547,6 +1657,7 @@ const i18n = {
     specialtiesHeader: 'Specialties',
     pastaHeader: 'Pasta',
     terminalHeader: 'Terminal',
+    weatherHeader: 'Weather',
     morePicks: (n) => `${n} picks — see tile view below ↓`,
     legend: {
       checkin: '✓ Check-in',
@@ -1581,6 +1692,7 @@ const i18n = {
     specialties: '특별식',
     pasta: '파스타',
     terminal: '터미널',
+    weather: '날씨',
     hotels: '호텔',
     restaurantsHeader: '음식점',
     shoppingHeader: '쇼핑',
@@ -1588,6 +1700,7 @@ const i18n = {
     specialtiesHeader: '특별식',
     pastaHeader: '파스타',
     terminalHeader: '터미널',
+    weatherHeader: '날씨',
     morePicks: (n) => `${n}개 추천 — 아래 타일 보기 ↓`,
     legend: {
       checkin: '✓ 체크인',
@@ -1771,6 +1884,97 @@ const cityCenters = {
   'Rome':        [41.899, 12.471]
 };
 
+// ===== Weather data (late-May climatology + sunrise/sunset + timezone) =====
+// Temps in °C. tzOffset = hours vs Korea (KST). hourly = representative day curve.
+const weatherData = {
+  'Zurich': {
+    main: {
+      name: 'Zurich', name_ko: '취리히', lat: 47.3769, lng: 8.5417,
+      cond: 'Partly Cloudy', cond_ko: '구름 조금', icon: '⛅',
+      now: 17, hi: 22, lo: 11,
+      sunrise: '05:38', sunset: '21:08', tzLabel: 'CEST (KST −7h)',
+      hourly: [['9AM',16,'☀️'],['12PM',20,'☀️'],['3PM',22,'⛅'],['6PM',19,'⛅'],['9PM',14,'☁️']]
+    },
+    stack: []
+  },
+  'Interlaken': {
+    main: {
+      name: 'Interlaken', name_ko: '인터라켄', lat: 46.6863, lng: 7.8632,
+      cond: 'Sunny', cond_ko: '맑음', icon: '☀️',
+      now: 16, hi: 19, lo: 8,
+      sunrise: '05:42', sunset: '21:10', tzLabel: 'CEST (KST −7h)',
+      hourly: [['9AM',13,'☀️'],['12PM',17,'☀️'],['3PM',19,'☀️'],['6PM',16,'⛅'],['9PM',11,'☁️']]
+    },
+    stack: [
+      {
+        name: 'Lungern', name_ko: '룽게른', lat: 46.7863, lng: 8.1574,
+        cond: 'Partly Cloudy', cond_ko: '구름 조금', icon: '⛅',
+        now: 15, hi: 17, lo: 7,
+        sunrise: '05:42', sunset: '21:00', tzLabel: 'CEST (KST −7h)',
+        hourly: [['9AM',12,'⛅'],['12PM',16,'☀️'],['3PM',17,'⛅'],['6PM',14,'☁️'],['9PM',9,'☁️']],
+        note: '5/25 sunset visit', note_ko: '5/25 일몰 방문지'
+      }
+    ]
+  },
+  'Grindelwald': {
+    main: {
+      name: 'Grindelwald', name_ko: '그린델발트', lat: 46.6242, lng: 8.0342,
+      cond: 'Partly Cloudy', cond_ko: '구름 조금', icon: '⛅',
+      now: 14, hi: 16, lo: 6,
+      sunrise: '05:45', sunset: '21:05', tzLabel: 'CEST (KST −7h)',
+      hourly: [['9AM',11,'⛅'],['12PM',15,'☀️'],['3PM',16,'⛅'],['6PM',13,'☁️'],['9PM',8,'☁️']]
+    },
+    stack: [
+      {
+        name: 'Jungfraujoch (3,454m)', name_ko: '융프라우요흐 (3,454m)', lat: 46.5475, lng: 7.9856,
+        cond: 'Snow / Freezing', cond_ko: '눈 / 영하', icon: '🌨️',
+        now: -5, hi: -2, lo: -8,
+        sunrise: '05:38', sunset: '21:12', tzLabel: 'CEST (KST −7h)',
+        hourly: [['9AM',-7,'🌨️'],['12PM',-3,'🌨️'],['3PM',-2,'⛅'],['6PM',-5,'🌨️'],['9PM',-8,'🌨️']],
+        note: '5/26 — dress for winter, sub-zero!', note_ko: '5/26 — 영하! 겨울 복장 필수'
+      },
+      {
+        name: 'Lauterbrunnen', name_ko: '라우터브루넨', lat: 46.5934, lng: 7.9085,
+        cond: 'Partly Cloudy', cond_ko: '구름 조금', icon: '⛅',
+        now: 13, hi: 16, lo: 4,
+        sunrise: '05:55', sunset: '20:54', tzLabel: 'CEST (KST −7h)',
+        hourly: [['9AM',9,'⛅'],['12PM',14,'☀️'],['3PM',16,'⛅'],['6PM',12,'☁️'],['9PM',6,'☁️']],
+        note: '5/27 valley hiking day', note_ko: '5/27 계곡 하이킹'
+      }
+    ]
+  },
+  'Milano': {
+    main: {
+      name: 'Milano', name_ko: '밀라노', lat: 45.4642, lng: 9.1900,
+      cond: 'Sunny', cond_ko: '맑음', icon: '☀️',
+      now: 24, hi: 27, lo: 15,
+      sunrise: '05:42', sunset: '20:53', tzLabel: 'CEST (KST −7h)',
+      hourly: [['9AM',20,'☀️'],['12PM',25,'☀️'],['3PM',27,'☀️'],['6PM',24,'☀️'],['9PM',19,'⛅']]
+    },
+    stack: []
+  },
+  'Firenze': {
+    main: {
+      name: 'Firenze', name_ko: '피렌체', lat: 43.7696, lng: 11.2558,
+      cond: 'Sunny', cond_ko: '맑음', icon: '☀️',
+      now: 26, hi: 29, lo: 15,
+      sunrise: '05:36', sunset: '20:42', tzLabel: 'CEST (KST −7h)',
+      hourly: [['9AM',22,'☀️'],['12PM',27,'☀️'],['3PM',29,'☀️'],['6PM',26,'☀️'],['9PM',21,'⛅']]
+    },
+    stack: []
+  },
+  'Rome': {
+    main: {
+      name: 'Rome', name_ko: '로마', lat: 41.8933, lng: 12.4829,
+      cond: 'Sunny', cond_ko: '맑음', icon: '☀️',
+      now: 25, hi: 28, lo: 16,
+      sunrise: '05:38', sunset: '20:36', tzLabel: 'CEST (KST −7h)',
+      hourly: [['9AM',21,'☀️'],['12PM',26,'☀️'],['3PM',28,'☀️'],['6PM',25,'☀️'],['9PM',21,'⛅']]
+    },
+    stack: []
+  }
+};
+
 // Category styles (pin color + label)
 const categoryStyles = {
   hotel:       { color: '#d35400', emoji: '🏨', label_en: 'Hotel',       label_ko: '호텔' },
@@ -1780,6 +1984,89 @@ const categoryStyles = {
   pasta:       { color: '#b8860b', emoji: '🍝', label_en: 'Pasta',       label_ko: '파스타' },
   terminal:    { color: '#2980b9', emoji: '🚆', label_en: 'Terminal',    label_ko: '터미널' }
 };
+
+// ===== Open-Meteo live weather (no API key / no signup) =====
+// WMO weather code → icon + condition text
+function wmoToIcon(code) {
+  if (code === 0) return { icon: '☀️', en: 'Clear', ko: '맑음' };
+  if (code === 1) return { icon: '🌤️', en: 'Mostly Clear', ko: '대체로 맑음' };
+  if (code === 2) return { icon: '⛅', en: 'Partly Cloudy', ko: '구름 조금' };
+  if (code === 3) return { icon: '☁️', en: 'Overcast', ko: '흐림' };
+  if (code === 45 || code === 48) return { icon: '🌫️', en: 'Fog', ko: '안개' };
+  if (code >= 51 && code <= 57) return { icon: '🌦️', en: 'Drizzle', ko: '이슬비' };
+  if (code >= 61 && code <= 67) return { icon: '🌧️', en: 'Rain', ko: '비' };
+  if (code >= 71 && code <= 77) return { icon: '🌨️', en: 'Snow', ko: '눈' };
+  if (code >= 80 && code <= 82) return { icon: '🌧️', en: 'Rain Showers', ko: '소나기' };
+  if (code >= 85 && code <= 86) return { icon: '🌨️', en: 'Snow Showers', ko: '눈 소나기' };
+  if (code >= 95) return { icon: '⛈️', en: 'Thunderstorm', ko: '뇌우' };
+  return { icon: '⛅', en: 'Mixed', ko: '대체로 흐림' };
+}
+
+// Fetch live weather for one location; updates the passed weather object in place.
+// Returns true on success, false on failure (caller keeps climatology fallback).
+async function fetchLiveWeather(w) {
+  if (w.lat === undefined || w.lng === undefined) return false;
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${w.lat}&longitude=${w.lng}`
+    + `&current=temperature_2m,weather_code`
+    + `&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset`
+    + `&hourly=temperature_2m,weather_code`
+    + `&timezone=auto&forecast_days=1`;
+  try {
+    const res = await fetch(url, { signal: AbortSignal.timeout ? AbortSignal.timeout(6000) : undefined });
+    if (!res.ok) return false;
+    const d = await res.json();
+    if (!d || !d.current) return false;
+
+    const wm = wmoToIcon(d.current.weather_code);
+    w.now = Math.round(d.current.temperature_2m);
+    w.icon = wm.icon;
+    w.cond = wm.en;
+    w.cond_ko = wm.ko;
+    if (d.daily) {
+      w.hi = Math.round(d.daily.temperature_2m_max[0]);
+      w.lo = Math.round(d.daily.temperature_2m_min[0]);
+      if (d.daily.sunrise && d.daily.sunrise[0]) w.sunrise = d.daily.sunrise[0].slice(11, 16);
+      if (d.daily.sunset && d.daily.sunset[0]) w.sunset = d.daily.sunset[0].slice(11, 16);
+    }
+    // Build an hourly curve at ~9AM,12PM,3PM,6PM,9PM local
+    if (d.hourly && d.hourly.time) {
+      const picks = [9, 12, 15, 18, 21];
+      const labels = ['9AM', '12PM', '3PM', '6PM', '9PM'];
+      const newHourly = [];
+      picks.forEach((hr, i) => {
+        // find index whose hour matches
+        const idx = d.hourly.time.findIndex(t => parseInt(t.slice(11, 13), 10) === hr);
+        if (idx >= 0) {
+          const hwm = wmoToIcon(d.hourly.weather_code[idx]);
+          newHourly.push([labels[i], Math.round(d.hourly.temperature_2m[idx]), hwm.icon]);
+        }
+      });
+      if (newHourly.length) w.hourly = newHourly;
+    }
+    w._live = true;
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+// Fetch all weather (main + stacked) for every city, then re-render galleries.
+let weatherLiveAttempted = false;
+async function refreshAllWeather() {
+  if (weatherLiveAttempted) return;
+  weatherLiveAttempted = true;
+  const jobs = [];
+  Object.keys(weatherData).forEach(city => {
+    const wx = weatherData[city];
+    if (wx.main) jobs.push(fetchLiveWeather(wx.main));
+    if (wx.stack) wx.stack.forEach(s => jobs.push(fetchLiveWeather(s)));
+  });
+  try {
+    await Promise.allSettled(jobs);
+  } catch (e) { /* ignore */ }
+  // Re-render everything (buildDiagram rebuilds weather galleries internally)
+  buildDiagram();
+}
 
 function buildDiagram() {
   // Clear existing SVG content (keep <defs>)
@@ -1847,34 +2134,113 @@ blocks.forEach((b) => {
     svg.appendChild(dateLabel);
   }
 
-  // Estimate location label text width
+  // ===== Build tab list FIRST (layout below needs tabs.length) =====
+  const cityPlaces = placesData[b.location] || {};
+  const tabs = [
+    { id: 'schedule',    label: T().schedule },
+    { id: 'restaurants', label: T().restaurants },
+    { id: 'shopping',    label: T().shopping }
+  ];
+  if (cityPlaces.groceries && cityPlaces.groceries.length > 0) {
+    tabs.push({ id: 'groceries', label: T().groceries });
+  }
+  if (cityPlaces.specialties && cityPlaces.specialties.length > 0) {
+    tabs.push({ id: 'specialties', label: T().specialties });
+  }
+  if (cityPlaces.pasta && cityPlaces.pasta.length > 0) {
+    tabs.push({ id: 'pasta', label: T().pasta });
+  }
+  if (cityPlaces.terminals && cityPlaces.terminals.length > 0) {
+    tabs.push({ id: 'terminal', label: T().terminal });
+  }
+  if (weatherData[b.location]) {
+    tabs.push({ id: 'weather', label: T().weather });
+  }
+
+  // ===== Compute layout: city title (top) → badges → tabs → hotel/people → block =====
+  const tabsPerRow = 3;
+  const tabH = 18;
+  const tabGap = 4;
+  const rowGap = 3;
+  const totalRows = Math.ceil(tabs.length / tabsPerRow);
+  const tabGridHeight = totalRows * tabH + (totalRows - 1) * rowGap;
+
+  // Vertical stack (going up from b.y):
+  //   hotel:   b.y - 84
+  //   people:  b.y - 68   (kept where they were)
+  //   tabs:    end at b.y - 100, height tabGridHeight
+  //   badges:  just above tabs
+  //   title:   above badges (TOP)
+  const tabBottomY = b.y - 100;
+  const tabY = tabBottomY - tabGridHeight;
+  const badgeRowY = tabY - 30;          // badges sit above the tab grid
+  const titleY = badgeRowY - 34;        // city name + local time (2 lines) above badges
+
+  // ----- Local time + day/night icon -----
+  // tzLabel like "CEST (KST −7h)" → offset hours vs Korea. We display the
+  // destination's local clock based on the viewer's current time.
+  const wxForCity = weatherData[b.location];
+  let localTimeStr = '';
+  let dayNightIcon = '';
+  if (wxForCity && wxForCity.main) {
+    // Europe (CEST) = KST − 7h = UTC + 2h. Compute destination local time.
+    const now = new Date();
+    const utcMs = now.getTime() + now.getTimezoneOffset() * 60000;
+    const destMs = utcMs + 2 * 3600000; // CEST = UTC+2
+    const dt = new Date(destMs);
+    let hh = dt.getHours();
+    const mm = dt.getMinutes();
+    const ampm = hh >= 12 ? 'PM' : 'AM';
+    let h12 = hh % 12; if (h12 === 0) h12 = 12;
+    localTimeStr = `${h12}:${String(mm).padStart(2, '0')} ${ampm}`;
+    // Day/night by sunrise/sunset of the main city
+    const sr = wxForCity.main.sunrise || '06:00';
+    const ss = wxForCity.main.sunset || '21:00';
+    const srMin = parseInt(sr.slice(0,2),10)*60 + parseInt(sr.slice(3,5),10);
+    const ssMin = parseInt(ss.slice(0,2),10)*60 + parseInt(ss.slice(3,5),10);
+    const nowMin = hh*60 + mm;
+    dayNightIcon = (nowMin >= srMin && nowMin < ssMin) ? '☀️' : '🌙';
+  }
+
+  // ----- City title + local time (TOP) -----
   const locText = L(b, 'location');
-  const locFontPx = currentLang === 'ko' ? 16 : 10;
-  const locTextWidth = locText.length * locFontPx;
+  const titleStr = dayNightIcon
+    ? `${locText}  ·  ${dayNightIcon} ${localTimeStr}`
+    : locText;
+  const locLabel = createEl('text', {
+    x: b.x + b.width/2, y: titleY,
+    'text-anchor': 'middle',
+    'dominant-baseline': 'middle',
+    'font-size': 18, 'font-weight': 'bold', fill: '#222'
+  });
+  locLabel.textContent = locText;
+  svg.appendChild(locLabel);
+
+  // local time as a second line right under the name (larger font)
+  if (localTimeStr) {
+    const localTimeLabel = createEl('text', {
+      x: b.x + b.width/2, y: titleY + 20,
+      'text-anchor': 'middle',
+      'dominant-baseline': 'middle',
+      'font-size': 13, 'font-weight': '600', fill: '#666'
+    });
+    localTimeLabel.textContent = `${dayNightIcon} ${localTimeStr} (${currentLang === 'ko' ? '현지' : 'local'})`;
+    svg.appendChild(localTimeLabel);
+  }
+
+  // ----- Badges row (Details + Map) just above the tabs -----
   const badgeLabel = T().detailsBadge;
   const badgeW = currentLang === 'ko' ? 52 : 60;
   const badgeH = 18;
   const mapBadgeLabel = T().mapBadge;
   const mapBadgeW = currentLang === 'ko' ? 48 : 52;
-  const gap = 8;
+  const bgap = 10;
+  const badgesTotalW = badgeW + bgap + mapBadgeW;
+  const badgesStartX = b.x + b.width/2 - badgesTotalW/2;
+  const badgeX = badgesStartX;
+  const mapBadgeX = badgesStartX + badgeW + bgap;
+  const badgeY = badgeRowY;
 
-  // Calculate combined width and center the trio (city name + details badge + map badge)
-  const combinedW = locTextWidth + gap + badgeW + gap + mapBadgeW;
-  const pairStartX = b.x + b.width/2 - combinedW/2;
-  const locCenterX = pairStartX + locTextWidth/2;
-  const badgeX = pairStartX + locTextWidth + gap;
-  const mapBadgeX = badgeX + badgeW + gap;
-
-  const locLabel = createEl('text', {
-    x: locCenterX, y: b.y - 100,
-    'text-anchor': 'middle',
-    'font-size': 17, 'font-weight': 'bold', fill: '#222'
-  });
-  locLabel.textContent = locText;
-  svg.appendChild(locLabel);
-
-  // ===== "Details" badge =====
-  const badgeY = b.y - 113;
   const badgeRect = createEl('rect', {
     x: badgeX, y: badgeY,
     width: badgeW, height: badgeH,
@@ -1895,7 +2261,6 @@ blocks.forEach((b) => {
   badgeText.textContent = '🔍 ' + badgeLabel;
   svg.appendChild(badgeText);
 
-  // ===== "Map" badge =====
   const mapBadgeRect = createEl('rect', {
     x: mapBadgeX, y: badgeY,
     width: mapBadgeW, height: badgeH,
@@ -1924,14 +2289,6 @@ blocks.forEach((b) => {
   hotelLabel.textContent = L(b, 'hotel');
   svg.appendChild(hotelLabel);
 
-  const peopleLabel = createEl('text', {
-    x: b.x + b.width/2, y: b.y - 68,
-    'text-anchor': 'middle',
-    'font-size': 10, fill: '#999'
-  });
-  peopleLabel.textContent = b.people.join(', ');
-  svg.appendChild(peopleLabel);
-
   const palette = paletteFor(b.location);
 
   // Clip path to keep zebra and lane fills inside the rounded block
@@ -1954,6 +2311,10 @@ blocks.forEach((b) => {
   });
   svg.appendChild(rect);
 
+  // Zebra + lane backgrounds go in a group so we can hide them on the Weather tab
+  const zebraGroup = createEl('g', { id: `zebra-${b.idx}` });
+  svg.appendChild(zebraGroup);
+
   // Zebra: alternating shades for each day column (clipped to rounded rect)
   for (let d = 0; d < b.days; d++) {
     if (d % 2 === 1) {  // only paint odd-indexed columns; even ones use the base
@@ -1963,7 +2324,7 @@ blocks.forEach((b) => {
         fill: palette.zebra[1],
         'clip-path': `url(#${clipId})`
       });
-      svg.appendChild(dayRect);
+      zebraGroup.appendChild(dayRect);
     }
   }
 
@@ -1991,14 +2352,14 @@ blocks.forEach((b) => {
     const dayX = b.x + d * COL_WIDTH;
     const half = COL_WIDTH / 2;
     // Left lane (team A) - subtle tint
-    svg.appendChild(createEl('rect', {
+    zebraGroup.appendChild(createEl('rect', {
       x: dayX, y: clampedStart,
       width: half, height: splitH,
       fill: palette.laneA,
       'clip-path': `url(#${clipId})`
     }));
     // Right lane (team B) - slightly stronger tint
-    svg.appendChild(createEl('rect', {
+    zebraGroup.appendChild(createEl('rect', {
       x: dayX + half, y: clampedStart,
       width: half, height: splitH,
       fill: palette.laneB,
@@ -2006,48 +2367,37 @@ blocks.forEach((b) => {
     }));
   });
 
-  // ===== Tab badges (Schedule / Restaurants / Shopping / ...) =====
-  // Build tab list - only include groceries/specialties tab if data exists
-  const cityPlaces = placesData[b.location] || {};
-  const tabs = [
-    { id: 'schedule',    label: T().schedule },
-    { id: 'restaurants', label: T().restaurants },
-    { id: 'shopping',    label: T().shopping }
-  ];
-  if (cityPlaces.groceries && cityPlaces.groceries.length > 0) {
-    tabs.push({ id: 'groceries', label: T().groceries });
-  }
-  if (cityPlaces.specialties && cityPlaces.specialties.length > 0) {
-    tabs.push({ id: 'specialties', label: T().specialties });
-  }
-  if (cityPlaces.pasta && cityPlaces.pasta.length > 0) {
-    tabs.push({ id: 'pasta', label: T().pasta });
-  }
-  if (cityPlaces.terminals && cityPlaces.terminals.length > 0) {
-    tabs.push({ id: 'terminal', label: T().terminal });
-  }
+  // Single-color overlay shown ONLY on the Weather tab (hides zebra confusion)
+  const weatherBg = createEl('rect', {
+    id: `weather-bg-${b.idx}`,
+    x: b.x, y: b.y,
+    width: b.width, height: b.height,
+    fill: palette.base, rx: 6,
+    'clip-path': `url(#${clipId})`,
+    style: 'display: none;'
+  });
+  svg.appendChild(weatherBg);
 
   // ===== Tab badges in 2-row grid (max 3 tabs per row) =====
-  const tabsPerRow = 3;
-  const tabH = 18;
-  const tabGap = 4;
-  const rowGap = 3;
-  const totalRows = Math.ceil(tabs.length / tabsPerRow);
-  // Tabs go ABOVE the city title to keep title+badge+hotel+people visible
-  const tabGridHeight = totalRows * tabH + (totalRows - 1) * rowGap;
-  const tabY = b.y - 120 - tabGridHeight; // title is at b.y - 100, leave 20px gap
+  // (tabs array + tabsPerRow, tabH, tabGap, rowGap, tabGridHeight, tabY all computed earlier)
 
   // Each row may have different number of tabs (last row may have fewer)
-  // Tab width per row: divide block width across the tabs in that row
+  // Tab row total width is CAPPED so wide blocks (4-day cities like Interlaken,
+  // Rome) don't stretch tabs across the whole block. We target ~Firenze width
+  // (3 days = 345px) and center the tab row horizontally inside the block.
+  const MAX_TAB_ROW_W = 3 * COL_WIDTH; // 345px — same as a 3-day block (Firenze)
+  const tabRowW = Math.min(b.width, MAX_TAB_ROW_W);
+  const tabRowStartX = b.x + (b.width - tabRowW) / 2; // horizontal center
+
   tabs.forEach((tab, ti) => {
     const rowIdx = Math.floor(ti / tabsPerRow);
     const colIdx = ti % tabsPerRow;
     // How many tabs in this row?
     const tabsInThisRow = Math.min(tabsPerRow, tabs.length - rowIdx * tabsPerRow);
-    const rowTotalSpace = b.width - (tabsInThisRow - 1) * tabGap;
+    const rowTotalSpace = tabRowW - (tabsInThisRow - 1) * tabGap;
     const tabW = Math.max(50, rowTotalSpace / tabsInThisRow);
 
-    const tx = b.x + colIdx * (tabW + tabGap);
+    const tx = tabRowStartX + colIdx * (tabW + tabGap);
     const ty = tabY + rowIdx * (tabH + rowGap);
     const isActive = tab.id === 'schedule';
 
@@ -2141,6 +2491,15 @@ blocks.forEach((b) => {
     style: 'display: none;'
   });
   svg.appendChild(terminalGroup);
+
+  // ===== Weather view group (hidden by default) =====
+  const weatherGroup = createEl('g', {
+    id: `weather-${b.idx}`,
+    'data-block': b.idx,
+    'data-view': 'weather',
+    style: 'display: none;'
+  });
+  svg.appendChild(weatherGroup);
 
   for (let d = 1; d < b.days; d++) {
     const sepX = b.x + d * COL_WIDTH;
@@ -2658,6 +3017,123 @@ blocks.forEach((b) => {
       terminalGroup.appendChild(txt);
     });
   }
+
+  // ===== Populate Weather group: main + ALL stacked locations as cards =====
+  const wx = weatherData[b.location];
+  if (wx) {
+    const cx = b.x + b.width/2;
+
+    // Header
+    const wHeader = createEl('text', {
+      x: cx, y: b.y + 22,
+      'text-anchor': 'middle',
+      'font-size': 12, 'font-weight': 'bold', fill: '#0077b6'
+    });
+    wHeader.textContent = T().weatherHeader;
+    weatherGroup.appendChild(wHeader);
+
+    // Build the list of locations to show: main first, then each stacked spot
+    const wxList = [wx.main].concat(wx.stack && wx.stack.length ? wx.stack : []);
+
+    // Card geometry — center a fixed-width card column inside the block
+    const cardW = Math.min(b.width - 24, 300);
+    const cardX = cx - cardW / 2;
+    const cardH = 96;
+    const cardGap = 12;
+    let cardY = b.y + 38;
+
+    wxList.forEach((w, wi) => {
+      const isMain = wi === 0;
+      // Card background
+      const card = createEl('rect', {
+        x: cardX, y: cardY,
+        width: cardW, height: cardH,
+        rx: 12,
+        fill: isMain ? '#3a7bd5' : '#5b9bd5',
+        stroke: 'rgba(255,255,255,0.4)', 'stroke-width': 1
+      });
+      weatherGroup.appendChild(card);
+
+      const pad = 14;
+      const lx = cardX + pad;          // left text anchor
+      const rx = cardX + cardW - pad;  // right text anchor
+
+      // Live / climatology badge (top-right)
+      const isLive = !!w._live;
+      const badgeTxt = isLive
+        ? (currentLang === 'ko' ? '🟢 실시간' : '🟢 LIVE')
+        : (currentLang === 'ko' ? '⚪ 평년값' : '⚪ AVG');
+      const badge = createEl('text', {
+        x: rx, y: cardY + 16,
+        'text-anchor': 'end',
+        'font-size': 8.5, 'font-weight': 'bold', fill: '#fff'
+      });
+      badge.textContent = badgeTxt;
+      weatherGroup.appendChild(badge);
+
+      // Location name (left)
+      const nm = createEl('text', {
+        x: lx, y: cardY + 26,
+        'font-size': isMain ? 13 : 12, 'font-weight': 'bold', fill: '#fff'
+      });
+      const nmText = currentLang === 'ko' ? (w.name_ko || w.name) : w.name;
+      const nmMax = Math.floor((cardW - 2*pad - 30) / (currentLang === 'ko' ? 12 : 7));
+      nm.textContent = nmText.length > nmMax ? nmText.substring(0, nmMax-1) + '…' : nmText;
+      const nmTitle = createEl('title'); nmTitle.textContent = nmText; nm.appendChild(nmTitle);
+      weatherGroup.appendChild(nm);
+
+      // Condition (left, under name)
+      const cond = createEl('text', {
+        x: lx, y: cardY + 44,
+        'font-size': 10, fill: 'rgba(255,255,255,0.95)'
+      });
+      cond.textContent = `${w.icon} ${currentLang === 'ko' ? (w.cond_ko||w.cond) : w.cond}`;
+      weatherGroup.appendChild(cond);
+
+      // Big temperature (right)
+      const temp = createEl('text', {
+        x: rx, y: cardY + 48,
+        'text-anchor': 'end',
+        'font-size': 30, 'font-weight': '300', fill: '#fff'
+      });
+      temp.textContent = `${w.now}°`;
+      weatherGroup.appendChild(temp);
+
+      // Hi / Lo (right, under temp)
+      const hilo = createEl('text', {
+        x: rx, y: cardY + 62,
+        'text-anchor': 'end',
+        'font-size': 9, fill: 'rgba(255,255,255,0.9)'
+      });
+      hilo.textContent = `H:${w.hi}°  L:${w.lo}°`;
+      weatherGroup.appendChild(hilo);
+
+      // Sunrise / sunset + timezone (bottom strip)
+      const sun = createEl('text', {
+        x: lx, y: cardY + 80,
+        'font-size': 9, fill: 'rgba(255,255,255,0.95)'
+      });
+      sun.textContent = `🌅 ${w.sunrise}   🌇 ${w.sunset}   🕐 ${w.tzLabel}`;
+      weatherGroup.appendChild(sun);
+
+      // Visit note (if any) — small line below
+      if (w.note || w.note_ko) {
+        const noteTxt = currentLang === 'ko' ? (w.note_ko || w.note) : w.note;
+        const noteEl = createEl('text', {
+          x: cx, y: cardY + cardH + 11,
+          'text-anchor': 'middle',
+          'font-size': 8.5, fill: '#c0392b', 'font-weight': 'bold'
+        });
+        const noteMax = Math.floor((cardW) / (currentLang === 'ko' ? 9 : 5));
+        noteEl.textContent = '⚠️ ' + (noteTxt.length > noteMax ? noteTxt.substring(0, noteMax-1)+'…' : noteTxt);
+        const ntt = createEl('title'); ntt.textContent = noteTxt; noteEl.appendChild(ntt);
+        weatherGroup.appendChild(noteEl);
+        cardY += cardH + cardGap + 8;
+      } else {
+        cardY += cardH + cardGap;
+      }
+    });
+  }
 });
 
 // ===== Build HTML restaurant galleries for blocks with rich restaurant data =====
@@ -2898,7 +3374,96 @@ blocks.forEach(b => {
   galleryContainer.appendChild(gallery);
 });
 
-// ===== Inject hotel cards into restaurant galleries too (Interlaken excluded since it has no hotelInfo) =====
+// ===== Build HTML weather galleries (iPhone-style cards + stacking) =====
+function rebuildWeatherGalleries() {
+  blocks.forEach(b => {
+    const wx = weatherData[b.location];
+    if (!wx) return;
+
+    // Remove existing gallery if present (so we can re-render after live fetch)
+    const existing = document.getElementById(`weather-gallery-${b.idx}`);
+    const wasActive = existing && existing.classList.contains('active');
+    if (existing) existing.remove();
+
+    const gallery = document.createElement('div');
+    gallery.className = 'rest-gallery' + (wasActive ? ' active' : '');
+    gallery.id = `weather-gallery-${b.idx}`;
+
+    // Is this city's data live or climatology fallback?
+    const anyLive = (wx.main && wx.main._live) || (wx.stack && wx.stack.some(s => s._live));
+    const sourceLabel = anyLive
+      ? (currentLang === 'ko' ? '🟢 실시간 (Open-Meteo)' : '🟢 Live (Open-Meteo)')
+      : (currentLang === 'ko' ? '⚪ 5월 말 평년값 (실시간 연결 안 됨)' : '⚪ Late-May average (live unavailable)');
+
+    const locName = L(b, 'location');
+    gallery.innerHTML = `
+      <h2>${currentLang === 'ko' ? locName + ' 날씨' : 'Weather in ' + locName}</h2>
+      <div class="gallery-sub">${sourceLabel} · ${currentLang === 'ko'
+        ? '현지 시간대 및 일출/일몰 포함'
+        : 'local timezone, sunrise & sunset'}</div>
+      <div class="weather-stack"></div>
+    `;
+    const stackDiv = gallery.querySelector('.weather-stack');
+
+    function weatherCard(w, isMain) {
+      const name = currentLang === 'ko' ? (w.name_ko || w.name) : w.name;
+      const cond = currentLang === 'ko' ? (w.cond_ko || w.cond) : w.cond;
+      const note = currentLang === 'ko' ? (w.note_ko || w.note) : w.note;
+      const card = document.createElement('div');
+      card.className = 'weather-card' + (isMain ? ' weather-card-main' : '');
+
+      // Per-card data-source badge
+      const isLive = !!w._live;
+      const badge = isLive
+        ? `<span class="wx-badge wx-badge-live">🟢 ${currentLang === 'ko' ? '실시간' : 'LIVE'}</span>`
+        : `<span class="wx-badge wx-badge-avg">⚪ ${currentLang === 'ko' ? '평년값' : 'AVG'}</span>`;
+
+      let hourlyHtml = '';
+      if (w.hourly && w.hourly.length) {
+        hourlyHtml = '<div class="weather-hourly">' + w.hourly.map(h =>
+          `<div class="weather-hour"><span class="wh-time">${h[0]}</span><span class="wh-icon">${h[2]}</span><span class="wh-temp">${h[1]}°</span></div>`
+        ).join('') + '</div>';
+      }
+
+      card.innerHTML = `
+        <div class="weather-card-badgerow">${badge}</div>
+        <div class="weather-card-top">
+          <div class="weather-card-left">
+            <div class="weather-card-name">${name}</div>
+            <div class="weather-card-cond">${w.icon} ${cond}</div>
+            ${note ? `<div class="weather-card-note">⚠️ ${note}</div>` : ''}
+          </div>
+          <div class="weather-card-right">
+            <div class="weather-card-temp">${w.now}°</div>
+            <div class="weather-card-hilo">H:${w.hi}° &nbsp; L:${w.lo}°</div>
+          </div>
+        </div>
+        ${hourlyHtml}
+        <div class="weather-card-sun">
+          <span>🌅 ${currentLang === 'ko' ? '일출' : 'Sunrise'}: <b>${w.sunrise}</b></span>
+          <span>🌇 ${currentLang === 'ko' ? '일몰' : 'Sunset'}: <b>${w.sunset}</b></span>
+          <span>🕐 ${w.tzLabel}</span>
+        </div>
+      `;
+      return card;
+    }
+
+    stackDiv.appendChild(weatherCard(wx.main, true));
+
+    if (wx.stack && wx.stack.length) {
+      const stackLabel = document.createElement('div');
+      stackLabel.className = 'weather-stack-label';
+      stackLabel.textContent = currentLang === 'ko'
+        ? '방문 지역 날씨'
+        : 'Weather at places you\'ll visit';
+      stackDiv.appendChild(stackLabel);
+      wx.stack.forEach(s => stackDiv.appendChild(weatherCard(s, true)));
+    }
+
+    galleryContainer.appendChild(gallery);
+  });
+}
+rebuildWeatherGalleries();
 blocks.forEach(b => {
   const restGallery = document.getElementById(`gallery-${b.idx}`);
   if (!restGallery) return;
@@ -3038,7 +3603,16 @@ for (let i = 0; i < blocks.length - 1; i++) {
     const boxH = hasLegs ? 32 + transitInfo.legs.length * 11 + 6 : 32;
     const midY = (outY + inY) / 2 - boxH/2;
 
-    svg.appendChild(createEl('rect', {
+    // Group the whole transit box so it can be toggled (hidden on Weather tab
+    // for the adjacent blocks, since it overlaps the weather cards).
+    const transitG = createEl('g', {
+      'class': 'transit-box',
+      'data-from': from.idx,
+      'data-to': to.idx
+    });
+    svg.appendChild(transitG);
+
+    transitG.appendChild(createEl('rect', {
       x: midX - boxW/2, y: midY,
       width: boxW, height: boxH,
       fill: '#fff', stroke: '#3498db',
@@ -3050,14 +3624,14 @@ for (let i = 0; i < blocks.length - 1; i++) {
       'font-size': 10, 'font-weight': 'bold', fill: '#2980b9'
     });
     t1.textContent = transitInfo.label;
-    svg.appendChild(t1);
+    transitG.appendChild(t1);
     const t2 = createEl('text', {
       x: midX, y: midY + 27,
       'text-anchor': 'middle',
       'font-size': 9, fill: '#555'
     });
     t2.textContent = transitInfo.sub;
-    svg.appendChild(t2);
+    transitG.appendChild(t2);
 
     if (hasLegs) {
       transitInfo.legs.forEach((leg, i) => {
@@ -3066,7 +3640,7 @@ for (let i = 0; i < blocks.length - 1; i++) {
           'font-size': 8, fill: '#666'
         });
         legText.textContent = `• ${leg}`;
-        svg.appendChild(legText);
+        transitG.appendChild(legText);
       });
     }
   }
@@ -3259,9 +3833,31 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     const tabId = btn.getAttribute('data-tab');
 
     // Hide all view groups for this block
-    ['schedule','restaurants','shopping','groceries','specialties','pasta','terminal'].forEach(v => {
+    ['schedule','restaurants','shopping','groceries','specialties','pasta','terminal','weather'].forEach(v => {
       const g = document.getElementById(`${v}-${blockIdx}`);
       if (g) g.style.display = (v === tabId) ? '' : 'none';
+    });
+
+    // On the Weather tab, hide zebra/lane stripes and show a single-color bg
+    const zebraG = document.getElementById(`zebra-${blockIdx}`);
+    const wxBg = document.getElementById(`weather-bg-${blockIdx}`);
+    if (tabId === 'weather') {
+      if (zebraG) zebraG.style.display = 'none';
+      if (wxBg) wxBg.style.display = '';
+    } else {
+      if (zebraG) zebraG.style.display = '';
+      if (wxBg) wxBg.style.display = 'none';
+    }
+
+    // Transit info boxes overlap the weather cards — hide any transit box that
+    // touches this block when Weather is active, restore it otherwise.
+    const bIdxNum = parseInt(blockIdx, 10);
+    document.querySelectorAll('.transit-box').forEach(tb => {
+      const f = parseInt(tb.getAttribute('data-from'), 10);
+      const t = parseInt(tb.getAttribute('data-to'), 10);
+      if (f === bIdxNum || t === bIdxNum) {
+        tb.style.display = (tabId === 'weather') ? 'none' : '';
+      }
     });
 
     // Toggle the HTML restaurant gallery (only shows on Restaurants tab)
@@ -3297,6 +3893,13 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     if (termGallery) {
       if (tabId === 'terminal') termGallery.classList.add('active');
       else termGallery.classList.remove('active');
+    }
+
+    // Toggle the HTML weather gallery (only shows on Weather tab)
+    const wxGallery = document.getElementById(`weather-gallery-${blockIdx}`);
+    if (wxGallery) {
+      if (tabId === 'weather') wxGallery.classList.add('active');
+      else wxGallery.classList.remove('active');
     }
 
     // Update tab visuals
@@ -3673,6 +4276,12 @@ function buildGoogleMapsUrl(locName, points) {
 
 // Initial render (Korean is the default)
 buildDiagram();
+
+// Attempt live weather in the background (Open-Meteo, no key/signup).
+// On failure (e.g. sandboxed preview), the climatology fallback stays.
+window.addEventListener('load', () => {
+  setTimeout(() => { refreshAllWeather(); }, 800);
+});
 
 </script>
 
