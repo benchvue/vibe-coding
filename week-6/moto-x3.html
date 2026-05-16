@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Moto Stunt X3 - Beach Run</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #87cefa; font-family: 'Arial Black', sans-serif; }
+  #game { position: fixed; inset: 0; display: block; }
+  #hud { position: fixed; inset: 0; pointer-events: none; user-select: none; }
+
+  /* Timer pill */
+  #timer {
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(20,20,30,0.85);
+    color: #fff;
+    padding: 10px 22px;
+    border-radius: 14px;
+    font-size: 26px;
+    letter-spacing: 2px;
+    font-family: 'Courier New', monospace;
+    font-weight: 900;
+    border: 1px solid rgba(255,255,255,0.18);
+    box-shadow: 0 4px 18px rgba(0,0,0,0.3);
+  }
+  #timer .icon {
+    display: inline-block;
+    width: 20px; height: 20px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    position: relative;
+    vertical-align: middle;
+    margin-right: 8px;
+  }
+  #timer .icon::before {
+    content: ''; position: absolute;
+    top: -5px; left: 50%; transform: translateX(-50%);
+    width: 6px; height: 3px; background: #fff;
+  }
+  #timer .icon::after {
+    content: ''; position: absolute;
+    top: 50%; left: 50%; width: 2px; height: 7px;
+    background: #fff;
+    transform-origin: top center;
+    transform: translate(-50%, 0) rotate(45deg);
+  }
+
+  /* Score / best */
+  #scorePanel {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    display: flex;
+    gap: 14px;
+    background: rgba(0,0,0,0.55);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 12px;
+    padding: 10px 18px;
+    color: #fff;
+    backdrop-filter: blur(6px);
+  }
+  #scorePanel .item { text-align: center; line-height: 1; }
+  #scorePanel .label { font-size: 10px; letter-spacing: 2px; color: #cfeaff; margin-bottom: 4px; font-weight: bold; }
+  #scorePanel .value { font-size: 22px; color: #ffd200; font-weight: 900; }
+  #scorePanel .value.best { color: #7fdcff; }
+  #scorePanel .sep { width: 1px; background: rgba(255,255,255,0.15); }
+
+  /* Status pill */
+  #status {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    border: 1px solid rgba(255,255,255,0.15);
+    backdrop-filter: blur(6px);
+  }
+  #status .dot {
+    display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+    background: #ff3b3b; margin-right: 6px; vertical-align: middle;
+    box-shadow: 0 0 8px #ff3b3b;
+  }
+  #status.connected .dot { background: #2bd96b; box-shadow: 0 0 8px #2bd96b; }
+
+  /* Flip notifier */
+  #flipNotice {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.7);
+    color: #fff;
+    font-size: 32px;
+    letter-spacing: 4px;
+    text-shadow: 0 0 14px #ff8a00, 0 0 28px #ff8a00;
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.3s;
+    pointer-events: none;
+  }
+  #flipNotice.active { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+
+  /* Crash overlay */
+  #crashMsg {
+    position: absolute;
+    top: 38%; left: 50%;
+    transform: translate(-50%, -50%) scale(0.7);
+    color: #fff;
+    font-size: 56px;
+    letter-spacing: 8px;
+    text-shadow: 0 0 20px #ff2a2a, 0 0 40px #ff2a2a;
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.3s;
+    pointer-events: none;
+  }
+  #crashMsg.active { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+
+  #help {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #fff;
+    font-size: 13px;
+    text-shadow: 0 0 6px rgba(0,0,0,0.7);
+    background: rgba(0,0,0,0.35);
+    padding: 6px 14px;
+    border-radius: 999px;
+    letter-spacing: 1px;
+  }
+
+  /* Win banner */
+  #winMsg {
+    position: absolute;
+    top: 35%; left: 50%;
+    transform: translate(-50%, -50%) scale(0.7);
+    color: #fff;
+    font-size: 56px;
+    letter-spacing: 6px;
+    text-shadow: 0 0 18px #00e676, 0 0 36px #00e676;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+  }
+  #winMsg.active { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+
+  /* Start overlay */
+  #overlay {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at center, rgba(10,20,40,0.85), rgba(0,0,0,0.95));
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; text-align: center; pointer-events: auto; z-index: 50;
+  }
+  #overlay .card {
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.04);
+    padding: 32px 40px; border-radius: 18px;
+    max-width: 560px; backdrop-filter: blur(10px);
+  }
+  #overlay h1 {
+    font-size: 32px; letter-spacing: 4px;
+    background: linear-gradient(90deg, #ff8a00, #ffd200);
+    -webkit-background-clip: text; background-clip: text;
+    color: transparent; margin-bottom: 14px;
+  }
+  #overlay p { font-size: 14px; line-height: 1.6; color: #cfd6e1; margin-bottom: 10px; }
+  #overlay .keys { color: #ffd200; font-weight: bold; }
+  #overlay button {
+    margin-top: 18px; padding: 12px 28px; border: none; border-radius: 10px;
+    background: linear-gradient(180deg, #ff9a1e, #ef6a00);
+    color: #fff; font-weight: 900; font-size: 16px; letter-spacing: 2px;
+    cursor: pointer; box-shadow: 0 8px 20px rgba(239,106,0,0.35);
+  }
+  #overlay button:hover { filter: brightness(1.1); }
+  #overlay.hidden { display: none; }
+</style>
+</head>
+<body>
+<canvas id="game"></canvas>
+
+<div id="hud">
+  <div id="status"><span class="dot"></span><span id="statusText">KEYBOARD</span></div>
+
+  <div id="timer"><span class="icon"></span><span id="timeVal">00.00</span></div>
+
+  <div id="scorePanel">
+    <div class="item">
+      <div class="label">LEVEL</div>
+      <div class="value" id="levelVal" style="color:#ff9a1e;">1</div>
+    </div>
+    <div class="sep"></div>
+    <div class="item">
+      <div class="label">SCORE</div>
+      <div class="value" id="scoreVal">0</div>
+    </div>
+    <div class="sep"></div>
+    <div class="item">
+      <div class="label">BEST</div>
+      <div class="value best" id="bestVal">0</div>
+    </div>
+  </div>
+
+  <div id="flipNotice">FLIP +500</div>
+  <div id="crashMsg">CRASH!</div>
+  <div id="winMsg">FINISH!</div>
+
+  <div id="help">↑ gas &middot; ↓ brake &middot; ← → balance &middot; SPACE jump &middot; Joystick: push=gas, pull=brake, L/R=lean, button=jump</div>
+</div>
+
+<div id="overlay">
+  <div class="card">
+    <h1>MOTO STUNT X3</h1>
+    <p>Ride a dirt bike across a beach circuit packed with ramps, gaps, and saw blades. Clear the finish to advance — 5 levels, each one harder.</p>
+    <p><span class="keys">↑</span> accelerate &nbsp;|&nbsp; <span class="keys">↓</span> brake &nbsp;|&nbsp; <span class="keys">← →</span> lean / flip &nbsp;|&nbsp; <span class="keys">SPACE</span> jump</p>
+    <p>Or use a <span class="keys">Gladiator NXT Evo</span> joystick — push to gas, pull to brake, left/right to lean, any button to jump.</p>
+    <p>Land both wheels and pull off flips for bonus points. Hit the saw or land on your head — CRASH.</p>
+    <button id="startBtn">START</button>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   MOTO STUNT X3 — 2D side-scroller, beach theme
+   Hand-rolled physics (no matter.js) tuned for arcade feel.
+   ============================================================ */
+
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+
+let W = 0, H = 0;
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+// ============================================================
+// TERRAIN — array of (x, y) points sampled along the level
+// Y grows downward in screen space. We build a long sinuous
+// beach profile with ramps, jumps, dips, and a finish line.
+// ============================================================
+const LEVEL_LENGTH = 6000;
+const GROUND_BASE = 0.78; // base y as fraction of H
+
+// Hand-shaped path: sequence of pieces (flat, hill, dip, ramp, gap, plateau)
+// Each piece adds (dx, dyDeltaFunction) to build profile points.
+const terrain = []; // { x, y }
+let cursorX = 0;
+let cursorY = 0; // 0 = base, positive = lower on screen, negative = higher (we'll use ground offset)
+// We store ground offset relative to a fixed base. Positive = higher hill.
+
+function pushFlat(len) {
+  const step = 20;
+  for (let i = 0; i <= len; i += step) {
+    cursorX += step;
+    terrain.push({ x: cursorX, off: cursorY });
+  }
+}
+function pushHill(len, height) {
+  const step = 16;
+  const startY = cursorY;
+  for (let i = step; i <= len; i += step) {
+    const t = i / len;
+    const eased = (1 - Math.cos(t * Math.PI)) / 2;
+    cursorX += step;
+    cursorY = startY + height * eased;
+    terrain.push({ x: cursorX, off: cursorY });
+  }
+}
+function pushRamp(len, height) {
+  // Linear up-ramp ending at peak
+  const step = 12;
+  const startY = cursorY;
+  for (let i = step; i <= len; i += step) {
+    const t = i / len;
+    cursorX += step;
+    cursorY = startY + height * t;
+    terrain.push({ x: cursorX, off: cursorY });
+  }
+}
+function pushDrop(len, drop) {
+  const step = 14;
+  const startY = cursorY;
+  for (let i = step; i <= len; i += step) {
+    const t = i / len;
+    const eased = (1 - Math.cos(t * Math.PI)) / 2;
+    cursorX += step;
+    cursorY = startY - drop * eased;
+    terrain.push({ x: cursorX, off: cursorY });
+  }
+}
+
+// Build level layout — regenerated per level with rising difficulty.
+// terrain / gaps / saws / finishX are reset and rebuilt each time.
+const terrainState = { gaps: [], finishX: 0 };
+let gaps = terrainState.gaps;     // kept as a live reference for groundAt()
+let finishX = 0;
+const saws = [];                  // populated by buildLevel()
+
+const MAX_LEVEL = 5;
+let gameLevel = 1;
+
+function buildLevel(lvl) {
+  // Difficulty factor 0 (lvl 1) .. 1 (lvl 5).
+  const d = (lvl - 1) / (MAX_LEVEL - 1);
+  const jumpMul   = 1 + d * 0.7;   // ramps & hills up to 70% bigger
+  const gapMul    = 1 + d * 0.8;   // gaps up to 80% wider
+  const sawCount  = 5 + Math.round(d * 6);  // 5 .. 11 saws
+  const lenMul    = 1 + d * 0.5;   // track 50% longer at lvl 5
+
+  // Reset terrain
+  terrain.length = 0;
+  gaps.length = 0;
+  saws.length = 0;
+  cursorX = 0;
+  cursorY = 0;
+
+  terrain.push({ x: 0, off: 0 });
+  pushFlat(300);
+  pushHill(220, 30 * jumpMul);
+  pushFlat(180);
+  pushHill(280, -25 * jumpMul);  // small dip
+  pushFlat(140);
+  pushRamp(160, 90 * jumpMul);
+  gaps.push({ start: cursorX, end: cursorX + 220 * gapMul });
+  cursorX += 220 * gapMul;
+  cursorY -= 30;
+  terrain.push({ x: cursorX, off: cursorY });
+  pushFlat(220);
+  pushHill(360 * lenMul, 70 * jumpMul);
+  pushFlat(120);
+  pushDrop(180, 80 * jumpMul);
+  pushFlat(160);
+  pushRamp(220, 120 * jumpMul);
+  gaps.push({ start: cursorX, end: cursorX + 280 * gapMul });
+  cursorX += 280 * gapMul;
+  cursorY -= 60;
+  terrain.push({ x: cursorX, off: cursorY });
+  pushFlat(200);
+  pushHill(300 * lenMul, 60 * jumpMul);
+  pushHill(260, -40 * jumpMul);
+  pushFlat(180);
+  pushRamp(180, 100 * jumpMul);
+  gaps.push({ start: cursorX, end: cursorX + 200 * gapMul });
+  cursorX += 200 * gapMul;
+  cursorY -= 40;
+  terrain.push({ x: cursorX, off: cursorY });
+  pushFlat(260);
+  pushHill(420 * lenMul, 90 * jumpMul);
+  pushFlat(200);
+  // Higher levels add an extra rolling section before the finish.
+  if (lvl >= 3) {
+    pushRamp(180, 110 * jumpMul);
+    gaps.push({ start: cursorX, end: cursorX + 230 * gapMul });
+    cursorX += 230 * gapMul;
+    cursorY -= 40;
+    terrain.push({ x: cursorX, off: cursorY });
+    pushFlat(220);
+    pushHill(320 * lenMul, 75 * jumpMul);
+  }
+  // Final long ramp to finish
+  pushRamp(220, 70 * jumpMul);
+  pushFlat(400);
+
+  finishX = cursorX - 150;
+
+  // Saws spread along the track, more & some faster at higher levels.
+  const usableEnd = finishX - 300;
+  for (let i = 0; i < sawCount; i++) {
+    const sx = 800 + (usableEnd - 800) * (i / sawCount) + (Math.random() * 120 - 60);
+    // Skip saws that would sit inside a gap.
+    let inGap = false;
+    for (const g of gaps) if (sx > g.start - 40 && sx < g.end + 40) inGap = true;
+    if (inGap) continue;
+    const yOff = -28 - (Math.random() < 0.25 + d * 0.3 ? 22 : 0);
+    saws.push({ x: sx, yOff, r: 28, phase: Math.random() * Math.PI * 2,
+                spin: 10 + d * 8 });   // faster blades at higher level
+  }
+}
+
+// Build level 1 to start.
+buildLevel(1);
+
+// ============================================================
+// Helper: get ground y at world x (interpolated)
+// Returns ground y in WORLD coords (higher number = lower on screen).
+// Also returns whether the point is over a gap.
+// ============================================================
+function groundAt(x) {
+  // Check gaps first
+  for (const g of gaps) {
+    if (x > g.start && x < g.end) {
+      return { y: H * 2, inGap: true }; // effectively no ground
+    }
+  }
+  // Binary search terrain by x
+  let lo = 0, hi = terrain.length - 1;
+  if (x <= terrain[0].x) return { y: H * GROUND_BASE - terrain[0].off, inGap: false };
+  if (x >= terrain[hi].x) return { y: H * GROUND_BASE - terrain[hi].off, inGap: false };
+  while (hi - lo > 1) {
+    const m = (lo + hi) >> 1;
+    if (terrain[m].x <= x) lo = m; else hi = m;
+  }
+  const a = terrain[lo], b = terrain[hi];
+  const t = (x - a.x) / (b.x - a.x);
+  const off = a.off + (b.off - a.off) * t;
+  return { y: H * GROUND_BASE - off, inGap: false };
+}
+
+// Ground slope (radians) at world x
+function groundSlope(x) {
+  const dx = 6;
+  const a = groundAt(x - dx).y;
+  const b = groundAt(x + dx).y;
+  // screen y goes down, so slope sign:
+  // positive angle = uphill in world terms (ground rising to the right)
+  return Math.atan2(-(b - a), 2 * dx);
+}
+
+// ============================================================
+// BIKE — simplified rigid body with two wheels.
+// We track: center of mass (x, y), velocity (vx, vy),
+// rotation angle, angular velocity.
+// Wheels are at fixed offsets from CoM in local frame.
+// ============================================================
+const bike = {
+  x: 200,
+  y: 0,
+  vx: 0,
+  vy: 0,
+  angle: 0,           // bike body angle (radians, 0 = level, + = nose up)
+  angVel: 0,
+  wheelBase: 60,      // distance between wheel centers (horizontal local)
+  wheelRadius: 18,
+  comHeight: 26,      // CoM above wheel axles
+  grounded: false,
+  groundedFront: false,
+  groundedRear: false,
+  throttle: 0,        // 0..1
+  brake: 0,           // 0..1
+  lean: 0,            // -1..1 (rider rotation input)
+  wheelSpin: 0,       // visual spin
+  prevAngle: 0,
+  totalRotation: 0,   // for flip detection
+  alive: true,
+  jumpCooldown: 0,    // seconds until jump available again
+};
+
+function resetBike() {
+  bike.x = 200;
+  const g = groundAt(bike.x).y;
+  bike.y = g - bike.wheelRadius - bike.comHeight;
+  bike.vx = 0; bike.vy = 0;
+  bike.angle = 0; bike.angVel = 0;
+  bike.totalRotation = 0; bike.prevAngle = 0;
+  bike.jumpCooldown = 0;
+  bike.alive = true;
+}
+
+// Wheel world positions
+function wheelPositions() {
+  const cos = Math.cos(bike.angle), sin = Math.sin(bike.angle);
+  // Local: rear wheel at (-wb/2, comHeight), front at (+wb/2, comHeight)
+  const wb = bike.wheelBase / 2;
+  const h = bike.comHeight;
+  const rear = {
+    x: bike.x + cos * (-wb) - sin * h,
+    y: bike.y + sin * (-wb) + cos * h,
+  };
+  const front = {
+    x: bike.x + cos * wb - sin * h,
+    y: bike.y + sin * wb + cos * h,
+  };
+  return { rear, front };
+}
+
+// ============================================================
+// INPUT
+// ============================================================
+const keys = { up: false, down: false, left: false, right: false, jump: false };
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowUp') keys.up = true;
+  if (e.key === 'ArrowDown') keys.down = true;
+  if (e.key === 'ArrowLeft') keys.left = true;
+  if (e.key === 'ArrowRight') keys.right = true;
+  if (e.key === ' ' || e.code === 'Space') { keys.jump = true; e.preventDefault(); }
+});
+window.addEventListener('keyup', (e) => {
+  if (e.key === 'ArrowUp') keys.up = false;
+  if (e.key === 'ArrowDown') keys.down = false;
+  if (e.key === 'ArrowLeft') keys.left = false;
+  if (e.key === 'ArrowRight') keys.right = false;
+  if (e.key === ' ' || e.code === 'Space') keys.jump = false;
+});
+
+let gamepadIndex = null;
+const statusEl = document.getElementById('status');
+const statusText = document.getElementById('statusText');
+window.addEventListener('gamepadconnected', (e) => {
+  gamepadIndex = e.gamepad.index;
+  statusEl.classList.add('connected');
+  statusText.textContent = (e.gamepad.id || 'JOYSTICK').toUpperCase().slice(0, 24);
+});
+window.addEventListener('gamepaddisconnected', () => {
+  gamepadIndex = null;
+  statusEl.classList.remove('connected');
+  statusText.textContent = 'KEYBOARD';
+});
+function readGamepad() {
+  if (gamepadIndex === null) return null;
+  const pads = navigator.getGamepads ? navigator.getGamepads() : [];
+  const gp = pads[gamepadIndex];
+  if (!gp) return null;
+  const dz = 0.12;
+  const axRaw = gp.axes[0] || 0;
+  const ayRaw = gp.axes[1] || 0;
+  const ax = Math.abs(axRaw) < dz ? 0 : (axRaw - Math.sign(axRaw) * dz) / (1 - dz);
+  const ay = Math.abs(ayRaw) < dz ? 0 : (ayRaw - Math.sign(ayRaw) * dz) / (1 - dz);
+  // Any joystick button triggers a jump (trigger, thumb buttons, etc.)
+  let jumpBtn = false;
+  if (gp.buttons) {
+    for (let i = 0; i < gp.buttons.length; i++) {
+      if (gp.buttons[i] && gp.buttons[i].pressed) { jumpBtn = true; break; }
+    }
+  }
+  return {
+    x: Math.sign(ax) * Math.pow(Math.abs(ax), 1.8) * 0.7,
+    y: ay,
+    jump: jumpBtn,
+  };
+}
+
+// ============================================================
+// AUDIO
+// ============================================================
+let audioCtx = null, engineOsc1, engineOsc2, engineGain, engineFilter, tireNoiseGain;
+function initAudio() {
+  if (audioCtx) return;
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  engineOsc1 = audioCtx.createOscillator();
+  engineOsc2 = audioCtx.createOscillator();
+  engineOsc1.type = 'sawtooth'; engineOsc2.type = 'square';
+  engineOsc1.frequency.value = 80; engineOsc2.frequency.value = 82;
+  engineFilter = audioCtx.createBiquadFilter();
+  engineFilter.type = 'lowpass';
+  engineFilter.frequency.value = 700; engineFilter.Q.value = 3;
+  engineGain = audioCtx.createGain();
+  engineGain.gain.value = 0.0;
+  engineOsc1.connect(engineFilter); engineOsc2.connect(engineFilter);
+  engineFilter.connect(engineGain); engineGain.connect(audioCtx.destination);
+  engineOsc1.start(); engineOsc2.start();
+
+  const bufLen = audioCtx.sampleRate * 2;
+  const buf = audioCtx.createBuffer(1, bufLen, audioCtx.sampleRate);
+  const data = buf.getChannelData(0);
+  let b0 = 0, b1 = 0, b2 = 0;
+  for (let i = 0; i < bufLen; i++) {
+    const w = Math.random() * 2 - 1;
+    b0 = 0.99 * b0 + w * 0.05;
+    b1 = 0.96 * b1 + w * 0.10;
+    b2 = 0.85 * b2 + w * 0.25;
+    data[i] = b0 + b1 + b2;
+  }
+  const src = audioCtx.createBufferSource();
+  src.buffer = buf; src.loop = true;
+  const nf = audioCtx.createBiquadFilter();
+  nf.type = 'bandpass'; nf.frequency.value = 1000; nf.Q.value = 0.7;
+  tireNoiseGain = audioCtx.createGain(); tireNoiseGain.gain.value = 0;
+  src.connect(nf); nf.connect(tireNoiseGain); tireNoiseGain.connect(audioCtx.destination);
+  src.start();
+}
+
+function playCrashSound() {
+  if (!audioCtx) return;
+  const dur = 0.5;
+  const buf = audioCtx.createBuffer(1, Math.floor(audioCtx.sampleRate * dur), audioCtx.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < d.length; i++) {
+    const env = Math.pow(1 - i / d.length, 1.5);
+    d[i] = (Math.random() * 2 - 1) * env;
+  }
+  const src = audioCtx.createBufferSource();
+  src.buffer = buf;
+  const f = audioCtx.createBiquadFilter();
+  f.type = 'lowpass'; f.frequency.value = 700; f.Q.value = 2;
+  const g = audioCtx.createGain(); g.gain.value = 0.55;
+  src.connect(f); f.connect(g); g.connect(audioCtx.destination);
+  src.start();
+}
+
+function playFlipSound() {
+  if (!audioCtx) return;
+  const o = audioCtx.createOscillator();
+  o.type = 'triangle';
+  const g = audioCtx.createGain();
+  g.gain.value = 0.0001;
+  g.gain.exponentialRampToValueAtTime(0.18, audioCtx.currentTime + 0.02);
+  g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.35);
+  o.frequency.value = 600;
+  o.frequency.exponentialRampToValueAtTime(1400, audioCtx.currentTime + 0.25);
+  o.connect(g); g.connect(audioCtx.destination);
+  o.start(); o.stop(audioCtx.currentTime + 0.4);
+}
+
+function playJumpSound() {
+  if (!audioCtx) return;
+  const o = audioCtx.createOscillator();
+  o.type = 'sine';
+  const g = audioCtx.createGain();
+  g.gain.value = 0.0001;
+  g.gain.exponentialRampToValueAtTime(0.22, audioCtx.currentTime + 0.01);
+  g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.22);
+  o.frequency.value = 260;
+  o.frequency.exponentialRampToValueAtTime(620, audioCtx.currentTime + 0.18);
+  o.connect(g); g.connect(audioCtx.destination);
+  o.start(); o.stop(audioCtx.currentTime + 0.25);
+}
+
+function updateAudio(speed, throttle) {
+  if (!audioCtx) return;
+  const base = 70 + Math.abs(speed) * 1.4 + throttle * 30;
+  engineOsc1.frequency.setTargetAtTime(base, audioCtx.currentTime, 0.05);
+  engineOsc2.frequency.setTargetAtTime(base * 1.01 + 2, audioCtx.currentTime, 0.05);
+  const cutoff = 500 + throttle * 1500 + Math.abs(speed) * 3;
+  engineFilter.frequency.setTargetAtTime(cutoff, audioCtx.currentTime, 0.1);
+  const gainTarget = 0.06 + throttle * 0.10 + Math.min(0.04, Math.abs(speed) * 0.0005);
+  engineGain.gain.setTargetAtTime(gainTarget, audioCtx.currentTime, 0.05);
+  const tire = Math.min(0.10, Math.abs(speed) * 0.0006);
+  tireNoiseGain.gain.setTargetAtTime(tire, audioCtx.currentTime, 0.1);
+}
+
+// ============================================================
+// SCORE / TIMER / STATE
+// ============================================================
+const score = { current: 0, best: 0, recordHit: false };
+try {
+  const s = parseInt(localStorage.getItem('motox3_best') || '0', 10);
+  if (!isNaN(s)) score.best = s;
+} catch (e) {}
+
+const scoreValEl = document.getElementById('scoreVal');
+const bestValEl = document.getElementById('bestVal');
+const timeValEl = document.getElementById('timeVal');
+const flipNotice = document.getElementById('flipNotice');
+const crashMsg = document.getElementById('crashMsg');
+const winMsg = document.getElementById('winMsg');
+bestValEl.textContent = String(score.best);
+
+function updateScoreUI() {
+  scoreValEl.textContent = String(Math.floor(score.current));
+  bestValEl.textContent = String(Math.floor(score.best));
+}
+
+function resetScore() {
+  score.current = 0;
+  score.recordHit = false;
+  updateScoreUI();
+}
+
+const game = {
+  state: 'idle', // idle | playing | crashed | won
+  startTime: 0,
+  elapsed: 0,
+  crashTimer: 0,
+  winTimer: 0,
+  cameraX: 0,
+  advanceLevel: false,   // set on win to progress to the next level
+  finishedGame: false,   // set on beating the final level
+};
+
+function showFlip(text) {
+  flipNotice.textContent = text;
+  flipNotice.classList.add('active');
+  setTimeout(() => flipNotice.classList.remove('active'), 700);
+}
+
+function triggerCrash() {
+  if (game.state !== 'playing') return;
+  game.state = 'crashed';
+  game.crashTimer = 0;
+  bike.alive = false;
+  crashMsg.classList.add('active');
+  playCrashSound();
+  // Reset score on crash
+  resetScore();
+}
+
+function triggerWin() {
+  if (game.state !== 'playing') return;
+  game.state = 'won';
+  game.winTimer = 0;
+  // Finish bonus, bigger on higher levels.
+  score.current += 1500 + gameLevel * 500;
+  if (score.current > score.best) {
+    score.best = score.current;
+    try { localStorage.setItem('motox3_best', String(Math.floor(score.best))); } catch (e) {}
+  }
+  updateScoreUI();
+  if (gameLevel < MAX_LEVEL) {
+    winMsg.textContent = 'LEVEL ' + gameLevel + ' COMPLETE!';
+    game.advanceLevel = true;            // restartRun() will build next level
+  } else {
+    winMsg.textContent = 'ALL ' + MAX_LEVEL + ' LEVELS CLEARED!';
+    game.advanceLevel = false;           // wrap back to level 1 for a fresh run
+    game.finishedGame = true;
+  }
+  winMsg.classList.add('active');
+}
+
+function startLevel(lvl) {
+  gameLevel = lvl;
+  buildLevel(lvl);
+  const lv = document.getElementById('levelVal');
+  if (lv) lv.textContent = String(lvl);
+  resetBike();
+  game.elapsed = 0;
+  game.state = 'playing';
+  game.startTime = performance.now();
+}
+
+function restartRun() {
+  crashMsg.classList.remove('active');
+  winMsg.classList.remove('active');
+  flipNotice.classList.remove('active');
+  if (game.advanceLevel) {
+    // Won a level (not the last): progress to the next, keep the score.
+    game.advanceLevel = false;
+    startLevel(gameLevel + 1);
+  } else if (game.finishedGame) {
+    // Beat level 5: full reset back to level 1.
+    game.finishedGame = false;
+    score.current = 0;
+    updateScoreUI();
+    startLevel(1);
+  } else {
+    // Crashed: replay the SAME level (level progress is not lost),
+    // but the run's score restarts per the original design.
+    resetScore();
+    startLevel(gameLevel);
+  }
+}
+
+// ============================================================
+// PHYSICS UPDATE
+// ============================================================
+const GRAVITY = 1100;
+const MAX_SPEED = 700;
+
+function step(dt) {
+  if (game.state !== 'playing') {
+    // Hold crash for ~1.2s, then restart
+    if (game.state === 'crashed') {
+      game.crashTimer += dt;
+      // tumble bike for visual
+      bike.angVel += 6 * dt;
+      bike.angle += bike.angVel * dt;
+      bike.vy += GRAVITY * dt;
+      bike.y += bike.vy * dt;
+      bike.x += bike.vx * dt * 0.3;
+      if (game.crashTimer > 1.4) restartRun();
+    } else if (game.state === 'won') {
+      game.winTimer += dt;
+      bike.vx *= 0.98;
+      bike.x += bike.vx * dt;
+      bike.y += bike.vy * dt;
+      bike.vy += GRAVITY * dt;
+      const g = groundAt(bike.x).y - bike.wheelRadius - bike.comHeight;
+      if (bike.y > g) { bike.y = g; bike.vy = 0; }
+      if (game.winTimer > 3) restartRun();
+    }
+    return;
+  }
+
+  // ---- Input ----
+  let throttle = 0, brake = 0, lean = 0, jumpPressed = false;
+  if (keys.up) throttle = 1;
+  if (keys.down) brake = 1;
+  if (keys.left) lean -= 1;
+  if (keys.right) lean += 1;
+  if (keys.jump) jumpPressed = true;
+  const gp = readGamepad();
+  if (gp) {
+    if (gp.y < 0) throttle = -gp.y;
+    if (gp.y > 0) brake = gp.y;
+    if (gp.x !== 0) lean = gp.x;
+    if (gp.jump) jumpPressed = true;
+  }
+  bike.throttle = throttle;
+  bike.brake = brake;
+  bike.lean = lean;
+
+  // ---- Jump (Space / joystick button) ----
+  if (bike.jumpCooldown > 0) bike.jumpCooldown -= dt;
+
+  // ---- Wheel contact detection ----
+  const { rear, front } = wheelPositions();
+  const rg = groundAt(rear.x);
+  const fg = groundAt(front.x);
+  const rearGroundY = rg.y;
+  const frontGroundY = fg.y;
+  const rearContact = rear.y + bike.wheelRadius >= rearGroundY - 1 && !rg.inGap;
+  const frontContact = front.y + bike.wheelRadius >= frontGroundY - 1 && !fg.inGap;
+  bike.groundedRear = rearContact;
+  bike.groundedFront = frontContact;
+  bike.grounded = rearContact || frontContact;
+
+  // ---- Perform jump ----
+  if (jumpPressed && bike.grounded && bike.jumpCooldown <= 0) {
+    const slope = groundSlope(bike.x);
+    // Launch mostly upward, biased slightly along the slope so ramps boost you forward
+    const power = 560;
+    bike.vy -= power;                       // upward kick (screen y is down)
+    bike.vx += Math.cos(slope) * 120;       // small forward nudge
+    bike.angVel -= 0.8;                     // slight nose-up so it looks like a hop
+    bike.jumpCooldown = 0.55;
+    bike.grounded = false;
+    bike.groundedRear = false;
+    bike.groundedFront = false;
+    playJumpSound();
+  }
+
+  // ---- Forces ----
+  // Apply gravity to vy
+  bike.vy += GRAVITY * dt;
+
+  // Throttle: only adds forward speed when rear wheel is on ground (or air control reduced)
+  if (bike.grounded) {
+    const slope = groundSlope(bike.x);
+    // Drive direction along slope
+    const driveX = Math.cos(slope);
+    const driveY = -Math.sin(slope);
+    if (throttle > 0) {
+      const force = 1200 * throttle;
+      bike.vx += driveX * force * dt;
+      bike.vy += driveY * force * dt;
+    }
+    if (brake > 0) {
+      // Brake against current motion
+      const mag = Math.sqrt(bike.vx * bike.vx + bike.vy * bike.vy);
+      if (mag > 1) {
+        const f = 1600 * brake * dt;
+        bike.vx -= (bike.vx / mag) * Math.min(mag, f);
+        bike.vy -= (bike.vy / mag) * Math.min(mag, f);
+      }
+    }
+    // Rolling resistance + drag
+    bike.vx *= (1 - 0.4 * dt);
+  } else {
+    // Air drag (lighter)
+    bike.vx *= (1 - 0.08 * dt);
+    // Subtle nose attitude from throttle/brake (kept gentle so it doesn't
+    // overpower the new balance assist — left/right is the real control).
+    if (throttle > 0) bike.angVel -= 0.3 * throttle * dt;
+    if (brake > 0)    bike.angVel += 0.5 * brake * dt;
+  }
+
+  // ---- Balance / lean control ----
+  // Tuned so mid-air balance feels deliberate and recoverable instead of
+  // twitchy. On the ground the bike conforms to terrain (handled below);
+  // in the air the player rotates it with left/right.
+  if (bike.grounded) {
+    const leanTorque = 1.2;
+    bike.angVel += lean * leanTorque * dt;
+    bike.angVel *= (1 - 2.0 * dt);
+  } else {
+    // Air control: a moderate, predictable torque (was 4.0 — far too
+    // twitchy). Holding left/right rotates the bike steadily and, held
+    // long enough, completes a full flip for the +500 bonus.
+    const AIR_TORQUE = 3.0;
+    bike.angVel += lean * AIR_TORQUE * dt;
+
+    if (lean !== 0) {
+      // While actively leaning, very light damping so input keeps
+      // authority and a held flip can build up rotation.
+      bike.angVel *= (1 - 0.5 * dt);
+    } else {
+      // KEY FIX: when the player lets go, damp the spin HARD so the bike
+      // quickly stops rotating — this is what makes it possible to stop
+      // at the angle you want instead of tumbling uncontrollably.
+      bike.angVel *= (1 - 5.0 * dt);
+
+      // Gentle auto-level assist: ease the bike back toward horizontal
+      // when no input is given, like Moto X3M. Strong enough to recover
+      // a bad attitude, weak enough that deliberate flips still work
+      // (because during a flip the player IS holding lean).
+      let a = Math.atan2(Math.sin(bike.angle), Math.cos(bike.angle));
+      bike.angVel += (-a) * 3.0 * dt;
+    }
+  }
+
+  // Clamp speed
+  const sp = Math.sqrt(bike.vx * bike.vx + bike.vy * bike.vy);
+  if (sp > MAX_SPEED) {
+    bike.vx *= MAX_SPEED / sp;
+    bike.vy *= MAX_SPEED / sp;
+  }
+
+  // ---- Integrate ----
+  bike.x += bike.vx * dt;
+  bike.y += bike.vy * dt;
+  bike.angle += bike.angVel * dt;
+
+  // ---- Ground constraints (resolve penetration) ----
+  // Recompute wheel positions
+  const wp2 = wheelPositions();
+  const rg2 = groundAt(wp2.rear.x);
+  const fg2 = groundAt(wp2.front.x);
+  // Resolve rear
+  let resolveY = 0, resolvePitch = 0;
+  if (!rg2.inGap && wp2.rear.y + bike.wheelRadius > rg2.y) {
+    const pen = (wp2.rear.y + bike.wheelRadius) - rg2.y;
+    resolveY -= pen * 0.6;
+    resolvePitch += pen * 0.0015;
+    // Snap vy if moving into ground
+    if (bike.vy > 0) bike.vy *= -0.05;
+  }
+  if (!fg2.inGap && wp2.front.y + bike.wheelRadius > fg2.y) {
+    const pen = (wp2.front.y + bike.wheelRadius) - fg2.y;
+    resolveY -= pen * 0.6;
+    resolvePitch -= pen * 0.0015;
+    if (bike.vy > 0) bike.vy *= -0.05;
+  }
+  bike.y += resolveY;
+  bike.angVel += resolvePitch * 200;
+
+  // Conform body angle softly to ground slope when both wheels on ground
+  if (bike.groundedRear && bike.groundedFront) {
+    const slope = groundSlope(bike.x);
+    const desired = -slope;
+    const diff = desired - bike.angle;
+    bike.angVel += diff * 8;
+  }
+
+  // ---- Flip detection (track full rotations) ----
+  let da = bike.angle - bike.prevAngle;
+  // Normalize delta
+  while (da > Math.PI) da -= Math.PI * 2;
+  while (da < -Math.PI) da += Math.PI * 2;
+  bike.totalRotation += da;
+  bike.prevAngle = bike.angle;
+  if (Math.abs(bike.totalRotation) >= Math.PI * 2 && !bike.grounded) {
+    const dir = bike.totalRotation > 0 ? 'BACK FLIP' : 'FRONT FLIP';
+    showFlip(dir + ' +500');
+    score.current += 500;
+    playFlipSound();
+    bike.totalRotation -= Math.sign(bike.totalRotation) * Math.PI * 2;
+  }
+  // When grounded, reset rotation tracker so it only counts air time
+  if (bike.grounded) bike.totalRotation = 0;
+
+  // ---- Wheel spin visual ----
+  bike.wheelSpin += bike.vx * dt / bike.wheelRadius;
+
+  // ---- Saw collision ----
+  for (const s of saws) {
+    s.phase += dt * (s.spin || 12);
+    const sg = groundAt(s.x);
+    const sy = sg.y + s.yOff;
+    // Check distance from saw center to either wheel + body box
+    const points = [
+      { x: wp2.rear.x, y: wp2.rear.y, r: bike.wheelRadius },
+      { x: wp2.front.x, y: wp2.front.y, r: bike.wheelRadius },
+      { x: bike.x, y: bike.y, r: 16 }, // rider torso
+    ];
+    for (const p of points) {
+      const dx = p.x - s.x, dy = p.y - sy;
+      const d = Math.sqrt(dx * dx + dy * dy);
+      if (d < s.r + p.r) {
+        triggerCrash();
+        return;
+      }
+    }
+  }
+
+  // ---- Crash conditions ----
+  // 1) Head plant: bike angle past ~±100° while moving and near ground
+  const a = Math.atan2(Math.sin(bike.angle), Math.cos(bike.angle));
+  if (Math.abs(a) > 1.8 && bike.grounded) {
+    triggerCrash();
+    return;
+  }
+  // 2) Fall into the void
+  if (bike.y > H + 400) {
+    triggerCrash();
+    return;
+  }
+
+  // ---- Score accumulation: forward progress ----
+  if (bike.vx > 0) {
+    score.current += bike.vx * dt * 0.5;
+    if (!score.recordHit && score.current > score.best && score.best > 0) {
+      score.recordHit = true;
+    }
+    if (score.current > score.best) {
+      score.best = score.current;
+      try { localStorage.setItem('motox3_best', String(Math.floor(score.best))); } catch (e) {}
+    }
+  }
+  updateScoreUI();
+
+  // ---- Finish line ----
+  if (bike.x >= finishX) triggerWin();
+
+  // ---- Timer ----
+  game.elapsed = (performance.now() - game.startTime) / 1000;
+  const m = Math.floor(game.elapsed / 60);
+  const s = (game.elapsed % 60).toFixed(2);
+  timeValEl.textContent = (m > 0 ? String(m).padStart(2, '0') + ':' : '') + (game.elapsed < 60 ? s.padStart(5, '0') : s);
+
+  // ---- Camera ----
+  const targetCam = bike.x - W * 0.35;
+  game.cameraX += (targetCam - game.cameraX) * Math.min(1, 6 * dt);
+
+  // ---- Audio ----
+  updateAudio(bike.vx, throttle);
+}
+
+// ============================================================
+// RENDERING
+// ============================================================
+function drawSky() {
+  // Gradient sky
+  const sky = ctx.createLinearGradient(0, 0, 0, H);
+  sky.addColorStop(0, '#7ec8f5');
+  sky.addColorStop(0.6, '#bfe4f9');
+  sky.addColorStop(1, '#f6e0a4');
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, W, H);
+
+  // Sun
+  const sunX = W * 0.5 - game.cameraX * 0.02;
+  const sunY = H * 0.28;
+  const glow = ctx.createRadialGradient(sunX, sunY, 10, sunX, sunY, 220);
+  glow.addColorStop(0, 'rgba(255,220,150,1)');
+  glow.addColorStop(0.4, 'rgba(255,200,100,0.6)');
+  glow.addColorStop(1, 'rgba(255,200,100,0)');
+  ctx.fillStyle = glow;
+  ctx.beginPath(); ctx.arc(sunX, sunY, 220, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#ffd07a';
+  ctx.beginPath(); ctx.arc(sunX, sunY, 70, 0, Math.PI * 2); ctx.fill();
+
+  // Distant clouds (parallax)
+  ctx.fillStyle = 'rgba(255,255,255,0.65)';
+  for (let i = 0; i < 6; i++) {
+    const cx = ((i * 380 - game.cameraX * 0.1) % (W + 400) + W + 400) % (W + 400) - 200;
+    const cy = 80 + (i % 3) * 30;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, 70, 18, 0, 0, Math.PI * 2);
+    ctx.ellipse(cx + 40, cy - 8, 50, 16, 0, 0, Math.PI * 2);
+    ctx.ellipse(cx - 40, cy - 4, 50, 16, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Sea band
+  const seaY = H * 0.55;
+  ctx.fillStyle = '#2c80b3';
+  ctx.fillRect(0, seaY, W, H * 0.08);
+  ctx.fillStyle = 'rgba(255,255,255,0.25)';
+  for (let i = 0; i < 30; i++) {
+    const wx = (i * 80 - game.cameraX * 0.15) % W;
+    ctx.fillRect(((wx % W) + W) % W, seaY + 10 + (i % 4) * 4, 14, 1.5);
+  }
+}
+
+function drawTerrain() {
+  // Build a path that covers the visible portion + a bit either side
+  const left = game.cameraX - 50;
+  const right = game.cameraX + W + 50;
+
+  // Find first terrain index >= left
+  let startIdx = 0;
+  for (let i = 0; i < terrain.length; i++) {
+    if (terrain[i].x >= left) { startIdx = Math.max(0, i - 1); break; }
+    if (i === terrain.length - 1) startIdx = i;
+  }
+
+  // Draw segments, respecting gaps
+  ctx.fillStyle = '#e9c074';
+  ctx.strokeStyle = '#9a6b2b';
+  ctx.lineWidth = 4;
+
+  // Build piecewise polygons split by gaps
+  const segments = [];
+  let cur = [];
+  for (let i = startIdx; i < terrain.length; i++) {
+    const p = terrain[i];
+    if (p.x > right + 200) break;
+    // Detect if previous point and this point span across a gap
+    if (cur.length > 0) {
+      const prev = cur[cur.length - 1];
+      for (const g of gaps) {
+        if (prev.x < g.start + 1 && p.x > g.end - 1) {
+          // Close current segment at gap.start, start new one at gap.end
+          // Replace this point with two: end of prev segment and start of next
+          segments.push(cur);
+          cur = [];
+          break;
+        }
+      }
+    }
+    cur.push(p);
+  }
+  if (cur.length) segments.push(cur);
+
+  // For each segment, draw sand polygon to bottom of screen
+  for (const seg of segments) {
+    if (seg.length < 2) continue;
+    ctx.beginPath();
+    for (let i = 0; i < seg.length; i++) {
+      const sx = seg[i].x - game.cameraX;
+      const sy = H * GROUND_BASE - seg[i].off;
+      if (i === 0) ctx.moveTo(sx, sy);
+      else ctx.lineTo(sx, sy);
+    }
+    ctx.lineTo(seg[seg.length - 1].x - game.cameraX, H + 20);
+    ctx.lineTo(seg[0].x - game.cameraX, H + 20);
+    ctx.closePath();
+    // Sand fill with subtle gradient
+    const grad = ctx.createLinearGradient(0, H * GROUND_BASE - 100, 0, H);
+    grad.addColorStop(0, '#f0c47a');
+    grad.addColorStop(0.5, '#e2a85a');
+    grad.addColorStop(1, '#a06c2c');
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // Top stroke (sandline)
+    ctx.beginPath();
+    for (let i = 0; i < seg.length; i++) {
+      const sx = seg[i].x - game.cameraX;
+      const sy = H * GROUND_BASE - seg[i].off;
+      if (i === 0) ctx.moveTo(sx, sy);
+      else ctx.lineTo(sx, sy);
+    }
+    ctx.strokeStyle = '#8a5a22';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+  }
+
+  // Grass / sparkles on sand (decorative)
+  ctx.fillStyle = 'rgba(255,255,255,0.18)';
+  for (let i = 0; i < 60; i++) {
+    const wx = left + i * 50;
+    if (wx > right) break;
+    const gy = groundAt(wx).y;
+    if (gy > H * 2) continue;
+    ctx.fillRect(wx - game.cameraX, gy + 4 + (i % 5), 2, 2);
+  }
+}
+
+function drawSaws() {
+  for (const s of saws) {
+    const sg = groundAt(s.x);
+    if (sg.y > H * 2) continue;
+    const sx = s.x - game.cameraX;
+    const sy = sg.y + s.yOff;
+    if (sx < -60 || sx > W + 60) continue;
+
+    // Mounting pole
+    ctx.strokeStyle = '#5a3a1a';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(sx, sy);
+    ctx.lineTo(sx, sg.y);
+    ctx.stroke();
+
+    // Blade
+    ctx.save();
+    ctx.translate(sx, sy);
+    ctx.rotate(s.phase);
+    // Outer disc
+    ctx.fillStyle = '#c0c0c0';
+    ctx.strokeStyle = '#666';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(0, 0, s.r, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    // Teeth
+    ctx.fillStyle = '#999';
+    const teeth = 10;
+    for (let i = 0; i < teeth; i++) {
+      const ang = (i / teeth) * Math.PI * 2;
+      ctx.beginPath();
+      ctx.moveTo(Math.cos(ang) * s.r, Math.sin(ang) * s.r);
+      ctx.lineTo(Math.cos(ang + 0.15) * (s.r + 8), Math.sin(ang + 0.15) * (s.r + 8));
+      ctx.lineTo(Math.cos(ang + 0.3) * s.r, Math.sin(ang + 0.3) * s.r);
+      ctx.closePath();
+      ctx.fill();
+    }
+    // Hub
+    ctx.fillStyle = '#444';
+    ctx.beginPath(); ctx.arc(0, 0, 7, 0, Math.PI * 2); ctx.fill();
+    // Spokes
+    ctx.strokeStyle = '#444';
+    ctx.lineWidth = 2;
+    for (let i = 0; i < 4; i++) {
+      const ang = (i / 4) * Math.PI;
+      ctx.beginPath();
+      ctx.moveTo(Math.cos(ang) * 7, Math.sin(ang) * 7);
+      ctx.lineTo(Math.cos(ang) * (s.r - 2), Math.sin(ang) * (s.r - 2));
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+}
+
+function drawFinish() {
+  const sx = finishX - game.cameraX;
+  if (sx < -120 || sx > W + 60) return;
+  const gy = groundAt(finishX).y;
+  // Pole
+  ctx.fillStyle = '#444';
+  ctx.fillRect(sx - 3, gy - 140, 6, 140);
+  // Flag
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(sx + 3, gy - 140, 60, 36);
+  ctx.fillStyle = '#000';
+  for (let r = 0; r < 4; r++) for (let c = 0; c < 6; c++) {
+    if ((r + c) % 2) ctx.fillRect(sx + 3 + c * 10, gy - 140 + r * 9, 10, 9);
+  }
+  // "FINISH" text
+  ctx.fillStyle = '#000';
+  ctx.font = '900 14px Arial';
+  ctx.fillText('FINISH', sx + 6, gy - 95);
+}
+
+function drawBeachDecor() {
+  // Umbrellas + chairs at fixed world positions
+  const decor = [
+    { x: 600, type: 'umbrella' },
+    { x: 1700, type: 'umbrella' },
+    { x: 2600, type: 'umbrella' },
+    { x: 3300, type: 'umbrella' },
+    { x: 4700, type: 'umbrella' },
+    { x: 5500, type: 'umbrella' },
+  ];
+  for (const d of decor) {
+    const gy = groundAt(d.x).y;
+    if (gy > H * 2) continue;
+    const sx = d.x - game.cameraX;
+    if (sx < -80 || sx > W + 80) continue;
+    // Pole
+    ctx.fillStyle = '#5a3a1a';
+    ctx.fillRect(sx - 1.5, gy - 60, 3, 60);
+    // Umbrella top
+    ctx.fillStyle = '#ee5a3a';
+    ctx.beginPath();
+    ctx.arc(sx, gy - 60, 28, Math.PI, 0);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = '#aa3a22';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    // Stripes
+    ctx.fillStyle = '#fff';
+    for (let i = -2; i <= 2; i += 2) {
+      ctx.beginPath();
+      ctx.moveTo(sx, gy - 60);
+      ctx.lineTo(sx + i * 8, gy - 60 - Math.sqrt(Math.max(0, 28*28 - (i*8)*(i*8))));
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#fff';
+      ctx.stroke();
+    }
+  }
+}
+
+function drawBike() {
+  const { rear, front } = wheelPositions();
+  const sxBody = bike.x - game.cameraX;
+  const syBody = bike.y;
+
+  // Wheels first (so frame draws on top a bit)
+  function drawWheel(wx, wy, spin) {
+    const sx = wx - game.cameraX;
+    ctx.save();
+    ctx.translate(sx, wy);
+    ctx.rotate(spin);
+    // Tire
+    ctx.fillStyle = '#1a1a1a';
+    ctx.beginPath(); ctx.arc(0, 0, bike.wheelRadius, 0, Math.PI * 2); ctx.fill();
+    // Rim
+    ctx.fillStyle = '#bbb';
+    ctx.beginPath(); ctx.arc(0, 0, bike.wheelRadius - 5, 0, Math.PI * 2); ctx.fill();
+    // Hub
+    ctx.fillStyle = '#333';
+    ctx.beginPath(); ctx.arc(0, 0, 4, 0, Math.PI * 2); ctx.fill();
+    // Spokes
+    ctx.strokeStyle = '#666';
+    ctx.lineWidth = 1.5;
+    for (let i = 0; i < 4; i++) {
+      const ang = (i / 4) * Math.PI;
+      ctx.beginPath();
+      ctx.moveTo(Math.cos(ang) * 3, Math.sin(ang) * 3);
+      ctx.lineTo(Math.cos(ang) * (bike.wheelRadius - 6), Math.sin(ang) * (bike.wheelRadius - 6));
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+  drawWheel(rear.x, rear.y, bike.wheelSpin);
+  drawWheel(front.x, front.y, bike.wheelSpin);
+
+  // Frame & rider rotated with body
+  ctx.save();
+  ctx.translate(sxBody, syBody);
+  ctx.rotate(bike.angle);
+
+  const wb = bike.wheelBase / 2;
+  const h = bike.comHeight;
+
+  // Frame (orange)
+  ctx.strokeStyle = '#ff5a1f';
+  ctx.lineWidth = 5;
+  ctx.lineCap = 'round';
+  // Lower frame between wheels
+  ctx.beginPath();
+  ctx.moveTo(-wb, h - 3);
+  ctx.lineTo(wb - 6, h - 8);
+  ctx.stroke();
+  // Seat post
+  ctx.beginPath();
+  ctx.moveTo(-wb + 6, h - 8);
+  ctx.lineTo(-wb + 14, h - 24);
+  ctx.stroke();
+  // Front fork
+  ctx.beginPath();
+  ctx.moveTo(wb - 6, h - 8);
+  ctx.lineTo(wb, h);
+  ctx.stroke();
+  // Fork top
+  ctx.beginPath();
+  ctx.moveTo(wb - 6, h - 8);
+  ctx.lineTo(wb - 2, -2);
+  ctx.stroke();
+
+  // Gas tank
+  ctx.fillStyle = '#ff7a35';
+  ctx.beginPath();
+  ctx.moveTo(-wb + 18, h - 22);
+  ctx.lineTo(wb - 8, h - 14);
+  ctx.lineTo(wb - 8, h - 6);
+  ctx.lineTo(-wb + 14, h - 6);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = '#aa3a14';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Seat
+  ctx.fillStyle = '#222';
+  ctx.beginPath();
+  ctx.rect(-wb + 4, h - 26, 18, 6);
+  ctx.fill();
+
+  // Handlebars
+  ctx.strokeStyle = '#222';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(wb - 4, 0);
+  ctx.lineTo(wb + 4, -8);
+  ctx.stroke();
+
+  // Rider body
+  ctx.fillStyle = '#2196f3';
+  // Torso
+  ctx.beginPath();
+  ctx.ellipse(-wb + 14, -2, 9, 14, -0.2, 0, Math.PI * 2);
+  ctx.fill();
+  // Arm to handlebars
+  ctx.strokeStyle = '#2196f3';
+  ctx.lineWidth = 5;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(-wb + 16, -2);
+  ctx.lineTo(wb - 2, -6);
+  ctx.stroke();
+  // Leg
+  ctx.strokeStyle = '#1565c0';
+  ctx.beginPath();
+  ctx.moveTo(-wb + 12, 8);
+  ctx.lineTo(-wb + 4, h - 10);
+  ctx.stroke();
+
+  // Helmet
+  ctx.fillStyle = '#ff8a00';
+  ctx.beginPath();
+  ctx.arc(-wb + 16, -16, 9, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#222';
+  ctx.beginPath();
+  ctx.ellipse(-wb + 19, -14, 5, 3, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.restore();
+}
+
+function render() {
+  drawSky();
+  drawBeachDecor();
+  drawTerrain();
+  drawSaws();
+  drawFinish();
+  drawBike();
+}
+
+// ============================================================
+// MAIN LOOP
+// ============================================================
+let lastT = performance.now();
+function loop() {
+  const now = performance.now();
+  let dt = (now - lastT) / 1000;
+  lastT = now;
+  if (dt > 0.05) dt = 0.05;
+  if (game.state !== 'idle') step(dt);
+  render();
+  requestAnimationFrame(loop);
+}
+resetBike();
+loop();
+
+// ============================================================
+// START
+// ============================================================
+document.getElementById('startBtn').addEventListener('click', async () => {
+  initAudio();
+  if (audioCtx && audioCtx.state === 'suspended') await audioCtx.resume();
+  document.getElementById('overlay').classList.add('hidden');
+  resetScore();
+  game.advanceLevel = false;
+  game.finishedGame = false;
+  startLevel(1);
+});
+</script>
+</body>
+</html>
