@@ -1986,6 +1986,26 @@ const categoryStyles = {
 };
 
 // ===== Open-Meteo live weather (no API key / no signup) =====
+
+// Convert "HH:MM" 24-hour string to localized 12-hour text.
+// Korean: "오전/오후 H:MM",  English: "H:MM AM/PM"
+function fmt12(hhmm) {
+  if (!hhmm || hhmm.indexOf(':') < 0) return hhmm || '';
+  const parts = hhmm.split(':');
+  let h = parseInt(parts[0], 10);
+  const m = parts[1].padStart(2, '0');
+  if (isNaN(h)) return hhmm;
+  if (currentLang === 'ko') {
+    const period = h < 12 ? '오전' : '오후';
+    let h12 = h % 12; if (h12 === 0) h12 = 12;
+    return `${period} ${h12}:${m}`;
+  } else {
+    const ampm = h < 12 ? 'AM' : 'PM';
+    let h12 = h % 12; if (h12 === 0) h12 = 12;
+    return `${h12}:${m} ${ampm}`;
+  }
+}
+
 // WMO weather code → icon + condition text
 function wmoToIcon(code) {
   if (code === 0) return { icon: '☀️', en: 'Clear', ko: '맑음' };
@@ -3035,10 +3055,15 @@ blocks.forEach((b) => {
     // Build the list of locations to show: main first, then each stacked spot
     const wxList = [wx.main].concat(wx.stack && wx.stack.length ? wx.stack : []);
 
-    // Card geometry — center a fixed-width card column inside the block
-    const cardW = Math.min(b.width - 24, 300);
+    // Narrow blocks (1-day cities like Zurich, b.width≈115) can't fit the
+    // side-by-side layout — text overlaps badly. Use a taller, single-column
+    // centered layout instead, and let the card be a bit wider than the block.
+    const isNarrow = b.width < 200;
+    const cardW = isNarrow
+      ? Math.max(b.width + 80, 190)        // wider than the narrow block
+      : Math.min(b.width - 24, 300);
     const cardX = cx - cardW / 2;
-    const cardH = 96;
+    const cardH = isNarrow ? 150 : 96;
     const cardGap = 12;
     let cardY = b.y + 38;
 
@@ -3057,12 +3082,75 @@ blocks.forEach((b) => {
       const pad = 14;
       const lx = cardX + pad;          // left text anchor
       const rx = cardX + cardW - pad;  // right text anchor
-
-      // Live / climatology badge (top-right)
+      const nmText = currentLang === 'ko' ? (w.name_ko || w.name) : w.name;
+      const condText = `${w.icon} ${currentLang === 'ko' ? (w.cond_ko||w.cond) : w.cond}`;
       const isLive = !!w._live;
       const badgeTxt = isLive
         ? (currentLang === 'ko' ? '🟢 실시간' : '🟢 LIVE')
         : (currentLang === 'ko' ? '⚪ 평년값' : '⚪ AVG');
+
+      if (isNarrow) {
+        // ----- Vertical single-column centered layout -----
+        let yy = cardY + 20;
+        // badge
+        const bdg = createEl('text', {
+          x: cx, y: yy, 'text-anchor': 'middle',
+          'font-size': 9, 'font-weight': 'bold', fill: '#fff'
+        });
+        bdg.textContent = badgeTxt;
+        weatherGroup.appendChild(bdg);
+        yy += 20;
+        // name
+        const nmMax = Math.floor((cardW - 16) / (currentLang === 'ko' ? 13 : 8));
+        const nm = createEl('text', {
+          x: cx, y: yy, 'text-anchor': 'middle',
+          'font-size': 13, 'font-weight': 'bold', fill: '#fff'
+        });
+        nm.textContent = nmText.length > nmMax ? nmText.substring(0, nmMax-1)+'…' : nmText;
+        const nt = createEl('title'); nt.textContent = nmText; nm.appendChild(nt);
+        weatherGroup.appendChild(nm);
+        yy += 26;
+        // big temp
+        const tp = createEl('text', {
+          x: cx, y: yy, 'text-anchor': 'middle',
+          'font-size': 30, 'font-weight': '300', fill: '#fff'
+        });
+        tp.textContent = `${w.now}°`;
+        weatherGroup.appendChild(tp);
+        yy += 20;
+        // condition
+        const cd = createEl('text', {
+          x: cx, y: yy, 'text-anchor': 'middle',
+          'font-size': 10, fill: 'rgba(255,255,255,0.95)'
+        });
+        cd.textContent = condText;
+        weatherGroup.appendChild(cd);
+        yy += 16;
+        // hi/lo
+        const hl = createEl('text', {
+          x: cx, y: yy, 'text-anchor': 'middle',
+          'font-size': 9, fill: 'rgba(255,255,255,0.9)'
+        });
+        hl.textContent = `H:${w.hi}°  L:${w.lo}°`;
+        weatherGroup.appendChild(hl);
+        yy += 18;
+        // sunrise / sunset
+        const sn1 = createEl('text', {
+          x: cx, y: yy, 'text-anchor': 'middle',
+          'font-size': 9, fill: 'rgba(255,255,255,0.95)'
+        });
+        sn1.textContent = `🌅 ${fmt12(w.sunrise)}   🌇 ${fmt12(w.sunset)}`;
+        weatherGroup.appendChild(sn1);
+        yy += 14;
+        // timezone
+        const sn2 = createEl('text', {
+          x: cx, y: yy, 'text-anchor': 'middle',
+          'font-size': 8.5, fill: 'rgba(255,255,255,0.85)'
+        });
+        sn2.textContent = `🕐 ${w.tzLabel}`;
+        weatherGroup.appendChild(sn2);
+      } else {
+      // Live / climatology badge (top-right)
       const badge = createEl('text', {
         x: rx, y: cardY + 16,
         'text-anchor': 'end',
@@ -3076,7 +3164,6 @@ blocks.forEach((b) => {
         x: lx, y: cardY + 26,
         'font-size': isMain ? 13 : 12, 'font-weight': 'bold', fill: '#fff'
       });
-      const nmText = currentLang === 'ko' ? (w.name_ko || w.name) : w.name;
       const nmMax = Math.floor((cardW - 2*pad - 30) / (currentLang === 'ko' ? 12 : 7));
       nm.textContent = nmText.length > nmMax ? nmText.substring(0, nmMax-1) + '…' : nmText;
       const nmTitle = createEl('title'); nmTitle.textContent = nmText; nm.appendChild(nmTitle);
@@ -3087,7 +3174,7 @@ blocks.forEach((b) => {
         x: lx, y: cardY + 44,
         'font-size': 10, fill: 'rgba(255,255,255,0.95)'
       });
-      cond.textContent = `${w.icon} ${currentLang === 'ko' ? (w.cond_ko||w.cond) : w.cond}`;
+      cond.textContent = condText;
       weatherGroup.appendChild(cond);
 
       // Big temperature (right)
@@ -3113,8 +3200,9 @@ blocks.forEach((b) => {
         x: lx, y: cardY + 80,
         'font-size': 9, fill: 'rgba(255,255,255,0.95)'
       });
-      sun.textContent = `🌅 ${w.sunrise}   🌇 ${w.sunset}   🕐 ${w.tzLabel}`;
+      sun.textContent = `🌅 ${fmt12(w.sunrise)}   🌇 ${fmt12(w.sunset)}   🕐 ${w.tzLabel}`;
       weatherGroup.appendChild(sun);
+      }
 
       // Visit note (if any) — small line below
       if (w.note || w.note_ko) {
@@ -3440,8 +3528,8 @@ function rebuildWeatherGalleries() {
         </div>
         ${hourlyHtml}
         <div class="weather-card-sun">
-          <span>🌅 ${currentLang === 'ko' ? '일출' : 'Sunrise'}: <b>${w.sunrise}</b></span>
-          <span>🌇 ${currentLang === 'ko' ? '일몰' : 'Sunset'}: <b>${w.sunset}</b></span>
+          <span>🌅 ${currentLang === 'ko' ? '일출' : 'Sunrise'}: <b>${fmt12(w.sunrise)}</b></span>
+          <span>🌇 ${currentLang === 'ko' ? '일몰' : 'Sunset'}: <b>${fmt12(w.sunset)}</b></span>
           <span>🕐 ${w.tzLabel}</span>
         </div>
       `;
