@@ -1101,6 +1101,15 @@ const placesData = {
         desc_ko: '브레라 예술가 거리의 고급 레스토랑. 아름다운 안뜰, 샤퀴테리, 와인, 정교한 밀라노 요리. 스타일리시한 점심에 좋음.',
         link: 'https://www.google.com/maps/search/?api=1&query=Il+Salumaio+Brera+Milano',
         image: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=400&h=300&fit=crop'
+      },
+      {
+        name: '✅ Al Fresco — RESERVATION REQUIRED (5/30 dinner)',
+        name_ko: '✅ Al Fresco — 예약 필수 (5/30 저녁)',
+        desc: 'Planned for 5/30 dinner. Hidden gem near Navigli on Via Savona, away from the center — a beautiful garden setting for relaxed dining. Known for fresh, well-presented Italian dishes: mushroom soup, salmon salad, squid pasta with lentil cream, fritto misto, zabaione. Elegant yet comfortable. ⭐ 4.2 (2,155 reviews), €€€. Open daily 12:30–3 PM & 7:30 PM–12 AM. ~33 min by tram from hotel. Reservation required. Via Savona 50, 20144 Milano. ☎ +39 02 4953 3630.',
+        desc_ko: '5/30 저녁 예정. 나빌리 근처 Via Savona의 숨은 명소, 중심가에서 떨어진 곳 — 아름다운 야외 정원에서 여유로운 식사. 신선하고 정갈한 이탈리아 요리: 머슈룸 스프, 연어 샐러드, 오징어·렌틸크림 파스타, 프리토 미스토, 자바이오네. 우아하면서 편안. ⭐ 4.2 (리뷰 2,155개), €€€. 매일 12:30–15시, 19:30–24시. 호텔서 트램 약 33분. 예약 필수. Via Savona 50, 20144 Milano. ☎ +39 02 4953 3630.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJ48UjIeTDhkcRhiacktfuL7U',
+        website: 'http://www.alfrescomilano.it/',
+        image: 'https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=400&h=300&fit=crop'
       }
     ],
     shopping: [
@@ -1585,19 +1594,22 @@ const schedule = [
     days: 3,
     notes: [
       { day: 0, time: '6:00 PM',  label: 'Check-in Hotel The Square', label_ko: 'Hotel The Square 체크인', type: 'checkin' },
-      { day: 0, time: '7:00 PM',  label: 'Walk to Brera district', label_ko: '브레라 지구로 이동', type: 'excursion' },
-      { day: 0, time: '7:30 PM',  label: '✅ Dinner: Il Solferino (RESERVED, 5 guests)', label_ko: '✅ 저녁: Il Solferino (예약 완료, 5명)' },
-      { day: 0, time: '9:30 PM',  label: 'Stroll Brera / Navigli after dinner', label_ko: '식후 브레라 / 나빌리 산책', type: 'excursion' },
-      { day: 0, time: '10:30 PM', label: 'Return to hotel', label_ko: '호텔 복귀' },
-      { day: 1, time: '8:30 AM',  label: 'Duomo di Milano (interior + rooftop)', label_ko: '두오모 대성당 (내부 + 옥상 테라스)', type: 'excursion' },
-      { day: 1, time: '10:30 AM', label: 'Galleria Vittorio Emanuele II', label_ko: '갤러리아 비토리오 에마누엘레 2세', type: 'excursion' },
-      { day: 1, time: '11:30 AM', label: 'Lunch: Risoelatte Duomo (Milanese)', label_ko: '점심: Risoelatte Duomo (밀라노 요리)' },
-      { day: 1, time: '2:00 PM',  label: 'Sforza Castle + Sempione Park', label_ko: '스포르체스코 성 + 셈피오네 공원', type: 'excursion' },
-      { day: 1, time: '7:00 PM',  label: 'Dinner in Milano', label_ko: '밀라노 저녁 식사' },
-      { day: 2, time: '9:00 AM',  label: 'Free morning / last sightseeing', label_ko: '자유 오전 / 마지막 관광', type: 'excursion' },
+      { day: 0, time: '7:30 PM',  label: '✅ Dinner: Il Solferino (RESERVED, 5 guests) — 30min from hotel: vongole, seafood pasta, saffron risotto, grilled porcini', label_ko: '✅ 저녁: Il Solferino (예약 완료, 5명) — 호텔서 30분: 봉골레, 해산물 파스타, 샤프란 리조또, 포르치니 구이' },
+      { day: 0, time: '9:30 PM',  label: 'Walk Navigli (canal district) — stroll & sightseeing', label_ko: 'Navigli(나빌리오) 운하 지구 산책·구경', type: 'excursion' },
+      { day: 0, time: '10:30 PM', label: 'Return to hotel', label_ko: '호텔로 복귀' },
+      { day: 1, time: '9:00 AM',  label: 'Duomo di Milano (interior + rooftop terrace)', label_ko: '두오모 성당 (내부, 옥상 테라스)', type: 'excursion' },
+      { day: 1, time: '10:30 AM', label: 'Galleria Vittorio Emanuele II', label_ko: 'Galleria Vittorio Emanuele II', type: 'excursion' },
+      { day: 1, time: '11:30 AM', label: 'La Rinascente dept. store: homeware & food hall, Tessitura Toscana Telerie fabrics', label_ko: '리나센테 백화점: 생활용품·식재료, 테시투라 토스카나 텔레리에 패브릭', type: 'excursion' },
+      { day: 1, time: '12:30 PM', label: 'Lunch: OBICÀ rooftop 7F (mozzarella bar) — ravioli, Bufala D.O.P', label_ko: '점심: 7층 루프탑 OBICÀ (모짜렐라 전문) — 라비올리, Bufala D.O.P 치즈' },
+      { day: 1, time: '2:00 PM',  label: 'Via Monte Napoleone luxury shopping (MaxMara) + Amorino gelato (pistachio, chocolate)', label_ko: 'Via Monte Napoleone 명품 쇼핑 (MaxMara) + 아모리노 젤라또 (피스타치오·초콜릿)', type: 'excursion' },
+      { day: 1, time: '4:00 PM',  label: 'Brera district: sightseeing & homeware shopping', label_ko: 'Brera 지역 구경·생활용품 쇼핑', type: 'excursion' },
+      { day: 1, time: '7:30 PM',  label: 'Dinner: Al Fresco (RESERVATION REQUIRED) — tram ~33min from hotel, Via Savona 50. Garden dining: mushroom soup, salmon salad', label_ko: '저녁: Al Fresco (예약 필수) — 숙소서 트램 약 33분, Via Savona 50. 야외 정원 식사: 머슈룸 스프, 연어 샐러드' },
+      { day: 1, time: '10:30 PM', label: 'Return to hotel', label_ko: '호텔로 복귀' },
+      { day: 2, time: '8:00 AM',  label: 'Breakfast: EATALY (opens 8AM) — 3F LAVAZZA (top-3 Italian coffee), Caffè Vergnano 1882', label_ko: '아침: EATALY (8시 오픈) — 3층 LAVAZZA(이태리 3대 커피), Café Vergnano 1882', type: 'excursion' },
+      { day: 2, time: '9:30 AM',  label: 'Sforza Castle if time permits, then back to hotel', label_ko: '시간되면 스포르체스코 성, 그 후 호텔 복귀', type: 'excursion' },
       { day: 2, time: '11:00 AM', label: 'Checkout Hotel The Square', label_ko: 'Hotel The Square 체크아웃', type: 'checkout' },
-      { day: 2, time: '2:55 PM',  label: 'P4-5 fly MIL → home', label_ko: 'P4-5 밀라노 → 귀국', type: 'flight' },
-      { day: 2, time: '1:10 PM',  label: 'P1-3 train → Firenze (departure)', label_ko: 'P1-3 기차 → 피렌체 (출발)', type: 'excursion' }
+      { day: 2, time: '1:10 PM',  label: 'P1-3 train → Firenze (departure)', label_ko: 'P1-3 기차 → 피렌체 (출발)', type: 'excursion' },
+      { day: 2, time: '2:55 PM',  label: 'P4-5 fly MIL → home', label_ko: 'P4-5 밀라노 → 귀국', type: 'flight' }
     ]
   },
   {
@@ -1623,8 +1635,16 @@ const schedule = [
       { day: 1, time: '7:00 PM',  label: 'Dinner in Florence', label_ko: '피렌체 저녁 식사' },
       { day: 2, time: '9:00 AM',  label: 'Uffizi Gallery start', label_ko: '우피치 미술관 시작', type: 'excursion' },
       { day: 2, time: '6:00 PM',  label: 'Uffizi Gallery end', label_ko: '우피치 미술관 종료', type: 'excursion' },
-      { day: 3, time: '9:00 AM',  label: 'Free morning / last sightseeing', label_ko: '자유 오전 / 마지막 관광', type: 'excursion' },
-      { day: 3, time: '11:00 AM', label: 'Checkout FH55', label_ko: 'FH55 체크아웃', type: 'checkout' },
+      { day: 3, time: '8:00 AM',  label: 'Checkout FH55 (store luggage)', label_ko: 'FH55 체크아웃 (짐 보관)', type: 'checkout' },
+      { day: 3, time: '9:00 AM',  label: '★ MEET: Piazza della Signoria, in front of Neptune Fountain (center of fountain)', label_ko: '★ 미팅: 시뇨리아 광장 넵튠 분수 앞 (분수 중앙)', type: 'excursion' },
+      { day: 3, time: '9:00 AM',  label: 'Piazza della Signoria tour (50min): Palazzo Vecchio ext, Loggia dei Lanzi, Neptune Fountain', label_ko: '시뇨리아 광장 투어 (50분): 베키오 궁전 외부, 란찌 회랑, 넵튠 분수', type: 'excursion' },
+      { day: 3, time: '9:50 AM',  label: 'Palazzo Vecchio (exterior) + Ponte Vecchio + Boar statue (Il Porcellino)', label_ko: '베키오 궁전(외부) + 베키오 다리 + 멧돼지 동상', type: 'excursion' },
+      { day: 3, time: '10:40 AM', label: 'Piazza della Repubblica + historic Gilli Café (coffee, 30min)', label_ko: '공화국 광장 + 역사적인 질리 카페 (커피, 30분)', type: 'excursion' },
+      { day: 3, time: '11:15 AM', label: 'Duomo (Santa Maria del Fiore, ext) + Cupola story + Giotto Bell Tower (ext)', label_ko: '두오모 성당(외부) + 쿠폴라 이야기 + 지오토의 종탑(외부)', type: 'excursion' },
+      { day: 3, time: '12:00 PM', label: 'Baptistery of San Giovanni (Gates of Paradise) + Dante House & Church (ext)', label_ko: '산 조반니 세례당 (천국의 문) + 단테의 집·성당(외부)', type: 'excursion' },
+      { day: 3, time: '12:30 PM', label: 'Lunch: famous Florence panini shop (most famous local spot)', label_ko: '점심: 피렌체 가장 유명한 파니니 맛집' },
+      { day: 3, time: '1:30 PM',  label: '★ Uffizi Gallery — ticketed ENTRY 13:30, guided tour (210min)', label_ko: '★ 우피치 미술관 — 입장 13:30, 가이드 투어 (210분)', type: 'excursion' },
+      { day: 3, time: '5:00 PM',  label: 'Uffizi tour ends — collect luggage', label_ko: '우피치 투어 종료 — 짐 회수', type: 'excursion' },
       { day: 3, time: '7:33 PM',  label: 'Train → Rome (departure)', label_ko: '기차 → 로마 (출발)', type: 'excursion' }
     ]
   },
@@ -1645,8 +1665,16 @@ const schedule = [
     days: 4,
     notes: [
       { day: 0, time: '9:00 PM',  label: 'Arrive Rome / Check-in', label_ko: '로마 도착 / 체크인', type: 'checkin' },
-      { day: 2, time: '9:30 AM',  label: 'Vatican start', label_ko: '바티칸 시작', type: 'excursion' },
-      { day: 2, time: '2:40 PM',  label: 'Vatican end', label_ko: '바티칸 종료', type: 'excursion' },
+      { day: 2, time: '10:00 AM', label: '★ MEET near Vatican Museums entrance ~10:00 (9:30–10:30; exact time via KakaoTalk the day before)', label_ko: '★ 미팅: 바티칸 박물관 입구 근처 10시 전후 (9:30~10:30, 정확한 시간은 투어 전날 카톡 안내)', type: 'excursion' },
+      { day: 2, time: '10:00 AM', label: 'Meeting (10min)', label_ko: '미팅 (10분)', type: 'excursion' },
+      { day: 2, time: '10:10 AM', label: 'Museum entrance area (40min): meet "Raphael", Vatican backstory before entering', label_ko: '박물관 입구 (40분): 라파엘로 살짝 만남, 입장 전 바티칸 스토리', type: 'excursion' },
+      { day: 2, time: '10:50 AM', label: 'Museum admission (30min): enter with reserved ticket + photos', label_ko: '박물관 입장 (30분): 예약 티켓으로 입장 + 인증샷', type: 'excursion' },
+      { day: 2, time: '11:20 AM', label: 'Pinacoteca (painting gallery) tour (80min): Western art history focus', label_ko: '회화관 투어 (80분): 서양 미술사 중심 감상', type: 'excursion' },
+      { day: 2, time: '12:40 PM', label: 'Break (40min): Sistine Chapel pre-briefing + restroom/rest', label_ko: '휴식 (40분): 시스티나 소성당 사전 설명 + 화장실/휴식', type: 'excursion' },
+      { day: 2, time: '1:20 PM',  label: 'Main wing (40min): Round Room, Cross Room, Candelabra/Tapestry/Maps Galleries, Sobieski, Immaculate Conception, School of Athens', label_ko: '본관 (40분): 원형의 방, 십자가의 방, 촛대·아라찌·지도의 방, 소베스키, 성모마리아의 방, 아테네학당', type: 'excursion' },
+      { day: 2, time: '2:00 PM',  label: 'Sistine Chapel (20min)', label_ko: '시스티나 소성당 관람 (20분)', type: 'excursion' },
+      { day: 2, time: '2:20 PM',  label: "St. Peter's Square & Basilica — free visit (10min guide, then tour ends)", label_ko: '베드로 광장·대성당 (가이드 10분 후 투어 종료, 자유관람)', type: 'excursion' },
+      { day: 2, time: '2:30 PM',  label: "St. Peter's Basilica self-tour (30min+; cupola/shop/post office optional — keep afternoon free)", label_ko: '베드로 대성당 자유관람 (30분+; 쿠폴라·기념품·우체국 방문 시 오후 일정 비우기 권장)', type: 'excursion' },
       { day: 3, time: '11:00 AM', label: 'Checkout', label_ko: '체크아웃', type: 'checkout' },
       { day: 3, time: '1:35 PM',  label: 'P1-3 fly home', label_ko: 'P1-3 귀국', type: 'flight' }
     ]
@@ -1879,6 +1907,7 @@ const coordsByPlaceId = {
   'ChIJH_gyYqzGhkcRe6BjXrAbilY': [45.4637013, 9.1868304],     // Ciacco
   'ChIJ_8oKaK7GhkcRnrGHAR4a0W8': [45.465787, 9.191412],       // Cioccolatitaliani
   'ChIJV4j8tcrGhkcRQx-KpTMSvfM': [45.4780877, 9.1883237],     // Il Solferino (RESERVED 5/29)
+  'ChIJ48UjIeTDhkcRhiacktfuL7U': [45.4540676, 9.163107],      // Al Fresco (5/30 dinner)
   'ChIJWfr6v3nDhkcRzd5cRMZ-wBI': [45.4509456, 9.1699795],     // Officina del Riso (Navigli)
   'ChIJJYdiwVLBhkcRLcmhPgyDrE4': [45.4664383, 9.1833181],     // Risoelatte Duomo
   'ChIJd8ROFKvGhkcRUf875a9G9lM': [45.4629116, 9.1837802],     // Trattoria Milanese
