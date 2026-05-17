@@ -1492,9 +1492,9 @@ const schedule = [
       image: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&h=300&fit=crop'
     },
     people: ['P1','P2','P3','P4','P5'],
-    dates: ['5/26 Tue','5/27 Wed','5/28 Thu'],
-    dates_ko: ['5/26 화','5/27 수','5/28 목'],
-    days: 3,
+    dates: ['5/26 Tue','5/27 Wed','5/28 Thu','5/29 Fri'],
+    dates_ko: ['5/26 화','5/27 수','5/28 목','5/29 금'],
+    days: 4,
     notes: [
       { day: 0, time: '4:00 PM',  label: 'Check-in Chalet Carve', label_ko: 'Chalet Carve 체크인', type: 'checkin' },
       { day: 0, time: '1:44 PM',  label: 'Train → Eigergletscher', label_ko: '기차 → 아이거글레처', type: 'excursion' },
@@ -1514,7 +1514,6 @@ const schedule = [
       { day: 1, time: '5:15 PM',  label: 'BOB train: Lauterbrunnen → Grindelwald', label_ko: 'BOB 기차: 라우터브루넨 → 그린델발트', type: 'excursion' },
       { day: 1, time: '6:00 PM',  label: 'Back in Grindelwald', label_ko: '그린델발트 복귀', type: 'excursion' },
       { day: 1, time: '7:00 PM',  label: 'Dinner in Grindelwald', label_ko: '그린델발트 저녁 식사' },
-      { day: 2, time: '8:00 AM',  label: 'Checkout Chalet Carve', label_ko: 'Chalet Carve 체크아웃', type: 'checkout' },
       { day: 2, time: '8:30 AM', team: 'A', label: '[Option A] Cable car → First', label_ko: '[옵션A] 케이블카 → First', type: 'excursion' },
       { day: 2, time: '8:30 AM', team: 'B', label: '[Option B] Cable car → Pfingstegg', label_ko: '[옵션B] 케이블카 → Pfingstegg', type: 'excursion' },
       { day: 2, time: '9:00 AM', team: 'A', label: '[A] First Cliff Walk (절벽 산책로)', label_ko: '[A] First Cliff Walk (절벽 산책로)', type: 'excursion' },
@@ -1525,8 +1524,12 @@ const schedule = [
       { day: 2, time: '10:30 AM', team: 'B', label: '[B] Glacier gorge boardwalk', label_ko: '[B] 빙하 협곡 보드워크', type: 'excursion' },
       { day: 2, time: '11:15 AM', team: 'A', label: '[A] Hike back to First, cable car down', label_ko: '[A] First로 복귀, 케이블카 하강', type: 'excursion' },
       { day: 2, time: '11:15 AM', team: 'B', label: '[B] Return to village', label_ko: '[B] 마을 복귀', type: 'excursion' },
-      { day: 2, time: '12:30 PM', label: 'Lunch + collect luggage', label_ko: '점심 + 짐 찾기' },
-      { day: 2, time: '1:17 PM', label: 'Train → Milano (departure)', label_ko: '기차 → 밀라노 (출발)', type: 'excursion' }
+      { day: 2, time: '12:30 PM', label: 'Lunch in Grindelwald', label_ko: '그린델발트 점심' },
+      { day: 2, time: '2:00 PM', label: 'Free time / village & shops', label_ko: '자유 시간 / 마을 & 쇼핑', type: 'excursion' },
+      { day: 2, time: '7:00 PM', label: 'Dinner in Grindelwald', label_ko: '그린델발트 저녁 식사' },
+      { day: 3, time: '8:00 AM', label: 'Checkout Chalet Carve', label_ko: 'Chalet Carve 체크아웃', type: 'checkout' },
+      { day: 3, time: '12:30 PM', label: 'Lunch + collect luggage', label_ko: '점심 + 짐 찾기' },
+      { day: 3, time: '1:17 PM', label: 'Train → Milano (departure)', label_ko: '기차 → 밀라노 (출발)', type: 'excursion' }
     ]
   },
   {
@@ -1541,19 +1544,31 @@ const schedule = [
       image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop'
     },
     people: ['P1','P2','P3','P4','P5'],
-    dates: ['5/29 Fri','5/30 Sat'],
-    dates_ko: ['5/29 금','5/30 토'],
-    days: 2,
+    dates: ['5/29 Fri','5/30 Sat','5/31 Sun'],
+    dates_ko: ['5/29 금','5/30 토','5/31 일'],
+    days: 3,
     notes: [
-      { day: 0, time: '6:00 PM',  label: 'Check-in Hotel The Square', label_ko: 'Hotel The Square 체크인', type: 'checkin' },
-      { day: 0, time: '7:30 PM',  label: 'Walk to Navigli canals', label_ko: 'Navigli 운하 지역 이동', type: 'excursion' },
-      { day: 0, time: '8:00 PM',  label: 'Dinner: pick from Officina del Riso / Osteria Brunello / La Pesa', label_ko: '저녁: Officina del Riso / Osteria Brunello / La Pesa 중 선택' },
-      { day: 0, time: '10:30 PM', label: 'Return to hotel', label_ko: '호텔 복귀' },
+      { day: 0, time: '6:30 PM',  label: 'Check-in Hotel The Square', label_ko: 'Hotel The Square 체크인', type: 'checkin' },
+      { day: 0, time: '7:15 PM',  label: 'Walk to Brera district', label_ko: '브레라 지구로 이동', type: 'excursion' },
+      { day: 0, time: '8:00 PM',  label: 'Dinner: Nabucco (Brera) — relaxed first-night dinner', label_ko: '저녁: Nabucco (브레라) — 부담 없는 첫날 저녁' },
+      { day: 0, time: '10:00 PM', label: 'Brera evening stroll → return to hotel', label_ko: '브레라 야경 산책 → 호텔 복귀' },
       { day: 1, time: '8:30 AM',  label: 'Duomo di Milano (interior + rooftop)', label_ko: '두오모 대성당 (내부 + 옥상 테라스)', type: 'excursion' },
-      { day: 1, time: '10:30 AM', label: 'Galleria Vittorio Emanuele II', label_ko: '갤러리아 비토리오 에마누엘레 2세', type: 'excursion' },
-      { day: 1, time: '11:30 AM', label: 'Lunch: Risoelatte Duomo (Milanese)', label_ko: '점심: Risoelatte Duomo (밀라노 요리)' },
-      { day: 1, time: '12:00 PM', label: 'Checkout (Sun 5/31)', label_ko: '체크아웃 (일 5/31)', type: 'checkout' },
-      { day: 1, time: '2:55 PM',  label: 'P4-5 fly MIL → home (Sun 5/31)', label_ko: 'P4-5 밀라노 → 귀국 (일 5/31)', type: 'flight' }
+      { day: 1, time: '10:00 AM', label: 'Galleria Vittorio Emanuele II', label_ko: '갤러리아 비토리오 에마누엘레 2세', type: 'excursion' },
+      { day: 1, time: '10:45 AM', label: 'Teatro alla Scala (exterior / museum)', label_ko: '라 스칼라 극장 (외부 / 박물관)', type: 'excursion' },
+      { day: 1, time: '11:30 AM', label: 'Santa Maria delle Grazie — The Last Supper (booking required)', label_ko: '산타 마리아 델레 그라치에 — 최후의 만찬 (예약 필수)', type: 'excursion' },
+      { day: 1, time: '1:00 PM',  label: 'Lunch: Trattoria Milanese — Risotto alla Milanese, Ossobuco', label_ko: '점심: Trattoria Milanese — 리소토 알라 밀라네제, 오쏘부코' },
+      { day: 1, time: '2:45 PM',  label: 'Sforzesco Castle', label_ko: '스포르체스코 성', type: 'excursion' },
+      { day: 1, time: '4:00 PM',  label: 'Parco Sempione walk', label_ko: '셈피오네 공원 산책', type: 'excursion' },
+      { day: 1, time: '5:30 PM',  label: 'Brera district + shopping / aperitivo', label_ko: '브레라 지구 + 쇼핑 / 아페리티보', type: 'excursion' },
+      { day: 1, time: '7:30 PM',  label: 'Move to Navigli canals', label_ko: '나빌리오 운하로 이동', type: 'excursion' },
+      { day: 1, time: '8:00 PM',  label: 'Farewell dinner: El Brellin (Navigli) — canal-side aperitivo & dinner', label_ko: '마지막 만찬: El Brellin (나빌리오) — 운하 옆 아페리티보 & 저녁' },
+      { day: 1, time: '10:30 PM', label: 'Return to hotel', label_ko: '호텔 복귀' },
+      { day: 2, time: '8:30 AM',  label: 'Morning: revisit any missed Day 1 sights (e.g. Ratanà brunch / Navigli / shopping)', label_ko: '오전: 5/30 못 간 곳 보충 (예: Ratanà 브런치 / 나빌리오 / 쇼핑)', type: 'excursion' },
+      { day: 2, time: '10:30 AM', label: 'Checkout Hotel The Square', label_ko: 'Hotel The Square 체크아웃', type: 'checkout' },
+      { day: 2, time: '11:30 AM', label: 'P1-3 → Milano Centrale station', label_ko: 'P1-3 → 밀라노 중앙역 이동', type: 'excursion' },
+      { day: 2, time: '1:10 PM',  label: 'P1-3 Frecciarossa 9539: Milano Centrale → Firenze SMN', label_ko: 'P1-3 프레차로사 9539: 밀라노 중앙역 → 피렌체 SMN', type: 'excursion' },
+      { day: 2, time: '2:55 PM',  label: 'P4-5 fly MIL → home', label_ko: 'P4-5 밀라노 → 귀국', type: 'flight' },
+      { day: 2, time: '3:04 PM',  label: 'P1-3 arrive Firenze Santa Maria Novella', label_ko: 'P1-3 피렌체 산타 마리아 노벨라 도착', type: 'excursion' }
     ]
   },
   {
@@ -1572,6 +1587,7 @@ const schedule = [
     dates_ko: ['5/31 일','6/1 월','6/2 화'],
     days: 3,
     notes: [
+      { day: 0, time: '3:04 PM',  label: 'Arrive Firenze Santa Maria Novella', label_ko: '피렌체 산타 마리아 노벨라 도착', type: 'excursion' },
       { day: 0, time: '3:30 PM',  label: 'Check-in FH55', label_ko: 'FH55 체크인', type: 'checkin' },
       { day: 2, time: '9:00 AM',  label: 'Uffizi Gallery start', label_ko: '우피치 미술관 시작', type: 'excursion' },
       { day: 2, time: '6:00 PM',  label: 'Uffizi Gallery end', label_ko: '우피치 미술관 종료', type: 'excursion' },
@@ -3611,7 +3627,12 @@ for (let i = 0; i < blocks.length - 1; i++) {
     inY  = timeToY('3:04 PM', to.y);
     transitInfo = {
       label: trainLabel,
-      sub: currentLang === 'ko' ? '1:10 PM → 3:04 PM (1시간 54분)' : '1:10 PM → 3:04 PM (1h 54m)'
+      sub: currentLang === 'ko' ? '1:10 PM → 3:04 PM (1시간 54분)' : '1:10 PM → 3:04 PM (1h 54m)',
+      legs: currentLang === 'ko' ? [
+        '프레차로사 9539: 밀라노 중앙역 13:10 → 피렌체 SMN 15:04'
+      ] : [
+        'Frecciarossa 9539: Milano Centrale 13:10 → Firenze SMN 15:04'
+      ]
     };
   } else if (from.location === 'Firenze' && to.location === 'Rome') {
     outY = timeToY('7:33 PM', from.y);
@@ -4078,7 +4099,11 @@ function getTransitInfo(fromIdx, toIdx) {
   if (route === 'Milano→Firenze') return {
     label: trainLabel,
     sub: currentLang === 'ko' ? '1:10 PM → 3:04 PM (1시간 54분)' : '1:10 PM → 3:04 PM (1h 54m)',
-    legs: []
+    legs: currentLang === 'ko' ? [
+      '프레차로사 9539: 밀라노 중앙역 13:10 → 피렌체 SMN 15:04'
+    ] : [
+      'Frecciarossa 9539: Milano Centrale 13:10 → Firenze SMN 15:04'
+    ]
   };
   if (route === 'Firenze→Rome') return { label: trainLabel, sub: '7:33 PM → 8:59 PM', legs: [] };
   return null;
