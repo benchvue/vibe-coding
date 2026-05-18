@@ -567,6 +567,67 @@
     font-size: 12px;
     opacity: 0.95;
   }
+  /* ===== 10-day forecast (AccuWeather-style), shown below the SVG block ===== */
+  .wx-forecast {
+    margin-top: 20px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .wx-forecast-head {
+    background: #1f3a5f;
+    color: #fff;
+    padding: 13px 18px;
+    font-size: 15px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .wx-forecast-head .wx-fc-sub {
+    font-size: 11.5px;
+    font-weight: 500;
+    opacity: 0.82;
+  }
+  .wx-fc-row {
+    display: grid;
+    grid-template-columns: 96px 36px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 18px;
+    border-top: 1px solid #eef2f7;
+    font-size: 13.5px;
+    color: #2d3748;
+  }
+  .wx-fc-row:nth-child(odd) { background: #f8fafc; }
+  .wx-fc-row.is-trip {
+    background: #fff7e6;
+    box-shadow: inset 3px 0 0 #b8860b;
+  }
+  .wx-fc-day { font-weight: 700; }
+  .wx-fc-day .wx-fc-dow { color: #2e75b6; }
+  .wx-fc-day .wx-fc-date { color: #718096; font-weight: 500; font-size: 12px; }
+  .wx-fc-ico { font-size: 22px; text-align: center; }
+  .wx-fc-cond { color: #4a5568; }
+  .wx-fc-pop { color: #2980b9; font-size: 12px; margin-left: 8px; }
+  .wx-fc-temps { font-weight: 700; white-space: nowrap; text-align: right; }
+  .wx-fc-temps .wx-fc-hi { color: #c0392b; }
+  .wx-fc-temps .wx-fc-lo { color: #2980b9; margin-left: 8px; }
+  .wx-fc-note {
+    padding: 10px 18px;
+    font-size: 12px;
+    color: #718096;
+    background: #f8fafc;
+    border-top: 1px solid #eef2f7;
+  }
+  @media (max-width: 560px) {
+    .wx-fc-row { grid-template-columns: 80px 30px 1fr auto; gap: 8px; padding: 11px 12px; font-size: 12.5px; }
+    .wx-fc-cond { display: none; }
+  }
 </style>
 </head>
 <body>
@@ -2134,9 +2195,9 @@ async function fetchLiveWeather(w) {
   if (w.lat === undefined || w.lng === undefined) return false;
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${w.lat}&longitude=${w.lng}`
     + `&current=temperature_2m,weather_code`
-    + `&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset`
+    + `&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset,weather_code,precipitation_probability_max`
     + `&hourly=temperature_2m,weather_code`
-    + `&timezone=auto&forecast_days=1`;
+    + `&timezone=auto&forecast_days=10`;
   try {
     const res = await fetch(url, { signal: AbortSignal.timeout ? AbortSignal.timeout(6000) : undefined });
     if (!res.ok) return false;
@@ -2153,6 +2214,24 @@ async function fetchLiveWeather(w) {
       w.lo = Math.round(d.daily.temperature_2m_min[0]);
       if (d.daily.sunrise && d.daily.sunrise[0]) w.sunrise = d.daily.sunrise[0].slice(11, 16);
       if (d.daily.sunset && d.daily.sunset[0]) w.sunset = d.daily.sunset[0].slice(11, 16);
+      // Build the 10-day forecast array
+      if (d.daily.time && d.daily.time.length) {
+        const days10 = [];
+        for (let i = 0; i < d.daily.time.length; i++) {
+          const dwm = wmoToIcon(d.daily.weather_code ? d.daily.weather_code[i] : 0);
+          days10.push({
+            date: d.daily.time[i],                                   // "2026-05-23"
+            hi: Math.round(d.daily.temperature_2m_max[i]),
+            lo: Math.round(d.daily.temperature_2m_min[i]),
+            icon: dwm.icon,
+            cond: dwm.en,
+            cond_ko: dwm.ko,
+            pop: d.daily.precipitation_probability_max
+                 ? d.daily.precipitation_probability_max[i] : null
+          });
+        }
+        w.daily10 = days10;
+      }
     }
     // Build an hourly curve at ~9AM,12PM,3PM,6PM,9PM local
     if (d.hourly && d.hourly.time) {
@@ -3652,6 +3731,95 @@ function rebuildWeatherGalleries() {
         : 'Weather at places you\'ll visit';
       stackDiv.appendChild(stackLabel);
       wx.stack.forEach(s => stackDiv.appendChild(weatherCard(s, true)));
+    }
+
+    // ===== 10-day forecast (AccuWeather-style), shown BELOW the weather cards =====
+    // Renders for the main location (and each stacked spot).
+    // Uses live w.daily10 when available, otherwise synthesizes from climatology
+    // so the forecast still shows in the sandboxed preview.
+    function buildForecast(w) {
+      let series = w.daily10;
+      if (!series || !series.length) {
+        // Synthesize a 10-day series from climatology hi/lo with mild variation,
+        // starting from today's date.
+        if (w.hi === undefined || w.lo === undefined) return null;
+        series = [];
+        const base = new Date();
+        const wig = [0, 1, -1, 2, -2, 1, 0, -1, 2, -1];   // gentle hi wiggle
+        for (let i = 0; i < 10; i++) {
+          const dt = new Date(base.getFullYear(), base.getMonth(), base.getDate() + i);
+          const y = dt.getFullYear();
+          const m = String(dt.getMonth() + 1).padStart(2, '0');
+          const dd = String(dt.getDate()).padStart(2, '0');
+          series.push({
+            date: `${y}-${m}-${dd}`,
+            hi: w.hi + wig[i],
+            lo: w.lo + Math.round(wig[i] / 2),
+            icon: w.icon || '⛅',
+            cond: w.cond || 'Partly cloudy',
+            cond_ko: w.cond_ko || '구름 조금',
+            pop: null
+          });
+        }
+      }
+      const wrap = document.createElement('div');
+      wrap.className = 'wx-forecast';
+      const wname = currentLang === 'ko' ? (w.name_ko || w.name) : w.name;
+      const liveTag = w._live
+        ? (currentLang === 'ko' ? '🟢 실시간' : '🟢 Live')
+        : (currentLang === 'ko' ? '⚪ 평년값' : '⚪ Avg');
+
+      // Trip date range for this block (highlight overlapping days)
+      const tripSet = new Set((b.dates || []).map(ds => {
+        // b.dates like "5/23 Sat" -> month/day
+        const mm = ds.match(/(\d+)\/(\d+)/);
+        return mm ? (parseInt(mm[1],10) + '-' + parseInt(mm[2],10)) : '';
+      }).filter(Boolean));
+
+      const dowKo = ['일','월','화','수','목','금','토'];
+      const dowEn = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+      let rows = '';
+      series.forEach((dd, i) => {
+        const dt = new Date(dd.date + 'T00:00:00');
+        const dow = currentLang === 'ko' ? dowKo[dt.getDay()] : dowEn[dt.getDay()];
+        const md = (dt.getMonth()+1) + '/' + dt.getDate();
+        const key = (dt.getMonth()+1) + '-' + dt.getDate();
+        const isTrip = tripSet.has(key);
+        const todayLbl = i === 0 ? (currentLang === 'ko' ? '오늘' : 'Today') : dow;
+        const cond = currentLang === 'ko' ? (dd.cond_ko || dd.cond) : dd.cond;
+        const popHtml = (dd.pop != null && dd.pop >= 20)
+          ? `<span class="wx-fc-pop">💧${dd.pop}%</span>` : '';
+        rows += `
+          <div class="wx-fc-row${isTrip ? ' is-trip' : ''}">
+            <div class="wx-fc-day"><span class="wx-fc-dow">${todayLbl}</span> <span class="wx-fc-date">${md}</span></div>
+            <div class="wx-fc-ico">${dd.icon}</div>
+            <div class="wx-fc-cond">${cond}${popHtml}</div>
+            <div class="wx-fc-temps"><span class="wx-fc-hi">${dd.hi}°</span><span class="wx-fc-lo">${dd.lo}°</span></div>
+          </div>`;
+      });
+
+      wrap.innerHTML = `
+        <div class="wx-forecast-head">
+          <span>${currentLang === 'ko' ? wname + ' · 10일 예보' : '10-Day Forecast · ' + wname}</span>
+          <span class="wx-fc-sub">${liveTag} · ${currentLang === 'ko'
+            ? '강조된 행 = 여행 기간' : 'highlighted = your trip dates'}</span>
+        </div>
+        ${rows}
+        <div class="wx-fc-note">${currentLang === 'ko'
+          ? '※ 실시간 데이터는 다운로드/호스팅 시 표시됩니다. 미리보기에서는 평년값일 수 있어요.'
+          : '※ Live data appears when downloaded or hosted; preview may show climatology.'}</div>
+      `;
+      return wrap;
+    }
+
+    const mainFc = buildForecast(wx.main);
+    if (mainFc) gallery.appendChild(mainFc);
+    if (wx.stack && wx.stack.length) {
+      wx.stack.forEach(s => {
+        const fc = buildForecast(s);
+        if (fc) gallery.appendChild(fc);
+      });
     }
 
     galleryContainer.appendChild(gallery);
