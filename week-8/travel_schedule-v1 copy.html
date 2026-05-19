@@ -307,38 +307,6 @@
     gap: 14px;
   }
   .detail-event:last-child { border-bottom: none; }
-  .detail-team-cols {
-    display: flex;
-    gap: 12px;
-    margin: 8px 0;
-  }
-  .detail-team-col {
-    flex: 1;
-    min-width: 0;
-    background: rgba(0,0,0,0.025);
-    border: 1px solid rgba(0,0,0,0.06);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-  .detail-team-title {
-    font-weight: 700;
-    font-size: 13px;
-    padding: 8px 12px;
-    color: #fff;
-    text-align: center;
-  }
-  .detail-team-title-a { background: #c0392b; }
-  .detail-team-title-b { background: #2980b9; }
-  .detail-team-col .detail-event {
-    padding: 7px 10px;
-    gap: 8px;
-    font-size: 12.5px;
-  }
-  .detail-team-col .detail-event-time { min-width: 62px; font-size: 12px; }
-  .detail-team-col .detail-event-icon { min-width: 18px; }
-  @media (max-width: 560px) {
-    .detail-team-cols { flex-direction: column; gap: 8px; }
-  }
   .detail-event-time {
     font-weight: bold;
     color: #444;
@@ -779,6 +747,31 @@ const placesData = {
         image: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400&h=300&fit=crop'
       },
       {
+        name: '[Lungern] Hotel Restaurant Kaiserstuhl',
+        name_ko: '[룽게른] Hotel Restaurant Kaiserstuhl',
+        desc: 'Lakefront restaurant on Lungernsee with breathtaking lake and mountain views. Authentic Swiss cuisine and friendly service. Open Mondays — perfect for the 5/25 sunset dinner.',
+        desc_ko: '룽게른 호수 바로 앞 레스토랑. 호수와 알프스 산맥의 숨막히는 풍경. 정통 스위스 요리와 친절한 서비스. 월요일 영업 — 5/25 일몰 저녁에 적합.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJYzXd2nKTj0cRaCrsQm7d-BE',
+        image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop'
+      },
+      {
+        name: '[Lungern] Restaurant Bahnhöfli',
+        name_ko: '[룽게른] Restaurant Bahnhöfli',
+        desc: 'Cozy restaurant at Lungern station with local ingredients. Pizza, pasta, goulash soup, and hash browns highly rated. ⚠️ Closed Mondays — not available 5/25.',
+        desc_ko: '룽게른 역에 위치한 아늑한 레스토랑. 현지 식재료 사용. 피자, 파스타, 굴라시 수프, 해시브라운이 인기. ⚠️ 월요일 휴무 — 5/25 이용 불가.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJh2HKMm2Sj0cRZysV6Tl1VRg',
+        image: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=400&h=300&fit=crop'
+      },
+      {
+        name: '[Lungern] Cantina Caverna',
+        name_ko: '[룽게른] Cantina Caverna',
+        desc: 'Unique cave restaurant up to 80m deep inside the Brünig mountain. Seasonal cuisine with regional ingredients from lake, forest, fields, and the Alps. Beef tartare, deer schnitzel, burgers, and chestnut dessert highly recommended. ⚠️ Mondays lunch only (until 2 PM) — not available for 5/25 dinner.',
+        desc_ko: '브뤼니히 산 안으로 최대 80m 깊이의 독특한 동굴 레스토랑. 호수·숲·들판·알프스의 지역 제철 재료를 사용한 요리. 비프 타르타르, 사슴 슈니첼, 버거, 밤 디저트 추천. ⚠️ 월요일은 점심만 (오후 2시까지) — 5/25 저녁 이용 불가.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJ-ROAFyWSj0cRGrvpNzUbLb4',
+        website: 'https://cantina-caverna.ch/',
+        image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&h=300&fit=crop'
+      },
+      {
         name: 'Restaurant Taverne',
         name_ko: 'Restaurant Taverne',
         desc: 'Swiss classics in a traditional setting — fondue, rösti, schnitzel.',
@@ -813,28 +806,13 @@ const placesData = {
         image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&h=300&fit=crop'
       },
       {
-        name: 'Restaurant Füürgässli (Thun)',
-        name_ko: 'Restaurant Füürgässli (툰)',
-        desc: 'Top-rated Swiss fine dining in Thun old town by the Aare river — chef often greets guests, superb steaks & seasonal menus, delightful atmosphere. ⭐ 4.9 (399 reviews). ⚠️ Closed Mon & Sun, dinner Tue-Fri 6-11 PM (Sat lunch+dinner). Reservation recommended. Obere Hauptgasse 54 (Aarequai entrance), 3600 Thun. ☎ +41 33 221 78 71.',
-        desc_ko: '툰 구시가지 Aare 강변의 최고 평점 스위스 미식 — 셰프가 직접 인사, 훌륭한 스테이크·계절 메뉴, 분위기 좋음. ⭐ 4.9 (리뷰 399개). ⚠️ 월·일 휴무, 화-금 저녁 18-23시 (토 점심+저녁). 예약 권장. Obere Hauptgasse 54 (Aarequai 입구), 3600 Thun. ☎ +41 33 221 78 71.',
-        link: 'https://www.google.com/maps/place/?q=place_id:ChIJGUBp8Oayj0cRov7IIBeT7es',
-        image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop'
-      },
-      {
-        name: 'Beau Rivage (Thun)',
-        name_ko: 'Beau Rivage (툰)',
-        desc: 'Excellent Italian by the lake in Thun with a huge riverside terrace and breathtaking views. Outstanding lasagna, fresh pizza, king-prawn lemon risotto, great wine list. ⭐ 4.6 (2,178 reviews), €€. Open daily (⚠️ closed Tue) 9 AM-late, Sun until 11:30 PM. Hofstettenstrasse 6, 3600 Thun. ☎ +41 33 221 41 10.',
-        desc_ko: '툰 호숫가의 훌륭한 이탈리안, 강변 대형 테라스 + 환상적 전망. 라자냐·신선한 피자·킹프라운 레몬 리조또·와인 셀렉션 우수. ⭐ 4.6 (리뷰 2,178개), €€. 매일 영업 (⚠️ 화 휴무) 9시~늦게, 일요일 23:30까지. Hofstettenstrasse 6, 3600 Thun. ☎ +41 33 221 41 10.',
-        link: 'https://www.google.com/maps/place/?q=place_id:ChIJ512Wz-Wyj0cRBMp0zVLm5ZE',
-        image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&h=300&fit=crop'
-      },
-      {
-        name: 'Grottino Quai 66 (Thun)',
-        name_ko: 'Grottino Quai 66 (툰)',
-        desc: 'Riverside spot on the Aare with arguably the best views in Thun — famous for thin crispy Flammkuchen (flame cake) in many variations, relaxed aperitif vibe. ⭐ 4.7 (363 reviews), €€. Open Tue-Sat 10 AM-10 PM, Sun 11 AM-6 PM, ⚠️ closed Mon. Aarequai 66, 3600 Thun. ☎ +41 33 557 85 66.',
-        desc_ko: 'Aare 강변, 툰 최고의 전망 — 얇고 바삭한 플람쿠헨(플람베) 다양한 종류로 유명, 여유로운 아페리티프 분위기. ⭐ 4.7 (리뷰 363개), €€. 화-토 10-22시, 일 11-18시, ⚠️ 월 휴무. Aarequai 66, 3600 Thun. ☎ +41 33 557 85 66.',
-        link: 'https://www.google.com/maps/place/?q=place_id:ChIJrVGf9uayj0cRqMrXDIzI8no',
-        image: 'https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=400&h=300&fit=crop'
+        name: '[Lungern] Restaurant Obsee — lakeside',
+        name_ko: '[룽게른] Restaurant Obsee — 호숫가',
+        desc: 'Lakeside restaurant right on Lungernsee with stunning lake & mountain views. Independent restaurant (not a hotel restaurant). Known for excellent food — the 10-hour white-wine marinated beef is praised as a trip highlight, fresh house salad, great pizza & soups. Has a casual See-Bistro by the water + the Königsstube dining room. ⭐ 4.4 (792 reviews). Open daily 09:00–23:00, ⚠️ closed Wed & Thu. ~15-18 min walk from Lungern station along the lake. Request a lakeside (See-Bistro) table when booking. Address: Campingstrasse 1, 6078 Lungern. ☎ +41 41 678 14 63.',
+        desc_ko: 'Lungernsee 호숫가 바로 옆 레스토랑, 호수와 산 전망이 환상적. 독립 식당 (호텔 부속 아님). 음식 평가 우수 — 10시간 화이트와인 마리네이드 소고기가 "스위스 여행 최고 요리"로 호평, 신선한 하우스 샐러드, 피자·수프도 좋음. 호숫가 캐주얼 See-Bistro + Königsstube 다이닝룸. ⭐ 4.4 (리뷰 792개). 매일 09:00–23:00, ⚠️ 수·목 휴무. 룽게른 기차역에서 호숫가 따라 도보 약 15~18분. 예약 시 호수 전망석(See-Bistro) 요청. 주소: Campingstrasse 1, 6078 Lungern. ☎ +41 41 678 14 63.',
+        link: 'https://www.google.com/maps/place/?q=place_id:ChIJaUB8tT-Sj0cRQFw1NAo02KQ',
+        website: 'https://obsee.ch/',
+        image: 'https://images.unsplash.com/photo-1437846972679-9e6e537be46e?w=400&h=300&fit=crop'
       }
     ],
     shopping: [
@@ -1560,13 +1538,10 @@ const schedule = [
     days: 1,
     notes: [
       { day: 0, time: '7:34 AM',  label: 'P3 arrives ZRH', label_ko: 'P3 ZRH 도착', type: 'flight' },
-      { day: 0, time: '9:15 PM',  label: 'P3 airport (IR 75) → Zurich HB', label_ko: 'P3 공항(IR 75) → 취리히 중앙역', type: 'other' },
-      { day: 0, time: '9:26 PM',  label: 'P3 arrives Zurich HB', label_ko: 'P3 취리히 중앙역 도착', type: 'other' },
       { day: 0, time: '11:30 AM', label: 'P1,2,4,5 arrive ZRH', label_ko: 'P1,2,4,5 ZRH 도착', type: 'flight' },
-      { day: 0, time: '12:13 PM', label: 'P1,2,4,5 airport → Zurich HB', label_ko: 'P1,2,4,5 공항 → 취리히 중앙역', type: 'other' },
-      { day: 0, time: '12:26 PM', label: 'P1,2,4,5 arrive Zurich HB, group joins', label_ko: 'P1,2,4,5 취리히 중앙역 도착, 합류', type: 'other' },
-      { day: 0, time: '1:00 PM',  label: 'Lunch & city tour', label_ko: '점심 & 시내 관광', type: 'other' },
-      { day: 0, time: '4:41 PM',  label: 'Train → Interlaken', label_ko: '기차 → 인터라켄', type: 'other' }
+      { day: 0, time: '12:30 PM', label: 'Airport → Zurich HB', label_ko: '공항 → 취리히 중앙역' },
+      { day: 0, time: '1:00 PM',  label: 'Lunch & city tour', label_ko: '점심 & 시내 관광' },
+      { day: 0, time: '4:41 PM',  label: 'Train → Interlaken', label_ko: '기차 → 인터라켄' }
     ]
   },
   {
@@ -1584,7 +1559,7 @@ const schedule = [
       { day: 1, time: '8:30 AM',  label: 'Depart Interlaken Ost', label_ko: '인터라켄 OST 출발', type: 'excursion' },
       { day: 1, time: '9:00 AM',  label: 'Harder Kulm viewpoint', label_ko: '하더쿨룸 전망대', type: 'excursion' },
       { day: 1, time: '10:30 AM', label: 'Train → Brienz', label_ko: '브리엔츠 이동', type: 'excursion' },
-      { day: 1, time: '11:00 AM', label: 'Ballenberg wood-carving museum (€8) + Brienz lakeside village, Hauptstrasse stroll', label_ko: '발렌베르크 나무 공예박물관 (8유로), 브리엔츠 호반 마을 중심 하우프트 거리 산책', type: 'excursion' },
+      { day: 1, time: '11:00 AM', label: 'Ballenberg Open-Air Museum', label_ko: '발렌베르크 야외 박물관', type: 'excursion' },
       { day: 1, time: '12:30 PM', label: 'Lunch at Hotel-Restaurant Steinbock', label_ko: '점심: Hotel-Restaurant Steinbock', type: 'other' },
       { day: 1, time: '2:00 PM',  label: 'Walz Wine Café (coffee/cake)', label_ko: 'Walz Wine Café (커피/케이크)', type: 'other' },
       { day: 1, time: '3:00 PM',  label: 'Boat → Iseltwald', label_ko: '유람선 → 이젤트발트', type: 'excursion' },
@@ -1599,22 +1574,18 @@ const schedule = [
       { day: 2, time: '8:00 AM', label: 'Spiez village & castle tour', label_ko: '슈피츠 마을 & 성 관광', type: 'excursion' },
       { day: 2, time: '9:20 AM', label: 'Boat: Spiez → Oberhofen', label_ko: '유람선: 슈피츠 → 오버호펜', type: 'excursion' },
       { day: 2, time: '10:00 AM', label: 'Oberhofen Castle', label_ko: '오버호펜 성 관광', type: 'excursion' },
-      { day: 2, time: '11:10 AM', team: 'A', label: '[Paraglide team] Bus/train back to Interlaken', label_ko: '[패러팀] 버스/기차로 인터라켄 복귀', type: 'excursion' },
-      { day: 2, time: '11:10 AM', team: 'B', label: '[Thun team] Continue by boat to Thun old town', label_ko: '[툰팀] 계속 유람선 타고 툰 구시가지로 감', type: 'excursion' },
-      { day: 2, time: '12:30 PM', team: 'A', label: '[Paraglide team] Arrive Interlaken', label_ko: '[패러팀] 인터라켄 도착', type: 'excursion' },
-      { day: 2, time: '12:30 PM', team: 'B', label: '[Thun team] Arrive Thun old town', label_ko: '[툰팀] 툰 구시가지 도착', type: 'excursion' },
+      { day: 2, time: '11:10 AM', label: 'Bus/train back to Interlaken', label_ko: '버스/기차로 인터라켄 복귀', type: 'excursion' },
+      { day: 2, time: '12:30 PM', label: 'Arrive Interlaken', label_ko: '인터라켄 도착', type: 'excursion' },
       { day: 2, time: '1:00 PM', team: 'A', label: '[Paraglide team] Paragliding start', label_ko: '[패러팀] 패러글라이딩 시작', type: 'excursion' },
-      { day: 2, time: '1:00 PM', team: 'B', label: '[Thun team] Thun old town sightseeing', label_ko: '[툰팀] 툰 구시가지 관광', type: 'excursion' },
+      { day: 2, time: '1:10 PM', team: 'B', label: '[Lungern team] Train → Lungern', label_ko: '[룽게른팀] 기차 → 룽게른', type: 'excursion' },
       { day: 2, time: '3:00 PM', team: 'A', label: '[Paraglide team] Paragliding end', label_ko: '[패러팀] 패러글라이딩 종료', type: 'excursion' },
-      { day: 2, time: '3:00 PM', team: 'B', label: '[Thun team] Continue exploring Thun old town', label_ko: '[툰팀] 툰 구시가지 계속 관광', type: 'excursion' },
-      { day: 2, time: '3:10 PM', team: 'A', label: '[Paraglide team] Boat → Thun team', label_ko: '[패러팀] 유람선 → 툰팀', type: 'excursion' },
-      { day: 2, time: '3:10 PM', team: 'B', label: '[Thun team] Continue exploring Thun old town', label_ko: '[툰팀] 툰 구시가지 계속 관광', type: 'excursion' },
-      { day: 2, time: '4:10 PM', team: 'A', label: '[Paraglide team] Arrive Thun, join', label_ko: '[패러팀] 툰 도착, 합류', type: 'excursion' },
-      { day: 2, time: '4:30 PM', label: 'All together: Thun stroll', label_ko: '전원 합류: 툰 산책', type: 'excursion' },
-      { day: 2, time: '6:00 PM', label: 'Dinner: TBD (Thun old town, not yet booked)', label_ko: '저녁: 미정 (툰 구시가지, 예약 미완료)', type: 'other' },
-      { day: 2, time: '7:30 PM', label: 'Thun old town walk + golden hour', label_ko: '툰 구시가지 산책 + 황금시간대', type: 'excursion' },
+      { day: 2, time: '3:10 PM', team: 'A', label: '[Paraglide team] Train → Lungern', label_ko: '[패러팀] 기차 → 룽게른', type: 'excursion' },
+      { day: 2, time: '4:10 PM', team: 'A', label: '[Paraglide team] Arrive Lungern, join', label_ko: '[패러팀] 룽게른 도착, 합류', type: 'excursion' },
+      { day: 2, time: '4:30 PM', label: 'All together: explore Lungern', label_ko: '전원 합류: 룽게른 산책', type: 'excursion' },
+      { day: 2, time: '6:00 PM', label: 'Dinner: Restaurant Obsee (lakeside, not yet booked) — 15min walk from Lungern stn, Campingstrasse 1', label_ko: '저녁: Restaurant Obsee (호숫가, 예약 미완료) — 룽게른역 도보 15분, Campingstrasse 1', type: 'other' },
+      { day: 2, time: '7:30 PM', label: 'Lungern lake walk + golden hour', label_ko: '룽게른 호수 산책 + 황금시간대', type: 'excursion' },
       { day: 2, time: '9:00 PM', label: 'Sunset', label_ko: '일몰', type: 'excursion' },
-      { day: 2, time: '9:30 PM', label: 'Return to Interlaken', label_ko: '인터라켄 복귀', type: 'other' },
+      { day: 2, time: '9:30 PM', label: 'Return to Interlaken', label_ko: '인터라켄 복귀' },
       { day: 3, time: '10:00 AM', label: 'Checkout', label_ko: '체크아웃', type: 'checkout' }
     ]
   },
@@ -1989,9 +1960,6 @@ const coordsByPlaceId = {
   'ChIJh2HKMm2Sj0cRZysV6Tl1VRg': [46.788, 8.163],             // Bahnhöfli Lungern
   'ChIJ-ROAFyWSj0cRGrvpNzUbLb4': [46.776, 8.196],             // Cantina Caverna
   'ChIJaUB8tT-Sj0cRQFw1NAo02KQ': [46.7852015, 8.1516383],     // Restaurant Obsee (Lungern, lakeside)
-  'ChIJGUBp8Oayj0cRov7IIBeT7es': [46.7582844, 7.6303561],     // Restaurant Füürgässli (Thun)
-  'ChIJ512Wz-Wyj0cRBMp0zVLm5ZE': [46.7571848, 7.6331868],     // Beau Rivage (Thun)
-  'ChIJrVGf9uayj0cRqMrXDIzI8no': [46.7580635, 7.6306002],     // Grottino Quai 66 (Thun)
   // Grindelwald
   'ChIJr_xuBLehj0cRF1G9OEzFvWw': [46.5984189, 7.9080885],     // Lauterbrunnen station
   'ChIJISNLgyeej0cRkSxye45YaJw': [46.547468, 7.982085],       // Jungfraujoch
@@ -2106,12 +2074,12 @@ const weatherData = {
     },
     stack: [
       {
-        name: 'Thun', name_ko: '툰', lat: 46.7580, lng: 7.6280,
+        name: 'Lungern', name_ko: '룽게른', lat: 46.7863, lng: 8.1574,
         cond: 'Partly Cloudy', cond_ko: '구름 조금', icon: '⛅',
-        now: 16, hi: 19, lo: 8,
-        sunrise: '05:42', sunset: '21:08', tzLabel: 'CEST (KST −7h)',
-        hourly: [['9AM',13,'⛅'],['12PM',17,'☀️'],['3PM',19,'⛅'],['6PM',15,'☁️'],['9PM',10,'☁️']],
-        note: '5/25 afternoon & sunset visit', note_ko: '5/25 오후·일몰 방문지'
+        now: 15, hi: 17, lo: 7,
+        sunrise: '05:42', sunset: '21:00', tzLabel: 'CEST (KST −7h)',
+        hourly: [['9AM',12,'⛅'],['12PM',16,'☀️'],['3PM',17,'⛅'],['6PM',14,'☁️'],['9PM',9,'☁️']],
+        note: '5/25 sunset visit', note_ko: '5/25 일몰 방문지'
       }
     ]
   },
@@ -2185,13 +2153,6 @@ const categoryStyles = {
 };
 
 // ===== Open-Meteo live weather (no API key / no signup) =====
-
-// Remove a leading "[team name] " prefix from a label so the block/modal
-// can show the clean title (team is conveyed by column/lane instead).
-function stripTeamPrefix(label) {
-  if (!label) return label;
-  return label.replace(/^\[[^\]]+\]\s*/, '');
-}
 
 // Convert "HH:MM" 24-hour string to localized 12-hour text.
 // Korean: "오전/오후 H:MM",  English: "H:MM AM/PM"
@@ -2902,9 +2863,8 @@ blocks.forEach((b) => {
       const roomBelow = Math.max(0, nextNy - rowY - 2);
       const maxExtraLines = Math.max(0, Math.floor((roomBelow - 4) / LINE_HEIGHT));
 
-      // Localized label and a per-language character width estimate.
-      // Strip the "[team] " prefix — team is shown via the lane, not the text.
-      const labelText = stripTeamPrefix(L(n, 'label'));
+      // Localized label and a per-language character width estimate
+      const labelText = L(n, 'label');
       const isKo = currentLang === 'ko';
       // Korean characters are roughly twice as wide as Latin chars in our font
       const charW = isKo ? 9 : CHAR_WIDTH;
@@ -4484,70 +4444,22 @@ function renderDetailModal(blockIdx) {
     if (dayNotes.length === 0) {
       html += `<div style="color: #999; padding: 8px 12px; font-size: 13px;">—</div>`;
     } else {
-      const hasTeam = dayNotes.some(n => n.team);
-      if (hasTeam) {
-        // Split into shared / team A / team B
-        const shared = dayNotes.filter(n => !n.team);
-        const teamA = dayNotes.filter(n => n.team === 'A');
-        const teamB = dayNotes.filter(n => n.team === 'B');
-        // Derive friendly team titles from the first team note's label prefix
-        function teamTitle(arr, fallback) {
-          if (!arr.length) return fallback;
-          const lab = L(arr[0], 'label');
-          const m = lab.match(/^\[([^\]]+)\]/);
-          return m ? m[1] : fallback;
-        }
-        const titleA = teamTitle(teamA, currentLang === 'ko' ? '패러팀' : 'Paraglide team');
-        const titleB = teamTitle(teamB, currentLang === 'ko' ? '툰팀' : 'Thun team');
-
-        function renderRows(arr) {
-          return arr.map(n => {
-            const type = n.type || 'other';
-            const icon = eventTypeIcon(n.type);
-            const labelText = stripTeamPrefix(L(n, 'label'));
-            return `
-              <div class="detail-event ${type}">
-                <div class="detail-event-time">${n.time}</div>
-                <div class="detail-event-icon">${icon}</div>
-                <div class="detail-event-label">${labelText}</div>
-              </div>`;
-          }).join('');
-        }
-        // Shared events first (in chronological order, before the split)
-        const splitStart = Math.min(
-          teamA.length ? dayNotes.indexOf(teamA[0]) : 1e9,
-          teamB.length ? dayNotes.indexOf(teamB[0]) : 1e9
-        );
-        const sharedBefore = shared.filter(n => dayNotes.indexOf(n) < splitStart);
-        const sharedAfter  = shared.filter(n => dayNotes.indexOf(n) >= splitStart);
-        if (sharedBefore.length) html += renderRows(sharedBefore);
+      dayNotes.forEach(n => {
+        const type = n.type || 'other';
+        const icon = eventTypeIcon(n.type);
+        const labelText = L(n, 'label');
+        // Subtle tint for team-tagged events
+        let teamTint = '';
+        if (n.team === 'A') teamTint = `background: ${palette.laneA}; border-left: 3px solid rgba(0,0,0,0.10);`;
+        else if (n.team === 'B') teamTint = `background: ${palette.laneB}; border-left: 3px solid rgba(0,0,0,0.18);`;
         html += `
-          <div class="detail-team-cols">
-            <div class="detail-team-col">
-              <div class="detail-team-title detail-team-title-a">${titleA}</div>
-              ${renderRows(teamA)}
-            </div>
-            <div class="detail-team-col">
-              <div class="detail-team-title detail-team-title-b">${titleB}</div>
-              ${renderRows(teamB)}
-            </div>
+          <div class="detail-event ${type}" style="${teamTint}">
+            <div class="detail-event-time">${n.time}</div>
+            <div class="detail-event-icon">${icon}</div>
+            <div class="detail-event-label">${labelText}</div>
           </div>
         `;
-        if (sharedAfter.length) html += renderRows(sharedAfter);
-      } else {
-        dayNotes.forEach(n => {
-          const type = n.type || 'other';
-          const icon = eventTypeIcon(n.type);
-          const labelText = stripTeamPrefix(L(n, 'label'));
-          html += `
-            <div class="detail-event ${type}">
-              <div class="detail-event-time">${n.time}</div>
-              <div class="detail-event-icon">${icon}</div>
-              <div class="detail-event-label">${labelText}</div>
-            </div>
-          `;
-        });
-      }
+      });
     }
     html += `</div>`;
   }
