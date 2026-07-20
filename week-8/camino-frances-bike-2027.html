@@ -2,696 +2,545 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Camino Francés 자전거 순례 · 2027년 5월</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Camino Francés 자전거 순례 · 2027년 5월 — Bin &amp; Jin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --camino-blue:#152A55;      /* 카미노 표지판의 짙은 남색 */
-    --camino-blue-2:#1E3A6E;
-    --flecha:#F5B917;           /* 노란 화살표(flecha amarilla) */
-    --flecha-soft:#FBD569;
-    --stone:#EDEAE1;            /* 메세타의 돌·회벽 */
-    --paper:#F7F5EE;
-    --ink:#232830;
-    --ink-soft:#5B6270;
-    --rioja:#8E2C3A;            /* 리오하 와인 — 산악/경고 표시 */
-    --line:#D8D3C4;
+    --camino-blue:#152A55; --camino-blue-2:#1E3A6E;
+    --flecha:#F5B917; --flecha-soft:#FBD569;
+    --stone:#EDEAE1; --paper:#F7F5EE;
+    --ink:#232830; --ink-soft:#5B6270;
+    --rioja:#8E2C3A; --line:#D8D3C4;
+    --ok:#1E7A46;
   }
   *{margin:0;padding:0;box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  body{
-    font-family:'IBM Plex Sans KR',sans-serif;
-    background:var(--paper);
-    color:var(--ink);
-    line-height:1.65;
-  }
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{font-family:'IBM Plex Sans KR',sans-serif;background:var(--paper);color:var(--ink);line-height:1.6;font-size:15px}
   .display{font-family:'Gowun Batang',serif}
+  img{max-width:100%}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 14px}
+  section{padding:34px 0}
+  .sec-head{margin-bottom:18px}
+  .sec-head .no{font-size:.72rem;letter-spacing:.2em;color:var(--rioja);font-weight:600;text-transform:uppercase}
+  h2{font-family:'Gowun Batang',serif;font-size:clamp(1.25rem,4vw,1.8rem);font-weight:700;margin-top:4px}
+  .sec-head p{color:var(--ink-soft);margin-top:6px;max-width:680px;font-size:.9rem}
 
-  /* ───────── HERO ───────── */
-  header{
-    background:linear-gradient(160deg,var(--camino-blue) 0%,var(--camino-blue-2) 100%);
-    color:#fff;
-    padding:64px 24px 56px;
-    position:relative;
-    overflow:hidden;
-  }
-  header::after{ /* 가리비 방사선 모티프 */
-    content:"";
-    position:absolute; right:-120px; top:-120px;
-    width:420px;height:420px;
-    background:
-      repeating-conic-gradient(from 200deg at 100% 0%,
-        rgba(245,185,23,.14) 0deg 4deg, transparent 4deg 14deg);
-    border-radius:50%;
-    pointer-events:none;
-  }
-  .wrap{max-width:1040px;margin:0 auto;position:relative}
-  .eyebrow{
-    display:inline-flex;align-items:center;gap:10px;
-    font-size:.82rem;letter-spacing:.22em;text-transform:uppercase;
-    color:var(--flecha);font-weight:600;margin-bottom:18px;
-  }
-  .eyebrow::before{content:"";width:34px;height:2px;background:var(--flecha)}
-  h1{
-    font-size:clamp(2rem,5vw,3.2rem);
-    font-weight:700;line-height:1.25;letter-spacing:-.01em;
-  }
+  /* HERO */
+  header.hero{background:linear-gradient(160deg,var(--camino-blue),var(--camino-blue-2));color:#fff;padding:40px 0 34px;position:relative;overflow:hidden}
+  header.hero::after{content:"";position:absolute;right:-120px;top:-120px;width:420px;height:420px;border-radius:50%;pointer-events:none;
+    background:repeating-conic-gradient(from 200deg at 100% 0%, rgba(245,185,23,.14) 0deg 4deg, transparent 4deg 14deg)}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:.76rem;letter-spacing:.2em;text-transform:uppercase;color:var(--flecha);font-weight:600;margin-bottom:12px}
+  .eyebrow::before{content:"";width:30px;height:2px;background:var(--flecha)}
+  h1{font-size:clamp(1.6rem,6vw,3rem);font-weight:700;line-height:1.25}
   h1 em{font-style:normal;color:var(--flecha)}
-  .hero-sub{margin-top:14px;color:#C6D0E4;font-size:1.02rem;max-width:640px}
-  .stats{
-    margin-top:36px;display:flex;flex-wrap:wrap;gap:0;
-    border-top:1px solid rgba(255,255,255,.18);
-  }
-  .stat{
-    padding:18px 34px 4px 0;margin-right:34px;
-    border-right:1px solid rgba(255,255,255,.14);
-  }
+  .hero-sub{margin-top:10px;color:#C6D0E4;font-size:.95rem;max-width:640px}
+  .stats{margin-top:22px;display:flex;flex-wrap:wrap;gap:0;border-top:1px solid rgba(255,255,255,.18)}
+  .stat{padding:12px 20px 2px 0;margin-right:20px;border-right:1px solid rgba(255,255,255,.14)}
   .stat:last-child{border-right:none}
-  .stat b{
-    font-family:'Gowun Batang',serif;
-    font-size:1.9rem;font-weight:700;color:#fff;display:block;line-height:1.2;
-  }
-  .stat span{font-size:.82rem;color:#9FB0CE;letter-spacing:.06em}
-  .detail-map{
-    margin-top:36px;
-  }
-  .detail-map img{
-    display:block;width:100%;height:auto;
-    border-radius:16px;
-    border:1px solid rgba(255,255,255,.22);
-    box-shadow:0 14px 38px rgba(0,0,0,.35);
-  }
-  .detail-map figcaption{
-    margin-top:12px;font-size:.8rem;color:#9FB0CE;text-align:right;
-    letter-spacing:.03em;
-  }
+  .stat b{font-family:'Gowun Batang',serif;font-size:1.45rem;font-weight:700;color:#fff;display:block;line-height:1.2}
+  .stat span{font-size:.72rem;color:#9FB0CE;letter-spacing:.04em}
+  .detail-map{margin-top:24px}
+  .detail-map img{display:block;width:100%;height:auto;border-radius:14px;border:1px solid rgba(255,255,255,.22);box-shadow:0 12px 32px rgba(0,0,0,.35)}
+  .detail-map figcaption{margin-top:9px;font-size:.74rem;color:#9FB0CE;text-align:right}
 
-  /* ───────── 공통 섹션 ───────── */
-  section{padding:56px 24px}
-  .sec-head{margin-bottom:26px}
-  .sec-head .no{
-    font-size:.78rem;letter-spacing:.2em;color:var(--rioja);
-    font-weight:600;text-transform:uppercase;
-  }
-  h2{
-    font-family:'Gowun Batang',serif;
-    font-size:clamp(1.4rem,3vw,1.9rem);font-weight:700;margin-top:6px;
-  }
-  .sec-head p{color:var(--ink-soft);margin-top:8px;max-width:660px;font-size:.95rem}
+  /* 이미지 카드 (고도 프로필) */
+  .img-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px}
+  .img-card img{display:block;width:100%;height:auto;border-radius:8px}
 
-  /* ───────── 지도 ───────── */
-  .map-band{
-    background:var(--camino-blue);
-    border-radius:18px;
-    padding:34px 22px 26px;
-    overflow-x:auto;
-  }
-  .map-band svg{display:block;min-width:860px;width:100%;height:auto}
-  .map-legend{
-    display:flex;flex-wrap:wrap;gap:18px;margin-top:16px;
-    font-size:.8rem;color:#B9C6DE;padding:0 6px;
-  }
-  .map-legend i{
-    display:inline-block;width:12px;height:12px;border-radius:50%;
-    margin-right:6px;vertical-align:-1px;
-  }
-  .node{cursor:pointer}
-  .node circle.dot{transition:r .15s ease}
-  .node:hover circle.dot{r:8}
-  .node text{pointer-events:none}
-
-  /* ───────── 고도 ───────── */
-  .elev-card{
-    background:#fff;border:1px solid var(--line);border-radius:18px;
-    padding:26px 22px 18px;overflow-x:auto;
-  }
-  .elev-card svg{display:block;min-width:860px;width:100%;height:auto}
-
-  /* ───────── 일정 표 ───────── */
-  .sched{width:100%;border-collapse:collapse;background:#fff;
-    border:1px solid var(--line);border-radius:18px;overflow:hidden;
-    box-shadow:0 1px 0 rgba(0,0,0,.02);font-size:.93rem}
-  .sched-wrap{border-radius:18px;overflow:hidden;border:1px solid var(--line)}
-  .sched th{
-    background:var(--camino-blue);color:#EAF0FA;text-align:left;
-    padding:13px 16px;font-weight:600;font-size:.82rem;letter-spacing:.08em;
-  }
-  .sched td{padding:13px 16px;border-top:1px solid var(--line);vertical-align:middle}
+  /* 요약 표 */
+  .sched-wrap{border-radius:14px;overflow-x:auto;border:1px solid var(--line);-webkit-overflow-scrolling:touch}
+  .sched{width:100%;min-width:640px;border-collapse:collapse;background:#fff;font-size:.86rem}
+  .sched th{background:var(--camino-blue);color:#EAF0FA;text-align:left;padding:10px 12px;font-weight:600;font-size:.74rem;letter-spacing:.06em;white-space:nowrap}
+  .sched td{padding:10px 12px;border-top:1px solid var(--line);vertical-align:middle}
   .sched tr:nth-child(even) td{background:#FBFAF5}
-  .sched tr:hover td{background:#FFF7E0}
   td.day{white-space:nowrap;font-weight:600}
-  td.day small{display:block;font-weight:400;color:var(--ink-soft);font-size:.76rem}
+  td.day small{display:block;font-weight:400;color:var(--ink-soft);font-size:.7rem}
   td.km{white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
-  td.km small{display:block;font-weight:400;color:var(--ink-soft);font-size:.74rem}
-  .route b{font-weight:600}
-  .route .arrow{color:var(--flecha);font-weight:700;margin:0 6px}
-  .tag{
-    display:inline-block;font-size:.7rem;font-weight:600;letter-spacing:.04em;
-    padding:2px 9px;border-radius:20px;margin-left:8px;vertical-align:1px;
-  }
+  td.gain{white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums;color:var(--rioja);font-weight:600}
+  .route small{color:var(--ink-soft)}
+  tr.restrow td{background:#EAF3EC!important}
+
+  .tag{display:inline-block;font-size:.66rem;font-weight:700;letter-spacing:.03em;padding:2px 8px;border-radius:20px;margin-left:6px;vertical-align:2px}
   .tag.mtn{background:#F4E2E5;color:var(--rioja)}
   .tag.long{background:#FDF0CC;color:#8A6407}
   .tag.fly{background:#E3EAF7;color:var(--camino-blue)}
   .tag.goal{background:var(--flecha);color:#3B2E00}
-  td.gain{white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums;color:var(--rioja);font-weight:600}
-  a.maplink{
-    display:inline-block;font-size:.72rem;font-weight:600;text-decoration:none;
-    background:#E3EAF7;color:var(--camino-blue);border-radius:20px;padding:3px 11px;
-    white-space:nowrap;transition:background .12s ease;
-  }
-  a.maplink:hover{background:var(--flecha);color:#3B2E00}
-  a.maplink::before{content:"⚑ "}
-  .booking{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
-  .booking a{
-    display:inline-flex;align-items:center;gap:8px;text-decoration:none;
-    background:var(--camino-blue);color:#fff;border-radius:12px;
-    padding:10px 18px;font-size:.86rem;font-weight:600;
-    transition:transform .12s ease, background .12s ease;
-  }
-  .booking a small{font-weight:400;color:#AFC0DC;font-size:.72rem}
-  .booking a:hover{background:var(--camino-blue-2);transform:translateY(-2px)}
+
+  /* 데이 카드 네비 */
+  .daynav{position:sticky;top:0;z-index:30;background:rgba(247,245,238,.95);backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);padding:8px 0}
+  .daynav .in{display:flex;gap:8px;overflow-x:auto;padding:0 14px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .daynav .in::-webkit-scrollbar{display:none}
+  .daynav a{flex:0 0 auto;text-decoration:none;background:#fff;border:1px solid var(--line);border-radius:20px;
+    padding:5px 13px;font-size:.8rem;font-weight:700;color:var(--camino-blue);display:flex;gap:6px;align-items:baseline}
+  .daynav a small{font-weight:400;color:var(--ink-soft);font-size:.68rem}
+  .daynav a.rest{background:#EAF3EC;color:var(--ok)}
+  .daynav a:active,.daynav a:hover{background:var(--flecha);border-color:var(--flecha);color:#3B2E00}
+
+  /* 데이 카드 */
+  .dcard{background:#FFFDF7;border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:18px;
+    box-shadow:0 2px 8px rgba(21,42,85,.05);scroll-margin-top:64px}
+  .dhead{background:var(--camino-blue);color:#fff;display:flex;align-items:center;gap:12px;padding:11px 14px;flex-wrap:wrap}
+  .dnum{font-family:'Gowun Batang',serif;font-weight:700;color:var(--flecha);font-size:1.05rem;letter-spacing:.03em;white-space:nowrap}
+  .dtitle{flex:1;min-width:180px}
+  .dtitle b{font-size:.98rem}
+  .dtitle small{display:block;color:#9FB0CE;font-size:.72rem}
+  .dkm{font-size:.8rem;font-weight:600;color:#EAF0FA;white-space:nowrap}
+  .dbody{display:flex;gap:14px;padding:14px;align-items:stretch}
+  .droute-wrap{flex:1;min-width:0;overflow-x:auto;-webkit-overflow-scrolling:touch;display:flex;align-items:center}
+  .droute{display:flex;align-items:flex-start;min-width:max-content;padding:6px 2px}
+  .stop{display:flex;flex-direction:column;align-items:center;text-align:center;min-width:86px;max-width:130px;padding:0 4px}
+  .stop i{width:16px;height:16px;border-radius:50%;background:var(--flecha);border:3px solid #fff;
+    box-shadow:0 0 0 2px var(--flecha);margin-bottom:7px}
+  .stop.start i{background:var(--ok);box-shadow:0 0 0 2px var(--ok)}
+  .stop.end i{background:var(--rioja);box-shadow:0 0 0 2px var(--rioja)}
+  .stop b{font-size:.82rem;line-height:1.3}
+  .stop small{color:var(--ink-soft);font-size:.68rem;line-height:1.25;word-break:keep-all}
+  .stop.start b{color:var(--ok)} .stop.end b{color:var(--rioja)}
+  .leg{flex:1;min-width:34px;height:16px;margin-top:0;display:flex;align-items:center;position:relative}
+  .leg::before{content:"";position:absolute;left:0;right:0;top:7px;height:4px;background:var(--camino-blue);border-radius:2px}
+  .leg span{position:relative;margin:0 auto;color:var(--flecha);font-size:.68rem;top:0;background:transparent}
+  .dqr{flex:0 0 150px;background:#EFF4FC;border:1px solid #D4DFF2;border-radius:12px;
+    display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 10px;text-align:center}
+  .dqr img{width:118px;height:118px;border-radius:8px;background:#fff;padding:4px;border:1px solid #D4DFF2}
+  .gbtn{display:block;width:100%;text-decoration:none;background:var(--camino-blue);color:#fff;border-radius:10px;
+    padding:7px 8px;font-size:.8rem;font-weight:700;line-height:1.25}
+  .gbtn small{font-weight:400;color:#AFC0DC;font-size:.68rem}
+  .gbtn:active,.gbtn:hover{background:var(--flecha);color:#3B2E00}
+  .gbtn:hover small{color:#7A5E0D}
+  .qrhint{font-size:.66rem;color:var(--ink-soft)}
+  .dorder{padding:10px 14px;border-top:1px dashed var(--line);font-size:.78rem;color:var(--ink-soft)}
+  .dorder b{color:var(--camino-blue);margin-right:6px}
+  .dfoot{background:var(--stone);padding:8px 14px;font-size:.76rem;color:var(--ink-soft);font-weight:600}
+
+  .restday .dhead{background:var(--ok)}
+  .restday .dnum{color:#D9F2E2}
+  .restinfo{flex:1}
+  .restinfo p{font-size:.88rem;margin-bottom:10px}
+  .restinfo ul{list-style:none}
+  .restinfo li{font-size:.85rem;padding:4px 0;border-bottom:1px dashed var(--line)}
+  .restinfo li:last-child{border-bottom:none}
+  .restday .dfoot{background:#EAF3EC;color:var(--ok)}
+
+  /* 이동 흐름 */
+  .flow-grid{display:grid;grid-template-columns:1fr;gap:14px}
+  .flow{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 16px}
+  .flow h3{font-family:'Gowun Batang',serif;font-size:1rem;font-weight:700;display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+  .flow h3 .chip{font-family:'IBM Plex Sans KR',sans-serif;font-size:.68rem;font-weight:600;background:var(--stone);border-radius:20px;padding:3px 10px;color:var(--ink-soft)}
+  .who{display:inline-block;font-size:.66rem;font-weight:700;border-radius:20px;padding:2px 9px;vertical-align:2px;margin-left:4px}
+  .who.bin{background:#E3EAF7;color:var(--camino-blue)} .who.jin{background:#F4E2E5;color:var(--rioja)}
+  .steps{list-style:none;position:relative;margin-left:8px}
+  .steps::before{content:"";position:absolute;left:7px;top:8px;bottom:8px;width:2px;
+    background:repeating-linear-gradient(to bottom,var(--flecha) 0 6px,transparent 6px 12px)}
+  .steps li{position:relative;padding:0 0 15px 30px}
+  .steps li:last-child{padding-bottom:0}
+  .steps li::before{content:"";position:absolute;left:0;top:5px;width:15px;height:15px;border-radius:50%;background:#fff;border:3px solid var(--camino-blue)}
+  .steps li.end::before{background:var(--flecha);border-color:var(--flecha)}
+  .steps b{display:block;font-weight:600;font-size:.9rem}
+  .steps span{font-size:.78rem;color:var(--ink-soft)}
+  .note{margin-top:16px;font-size:.78rem;color:var(--ink-soft);background:var(--stone);border-radius:12px;padding:11px 14px}
+  .note.warn{background:#FBEBCB;color:#6E5308;border:1px solid #EAD79F}
+
+  .booking{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+  .booking a{display:inline-flex;flex-direction:column;text-decoration:none;background:var(--camino-blue);color:#fff;
+    border-radius:12px;padding:9px 15px;font-size:.82rem;font-weight:600;line-height:1.3}
+  .booking a small{font-weight:400;color:#AFC0DC;font-size:.68rem}
+  .booking a:hover,.booking a:active{background:var(--camino-blue-2)}
   .booking a.primary{background:var(--flecha);color:#3B2E00}
   .booking a.primary small{color:#7A5E0D}
-  .booking a.primary:hover{background:var(--flecha-soft)}
 
-  /* ───────── 이동 흐름 ───────── */
-  .flow-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:22px}
-  .who{
-    display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.05em;
-    border-radius:20px;padding:2px 10px;vertical-align:2px;margin-left:6px;
-  }
-  .who.bin{background:#E3EAF7;color:var(--camino-blue)}
-  .who.jin{background:#F4E2E5;color:var(--rioja)}
-  .flow{
-    background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px 24px;
-  }
-  .flow h3{
-    font-family:'Gowun Batang',serif;font-size:1.1rem;font-weight:700;
-    display:flex;align-items:center;gap:10px;margin-bottom:18px;
-  }
-  .flow h3 .chip{
-    font-family:'IBM Plex Sans KR',sans-serif;font-size:.72rem;font-weight:600;
-    background:var(--stone);border-radius:20px;padding:3px 11px;color:var(--ink-soft);
-    letter-spacing:.05em;
-  }
-  .steps{list-style:none;position:relative;margin-left:8px}
-  .steps::before{
-    content:"";position:absolute;left:7px;top:8px;bottom:8px;
-    width:2px;background:repeating-linear-gradient(
-      to bottom,var(--flecha) 0 6px,transparent 6px 12px);
-  }
-  .steps li{position:relative;padding:0 0 20px 32px}
-  .steps li:last-child{padding-bottom:0}
-  .steps li::before{
-    content:"";position:absolute;left:0;top:6px;width:16px;height:16px;
-    border-radius:50%;background:#fff;border:3px solid var(--camino-blue);
-  }
-  .steps li.end::before{background:var(--flecha);border-color:var(--flecha)}
-  .steps b{display:block;font-weight:600}
-  .steps span{font-size:.83rem;color:var(--ink-soft)}
-  .note{
-    margin-top:22px;font-size:.82rem;color:var(--ink-soft);
-    background:var(--stone);border-radius:12px;padding:12px 16px;
-  }
-
-  /* ───────── 숙소 ───────── */
-  .stay-grid{
-    display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;
-  }
-  .stay{
-    background:#fff;border:1px solid var(--line);border-radius:14px;
-    padding:14px 16px;display:flex;align-items:flex-start;gap:14px;
-    transition:transform .12s ease, box-shadow .12s ease;
-  }
-  .stay .meta{
-    display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:8px;
-    padding-top:8px;border-top:1px dashed var(--line);
-    font-size:.74rem;color:var(--ink-soft);white-space:nowrap;
-  }
-  .stay .meta b{font-weight:600;color:var(--ink)}
+  /* 숙소 */
+  .stay-grid{display:grid;grid-template-columns:1fr;gap:10px}
+  .stay{background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 13px;display:flex;align-items:flex-start;gap:12px}
+  .stay .d{font-family:'Gowun Batang',serif;font-weight:700;font-size:.92rem;background:var(--camino-blue);color:var(--flecha);
+    border-radius:9px;min-width:48px;text-align:center;padding:7px 4px;line-height:1.1}
+  .stay .d small{display:block;font-family:'IBM Plex Sans KR',sans-serif;font-size:.58rem;color:#AFC0DC;font-weight:500;letter-spacing:.06em}
+  .stay b{font-weight:600;font-size:.87rem;line-height:1.35;display:block}
+  .stay span{font-size:.72rem;color:var(--ink-soft)}
+  .stay .meta{display:flex;flex-wrap:wrap;gap:3px 11px;margin-top:6px;padding-top:6px;border-top:1px dashed var(--line);font-size:.7rem;color:var(--ink-soft);white-space:nowrap}
+  .stay .meta b{font-weight:600;color:var(--ink);display:inline}
   .stay .meta .sun::before{content:"☀ ";color:#C98F00}
   .stay .meta .tmp::before{content:"🌡 "}
-  .stay:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(21,42,85,.08)}
-  .stay .d{
-    font-family:'Gowun Batang',serif;font-weight:700;font-size:1rem;
-    background:var(--camino-blue);color:var(--flecha);
-    border-radius:10px;min-width:52px;text-align:center;padding:8px 4px;line-height:1.1;
-  }
-  .stay .d small{display:block;font-family:'IBM Plex Sans KR',sans-serif;
-    font-size:.62rem;color:#AFC0DC;font-weight:500;letter-spacing:.08em}
-  .stay b{font-weight:600;font-size:.92rem;line-height:1.35;display:block}
-  .stay span{font-size:.76rem;color:var(--ink-soft)}
 
-  footer{
-    background:var(--camino-blue);color:#9FB0CE;text-align:center;
-    padding:40px 24px;font-size:.85rem;
+  footer.site{background:var(--camino-blue);color:#9FB0CE;text-align:center;padding:32px 16px;font-size:.8rem}
+  footer.site b{color:var(--flecha)}
+  .buen{font-family:'Gowun Batang',serif;color:#fff;font-size:1.15rem;font-weight:700;margin-bottom:6px}
+
+  /* 가로 모바일 & 데스크톱 확장 */
+  @media (min-width:640px){
+    .stay-grid{grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+    .flow-grid{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
   }
-  footer b{color:var(--flecha);font-weight:600}
-  .buen{
-    font-family:'Gowun Batang',serif;color:#fff;font-size:1.25rem;
-    font-weight:700;margin-bottom:8px;
+  @media (min-width:900px){
+    body{font-size:16px}
+    .dqr{flex-basis:170px}
+    .dqr img{width:132px;height:132px}
   }
-  @media (prefers-reduced-motion: reduce){
-    *{transition:none!important;animation:none!important}
+  @media (max-width:520px){ /* 세로 폰: QR을 아래로 */
+    .dbody{flex-direction:column}
+    .dqr{flex-basis:auto;flex-direction:row;flex-wrap:wrap;justify-content:center}
+    .dqr img{width:110px;height:110px}
+    .gbtn{width:auto;flex:1;min-width:150px}
+    .qrhint{width:100%}
   }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
 
-<header>
+<header class="hero">
   <div class="wrap">
-    <div class="eyebrow">2027. 5. 6 – 5. 21 · Bicigrino</div>
-    <h1 class="display">카미노 프란세스,<br>자전거로 <em>797km</em>를 달리다</h1>
+    <div class="eyebrow">2027. 5. 6 – 5. 22 · Bicigrino</div>
+    <h1 class="display">카미노 프란세스,<br>자전거로 <em>808.5km</em>를 달리다</h1>
     <p class="hero-sub"><b style="color:#fff">Bin</b>(미국 Newark 출발)과 <b style="color:#fff">Jin</b>(한국 인천 출발)이
-    5월 7일 파리에서 만나 하루 묵고, 5월 8일 기차로 생장피에드포르에 들어가
-    산티아고 데 콤포스텔라까지 12일간 797km를 함께 완주하는 자전거 순례 일정입니다.</p>
+    5월 7일 파리에서 만나 5월 8일 기차로 생장에 들어가, 12일 라이딩 + 레온 휴식 1일로
+    산티아고 대성당까지 완주하는 자전거 순례 일정입니다.</p>
     <div class="stats">
-      <div class="stat"><b>797 km</b><span>총 주행 거리</span></div>
-      <div class="stat"><b>12일</b><span>라이딩 일수 (5/9–5/20)</span></div>
-      <div class="stat"><b>66 km</b><span>일평균 주행</span></div>
-      <div class="stat"><b>95 km</b><span>최장 구간 (부르고스行·레온行)</span></div>
-      <div class="stat"><b>9,150 m</b><span>총 획득고도 (누적 상승)</span></div>
+      <div class="stat"><b>808.5 km</b><span>총 주행 거리</span></div>
+      <div class="stat"><b>12 + 1일</b><span>라이딩 12일 · 휴식 1일 (5/9–5/21)</span></div>
+      <div class="stat"><b>67 km</b><span>일평균 주행</span></div>
+      <div class="stat"><b>96.5 km</b><span>최장 구간 (5일차)</span></div>
+      <div class="stat"><b>8,500 m</b><span>총 획득고도</span></div>
     </div>
     <figure class="detail-map">
-      <img src="images/detail-map.png"
-           alt="카미노 프란세스 자전거 루트 상세 지도: 생장피에드포르에서 산티아고까지 783km 13일 코스와 전체 고도 프로파일 (누적 상승 약 12,000m)">
-      <figcaption>전체 루트 상세 지도 · 고도 프로파일 (참고용 개괄 지도 — 구간 나누기는 아래 12일 일정 기준)</figcaption>
+      <img src="images/detail-v2-map.png"
+           alt="카미노 프란세스 자전거 전체 루트 지도, 일정 도표, 고도 프로파일 종합 이미지">
+      <figcaption>전체 루트 · 일정 도표 · 고도 프로파일 종합 지도</figcaption>
     </figure>
   </div>
 </header>
 
-<!-- ───────── 1. 진도 지도 ───────── -->
+<!-- ───────── Ⅰ. 고도 프로필 ───────── -->
 <section>
   <div class="wrap">
     <div class="sec-head">
-      <div class="no">Ⅰ · Ruta</div>
-      <h2>날짜별 진도 지도</h2>
-      <p>스페인 북부를 동→서로 가로지르는 실제 경로입니다. 각 지점에 마우스를 올리면
-      날짜·구간 거리·산티아고까지 남은 거리를 확인할 수 있습니다.</p>
-    </div>
-
-    <div class="map-band">
-      <svg viewBox="0 0 1020 300" xmlns="http://www.w3.org/2000/svg" role="img"
-           aria-label="카미노 프란세스 자전거 경로 지도: 생장피에드포르에서 산티아고까지 날짜별 진행">
-        <defs>
-          <linearGradient id="routeGrad" x1="1" y1="0" x2="0" y2="0">
-            <stop offset="0" stop-color="#FBD569"/>
-            <stop offset="1" stop-color="#F5B917"/>
-          </linearGradient>
-        </defs>
-
-        <!-- 지역 라벨 -->
-        <text x="920" y="34" fill="#5F76A8" font-size="12" letter-spacing="3" text-anchor="middle">PYRÉNÉES</text>
-        <text x="730" y="250" fill="#5F76A8" font-size="12" letter-spacing="3" text-anchor="middle">NAVARRA · RIOJA</text>
-        <text x="470" y="258" fill="#5F76A8" font-size="12" letter-spacing="3" text-anchor="middle">MESETA</text>
-        <text x="120" y="60"  fill="#5F76A8" font-size="12" letter-spacing="3" text-anchor="middle">GALICIA</text>
-
-        <!-- 경로 (동→서) -->
-        <path d="M962,64 L927,105 L860,150 L770,195 L646,208 L531,208 L407,163 L345,187 L277,172 L219,144 L171,132 L113,115 L50,109 L26,113"
-              fill="none" stroke="#0D1D3E" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" opacity=".55"/>
-        <path d="M962,64 L927,105 L860,150 L770,195 L646,208 L531,208 L407,163 L345,187 L277,172 L219,144 L171,132 L113,115 L50,109 L26,113"
-              fill="none" stroke="url(#routeGrad)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
-
-        <!-- 방향 화살표 (flecha amarilla) -->
-        <g fill="var(--flecha)" opacity=".95">
-          <path d="M700,201 l14,6 -14,6 3,-6 z"/>
-          <path d="M470,207 l14,6 -14,6 3,-6 z" transform="translate(0,-6)"/>
-          <path d="M195,138 l14,4 -12,8 2,-6 z"/>
-        </g>
-
-        <!-- 노드: 도시들 -->
-        <g font-family="IBM Plex Sans KR, sans-serif">
-
-          <g class="node"><title>5/8 도착·숙박, 5/9 라이딩 출발 · 생장피에드포르 Saint-Jean-Pied-de-Port · 산티아고까지 797km</title>
-            <circle class="dot" cx="962" cy="64" r="7" fill="#fff" stroke="var(--flecha)" stroke-width="3"/>
-            <text x="962" y="42" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">Saint-Jean-Pied-de-Port</text>
-            <text x="962" y="90" text-anchor="middle" fill="var(--flecha)" font-size="11" font-weight="700">5/9 출발</text>
-          </g>
-
-          <g class="node"><title>5/9 도착 (1일차, +1,350m) · 수비리 Zubiri · 남은 거리 747km</title>
-            <circle class="dot" cx="927" cy="105" r="5.5" fill="var(--flecha)"/>
-            <text x="915" y="112" text-anchor="end" fill="#DDE6F5" font-size="12">Zubiri</text>
-            <text x="915" y="126" text-anchor="end" fill="#8FA3C6" font-size="10">5/9</text>
-          </g>
-
-          <g class="node"><title>5/10 도착 (2일차, +800m) · 에스텔라 Estella · 남은 거리 682km</title>
-            <circle class="dot" cx="860" cy="150" r="5.5" fill="var(--flecha)"/>
-            <text x="870" y="146" fill="#DDE6F5" font-size="12">Estella</text>
-            <text x="870" y="161" fill="#8FA3C6" font-size="10">5/10</text>
-          </g>
-
-          <g class="node"><title>5/11 도착 (3일차, +700m) · 나헤라 Nájera · 남은 거리 607km</title>
-            <circle class="dot" cx="770" cy="195" r="5.5" fill="var(--flecha)"/>
-            <text x="778" y="212" fill="#DDE6F5" font-size="12">Nájera</text>
-            <text x="778" y="227" fill="#8FA3C6" font-size="10">5/11</text>
-          </g>
-
-          <g class="node"><title>5/12 도착 (4일차, 최장 95km, +850m) · 부르고스 Burgos · 남은 거리 512km</title>
-            <circle class="dot" cx="646" cy="208" r="5.5" fill="var(--flecha)"/>
-            <text x="646" y="190" text-anchor="middle" fill="#DDE6F5" font-size="12">Burgos</text>
-            <text x="646" y="230" text-anchor="middle" fill="#8FA3C6" font-size="10">5/12 · 95km</text>
-          </g>
-
-          <g class="node"><title>5/13 도착 (5일차, +350m) · 카리온 데 로스 콘데스 Carrión de los Condes · 남은 거리 427km</title>
-            <circle class="dot" cx="531" cy="208" r="5.5" fill="var(--flecha)"/>
-            <text x="531" y="190" text-anchor="middle" fill="#DDE6F5" font-size="12">Carrión</text>
-            <text x="531" y="230" text-anchor="middle" fill="#8FA3C6" font-size="10">5/13</text>
-          </g>
-
-          <g class="node"><title>5/14 도착 (6일차, 95km, +450m) · 레온 León · 남은 거리 332km</title>
-            <circle class="dot" cx="407" cy="163" r="5.5" fill="var(--flecha)"/>
-            <text x="407" y="145" text-anchor="middle" fill="#DDE6F5" font-size="12">León</text>
-            <text x="407" y="185" text-anchor="middle" fill="#8FA3C6" font-size="10">5/14 · 95km</text>
-          </g>
-
-          <g class="node"><title>5/15 도착 (7일차, +250m) · 아스토르가 Astorga · 남은 거리 282km</title>
-            <circle class="dot" cx="345" cy="187" r="5.5" fill="var(--flecha)"/>
-            <text x="345" y="209" text-anchor="middle" fill="#DDE6F5" font-size="12">Astorga</text>
-            <text x="345" y="224" text-anchor="middle" fill="#8FA3C6" font-size="10">5/15</text>
-          </g>
-
-          <g class="node"><title>5/16 도착 (8일차, +1,050m, Cruz de Ferro 1,500m 경유) · 폰페라다 Ponferrada · 남은 거리 227km</title>
-            <circle class="dot" cx="277" cy="172" r="5.5" fill="var(--flecha)"/>
-            <text x="277" y="196" text-anchor="middle" fill="#DDE6F5" font-size="12">Ponferrada</text>
-            <text x="277" y="211" text-anchor="middle" fill="#8FA3C6" font-size="10">5/16</text>
-          </g>
-
-          <g class="node"><title>5/17 경유 · 오 세브레이로 O Cebreiro (산악, 해발 1,300m) — 사리아 가는 길의 최대 고비</title>
-            <circle class="dot" cx="219" cy="144" r="6" fill="#fff" stroke="#E06A7C" stroke-width="3"/>
-            <text x="219" y="124" text-anchor="middle" fill="#FFD9DF" font-size="12" font-weight="600">O Cebreiro ▲</text>
-            <text x="219" y="166" text-anchor="middle" fill="#8FA3C6" font-size="10">5/17 경유</text>
-          </g>
-
-          <g class="node"><title>5/17 도착 (9일차, +1,250m) · 사리아 Sarria · 남은 거리 162km</title>
-            <circle class="dot" cx="171" cy="132" r="5.5" fill="var(--flecha)"/>
-            <text x="171" y="156" text-anchor="middle" fill="#DDE6F5" font-size="12">Sarria</text>
-            <text x="171" y="171" text-anchor="middle" fill="#8FA3C6" font-size="10">5/17</text>
-          </g>
-
-          <g class="node"><title>5/18 도착 (10일차, +900m) · 팔라스 데 레이 Palas de Rei · 남은 거리 92km</title>
-            <circle class="dot" cx="113" cy="115" r="5.5" fill="var(--flecha)"/>
-            <text x="113" y="96" text-anchor="middle" fill="#DDE6F5" font-size="12">Palas de Rei</text>
-            <text x="113" y="139" text-anchor="middle" fill="#8FA3C6" font-size="10">5/18</text>
-          </g>
-
-          <g class="node"><title>5/19 도착 (11일차, +900m) · 오 페드로우소 O Pedrouzo · 남은 거리 20km</title>
-            <circle class="dot" cx="50" cy="109" r="5.5" fill="var(--flecha)"/>
-            <text x="58" y="98" fill="#DDE6F5" font-size="11">O Pedrouzo</text>
-            <text x="58" y="84" fill="#8FA3C6" font-size="10">5/19</text>
-          </g>
-
-          <!-- 산티아고: 가리비 -->
-          <g class="node"><title>5/20 도착 (12일차, 20km, +300m) · 산티아고 데 콤포스텔라 Santiago de Compostela 대성당 · 완주!</title>
-            <g transform="translate(26,113)">
-              <circle r="15" fill="var(--flecha)"/>
-              <g stroke="#152A55" stroke-width="1.6" stroke-linecap="round">
-                <line x1="0" y1="7" x2="0"    y2="-10"/>
-                <line x1="0" y1="7" x2="-5"   y2="-9"/>
-                <line x1="0" y1="7" x2="5"    y2="-9"/>
-                <line x1="0" y1="7" x2="-9"   y2="-6"/>
-                <line x1="0" y1="7" x2="9"    y2="-6"/>
-              </g>
-            </g>
-            <text x="26" y="145" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">Santiago</text>
-            <text x="26" y="160" text-anchor="middle" fill="var(--flecha)" font-size="11" font-weight="700">5/20 완주</text>
-          </g>
-        </g>
-      </svg>
-
-      <div class="map-legend">
-        <span><i style="background:var(--flecha)"></i>숙박 지점 (도착일)</span>
-        <span><i style="background:#fff;border:3px solid #E06A7C;width:9px;height:9px"></i>산악 구간</span>
-        <span><i style="background:var(--flecha);border-radius:50%"></i>⛿ 가리비 = 산티아고 대성당</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ───────── 2. 고도 프로필 ───────── -->
-<section style="padding-top:0">
-  <div class="wrap">
-    <div class="sec-head">
-      <div class="no">Ⅱ · Perfil</div>
+      <div class="no">Ⅰ · Perfil</div>
       <h2>고도 프로필</h2>
-      <p>위 진도 지도와 같은 방향으로, 오른쪽(생장피에드포르)에서 출발해 왼쪽(산티아고)으로 진행합니다.
-      획득고도 기준 세 고비는 첫날(5/9) 피레네 +1,350m, 5/16 크루스 데 페로 +1,050m,
-      5/17 오 세브레이로를 넘는 사리아行 +1,250m입니다. 총 누적 상승은 약 9,150m로,
-      메세타 구간(부르고스–레온)은 평탄한 대신 거리를 길게 잡았습니다.</p>
+      <p>획득고도 기준 세 고비는 1일차 피레네 +1,350m, 10일차 크루스 데 페로 +1,050m,
+      11일차 오 세브레이로 +1,250m입니다. 총 누적 상승 약 8,500m.</p>
     </div>
-    <div class="elev-card">
-      <svg viewBox="0 0 1020 240" xmlns="http://www.w3.org/2000/svg" role="img"
-           aria-label="고도 프로필(오른쪽에서 왼쪽으로 진행): 출발 170m, 피레네 1430m, 크루스 데 페로 1500m, 오 세브레이로 1300m, 산티아고 260m">
-        <defs>
-          <linearGradient id="elevFill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#F5B917" stop-opacity=".55"/>
-            <stop offset="1" stop-color="#F5B917" stop-opacity=".06"/>
-          </linearGradient>
-        </defs>
-        <!-- 그리드 -->
-        <g stroke="#EAE6D9" stroke-width="1">
-          <line x1="50" y1="40"  x2="990" y2="40"/>
-          <line x1="50" y1="95"  x2="990" y2="95"/>
-          <line x1="50" y1="150" x2="990" y2="150"/>
-          <line x1="50" y1="205" x2="990" y2="205"/>
-        </g>
-        <g fill="#9AA0AC" font-size="10" font-family="IBM Plex Sans KR,sans-serif" text-anchor="end">
-          <text x="44" y="44">1,500m</text>
-          <text x="44" y="99">1,000m</text>
-          <text x="44" y="154">500m</text>
-          <text x="44" y="209">0m</text>
-        </g>
-        <!-- 진행 방향 표시 (지도와 동일: 오른쪽 출발 → 왼쪽 도착) -->
-        <g font-family="IBM Plex Sans KR,sans-serif" font-size="10.5" fill="#9AA0AC">
-          <text x="990" y="18" text-anchor="end">출발 · Saint-Jean-Pied-de-Port</text>
-          <text x="120" y="18">◀ 진행 방향 · Santiago 도착</text>
-          <path d="M108,14 l-12,4 12,4 -3,-4 z" fill="#F5B917"/>
-        </g>
-        <!-- 프로필: 오른쪽(SJPP)에서 왼쪽(Santiago)으로, x는 남은 거리 비례 (총 797km) -->
-        <path d="M990,186
-                 L961,48
-                 L932,147
-                 L855,158
-                 L767,151
-                 L656,110
-                 L556,114
-                 L445,113
-                 L387,109
-                 L351,40
-                 L322,146
-                 L275,62
-                 L246,156
-                 L164,142
-                 L79,174
-                 L56,176
-                 L56,205 L990,205 Z"
-              fill="url(#elevFill)" stroke="none"/>
-        <path d="M990,186 L961,48 L932,147 L855,158 L767,151 L656,110 L556,114 L445,113 L387,109 L351,40 L322,146 L275,62 L246,156 L164,142 L79,174 L56,176"
-              fill="none" stroke="#C98F00" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
-        <!-- 주요 지점 -->
-        <g font-family="IBM Plex Sans KR,sans-serif" font-size="10.5" fill="#5B6270">
-          <circle cx="990" cy="186" r="4" fill="#152A55"/><text x="988" y="228" text-anchor="middle">SJPP</text>
-          <circle cx="961" cy="48"  r="4" fill="#8E2C3A"/><text x="948" y="33" text-anchor="middle" fill="#8E2C3A" font-weight="600">피레네 1,430m</text>
-          <circle cx="932" cy="147" r="4" fill="#152A55"/><text x="932" y="228" text-anchor="middle">Zubiri</text>
-          <circle cx="855" cy="158" r="4" fill="#152A55"/><text x="855" y="228" text-anchor="middle">Estella</text>
-          <circle cx="767" cy="151" r="4" fill="#152A55"/><text x="767" y="228" text-anchor="middle">Nájera</text>
-          <circle cx="656" cy="110" r="4" fill="#152A55"/><text x="656" y="228" text-anchor="middle">Burgos</text>
-          <circle cx="556" cy="114" r="4" fill="#152A55"/><text x="556" y="228" text-anchor="middle">Carrión</text>
-          <circle cx="445" cy="113" r="4" fill="#152A55"/><text x="445" y="228" text-anchor="middle">León</text>
-          <circle cx="387" cy="109" r="4" fill="#152A55"/><text x="387" y="228" text-anchor="middle">Astorga</text>
-          <circle cx="351" cy="40"  r="4" fill="#8E2C3A"/><text x="351" y="28" text-anchor="middle" fill="#8E2C3A" font-weight="600">Cruz de Ferro 1,500m</text>
-          <circle cx="322" cy="146" r="4" fill="#152A55"/><text x="310" y="228" text-anchor="middle">Ponferrada</text>
-          <circle cx="275" cy="62"  r="4" fill="#8E2C3A"/><text x="252" y="52" text-anchor="middle" fill="#8E2C3A" font-weight="600">O Cebreiro 1,300m</text>
-          <circle cx="246" cy="156" r="4" fill="#152A55"/><text x="238" y="200" text-anchor="middle">Sarria</text>
-          <circle cx="164" cy="142" r="4" fill="#152A55"/><text x="164" y="228" text-anchor="middle">Palas de Rei</text>
-          <circle cx="79"  cy="174" r="4" fill="#152A55"/><text x="94" y="228" text-anchor="middle">O Pedrouzo</text>
-          <circle cx="56"  cy="176" r="5" fill="#F5B917" stroke="#C98F00" stroke-width="2"/><text x="40" y="200" text-anchor="middle" font-weight="600" fill="#232830">Santiago</text>
-        </g>
-      </svg>
-    </div>
+    <figure class="img-card">
+      <img src="images/profile-v1.png" alt="카미노 프란세스 자전거 경로 고도 프로파일" loading="lazy">
+    </figure>
   </div>
 </section>
 
-<!-- ───────── 3. 일정표 ───────── -->
+<!-- ───────── Ⅱ. 일정 한눈에 ───────── -->
 <section style="padding-top:0">
   <div class="wrap">
     <div class="sec-head">
-      <div class="no">Ⅲ · Etapas</div>
-      <h2>2027 카미노 프란세스 자전거 일정</h2>
-      <p>거리 아래 작은 숫자는 그날 밤 기준 산티아고까지 남은 거리이고,
-      획득고도는 그날의 누적 오르막입니다. ⚑ 버튼을 누르면 해당 구간의 구글 지도 경로가 열립니다.</p>
+      <div class="no">Ⅱ · Etapas</div>
+      <h2>13일 일정 한눈에</h2>
+      <p>1일차 = 5/9(일) ~ 13일차 = 5/21(금) 완주. 8일차(5/16)는 레온에서 쉬는 날입니다.
+      좁은 화면에서는 표를 옆으로 밀어서 보세요.</p>
     </div>
     <div class="sched-wrap">
     <table class="sched">
       <thead>
-        <tr><th style="width:82px">날짜</th><th>일차 · 구간</th><th style="width:110px;text-align:right">거리</th><th style="width:92px;text-align:right">획득고도</th><th style="width:80px">지도</th></tr>
+        <tr><th>일차</th><th>날짜</th><th>구간</th><th style="text-align:right">거리</th><th style="text-align:right">획득고도</th><th style="text-align:right">누적 km</th></tr>
       </thead>
       <tbody>
-        <tr><td class="day">5/6<small>목</small></td>
-            <td class="route"><b>Bin</b>: Newark(EWR) 저녁 출발 — 야간 직항<span class="tag fly">✈ 출국</span></td>
-            <td class="km">—</td><td class="gain">—</td><td>—</td></tr>
-        <tr><td class="day">5/7<small>금</small></td>
-            <td class="route"><b>Bin</b>: Paris(CDG) 오전 도착 · <b>Jin</b>: 인천(ICN) 대한항공편으로 Paris 도착 — <b>CDG 합류</b> 후 <b>파리 시내 숙박</b> (몽파르나스 역 인근 권장)<span class="tag fly">합류일</span></td>
-            <td class="km">—</td><td class="gain">—</td><td>—</td></tr>
-        <tr><td class="day">5/8<small>토</small></td>
-            <td class="route">Paris Montparnasse <b>10:05</b> TGV <span class="arrow">→</span> Bayonne 14:05 <span class="arrow">→</span> TER 14:25 <span class="arrow">→</span> <b>생장피에드포르 15:26 도착</b> · 렌탈 자전거 수령 · 숙박<span class="tag fly">기차 이동</span></td>
-            <td class="km">—</td><td class="gain">—</td><td>—</td></tr>
-        <tr><td class="day">5/9<small>일</small></td>
-            <td class="route"><span style="color:var(--ink-soft);font-size:.78rem">1일차</span> &nbsp;<b>생장피에드포르</b> (Saint-Jean-Pied-de-Port) <span class="arrow">→</span> <b>수비리</b> (Zubiri) — 피레네·론세스바예스 고개<span class="tag mtn">▲ 산악</span></td>
-            <td class="km">50 km<small>남은 747km</small></td>
-            <td class="gain">+1,350 m</td>
-            <td><a class="maplink" href="https://www.google.com/maps/dir/Saint-Jean-Pied-de-Port,+France/Zubiri,+Spain" target="_blank" rel="noopener">경로</a></td></tr>
-        <tr><td class="day">5/10<small>월</small></td>
-            <td class="route"><span style="color:var(--ink-soft);font-size:.78rem">2일차</span> &nbsp;<b>수비리</b> (Zubiri) <span class="arrow">→</span> <b>에스텔라</b> (Estella) — 팜플로나(Pamplona)·페르돈 고개 경유</td>
-            <td class="km">65 km<small>남은 682km</small></td>
-            <td class="gain">+800 m</td>
-            <td><a class="maplink" href="https://www.google.com/maps/dir/Zubiri,+Spain/Estella,+Spain" target="_blank" rel="noopener">경로</a></td></tr>
-        <tr><td class="day">5/11<small>화</small></td>
-            <td class="route"><span style="color:var(--ink-soft);font-size:.78rem">3일차</span> &nbsp;<b>에스텔라</b> (Estella) <span class="arrow">→</span> <b>나헤라</b> (Nájera) — 이라체 와인 샘, 로그로뇨(Logroño) 경유</td>
-            <td class="km">75 km<small>남은 607km</small></td>
-            <td class="gain">+700 m</td>
-            <td><a class="maplink" href="https://www.google.com/maps/dir/Estella,+Spain/Najera,+Spain" target="_blank" rel="noopener">경로</a></td></tr>
-        <tr><td class="day">5/12<small>수</small></td>
-            <td class="route"><span style="color:var(--ink-soft);font-size:.78rem">4일차</span> &nbsp;<b>나헤라</b> (Nájera) <span class="arrow">→</span> <b>부르고스</b> (Burgos) — 리오하에서 카스티야로<span class="tag long">최장 95km</span></td>
-            <td class="km">95 km<small>남은 512km</small></td>
-            <td class="gain">+850 m</td>
-            <td><a class="maplink" href="https://www.google.com/maps/dir/Najera,+Spain/Burgos,+Spain" target="_blank" rel="noopener">경로</a></td></tr>
-        <tr><td class="day">5/13<small>목</small></td>
-            <td class="route"><span style="color:var(--ink-soft);font-size:.78rem">5일차</span> &nbsp;<b>부르고스</b> (Burgos) <span class="arrow">→</span> <b>카리온 데 로스 콘데스</b> (Carrión de los Condes) — 메세타 평원</td>
-            <td class="km">85 km<small>남은 427km</small></td>
-            <td class="gain">+350 m</td>
-            <td><a class="maplink" href="https://www.google.com/maps/dir/Burgos,+Spain/Carrion+de+los+Condes,+Spain" target="_blank" rel="noopener">경로</a></td></tr>
-        <tr><td class="day">5/14<small>금</small></td>
-            <td class="route"><span style="color:var(--ink-soft);font-size:.78rem">6일차</span> &nbsp;<b>카리온 데 로스 콘데스</b> (Carrión) <span class="arrow">→</span> <b>레온</b> (León) — 메세타 마무리, 레온 대성당<span class="tag long">최장 95km</span></td>
-            <td class="km">95 km<small>남은 332km</small></td>
-            <td class="gain">+450 m</td>
-            <td><a class="maplink" href="https://www.google.com/maps/dir/Carrion+de+los+Condes,+Spain/Leon,+Spain" target="_blank" rel="noopener">경로</a></td></tr>
-        <tr><td class="day">5/15<small>토</small></td>
-            <td class="route"><span style="color:var(--ink-soft);font-size:.78rem">7일차</span> &nbsp;<b>레온</b> (León) <span class="arrow">→</span> <b>아스토르가</b> (Astorga) — 가우디 주교궁, 회복 라이딩</td>
-            <td class="km">50 km<small>남은 282km</small></td>
-            <td class="gain">+250 m</td>
-            <td><a class="maplink" href="https://www.google.com/maps/dir/Leon,+Spain/Astorga,+Spain" target="_blank" rel="noopener">경로</a></td></tr>
-        <tr><td class="day">5/16<small>일</small></td>
-            <td class="route"><span style="color:var(--ink-soft);font-size:.78rem">8일차</span> &nbsp;<b>아스토르가</b> (Astorga) <span class="arrow">→</span> <b>폰페라다</b> (Ponferrada) — 크루스 데 페로(Cruz de Ferro, 1,500m) 넘기<span class="tag mtn">▲ 산악</span></td>
-            <td class="km">55 km<small>남은 227km</small></td>
-            <td class="gain">+1,050 m</td>
-            <td><a class="maplink" href="https://www.google.com/maps/dir/Astorga,+Spain/Ponferrada,+Spain" target="_blank" rel="noopener">경로</a></td></tr>
-        <tr><td class="day">5/17<small>월</small></td>
-            <td class="route"><span style="color:var(--ink-soft);font-size:.78rem">9일차</span> &nbsp;<b>폰페라다</b> (Ponferrada) <span class="arrow">→</span> <b>사리아</b> (Sarria) — 오 세브레이로(O Cebreiro, 1,300m) 넘기<span class="tag mtn">▲ 산악</span></td>
-            <td class="km">65 km<small>남은 162km</small></td>
-            <td class="gain">+1,250 m</td>
-            <td><a class="maplink" href="https://www.google.com/maps/dir/Ponferrada,+Spain/Sarria,+Spain" target="_blank" rel="noopener">경로</a></td></tr>
-        <tr><td class="day">5/18<small>화</small></td>
-            <td class="route"><span style="color:var(--ink-soft);font-size:.78rem">10일차</span> &nbsp;<b>사리아</b> (Sarria) <span class="arrow">→</span> <b>팔라스 데 레이</b> (Palas de Rei) — 100km 표지석, 포르토마린(Portomarín) 경유</td>
-            <td class="km">70 km<small>남은 92km</small></td>
-            <td class="gain">+900 m</td>
-            <td><a class="maplink" href="https://www.google.com/maps/dir/Sarria,+Spain/Palas+de+Rei,+Spain" target="_blank" rel="noopener">경로</a></td></tr>
-        <tr><td class="day">5/19<small>수</small></td>
-            <td class="route"><span style="color:var(--ink-soft);font-size:.78rem">11일차</span> &nbsp;<b>팔라스 데 레이</b> (Palas de Rei) <span class="arrow">→</span> <b>오 페드로우소</b> (O Pedrouzo) — 아르수아(Arzúa) 경유</td>
-            <td class="km">72 km<small>남은 20km</small></td>
-            <td class="gain">+900 m</td>
-            <td><a class="maplink" href="https://www.google.com/maps/dir/Palas+de+Rei,+Spain/O+Pedrouzo,+Spain" target="_blank" rel="noopener">경로</a></td></tr>
-        <tr><td class="day">5/20<small>목</small></td>
-            <td class="route"><span style="color:var(--ink-soft);font-size:.78rem">12일차</span> &nbsp;<b>오 페드로우소</b> (O Pedrouzo) <span class="arrow">→</span> <b>산티아고 대성당</b> (Santiago de Compostela Cathedral) — 몬테 도 고소 경유, 자전거 반납·산티아고 숙박<span class="tag goal">⛿ 완주</span></td>
-            <td class="km">20 km<small>완주 797km</small></td>
-            <td class="gain">+300 m</td>
-            <td><a class="maplink" href="https://www.google.com/maps/dir/O+Pedrouzo,+Spain/Santiago+de+Compostela+Cathedral,+Spain" target="_blank" rel="noopener">경로</a></td></tr>
-        <tr><td class="day">5/21<small>금</small></td>
-            <td class="route">Santiago 공항(SCQ) 출발 — <b>Bin</b>: 유럽 허브 경유 <span class="arrow">→</span> Newark(EWR) ·
-            <b>Jin</b>: CDG 등 경유 <span class="arrow">→</span> 인천(ICN), 대한항공<span class="tag fly">✈ 귀국</span></td>
-            <td class="km">—</td><td class="gain">—</td><td>—</td></tr>
+        <tr><td>1</td><td class="day">5/9<small>일</small></td><td class="route"><b>생장</b> <small>(Saint-Jean-Pied-de-Port)</small> → <b>수비리</b> <small>(Zubiri)</small></td><td class="km">48.0 km</td><td class="gain">+1,350 m</td><td class="km">48.0</td></tr>
+        <tr><td>2</td><td class="day">5/10<small>월</small></td><td class="route"><b>수비리</b> <small>(Zubiri)</small> → <b>에스떼야</b> <small>(Estella)</small></td><td class="km">65.9 km</td><td class="gain">+800 m</td><td class="km">113.9</td></tr>
+        <tr><td>3</td><td class="day">5/11<small>화</small></td><td class="route"><b>에스떼야</b> <small>(Estella)</small> → <b>나베레테</b> <small>(Navarrete)</small></td><td class="km">61.3 km</td><td class="gain">+700 m</td><td class="km">175.2</td></tr>
+        <tr><td>4</td><td class="day">5/12<small>수</small></td><td class="route"><b>나베레테</b> <small>(Navarrete)</small> → <b>벨로라도</b> <small>(Belorado)</small></td><td class="km">59.3 km</td><td class="gain">+850 m</td><td class="km">234.5</td></tr>
+        <tr><td>5</td><td class="day">5/13<small>목</small></td><td class="route"><b>벨로라도</b> <small>(Belorado)</small> → <b>키스트로헤리스</b> <small>(Castrojeriz)</small></td><td class="km">96.5 km</td><td class="gain">+350 m</td><td class="km">331.0</td></tr>
+        <tr><td>6</td><td class="day">5/14<small>금</small></td><td class="route"><b>키스트로헤리스</b> <small>(Castrojeriz)</small> → <b>사아군</b> <small>(Sahagún)</small></td><td class="km">83.5 km</td><td class="gain">+450 m</td><td class="km">414.5</td></tr>
+        <tr><td>7</td><td class="day">5/15<small>토</small></td><td class="route"><b>사아군</b> <small>(Sahagún)</small> → <b>레온</b> <small>(León)</small></td><td class="km">68.0 km</td><td class="gain">+250 m</td><td class="km">482.5</td></tr>
+        <tr class="restrow"><td>8</td><td class="day">5/16<small>일</small></td><td class="route">🛌 <b>레온</b> (León) 휴식일 — 자전거 주행 없음</td><td class="km">0 km</td><td class="gain">—</td><td class="km">482.5</td></tr>
+        <tr><td>9</td><td class="day">5/17<small>월</small></td><td class="route"><b>레온</b> <small>(León)</small> → <b>라바날 델 까미노</b> <small>(Rabanal del Camino)</small></td><td class="km">74.0 km</td><td class="gain">+250 m</td><td class="km">556.5</td></tr>
+        <tr><td>10</td><td class="day">5/18<small>화</small></td><td class="route"><b>라바날 델 까미노</b> <small>(Rabanal del Camino)</small> → <b>베가 데 발까르세</b> <small>(Vega de Valcarce)</small></td><td class="km">75.5 km</td><td class="gain">+1,050 m</td><td class="km">632.0</td></tr>
+        <tr><td>11</td><td class="day">5/19<small>수</small></td><td class="route"><b>베가 데 발까르세</b> <small>(Vega de Valcarce)</small> → <b>사리아</b> <small>(Sarria)</small></td><td class="km">60.0 km</td><td class="gain">+1,250 m</td><td class="km">692.0</td></tr>
+        <tr><td>12</td><td class="day">5/20<small>목</small></td><td class="route"><b>사리아</b> <small>(Sarria)</small> → <b>아르수아</b> <small>(Arzúa)</small></td><td class="km">76.5 km</td><td class="gain">+900 m</td><td class="km">768.5</td></tr>
+        <tr><td>13</td><td class="day">5/21<small>금</small></td><td class="route"><b>아르수아</b> <small>(Arzúa)</small> → <b>산티아고 대성당</b> <small>(Santiago de Compostela)</small></td><td class="km">40.0 km</td><td class="gain">+300 m</td><td class="km">808.5</td></tr>
       </tbody>
     </table>
     </div>
   </div>
 </section>
 
-<!-- ───────── 4. 항공·환승 흐름 ───────── -->
-<section style="padding-top:0">
+<!-- ───────── Ⅲ. 날짜별 카드 ───────── -->
+<div class="daynav"><div class="in wrap" style="max-width:1040px"><a href="#day1" class="">D1<small>5/9</small></a><a href="#day2" class="">D2<small>5/10</small></a><a href="#day3" class="">D3<small>5/11</small></a><a href="#day4" class="">D4<small>5/12</small></a><a href="#day5" class="">D5<small>5/13</small></a><a href="#day6" class="">D6<small>5/14</small></a><a href="#day7" class="">D7<small>5/15</small></a><a href="#day8" class="rest">D8<small>5/16</small></a><a href="#day9" class="">D9<small>5/17</small></a><a href="#day10" class="">D10<small>5/18</small></a><a href="#day11" class="">D11<small>5/19</small></a><a href="#day12" class="">D12<small>5/20</small></a><a href="#day13" class="">D13<small>5/21</small></a></div></div>
+<section style="padding-top:22px">
   <div class="wrap">
     <div class="sec-head">
-      <div class="no">Ⅳ · Tránsito</div>
-      <h2>항공 · 환승 흐름</h2>
+      <div class="no">Ⅲ · Día a Día</div>
+      <h2>날짜별 상세 카드</h2>
+      <p>각 카드의 QR 코드를 휴대폰 카메라로 스캔하거나 버튼을 누르면
+      해당 구간의 <b>구글 지도 자전거 길찾기</b>가 바로 열립니다.
+      ※ 구글 자전거 경로는 일부 비포장 카미노 구간을 인근 도로로 우회할 수 있습니다.</p>
     </div>
-    <div class="flow-grid">
-      <div class="flow">
-        <h3>가는 길<span class="who bin">BIN</span> <span class="chip">5/6 – 5/7</span></h3>
-        <ol class="steps">
-          <li><b>Newark (EWR)</b><span>5/6 목 저녁 출발 · 야간 직항</span></li>
-          <li><b>Paris (CDG)</b><span>5/7 금 오전 도착</span></li>
-          <li class="end"><b>CDG에서 Jin과 합류</b><span>이후 두 사람 함께 이동 ↓</span></li>
-        </ol>
-      </div>
-      <div class="flow">
-        <h3>가는 길<span class="who jin">JIN</span> <span class="chip">5/7</span></h3>
-        <ol class="steps">
-          <li><b>Incheon (ICN)</b><span>대한항공 파리 직항 출발</span></li>
-          <li><b>Paris (CDG)</b><span>5/7 금 도착</span></li>
-          <li class="end"><b>CDG에서 Bin과 합류</b><span>이후 두 사람 함께 이동 ↓</span></li>
-        </ol>
-      </div>
-      <div class="flow">
-        <h3>합류 후 함께 <span class="chip">5/7 – 5/8</span></h3>
-        <ol class="steps">
-          <li><b>Paris (CDG)</b><span>5/7 Bin + Jin 합류 · 파리 시내 1박 (몽파르나스 역 인근)</span></li>
-          <li><b>Montparnasse 10:05 TGV</b><span>5/8 토 오전 출발 → Bayonne 14:05 도착</span></li>
-          <li><b>Bayonne 14:25 TER</b><span>완행 환승 · 약 1시간</span></li>
-          <li class="end"><b>SJPP 15:26 도착 · 숙박</b><span>순례자 여권(Credencial) 수령 · 렌탈 자전거 2대 수령 및 점검</span></li>
-        </ol>
-      </div>
-      <div class="flow">
-        <h3>오는 길<span class="who bin">BIN</span> <span class="chip">5/21</span></h3>
-        <ol class="steps">
-          <li><b>Santiago 시내</b><span>자전거는 전날(5/20) 대성당 인근에서 반납 완료</span></li>
-          <li><b>Santiago 공항 (SCQ)</b><span>버스 약 20분 · 가장 가까운 공항</span></li>
-          <li><b>유럽 허브 경유</b><span>Madrid · Paris · Lisbon 중 택 1</span></li>
-          <li class="end"><b>Newark (EWR)</b><span>5/21 금 미국 귀국</span></li>
-        </ol>
-      </div>
-      <div class="flow">
-        <h3>오는 길<span class="who jin">JIN</span> <span class="chip">5/21</span></h3>
-        <ol class="steps">
-          <li><b>Santiago 시내</b><span>자전거는 전날(5/20) 대성당 인근에서 반납 완료</span></li>
-          <li><b>Santiago 공항 (SCQ)</b><span>버스 약 20분 · 가장 가까운 공항</span></li>
-          <li><b>Paris (CDG) 경유</b><span>대한항공 연결 허브 (또는 Madrid·Amsterdam)</span></li>
-          <li class="end"><b>Incheon (ICN)</b><span>대한항공 · 한국 귀국</span></li>
-        </ol>
-      </div>
+    
+<article class="dcard" id="day1">
+  <header class="dhead">
+    <span class="dnum">DAY 1</span>
+    <div class="dtitle"><b>생장 → 수비리</b><small>5/9 (일) · 카미노 프란세스 자전거 경로</small></div>
+    <span class="dkm">48.0 km · 획득고도 1,350 m<span class="tag mtn">▲ 산악</span></span>
+  </header>
+  <div class="dbody">
+    <div class="droute-wrap"><div class="droute"><div class="stop start"><i></i><b>생장</b><small>Saint-Jean-Pied-de-Port</small></div><div class="leg"><span>▶</span></div><div class="stop via"><i></i><b>오리손</b><small>Orisson</small></div><div class="leg"><span>▶</span></div><div class="stop via"><i></i><b>론세스바예스</b><small>Roncesvalles</small></div><div class="leg"><span>▶</span></div><div class="stop end"><i></i><b>수비리</b><small>Zubiri</small></div></div></div>
+    <aside class="dqr">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=10&data=https%3A%2F%2Fwww.google.com%2Fmaps%2Fdir%2F%3Fapi%3D1%26origin%3DSaint-Jean-Pied-de-Port%252C%2520France%26destination%3DZubiri%252C%2520Spain%26travelmode%3Dbicycling%26waypoints%3DOrisson%252C%2520France%7CRoncesvalles%252C%2520Spain" width="130" height="130" loading="lazy"
+           alt="DAY 1 생장→수비리 구글 지도 자전거 경로 QR 코드">
+      <a class="gbtn" href="https://www.google.com/maps/dir/?api=1&origin=Saint-Jean-Pied-de-Port%2C%20France&destination=Zubiri%2C%20Spain&travelmode=bicycling&waypoints=Orisson%2C%20France|Roncesvalles%2C%20Spain" target="_blank" rel="noopener">Google Maps<br><small>자전거 길찾기 열기</small></a>
+      <small class="qrhint">QR 스캔 → 휴대폰에서 바로 열기</small>
+    </aside>
+  </div>
+  <div class="dorder"><b>경로 순서</b> 생장 (Saint-Jean-Pied-de-Port) → 오리손 (Orisson) → 론세스바예스 (Roncesvalles) → 수비리 (Zubiri)</div>
+  <footer class="dfoot">누적 48.0 km · 남은 760.5 km</footer>
+</article>
+
+<article class="dcard" id="day2">
+  <header class="dhead">
+    <span class="dnum">DAY 2</span>
+    <div class="dtitle"><b>수비리 → 에스떼야</b><small>5/10 (월) · 카미노 프란세스 자전거 경로</small></div>
+    <span class="dkm">65.9 km · 획득고도 800 m</span>
+  </header>
+  <div class="dbody">
+    <div class="droute-wrap"><div class="droute"><div class="stop start"><i></i><b>수비리</b><small>Zubiri</small></div><div class="leg"><span>▶</span></div><div class="stop via"><i></i><b>팜풀로나</b><small>Pamplona</small></div><div class="leg"><span>▶</span></div><div class="stop via"><i></i><b>푸엔테 라 레이나</b><small>Puente la Reina</small></div><div class="leg"><span>▶</span></div><div class="stop end"><i></i><b>에스떼야</b><small>Estella</small></div></div></div>
+    <aside class="dqr">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=10&data=https%3A%2F%2Fwww.google.com%2Fmaps%2Fdir%2F%3Fapi%3D1%26origin%3DZubiri%252C%2520Spain%26destination%3DEstella%252C%2520Spain%26travelmode%3Dbicycling%26waypoints%3DPamplona%252C%2520Spain%7CPuente%2520la%2520Reina%252C%2520Spain" width="130" height="130" loading="lazy"
+           alt="DAY 2 수비리→에스떼야 구글 지도 자전거 경로 QR 코드">
+      <a class="gbtn" href="https://www.google.com/maps/dir/?api=1&origin=Zubiri%2C%20Spain&destination=Estella%2C%20Spain&travelmode=bicycling&waypoints=Pamplona%2C%20Spain|Puente%20la%20Reina%2C%20Spain" target="_blank" rel="noopener">Google Maps<br><small>자전거 길찾기 열기</small></a>
+      <small class="qrhint">QR 스캔 → 휴대폰에서 바로 열기</small>
+    </aside>
+  </div>
+  <div class="dorder"><b>경로 순서</b> 수비리 (Zubiri) → 팜풀로나 (Pamplona) → 푸엔테 라 레이나 (Puente la Reina) → 에스떼야 (Estella)</div>
+  <footer class="dfoot">누적 113.9 km · 남은 694.6 km</footer>
+</article>
+
+<article class="dcard" id="day3">
+  <header class="dhead">
+    <span class="dnum">DAY 3</span>
+    <div class="dtitle"><b>에스떼야 → 나베레테</b><small>5/11 (화) · 카미노 프란세스 자전거 경로</small></div>
+    <span class="dkm">61.3 km · 획득고도 700 m</span>
+  </header>
+  <div class="dbody">
+    <div class="droute-wrap"><div class="droute"><div class="stop start"><i></i><b>에스떼야</b><small>Estella</small></div><div class="leg"><span>▶</span></div><div class="stop via"><i></i><b>로스 아르꼬스</b><small>Los Arcos</small></div><div class="leg"><span>▶</span></div><div class="stop via"><i></i><b>로그로뇨</b><small>Logroño</small></div><div class="leg"><span>▶</span></div><div class="stop end"><i></i><b>나베레테</b><small>Navarrete</small></div></div></div>
+    <aside class="dqr">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=10&data=https%3A%2F%2Fwww.google.com%2Fmaps%2Fdir%2F%3Fapi%3D1%26origin%3DEstella%252C%2520Spain%26destination%3DNavarrete%252C%2520Spain%26travelmode%3Dbicycling%26waypoints%3DLos%2520Arcos%252C%2520Spain%7CLogro%25C3%25B1o%252C%2520Spain" width="130" height="130" loading="lazy"
+           alt="DAY 3 에스떼야→나베레테 구글 지도 자전거 경로 QR 코드">
+      <a class="gbtn" href="https://www.google.com/maps/dir/?api=1&origin=Estella%2C%20Spain&destination=Navarrete%2C%20Spain&travelmode=bicycling&waypoints=Los%20Arcos%2C%20Spain|Logro%C3%B1o%2C%20Spain" target="_blank" rel="noopener">Google Maps<br><small>자전거 길찾기 열기</small></a>
+      <small class="qrhint">QR 스캔 → 휴대폰에서 바로 열기</small>
+    </aside>
+  </div>
+  <div class="dorder"><b>경로 순서</b> 에스떼야 (Estella) → 로스 아르꼬스 (Los Arcos) → 로그로뇨 (Logroño) → 나베레테 (Navarrete)</div>
+  <footer class="dfoot">누적 175.2 km · 남은 633.3 km</footer>
+</article>
+
+<article class="dcard" id="day4">
+  <header class="dhead">
+    <span class="dnum">DAY 4</span>
+    <div class="dtitle"><b>나베레테 → 벨로라도</b><small>5/12 (수) · 카미노 프란세스 자전거 경로</small></div>
+    <span class="dkm">59.3 km · 획득고도 850 m</span>
+  </header>
+  <div class="dbody">
+    <div class="droute-wrap"><div class="droute"><div class="stop start"><i></i><b>나베레테</b><small>Navarrete</small></div><div class="leg"><span>▶</span></div><div class="stop via"><i></i><b>나헤라</b><small>Nájera</small></div><div class="leg"><span>▶</span></div><div class="stop via"><i></i><b>산토 도밍고 데 라 깔사다</b><small>Santo Domingo de la Calzada</small></div><div class="leg"><span>▶</span></div><div class="stop end"><i></i><b>벨로라도</b><small>Belorado</small></div></div></div>
+    <aside class="dqr">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=10&data=https%3A%2F%2Fwww.google.com%2Fmaps%2Fdir%2F%3Fapi%3D1%26origin%3DNavarrete%252C%2520Spain%26destination%3DBelorado%252C%2520Spain%26travelmode%3Dbicycling%26waypoints%3DN%25C3%25A1jera%252C%2520Spain%7CSanto%2520Domingo%2520de%2520la%2520Calzada%252C%2520Spain" width="130" height="130" loading="lazy"
+           alt="DAY 4 나베레테→벨로라도 구글 지도 자전거 경로 QR 코드">
+      <a class="gbtn" href="https://www.google.com/maps/dir/?api=1&origin=Navarrete%2C%20Spain&destination=Belorado%2C%20Spain&travelmode=bicycling&waypoints=N%C3%A1jera%2C%20Spain|Santo%20Domingo%20de%20la%20Calzada%2C%20Spain" target="_blank" rel="noopener">Google Maps<br><small>자전거 길찾기 열기</small></a>
+      <small class="qrhint">QR 스캔 → 휴대폰에서 바로 열기</small>
+    </aside>
+  </div>
+  <div class="dorder"><b>경로 순서</b> 나베레테 (Navarrete) → 나헤라 (Nájera) → 산토 도밍고 데 라 깔사다 (Santo Domingo de la Calzada) → 벨로라도 (Belorado)</div>
+  <footer class="dfoot">누적 234.5 km · 남은 574.0 km</footer>
+</article>
+
+<article class="dcard" id="day5">
+  <header class="dhead">
+    <span class="dnum">DAY 5</span>
+    <div class="dtitle"><b>벨로라도 → 키스트로헤리스</b><small>5/13 (목) · 카미노 프란세스 자전거 경로</small></div>
+    <span class="dkm">96.5 km · 획득고도 350 m<span class="tag long">최장</span></span>
+  </header>
+  <div class="dbody">
+    <div class="droute-wrap"><div class="droute"><div class="stop start"><i></i><b>벨로라도</b><small>Belorado</small></div><div class="leg"><span>▶</span></div><div class="stop via"><i></i><b>산 후안 데 오르떼가</b><small>San Juan de Ortega</small></div><div class="leg"><span>▶</span></div><div class="stop via"><i></i><b>부르고스</b><small>Burgos</small></div><div class="leg"><span>▶</span></div><div class="stop via"><i></i><b>오르니요스 델 까미노</b><small>Hornillos del Camino</small></div><div class="leg"><span>▶</span></div><div class="stop end"><i></i><b>키스트로헤리스</b><small>Castrojeriz</small></div></div></div>
+    <aside class="dqr">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=10&data=https%3A%2F%2Fwww.google.com%2Fmaps%2Fdir%2F%3Fapi%3D1%26origin%3DBelorado%252C%2520Spain%26destination%3DCastrojeriz%252C%2520Spain%26travelmode%3Dbicycling%26waypoints%3DSan%2520Juan%2520de%2520Ortega%252C%2520Spain%7CBurgos%252C%2520Spain%7CHornillos%2520del%2520Camino%252C%2520Spain" width="130" height="130" loading="lazy"
+           alt="DAY 5 벨로라도→키스트로헤리스 구글 지도 자전거 경로 QR 코드">
+      <a class="gbtn" href="https://www.google.com/maps/dir/?api=1&origin=Belorado%2C%20Spain&destination=Castrojeriz%2C%20Spain&travelmode=bicycling&waypoints=San%20Juan%20de%20Ortega%2C%20Spain|Burgos%2C%20Spain|Hornillos%20del%20Camino%2C%20Spain" target="_blank" rel="noopener">Google Maps<br><small>자전거 길찾기 열기</small></a>
+      <small class="qrhint">QR 스캔 → 휴대폰에서 바로 열기</small>
+    </aside>
+  </div>
+  <div class="dorder"><b>경로 순서</b> 벨로라도 (Belorado) → 산 후안 데 오르떼가 (San Juan de Ortega) → 부르고스 (Burgos) → 오르니요스 델 까미노 (Hornillos del Camino) → 키스트로헤리스 (Castrojeriz)</div>
+  <footer class="dfoot">누적 331.0 km · 남은 477.5 km</footer>
+</article>
+
+<article class="dcard" id="day6">
+  <header class="dhead">
+    <span class="dnum">DAY 6</span>
+    <div class="dtitle"><b>키스트로헤리스 → 사아군</b><small>5/14 (금) · 카미노 프란세스 자전거 경로</small></div>
+    <span class="dkm">83.5 km · 획득고도 450 m</span>
+  </header>
+  <div class="dbody">
+    <div class="droute-wrap"><div class="droute"><div class="stop start"><i></i><b>키스트로헤리스</b><small>Castrojeriz</small></div><div class="leg"><span>▶</span></div><div class="stop via"><i></i><b>프로미스따</b><small>Frómista</small></div><div class="leg"><span>▶</span></div><div class="stop via"><i></i><b>까리온 데 로스 꼰데스</b><small>Carrión de los Condes</small></div><div class="leg"><span>▶</span></div><div class="stop via"><i></i><b>깔사디야 데 라 쿠에사</b><small>Calzadilla de la Cueza</small></div><div class="leg"><span>▶</span></div><div class="stop end"><i></i><b>사아군</b><small>Sahagún</small></div></div></div>
+    <aside class="dqr">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=10&data=https%3A%2F%2Fwww.google.com%2Fmaps%2Fdir%2F%3Fapi%3D1%26origin%3DCastrojeriz%252C%2520Spain%26destination%3DSahag%25C3%25BAn%252C%2520Spain%26travelmode%3Dbicycling%26waypoints%3DFr%25C3%25B3mista%252C%2520Spain%7CCarri%25C3%25B3n%2520de%2520los%2520Condes%252C%2520Spain%7CCalzadilla%2520de%2520la%2520Cueza%252C%2520Spain" width="130" height="130" loading="lazy"
+           alt="DAY 6 키스트로헤리스→사아군 구글 지도 자전거 경로 QR 코드">
+      <a class="gbtn" href="https://www.google.com/maps/dir/?api=1&origin=Castrojeriz%2C%20Spain&destination=Sahag%C3%BAn%2C%20Spain&travelmode=bicycling&waypoints=Fr%C3%B3mista%2C%20Spain|Carri%C3%B3n%20de%20los%20Condes%2C%20Spain|Calzadilla%20de%20la%20Cueza%2C%20Spain" target="_blank" rel="noopener">Google Maps<br><small>자전거 길찾기 열기</small></a>
+      <small class="qrhint">QR 스캔 → 휴대폰에서 바로 열기</small>
+    </aside>
+  </div>
+  <div class="dorder"><b>경로 순서</b> 키스트로헤리스 (Castrojeriz) → 프로미스따 (Frómista) → 까리온 데 로스 꼰데스 (Carrión de los Condes) → 깔사디야 데 라 쿠에사 (Calzadilla de la Cueza) → 사아군 (Sahagún)</div>
+  <footer class="dfoot">누적 414.5 km · 남은 394.0 km</footer>
+</article>
+
+<article class="dcard" id="day7">
+  <header class="dhead">
+    <span class="dnum">DAY 7</span>
+    <div class="dtitle"><b>사아군 → 레온</b><small>5/15 (토) · 카미노 프란세스 자전거 경로</small></div>
+    <span class="dkm">68.0 km · 획득고도 250 m</span>
+  </header>
+  <div class="dbody">
+    <div class="droute-wrap"><div class="droute"><div class="stop start"><i></i><b>사아군</b><small>Sahagún</small></div><div class="leg"><span>▶</span></div><div class="stop via"><i></i><b>엘 부르고 라네로</b><small>El Burgo Ranero</small></div><div class="leg"><span>▶</span></div><div class="stop via"><i></i><b>만시야 데 라스 물라스</b><small>Mansilla de las Mulas</small></div><div class="leg"><span>▶</span></div><div class="stop end"><i></i><b>레온</b><small>León</small></div></div></div>
+    <aside class="dqr">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=10&data=https%3A%2F%2Fwww.google.com%2Fmaps%2Fdir%2F%3Fapi%3D1%26origin%3DSahag%25C3%25BAn%252C%2520Spain%26destination%3DLe%25C3%25B3n%252C%2520Spain%26travelmode%3Dbicycling%26waypoints%3DEl%2520Burgo%2520Ranero%252C%2520Spain%7CMansilla%2520de%2520las%2520Mulas%252C%2520Spain" width="130" height="130" loading="lazy"
+           alt="DAY 7 사아군→레온 구글 지도 자전거 경로 QR 코드">
+      <a class="gbtn" href="https://www.google.com/maps/dir/?api=1&origin=Sahag%C3%BAn%2C%20Spain&destination=Le%C3%B3n%2C%20Spain&travelmode=bicycling&waypoints=El%20Burgo%20Ranero%2C%20Spain|Mansilla%20de%20las%20Mulas%2C%20Spain" target="_blank" rel="noopener">Google Maps<br><small>자전거 길찾기 열기</small></a>
+      <small class="qrhint">QR 스캔 → 휴대폰에서 바로 열기</small>
+    </aside>
+  </div>
+  <div class="dorder"><b>경로 순서</b> 사아군 (Sahagún) → 엘 부르고 라네로 (El Burgo Ranero) → 만시야 데 라스 물라스 (Mansilla de las Mulas) → 레온 (León)</div>
+  <footer class="dfoot">누적 482.5 km · 남은 326.0 km</footer>
+</article>
+
+<article class="dcard restday" id="day8">
+  <header class="dhead">
+    <span class="dnum">DAY 8</span>
+    <div class="dtitle"><b>레온 (León) 휴식일</b><small>5/16 (일) · 자전거 주행 없음</small></div>
+    <span class="dkm">0 km · 획득고도 0 m</span>
+  </header>
+  <div class="dbody">
+    <div class="restinfo">
+      <p>7일 동안 482.5km를 달린 뒤 갖는 온전한 하루의 쉼입니다. 다리를 쉬게 하고, 남은 6일(326km)을 준비하세요.</p>
+      <ul>
+        <li>🕍 레온 대성당(Catedral de León) — 스페인 최고의 스테인드글라스</li>
+        <li>🏰 가우디의 카사 보티네스(Casa Botines), 산 이시도로 왕립성당</li>
+        <li>🔧 자전거 점검: 체인 오일, 브레이크 패드, 타이어 — 시내 자전거숍 이용</li>
+        <li>🧺 빨래 · 보급(간식/전해질) · 젖은 장비 말리기</li>
+        <li>🍷 바리오 우메도(Barrio Húmedo) 타파스 골목에서 저녁</li>
+      </ul>
     </div>
-    <div class="note">※ 2027년 실제 항공편·열차 시간은 예약 오픈 후 확정됩니다.
-    5/7 파리에서 1박을 하기 때문에 Jin의 대한항공 편이 오후~저녁에 CDG에 도착해도 여유롭게 합류할 수 있고,
-    두 사람 모두 시차 적응 후 5/8 아침 기차를 타면 됩니다.
-    자전거는 <b>SJPP에서 렌탈 → Santiago 대성당 인근에서 반납</b>하는 편도 렌탈이므로
-    비행기·기차에 자전거를 실을 필요가 없습니다. 편도 렌탈(원웨이) 업체는 5월 성수기에 조기 마감되니
-    2대를 미리 예약하고, 패니어·헬멧·수리 키트 포함 여부를 확인하세요.</div>
+  </div>
+  <footer class="dfoot">누적 482.5 km · 남은 326.0 km — 여기서 절반 이상을 이미 왔습니다</footer>
+</article>
+
+<article class="dcard" id="day9">
+  <header class="dhead">
+    <span class="dnum">DAY 9</span>
+    <div class="dtitle"><b>레온 → 라바날 델 까미노</b><small>5/17 (월) · 카미노 프란세스 자전거 경로</small></div>
+    <span class="dkm">74.0 km · 획득고도 250 m</span>
+  </header>
+  <div class="dbody">
+    <div class="droute-wrap"><div class="droute"><div class="stop start"><i></i><b>레온</b><small>León</small></div><div class="leg"><span>▶</span></div><div class="stop via"><i></i><b>산 마르틴 델 까미노</b><small>San Martín del Camino</small></div><div class="leg"><span>▶</span></div><div class="stop via"><i></i><b>아스토르가</b><small>Astorga</small></div><div class="leg"><span>▶</span></div><div class="stop end"><i></i><b>라바날 델 까미노</b><small>Rabanal del Camino</small></div></div></div>
+    <aside class="dqr">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=10&data=https%3A%2F%2Fwww.google.com%2Fmaps%2Fdir%2F%3Fapi%3D1%26origin%3DLe%25C3%25B3n%252C%2520Spain%26destination%3DRabanal%2520del%2520Camino%252C%2520Spain%26travelmode%3Dbicycling%26waypoints%3DSan%2520Mart%25C3%25ADn%2520del%2520Camino%252C%2520Spain%7CAstorga%252C%2520Spain" width="130" height="130" loading="lazy"
+           alt="DAY 9 레온→라바날 델 까미노 구글 지도 자전거 경로 QR 코드">
+      <a class="gbtn" href="https://www.google.com/maps/dir/?api=1&origin=Le%C3%B3n%2C%20Spain&destination=Rabanal%20del%20Camino%2C%20Spain&travelmode=bicycling&waypoints=San%20Mart%C3%ADn%20del%20Camino%2C%20Spain|Astorga%2C%20Spain" target="_blank" rel="noopener">Google Maps<br><small>자전거 길찾기 열기</small></a>
+      <small class="qrhint">QR 스캔 → 휴대폰에서 바로 열기</small>
+    </aside>
+  </div>
+  <div class="dorder"><b>경로 순서</b> 레온 (León) → 산 마르틴 델 까미노 (San Martín del Camino) → 아스토르가 (Astorga) → 라바날 델 까미노 (Rabanal del Camino)</div>
+  <footer class="dfoot">누적 556.5 km · 남은 252.0 km</footer>
+</article>
+
+<article class="dcard" id="day10">
+  <header class="dhead">
+    <span class="dnum">DAY 10</span>
+    <div class="dtitle"><b>라바날 델 까미노 → 베가 데 발까르세</b><small>5/18 (화) · 카미노 프란세스 자전거 경로</small></div>
+    <span class="dkm">75.5 km · 획득고도 1,050 m<span class="tag mtn">▲ 산악</span></span>
+  </header>
+  <div class="dbody">
+    <div class="droute-wrap"><div class="droute"><div class="stop start"><i></i><b>라바날 델 까미노</b><small>Rabanal del Camino</small></div><div class="leg"><span>▶</span></div><div class="stop via"><i></i><b>몰리나세까</b><small>Molinaseca</small></div><div class="leg"><span>▶</span></div><div class="stop via"><i></i><b>폰페라다</b><small>Ponferrada</small></div><div class="leg"><span>▶</span></div><div class="stop via"><i></i><b>까까벨로스</b><small>Cacabelos</small></div><div class="leg"><span>▶</span></div><div class="stop end"><i></i><b>베가 데 발까르세</b><small>Vega de Valcarce</small></div></div></div>
+    <aside class="dqr">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=10&data=https%3A%2F%2Fwww.google.com%2Fmaps%2Fdir%2F%3Fapi%3D1%26origin%3DRabanal%2520del%2520Camino%252C%2520Spain%26destination%3DVega%2520de%2520Valcarce%252C%2520Spain%26travelmode%3Dbicycling%26waypoints%3DMolinaseca%252C%2520Spain%7CPonferrada%252C%2520Spain%7CCacabelos%252C%2520Spain" width="130" height="130" loading="lazy"
+           alt="DAY 10 라바날 델 까미노→베가 데 발까르세 구글 지도 자전거 경로 QR 코드">
+      <a class="gbtn" href="https://www.google.com/maps/dir/?api=1&origin=Rabanal%20del%20Camino%2C%20Spain&destination=Vega%20de%20Valcarce%2C%20Spain&travelmode=bicycling&waypoints=Molinaseca%2C%20Spain|Ponferrada%2C%20Spain|Cacabelos%2C%20Spain" target="_blank" rel="noopener">Google Maps<br><small>자전거 길찾기 열기</small></a>
+      <small class="qrhint">QR 스캔 → 휴대폰에서 바로 열기</small>
+    </aside>
+  </div>
+  <div class="dorder"><b>경로 순서</b> 라바날 델 까미노 (Rabanal del Camino) → 몰리나세까 (Molinaseca) → 폰페라다 (Ponferrada) → 까까벨로스 (Cacabelos) → 베가 데 발까르세 (Vega de Valcarce)</div>
+  <footer class="dfoot">누적 632.0 km · 남은 176.5 km</footer>
+</article>
+
+<article class="dcard" id="day11">
+  <header class="dhead">
+    <span class="dnum">DAY 11</span>
+    <div class="dtitle"><b>베가 데 발까르세 → 사리아</b><small>5/19 (수) · 카미노 프란세스 자전거 경로</small></div>
+    <span class="dkm">60.0 km · 획득고도 1,250 m<span class="tag mtn">▲ 산악</span></span>
+  </header>
+  <div class="dbody">
+    <div class="droute-wrap"><div class="droute"><div class="stop start"><i></i><b>베가 데 발까르세</b><small>Vega de Valcarce</small></div><div class="leg"><span>▶</span></div><div class="stop via"><i></i><b>오 세브레이로</b><small>O Cebreiro</small></div><div class="leg"><span>▶</span></div><div class="stop via"><i></i><b>뜨리아까스떼야</b><small>Triacastela</small></div><div class="leg"><span>▶</span></div><div class="stop end"><i></i><b>사리아</b><small>Sarria</small></div></div></div>
+    <aside class="dqr">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=10&data=https%3A%2F%2Fwww.google.com%2Fmaps%2Fdir%2F%3Fapi%3D1%26origin%3DVega%2520de%2520Valcarce%252C%2520Spain%26destination%3DSarria%252C%2520Spain%26travelmode%3Dbicycling%26waypoints%3DO%2520Cebreiro%252C%2520Spain%7CTriacastela%252C%2520Spain" width="130" height="130" loading="lazy"
+           alt="DAY 11 베가 데 발까르세→사리아 구글 지도 자전거 경로 QR 코드">
+      <a class="gbtn" href="https://www.google.com/maps/dir/?api=1&origin=Vega%20de%20Valcarce%2C%20Spain&destination=Sarria%2C%20Spain&travelmode=bicycling&waypoints=O%20Cebreiro%2C%20Spain|Triacastela%2C%20Spain" target="_blank" rel="noopener">Google Maps<br><small>자전거 길찾기 열기</small></a>
+      <small class="qrhint">QR 스캔 → 휴대폰에서 바로 열기</small>
+    </aside>
+  </div>
+  <div class="dorder"><b>경로 순서</b> 베가 데 발까르세 (Vega de Valcarce) → 오 세브레이로 (O Cebreiro) → 뜨리아까스떼야 (Triacastela) → 사리아 (Sarria)</div>
+  <footer class="dfoot">누적 692.0 km · 남은 116.5 km</footer>
+</article>
+
+<article class="dcard" id="day12">
+  <header class="dhead">
+    <span class="dnum">DAY 12</span>
+    <div class="dtitle"><b>사리아 → 아르수아</b><small>5/20 (목) · 카미노 프란세스 자전거 경로</small></div>
+    <span class="dkm">76.5 km · 획득고도 900 m</span>
+  </header>
+  <div class="dbody">
+    <div class="droute-wrap"><div class="droute"><div class="stop start"><i></i><b>사리아</b><small>Sarria</small></div><div class="leg"><span>▶</span></div><div class="stop via"><i></i><b>뽀르또마린</b><small>Portomarín</small></div><div class="leg"><span>▶</span></div><div class="stop via"><i></i><b>빨라스 데 레이</b><small>Palas de Rei</small></div><div class="leg"><span>▶</span></div><div class="stop via"><i></i><b>메리데</b><small>Melide</small></div><div class="leg"><span>▶</span></div><div class="stop end"><i></i><b>아르수아</b><small>Arzúa</small></div></div></div>
+    <aside class="dqr">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=10&data=https%3A%2F%2Fwww.google.com%2Fmaps%2Fdir%2F%3Fapi%3D1%26origin%3DSarria%252C%2520Spain%26destination%3DArz%25C3%25BAa%252C%2520Spain%26travelmode%3Dbicycling%26waypoints%3DPortomar%25C3%25ADn%252C%2520Spain%7CPalas%2520de%2520Rei%252C%2520Spain%7CMelide%252C%2520Spain" width="130" height="130" loading="lazy"
+           alt="DAY 12 사리아→아르수아 구글 지도 자전거 경로 QR 코드">
+      <a class="gbtn" href="https://www.google.com/maps/dir/?api=1&origin=Sarria%2C%20Spain&destination=Arz%C3%BAa%2C%20Spain&travelmode=bicycling&waypoints=Portomar%C3%ADn%2C%20Spain|Palas%20de%20Rei%2C%20Spain|Melide%2C%20Spain" target="_blank" rel="noopener">Google Maps<br><small>자전거 길찾기 열기</small></a>
+      <small class="qrhint">QR 스캔 → 휴대폰에서 바로 열기</small>
+    </aside>
+  </div>
+  <div class="dorder"><b>경로 순서</b> 사리아 (Sarria) → 뽀르또마린 (Portomarín) → 빨라스 데 레이 (Palas de Rei) → 메리데 (Melide) → 아르수아 (Arzúa)</div>
+  <footer class="dfoot">누적 768.5 km · 남은 40.0 km</footer>
+</article>
+
+<article class="dcard" id="day13">
+  <header class="dhead">
+    <span class="dnum">DAY 13</span>
+    <div class="dtitle"><b>아르수아 → 산티아고 대성당</b><small>5/21 (금) · 카미노 프란세스 자전거 경로</small></div>
+    <span class="dkm">40.0 km · 획득고도 300 m<span class="tag goal">⛿ 완주</span></span>
+  </header>
+  <div class="dbody">
+    <div class="droute-wrap"><div class="droute"><div class="stop start"><i></i><b>아르수아</b><small>Arzúa</small></div><div class="leg"><span>▶</span></div><div class="stop via"><i></i><b>뻬드로우소</b><small>O Pedrouzo</small></div><div class="leg"><span>▶</span></div><div class="stop end"><i></i><b>산티아고 대성당</b><small>Santiago de Compostela</small></div></div></div>
+    <aside class="dqr">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=10&data=https%3A%2F%2Fwww.google.com%2Fmaps%2Fdir%2F%3Fapi%3D1%26origin%3DArz%25C3%25BAa%252C%2520Spain%26destination%3DSantiago%2520de%2520Compostela%252C%2520Spain%26travelmode%3Dbicycling%26waypoints%3DO%2520Pedrouzo%252C%2520Spain" width="130" height="130" loading="lazy"
+           alt="DAY 13 아르수아→산티아고 대성당 구글 지도 자전거 경로 QR 코드">
+      <a class="gbtn" href="https://www.google.com/maps/dir/?api=1&origin=Arz%C3%BAa%2C%20Spain&destination=Santiago%20de%20Compostela%2C%20Spain&travelmode=bicycling&waypoints=O%20Pedrouzo%2C%20Spain" target="_blank" rel="noopener">Google Maps<br><small>자전거 길찾기 열기</small></a>
+      <small class="qrhint">QR 스캔 → 휴대폰에서 바로 열기</small>
+    </aside>
+  </div>
+  <div class="dorder"><b>경로 순서</b> 아르수아 (Arzúa) → 뻬드로우소 (O Pedrouzo) → 산티아고 대성당 (Santiago de Compostela)</div>
+  <footer class="dfoot">누적 808.5 km · ⛿ 완주!</footer>
+</article>
   </div>
 </section>
 
-<!-- ───────── 5. 파리 → SJPP 기차 ───────── -->
+<!-- ───────── Ⅳ. 파리 → 생장 기차 ───────── -->
 <section style="padding-top:0">
   <div class="wrap">
     <div class="sec-head">
-      <div class="no">Ⅴ · Tren</div>
-      <h2>파리 → Saint-Jean-Pied-de-Port 기차 시간표</h2>
-      <p>파리 몽파르나스(Montparnasse)에서 TGV로 Bayonne까지 간 뒤, TER 완행으로 갈아탑니다.
-      이 일정은 <b>5/8(토) 10:05 출발편</b>을 기준으로 합니다 — 도착이 15:26이라 저녁 전에
-      자전거 수령과 마을 구경까지 여유가 있습니다.</p>
+      <div class="no">Ⅳ · Tren</div>
+      <h2>파리 → 생장피에드포르 기차 (5/8)</h2>
+      <p>파리 몽파르나스에서 TGV로 Bayonne까지, TER 완행으로 환승.
+      이 일정은 <b>10:05 출발편</b> 기준입니다 (SJPP 15:26 도착 — 자전거 수령 여유 충분).</p>
     </div>
     <div class="sched-wrap">
-    <table class="sched">
+    <table class="sched" style="min-width:560px">
       <thead>
-        <tr>
-          <th>몽파르나스 출발</th><th>Bayonne 도착</th><th>Bayonne 출발 (TER)</th>
-          <th>SJPP 도착</th><th style="text-align:right">총 소요</th>
-        </tr>
+        <tr><th>몽파르나스 출발</th><th>Bayonne 도착</th><th>Bayonne 출발 (TER)</th><th>SJPP 도착</th><th style="text-align:right">총 소요</th></tr>
       </thead>
       <tbody>
         <tr><td>07:54</td><td>12:08</td><td>12:36</td><td>13:41</td><td class="km">5시간 47분</td></tr>
-        <tr style="background:#FFF3D0">
-          <td><b>10:05</b><span class="tag goal" style="margin-left:8px">✓ 선택</span></td>
-          <td><b>14:05</b></td><td><b>14:25</b></td><td><b>15:26</b></td>
-          <td class="km"><b>5시간 21분</b><small>가장 추천</small></td></tr>
+        <tr style="background:#FFF3D0"><td><b>10:05</b><span class="tag goal" style="margin-left:6px">✓ 선택</span></td><td><b>14:05</b></td><td><b>14:25</b></td><td><b>15:26</b></td><td class="km"><b>5시간 21분</b></td></tr>
         <tr><td>12:06 <span class="tag fly">OUIGO</span></td><td>16:11</td><td>17:14</td><td>18:18</td><td class="km">6시간 12분</td></tr>
         <tr><td>13:59</td><td>18:08</td><td>18:37</td><td>19:43</td><td class="km">5시간 44분</td></tr>
       </tbody>
@@ -703,80 +552,138 @@
       <a href="https://www.thetrainline.com" target="_blank" rel="noopener">Trainline <small>영어 UI · 통합 검색</small></a>
       <a href="https://www.raileurope.com" target="_blank" rel="noopener">Rail Europe <small>해외 카드 결제 편리</small></a>
     </div>
-    <div class="note">표는 sncf-connect.com 기준 예시 시간표이며 2027년 5월 실제 운행 시각은
-    예매 오픈(통상 출발 3–4개월 전) 후 확정됩니다. 파리→Bayonne TGV와 Bayonne→SJPP TER를
-    한 번에 묶어 예매하면 환승 보장이 됩니다. 10:05편을 놓칠 경우 12:06 OUIGO 또는
-    13:59편으로도 당일 SJPP 도착이 가능하니 예비 계획으로 알아두세요.
-    Bayonne 환승 시간이 20~30분 정도로 짧으니 몽파르나스에서는 여유 있게 플랫폼을 확인하세요.</div>
+    <div class="note">표는 sncf-connect.com 기준 예시이며 실제 2027년 5월 시각은 예매 오픈(출발 3–4개월 전) 후 확정됩니다.
+    파리→Bayonne + Bayonne→SJPP를 한 번에 묶어 예매하면 환승이 보장됩니다.
+    Bayonne 환승 20~30분 — 여유 있게 이동하세요.</div>
   </div>
 </section>
 
-<!-- ───────── 6. 숙소 ───────── -->
-<section style="padding-top:0;padding-bottom:72px">
+<!-- ───────── Ⅴ. 항공 · 환승 ───────── -->
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="no">Ⅴ · Tránsito</div>
+      <h2>항공 · 환승 흐름</h2>
+    </div>
+    <div class="note warn" style="margin-top:0;margin-bottom:14px">⚠ 레온 휴식일(8일차)이 추가되어 완주가 <b>5/21(금)</b>이 되었습니다.
+    산티아고에서 1박 후 귀국편은 <b>5/22(토)</b>로 예약하세요.
+    (귀국을 꼭 5/21로 해야 한다면 휴식일을 빼고 12일 라이딩으로 되돌리면 됩니다.)</div>
+    <div class="flow-grid">
+      <div class="flow">
+        <h3>가는 길<span class="who bin">BIN</span> <span class="chip">5/6 – 5/7</span></h3>
+        <ol class="steps">
+          <li><b>Newark (EWR)</b><span>5/6 목 저녁 출발 · 야간 직항</span></li>
+          <li><b>Paris (CDG)</b><span>5/7 금 오전 도착</span></li>
+          <li class="end"><b>CDG에서 Jin과 합류</b><span>파리 시내 1박 (몽파르나스 인근)</span></li>
+        </ol>
+      </div>
+      <div class="flow">
+        <h3>가는 길<span class="who jin">JIN</span> <span class="chip">5/7</span></h3>
+        <ol class="steps">
+          <li><b>Incheon (ICN)</b><span>대한항공 파리 직항 출발</span></li>
+          <li><b>Paris (CDG)</b><span>5/7 금 도착</span></li>
+          <li class="end"><b>CDG에서 Bin과 합류</b><span>파리 시내 1박 — 저녁 도착이어도 여유</span></li>
+        </ol>
+      </div>
+      <div class="flow">
+        <h3>합류 후 함께 <span class="chip">5/8</span></h3>
+        <ol class="steps">
+          <li><b>Montparnasse 10:05 TGV</b><span>→ Bayonne 14:05</span></li>
+          <li><b>Bayonne 14:25 TER</b><span>완행 약 1시간</span></li>
+          <li class="end"><b>생장 15:26 도착 · 숙박</b><span>Credencial 수령 · 렌탈 자전거 2대 수령·점검</span></li>
+        </ol>
+      </div>
+      <div class="flow">
+        <h3>오는 길<span class="who bin">BIN</span> <span class="chip">5/22</span></h3>
+        <ol class="steps">
+          <li><b>Santiago 시내</b><span>자전거는 5/21 대성당 인근 반납 완료</span></li>
+          <li><b>Santiago 공항 (SCQ)</b><span>버스 약 20분 · 가장 가까운 공항</span></li>
+          <li><b>유럽 허브 경유</b><span>Madrid · Paris · Lisbon 중 택 1</span></li>
+          <li class="end"><b>Newark (EWR)</b><span>5/22 토 미국 귀국</span></li>
+        </ol>
+      </div>
+      <div class="flow">
+        <h3>오는 길<span class="who jin">JIN</span> <span class="chip">5/22</span></h3>
+        <ol class="steps">
+          <li><b>Santiago 시내</b><span>자전거는 5/21 대성당 인근 반납 완료</span></li>
+          <li><b>Santiago 공항 (SCQ)</b><span>버스 약 20분</span></li>
+          <li><b>Paris (CDG) 경유</b><span>대한항공 연결 허브 (또는 Madrid·Amsterdam)</span></li>
+          <li class="end"><b>Incheon (ICN)</b><span>대한항공 · 한국 귀국</span></li>
+        </ol>
+      </div>
+    </div>
+    <div class="note">자전거는 <b>생장에서 렌탈 → 산티아고 대성당 인근 반납</b>(편도)이라 비행기·기차에 실을 필요가 없습니다.
+    5월 성수기 원웨이 렌탈은 조기 마감 — 2대를 미리 예약하고 패니어·헬멧·수리 키트 포함 여부를 확인하세요.</div>
+  </div>
+</section>
+
+<!-- ───────── Ⅵ. 숙소 ───────── -->
+<section style="padding-top:0;padding-bottom:48px">
   <div class="wrap">
     <div class="sec-head">
       <div class="no">Ⅵ · Albergues</div>
-      <h2>추천 숙박지</h2>
-      <p>순례자들에게 인기 있는 마을 기준입니다. 각 카드에 해당 날짜의 일출·일몰 시각(현지시간, 근사치)과
-      5월 평균 최저–최고 기온을 함께 표시했습니다. 자전거 순례자는 도보 순례자보다 늦게 체크인이 허용되는
-      알베르게가 많으니, 성수기(5월)에는 사설 알베르게나 오스탈 예약을 권장합니다.</p>
+      <h2>날짜별 숙박지</h2>
+      <p>☀ 일출–일몰(도착일 기준 근사치, CEST) · 🌡 5월 평년 최저/최고 기온.
+      레온은 휴식일 포함 <b>같은 숙소 2박</b>을 권장합니다.
+      자전거 순례자는 사설 알베르게·오스탈 예약이 안전합니다.</p>
     </div>
     <div class="stay-grid">
       <div class="stay"><div class="d">5/7<small>FRI</small></div>
         <div><b>Paris</b><span>몽파르나스 역 인근 · 합류 첫날</span>
         <div class="meta"><span class="sun">06:20 – 21:20</span><span class="tmp"><b>8° / 18°C</b></span></div></div></div>
       <div class="stay"><div class="d">5/8<small>SAT</small></div>
-        <div><b>생장피에드포르 <small style='font-weight:400'>(Saint-Jean-Pied-de-Port)</small></b><span>출발 전야 · 프랑스</span>
+        <div><b>생장피에드포르 (Saint-Jean-Pied-de-Port)</b><span>출발 전야 · 프랑스</span>
         <div class="meta"><span class="sun">06:45 – 21:15</span><span class="tmp"><b>9° / 19°C</b></span></div></div></div>
       <div class="stay"><div class="d">5/9<small>SUN</small></div>
-        <div><b>수비리 <small style='font-weight:400'>(Zubiri)</small></b><span>피레네 기슭 계곡 마을</span>
+        <div><b>수비리 (Zubiri)</b><span>피레네 기슭 계곡 마을</span>
         <div class="meta"><span class="sun">06:50 – 21:20</span><span class="tmp"><b>7° / 18°C</b></span></div></div></div>
       <div class="stay"><div class="d">5/10<small>MON</small></div>
-        <div><b>에스텔라 <small style='font-weight:400'>(Estella)</small></b><span>나바라</span>
+        <div><b>에스떼야 (Estella)</b><span>나바라</span>
         <div class="meta"><span class="sun">06:50 – 21:25</span><span class="tmp"><b>8° / 21°C</b></span></div></div></div>
       <div class="stay"><div class="d">5/11<small>TUE</small></div>
-        <div><b>나헤라 <small style='font-weight:400'>(Nájera)</small></b><span>리오하 · 붉은 절벽 마을</span>
-        <div class="meta"><span class="sun">06:50 – 21:30</span><span class="tmp"><b>8° / 22°C</b></span></div></div></div>
+        <div><b>나베레테 (Navarrete)</b><span>리오하 · 도자기 마을</span>
+        <div class="meta"><span class="sun">06:50 – 21:25</span><span class="tmp"><b>9° / 22°C</b></span></div></div></div>
       <div class="stay"><div class="d">5/12<small>WED</small></div>
-        <div><b>부르고스 <small style='font-weight:400'>(Burgos)</small></b><span>대성당 인근 · 해발 860m</span>
-        <div class="meta"><span class="sun">06:55 – 21:30</span><span class="tmp"><b>6° / 18°C</b></span></div></div></div>
+        <div><b>벨로라도 (Belorado)</b><span>리오하→카스티야 경계</span>
+        <div class="meta"><span class="sun">06:55 – 21:30</span><span class="tmp"><b>6° / 19°C</b></span></div></div></div>
       <div class="stay"><div class="d">5/13<small>THU</small></div>
-        <div><b>카리온 데 로스 콘데스 <small style='font-weight:400'>(Carrión de los Condes)</small></b><span>메세타</span>
+        <div><b>키스트로헤리스 (Castrojeriz)</b><span>메세타 · 언덕 위 성터</span>
         <div class="meta"><span class="sun">06:55 – 21:35</span><span class="tmp"><b>6° / 19°C</b></span></div></div></div>
       <div class="stay"><div class="d">5/14<small>FRI</small></div>
-        <div><b>레온 <small style='font-weight:400'>(León)</small></b><span>대성당 · 구시가</span>
-        <div class="meta"><span class="sun">07:00 – 21:40</span><span class="tmp"><b>7° / 19°C</b></span></div></div></div>
-      <div class="stay"><div class="d">5/15<small>SAT</small></div>
-        <div><b>아스토르가 <small style='font-weight:400'>(Astorga)</small></b><span>가우디 주교궁</span>
+        <div><b>사아군 (Sahagún)</b><span>메세타 · 카미노 중간점</span>
         <div class="meta"><span class="sun">07:00 – 21:40</span><span class="tmp"><b>6° / 19°C</b></span></div></div></div>
+      <div class="stay"><div class="d">5/15<small>SAT</small></div>
+        <div><b>레온 (León)</b><span>대성당 · 구시가</span>
+        <div class="meta"><span class="sun">07:00 – 21:40</span><span class="tmp"><b>7° / 19°C</b></span></div></div></div>
       <div class="stay"><div class="d">5/16<small>SUN</small></div>
-        <div><b>폰페라다 <small style='font-weight:400'>(Ponferrada)</small></b><span>템플기사단 성 · 엘 비에르소 분지</span>
-        <div class="meta"><span class="sun">07:00 – 21:45</span><span class="tmp"><b>8° / 22°C</b></span></div></div></div>
+        <div><b>레온 (León) — 휴식일</b><span>같은 숙소 2박 권장</span>
+        <div class="meta"><span class="sun">07:00 – 21:40</span><span class="tmp"><b>7° / 19°C</b></span></div></div></div>
       <div class="stay"><div class="d">5/17<small>MON</small></div>
-        <div><b>사리아 <small style='font-weight:400'>(Sarria)</small></b><span>갈리시아 · 도보 순례 출발지</span>
-        <div class="meta"><span class="sun">07:00 – 21:50</span><span class="tmp"><b>7° / 19°C</b></span></div></div></div>
+        <div><b>라바날 델 까미노 (Rabanal del Camino)</b><span>해발 1,150m · 산악 전야</span>
+        <div class="meta"><span class="sun">07:00 – 21:45</span><span class="tmp"><b>5° / 16°C</b></span></div></div></div>
       <div class="stay"><div class="d">5/18<small>TUE</small></div>
-        <div><b>팔라스 데 레이 <small style='font-weight:400'>(Palas de Rei)</small></b><span>갈리시아 구릉</span>
-        <div class="meta"><span class="sun">07:00 – 21:50</span><span class="tmp"><b>7° / 18°C</b></span></div></div></div>
+        <div><b>베가 데 발까르세 (Vega de Valcarce)</b><span>오 세브레이로 오르막 초입</span>
+        <div class="meta"><span class="sun">07:00 – 21:45</span><span class="tmp"><b>8° / 20°C</b></span></div></div></div>
       <div class="stay"><div class="d">5/19<small>WED</small></div>
-        <div><b>오 페드로우소 <small style='font-weight:400'>(O Pedrouzo)</small></b><span>산티아고 20km 전 · 마지막 전야</span>
-        <div class="meta"><span class="sun">07:00 – 21:55</span><span class="tmp"><b>8° / 18°C</b></span></div></div></div>
+        <div><b>사리아 (Sarria)</b><span>갈리시아 · 도보 순례 출발지</span>
+        <div class="meta"><span class="sun">07:00 – 21:50</span><span class="tmp"><b>7° / 19°C</b></span></div></div></div>
       <div class="stay"><div class="d">5/20<small>THU</small></div>
-        <div><b>산티아고 데 콤포스텔라 <small style='font-weight:400'>(Santiago de Compostela)</small></b><span>완주 · 대성당 인근 시내</span>
+        <div><b>아르수아 (Arzúa)</b><span>치즈 마을 · 마지막 전야</span>
+        <div class="meta"><span class="sun">07:00 – 21:50</span><span class="tmp"><b>7° / 18°C</b></span></div></div></div>
+      <div class="stay"><div class="d">5/21<small>FRI</small></div>
+        <div><b>산티아고 데 콤포스텔라 (Santiago de Compostela)</b><span>완주 · 대성당 인근 시내</span>
         <div class="meta"><span class="sun">07:00 – 21:55</span><span class="tmp"><b>8° / 19°C</b></span></div></div></div>
     </div>
-    <div class="note">☀ 일출–일몰 시각은 각 도착일 기준 근사치(중부유럽 서머타임 CEST)이며,
-    🌡 기온은 5월 평년 최저/최고 평균입니다. 스페인 서쪽으로 갈수록 해가 늦게 지기 때문에
-    갈리시아에서는 밤 10시 가까이까지 밝습니다 — 오후 라이딩 여유가 충분합니다.
-    반대로 아침 7시 전에는 어두우니 새벽 출발 시 전조등을 준비하세요.
-    부르고스·메세타·오 세브레이로의 새벽은 5–6°C까지 내려가 5월에도 방풍 자켓과 긴 장갑이 필요합니다.</div>
+    <div class="note">서쪽 갈리시아로 갈수록 해가 늦게 져 밤 10시 가까이까지 밝습니다.
+    아침 7시 전은 어두우니 새벽 출발 시 전조등 필수.
+    라바날 델 까미노(해발 1,150m)의 새벽은 5°C — 5월에도 방풍 자켓·긴 장갑을 챙기세요.</div>
   </div>
 </section>
 
-<footer>
+<footer class="site">
   <div class="buen display">¡Buen Camino!</div>
-  <p>Camino Francés 797km · 2027. 5. 6 – 5. 21 · <b>Bin &amp; Jin</b>의 Bicigrino 일정표<br>
-  일평균 약 66km · 총 획득고도 약 9,150m — 체력이 어느 정도 있는 라이더 기준 12일 완주 코스 (5/9–5/20)</p>
+  <p>Camino Francés 808.5km · 2027. 5. 6 – 5. 22 · <b>Bin &amp; Jin</b>의 Bicigrino 일정표<br>
+  라이딩 12일 + 레온 휴식 1일 · 일평균 약 67km · 총 획득고도 약 8,500m</p>
 </footer>
 
 </body>
