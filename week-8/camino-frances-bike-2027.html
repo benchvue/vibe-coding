@@ -185,6 +185,28 @@
     .gbtn{width:auto;flex:1;min-width:150px}
     .qrhint{width:100%}
   }
+
+  /* 데이 사진 스트립 */
+  .dphotos{padding:12px 14px;border-top:1px dashed var(--line)}
+  .dphotos h4{font-size:.8rem;color:var(--camino-blue);margin-bottom:8px;font-weight:700}
+  .dphotos h4 small{color:var(--ink-soft);font-weight:400}
+  .pstrip{display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+  .pstrip::-webkit-scrollbar{height:6px}
+  .pstrip::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+  .pthumb{flex:0 0 auto;width:118px;height:88px;border-radius:9px;overflow:hidden;
+    border:1px solid var(--line);background:var(--stone);position:relative}
+  .pthumb img{width:100%;height:100%;object-fit:cover;cursor:zoom-in;display:block}
+  .pthumb.ph{display:flex;align-items:center;justify-content:center;color:#B9B2A0;font-size:.62rem;
+    border-style:dashed;letter-spacing:.05em}
+  .plightbox{position:fixed;inset:0;background:rgba(15,20,35,.94);display:none;
+    align-items:center;justify-content:center;z-index:90;padding:16px;flex-direction:column;gap:10px}
+  .plightbox.show{display:flex}
+  .plightbox img{max-width:96vw;max-height:84vh;border-radius:10px}
+  .plightbox .pnav{display:flex;gap:14px;align-items:center;color:#fff;font-size:.85rem}
+  .plightbox button{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);
+    color:#fff;border-radius:999px;padding:7px 18px;font-size:.9rem;cursor:pointer;font-family:inherit}
+  .plightbox button:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
+
   @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -784,5 +806,134 @@
   라이딩 12일 + 레온 휴식 1일 · 일평균 약 67km · 총 획득고도 약 8,500m</p>
 </footer>
 
+
+<div class="plightbox" id="plb">
+  <img id="plbImg" alt="카미노 사진 크게 보기">
+  <div class="pnav">
+    <button id="plbPrev">◀ 이전</button>
+    <span id="plbCnt"></span>
+    <button id="plbNext">다음 ▶</button>
+    <button id="plbClose">닫기 ×</button>
+  </div>
+</div>
+
+<script>
+/* ══════ DAY별 사진 (Google Drive) ══════
+   각 day 카드 아래에 Drive의 day1~day13 하위 폴더 사진(webp)을 표시합니다.
+   ※ apiKey는 읽기 전용 키 — SUPER-ADMIN-camino.md의 발급 방법 참고.
+     키가 비어 있으면 사진 없이 빈 프레임만 표시됩니다. */
+const PHOTOS = {
+  apiKey: "AIzaSyDzahk0Yhz3faRfMhDS2vQzQ2oADYXhPRg",          /* Google Cloud → API key (Drive API, 리퍼러 제한) */
+  parentId: "1z6EJEVanJ_Hal3gIzqeAc0eOUfr1EOAK",
+  dayCount: 13,
+  thumbW: 400, fullW: 1600, placeholders: 3
+};
+(function(){
+  var IMG_RE=/\.(webp|jpe?g|png|gif)$/i;
+  var HOSTS=[
+    function(id,w){return "https://lh3.googleusercontent.com/d/"+id+"=w"+w;},
+    function(id,w){return "https://drive.google.com/thumbnail?id="+id+"&sz=w"+w;}
+  ];
+  function setImg(img,id,w){var k=0;
+    img.onerror=function(){k++;
+      if(k<HOSTS.length)img.src=HOSTS[k](id,w);
+      else{img.onerror=null;img.closest(".pthumb").style.display="none";}};
+    img.src=HOSTS[0](id,w);}
+  function drive(q){
+    return fetch("https://www.googleapis.com/drive/v3/files?q="+encodeURIComponent(q)
+      +"&fields="+encodeURIComponent("files(id,name,mimeType)")
+      +"&pageSize=1000&key="+PHOTOS.apiKey)
+      .then(function(r){if(!r.ok)throw new Error("drive "+r.status);return r.json();})
+      .then(function(d){return d.files||[];});}
+  function numOf(n){var m=n.match(/^photo_(\d+)\.webp$/i);return m?parseInt(m[1],10):null;}
+  function sortFiles(fs){return fs.slice().sort(function(a,b){
+    var na=numOf(a.name),nb=numOf(b.name);
+    if(na!=null&&nb!=null)return na-nb;
+    if(na!=null)return -1; if(nb!=null)return 1;
+    return a.name.localeCompare(b.name);});}
+
+  /* 라이트박스 */
+  var gallery=[],idx=0;
+  var plb=document.getElementById("plb"),plbImg=document.getElementById("plbImg"),
+      plbCnt=document.getElementById("plbCnt");
+  function show(i){
+    if(!gallery.length)return;
+    idx=(i+gallery.length)%gallery.length;
+    plbImg.onerror=null;setImg(plbImg,gallery[idx],PHOTOS.fullW);
+    plbCnt.textContent=(idx+1)+" / "+gallery.length;
+    plb.classList.add("show");}
+  document.getElementById("plbPrev").addEventListener("click",function(e){e.stopPropagation();show(idx-1);});
+  document.getElementById("plbNext").addEventListener("click",function(e){e.stopPropagation();show(idx+1);});
+  document.getElementById("plbClose").addEventListener("click",function(){plb.classList.remove("show");});
+  plb.addEventListener("click",function(e){if(e.target===plb)plb.classList.remove("show");});
+  document.addEventListener("keydown",function(e){
+    if(!plb.classList.contains("show"))return;
+    if(e.key==="ArrowLeft")show(idx-1);
+    else if(e.key==="ArrowRight")show(idx+1);
+    else if(e.key==="Escape")plb.classList.remove("show");});
+
+  function mountDay(d,files){
+    var card=document.getElementById("day"+d);
+    if(!card)return;
+    var sec=document.createElement("div");sec.className="dphotos";
+    var n=files?files.length:0;
+    var h="<h4>📷 DAY "+d+" 사진 <small>· "+(n?n+"장":"아직 없음")+"</small></h4>";
+    var strip='<div class="pstrip">';
+    if(n){
+      files=sortFiles(files);
+      var ids=files.map(function(f){return f.id;});
+      files.forEach(function(f,i){
+        strip+='<div class="pthumb"><img loading="lazy" alt="DAY '+d+' 사진 '+(i+1)
+          +'" data-id="'+f.id+'" data-gi="'+i+'"></div>';
+      });
+      strip+="</div>";
+      sec.innerHTML=h+strip;
+      sec.querySelectorAll("img").forEach(function(img){
+        setImg(img,img.dataset.id,PHOTOS.thumbW);
+        img.addEventListener("click",function(){
+          gallery=ids;show(parseInt(img.dataset.gi,10));});
+      });
+    }else{
+      for(var i=0;i<PHOTOS.placeholders;i++)strip+='<div class="pthumb ph">사진 예정</div>';
+      strip+="</div>";
+      sec.innerHTML=h+strip;
+    }
+    var foot=card.querySelector(".dfoot");
+    card.insertBefore(sec,foot||null);
+  }
+
+  function init(){
+    if(!PHOTOS.apiKey||/여기에/.test(PHOTOS.apiKey)){
+      for(var d=1;d<=PHOTOS.dayCount;d++)mountDay(d,null);
+      return;
+    }
+    drive("'"+PHOTOS.parentId+"' in parents and trashed=false")
+    .then(function(items){
+      var map={};
+      items.forEach(function(f){
+        if(f.mimeType==="application/vnd.google-apps.folder"){
+          var m=f.name.match(/^day\s*(\d{1,2})$/i);
+          if(m)map[parseInt(m[1],10)]=f.id;}});
+      var chain=Promise.resolve();
+      var d;
+      var run=function(day){
+        chain=chain.then(function(){
+          if(!map[day]){mountDay(day,null);return;}
+          return drive("'"+map[day]+"' in parents and trashed=false")
+            .then(function(fs){mountDay(day,fs.filter(function(x){return IMG_RE.test(x.name);}));})
+            .catch(function(){mountDay(day,null);});
+        });};
+      for(d=1;d<=PHOTOS.dayCount;d++)run(d);
+      return chain;
+    })
+    .catch(function(){ /* 키 오류·오프라인 → 빈 프레임 */
+      for(var d=1;d<=PHOTOS.dayCount;d++)mountDay(d,null);
+    });
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);
+  else init();
+})();
+</script>
 </body>
+
 </html>

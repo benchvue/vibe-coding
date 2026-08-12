@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Camino 사진 업로드 — Bin &amp; Jin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+  :root{
+    --blue:#152A55; --blue2:#1E3A6E; --flecha:#F5B917;
+    --paper:#F7F5EE; --stone:#EDEAE1; --ink:#232830; --muted:#5B6270;
+    --line:#D8D3C4; --ok:#1E7A46; --err:#B4404F; --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:'IBM Plex Sans KR',sans-serif;min-height:100vh;font-size:15px;line-height:1.6}
+  button{font-family:inherit;cursor:pointer}
+  .frame{border:1px solid var(--line);border-radius:var(--radius);background:#fff}
+
+  /* 잠금 화면 */
+  .lock{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+  .lock-card{text-align:center;padding:46px 34px;max-width:420px;width:100%}
+  .lock-icon{font-size:34px}
+  .lock-title{font-family:'Gowun Batang',serif;font-size:24px;font-weight:700;margin-top:12px;color:var(--blue)}
+  .lock-sub{margin-top:10px;font-size:13px;color:var(--muted);line-height:1.7}
+  .gsign{margin-top:24px;display:inline-flex;align-items:center;gap:10px;border:1px solid var(--blue);
+    border-radius:999px;background:var(--blue);color:#fff;padding:12px 26px;font-size:14px;font-weight:600}
+  .gsign:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
+  .denied{color:var(--err);margin-top:16px;font-size:13px;display:none;font-weight:600}
+
+  /* 패널 */
+  .panel{display:none;max-width:1100px;margin:0 auto;padding:22px clamp(12px,3vw,34px) 90px}
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+    padding:14px 18px;margin-bottom:16px;background:var(--blue);color:#fff;border-radius:var(--radius)}
+  .topbar h1{font-family:'Gowun Batang',serif;font-size:clamp(17px,4vw,22px);font-weight:700}
+  .topbar h1 em{font-style:normal;color:var(--flecha)}
+  .who{font-size:12px;color:#9FB0CE}
+  .who b{color:var(--flecha);font-weight:600}
+  .actions{display:flex;gap:8px}
+  .mini{border:1px solid rgba(255,255,255,.4);border-radius:999px;background:none;color:#fff;
+    font-size:12px;padding:7px 14px;text-decoration:none;display:inline-block}
+  .mini:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
+
+  /* 데이 네비 */
+  .daynav{position:sticky;top:0;z-index:20;background:rgba(247,245,238,.95);backdrop-filter:blur(6px);
+    padding:8px 0;margin:0 -4px 8px;display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .daynav::-webkit-scrollbar{display:none}
+  .daynav a{flex:0 0 auto;text-decoration:none;background:#fff;border:1px solid var(--line);border-radius:20px;
+    padding:5px 13px;font-size:.8rem;font-weight:700;color:var(--blue)}
+  .daynav a:hover{background:var(--flecha);border-color:var(--flecha);color:#3B2E00}
+
+  .daysec{margin:22px 0;scroll-margin-top:60px}
+  .daysec h2{font-family:'Gowun Batang',serif;font-size:19px;font-weight:700;color:var(--blue);
+    display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+  .daysec h2 small{font-family:'IBM Plex Sans KR',sans-serif;font-size:12px;color:var(--muted);font-weight:400}
+  .cnt{font-size:11px;font-weight:700;background:var(--stone);border-radius:20px;padding:2px 10px;color:var(--muted)}
+  .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:10px}
+  .pcard{padding:8px}
+  .pimg{position:relative;width:100%;aspect-ratio:4/3;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--stone)}
+  @supports not (aspect-ratio:4/3){.pimg{height:0;padding-bottom:75%}}
+  .pimg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;cursor:zoom-in}
+  .pname{font-size:10.5px;color:var(--muted);text-align:center;margin-top:6px;word-break:break-all}
+  .pbtns{display:flex;gap:6px;justify-content:center;margin-top:6px;flex-wrap:wrap}
+  .up-btn{border:1px solid var(--blue);border-radius:999px;background:#EFF4FC;color:var(--blue);
+    font-size:11.5px;font-weight:600;padding:5px 13px}
+  .up-btn:hover{background:var(--flecha);border-color:var(--flecha);color:#3B2E00}
+  .up-btn.danger{border-color:#E3B7BD;background:#FBF0F1;color:var(--err)}
+  .up-btn.danger:hover{background:var(--err);border-color:var(--err);color:#fff}
+  .addtile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+    min-height:150px;border:2px dashed var(--line);border-radius:var(--radius);background:none;color:var(--muted);
+    font-size:13px;font-weight:600}
+  .addtile:hover{border-color:var(--flecha);color:var(--blue);background:#FFFDF4}
+  .addtile b{font-size:26px;color:var(--flecha)}
+  .busy{opacity:.5;pointer-events:none}
+  .empty-note{font-size:12.5px;color:var(--muted);padding:6px 2px}
+
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);
+    background:var(--blue);color:#fff;font-size:13px;padding:11px 20px;border-radius:999px;
+    opacity:0;pointer-events:none;transition:all .25s ease;z-index:99;max-width:92vw;text-align:center}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* 라이트박스 */
+  .lb{position:fixed;inset:0;background:rgba(15,20,35,.94);display:none;align-items:center;justify-content:center;z-index:98;padding:20px}
+  .lb.show{display:flex}
+  .lb img{max-width:96vw;max-height:92vh;border-radius:10px}
+  .lb .x{position:absolute;top:14px;right:18px;background:none;border:none;color:#fff;font-size:30px}
+</style>
+</head>
+<body>
+
+<!-- ── 잠금 화면 ── -->
+<div class="lock" id="lockScreen">
+  <div class="lock-card frame">
+    <div class="lock-icon">🚲🔒</div>
+    <div class="lock-title">Camino 사진 업로드</div>
+    <div class="lock-sub">Bin &amp; Jin 전용 페이지입니다.<br>
+      관리자로 등록된 Google 계정으로 로그인하세요.<br>
+      동의 화면에서 <b>Google Drive 체크박스</b>를 꼭 선택하세요.</div>
+    <button class="gsign" id="signInBtn">G · Google 계정으로 로그인</button>
+    <div class="denied" id="deniedMsg">이 계정은 관리자 권한이 없습니다.</div>
+  </div>
+</div>
+
+<!-- ── 관리 패널 ── -->
+<div class="panel" id="panel">
+  <div class="topbar">
+    <div>
+      <h1>Camino Francés <em>사진 관리</em></h1>
+      <div class="who" id="whoAmI"></div>
+    </div>
+    <div class="actions">
+      <a class="mini" href="camino-frances-bike-2027.html" target="_blank">사이트 보기 ↗</a>
+      <button class="mini" id="refreshBtn">새로고침</button>
+      <button class="mini" id="signOutBtn">로그아웃</button>
+    </div>
+  </div>
+  <div class="daynav" id="dayNav"></div>
+  <p class="empty-note">사진은 아무 형식(jpg·png·webp)이나 올려도 <b>자동으로 WebP로 변환·압축</b>되어 Drive의 해당 day 폴더에 저장됩니다.
+  아이폰 HEIC이 안 올라가면 설정→카메라→포맷을 "높은 호환성"으로 바꾸세요. 한 번에 여러 장 선택 가능합니다.</p>
+  <div id="daysRoot"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="lb" id="lb"><button class="x">×</button><img id="lbImg" alt=""></div>
+
+<script>
+/* ══════════════ 설정 — SUPER-ADMIN 문서 참고 ══════════════ */
+const CONFIG = {
+  /* Google Cloud Console → Credentials → OAuth client ID (Web application)
+     Authorized JavaScript origins에 배포 도메인 추가 후 Client ID 붙여넣기 */
+  clientId: "1075824030904-7meginmu8gsmmsvm606tnpb38f83rkf2.apps.googleusercontent.com",
+
+  /* 관리자 Gmail — Bin과 Jin의 실제 주소로 교체 */
+  adminEmails: [
+    "benchvue101@gmail.com",
+    "JIN_GMAIL@gmail.com"
+  ],
+
+  /* 카미노 사진 최상위 폴더 (day1~day13 하위 폴더 포함) */
+  parentFolder: "1z6EJEVanJ_Hal3gIzqeAc0eOUfr1EOAK",
+  dayCount: 13,
+
+  webpQuality: 0.82,
+  webpMaxDim: 1600
+};
+
+/* ══════════════ 공통 ══════════════ */
+let accessToken=null,myEmail="",tokenClient=null;
+let dayFolders={};            /* {1: folderId, ...} */
+let dayFiles={};              /* {1: [files]} */
+const $=id=>document.getElementById(id);
+const toast=msg=>{const t=$("toast");t.textContent=msg;t.classList.add("show");
+  const dur=/실패|오류|⚠/.test(msg)?8000:3000;
+  clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove("show"),dur);};
+
+/* ══════════════ 인증 (참조: Claire content-upload) ══════════════ */
+const initAuth=()=>{
+  tokenClient=google.accounts.oauth2.initTokenClient({
+    client_id:CONFIG.clientId,
+    scope:"https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/userinfo.email",
+    callback:(resp)=>{
+      if(resp.error){toast("로그인 실패: "+resp.error);return;}
+      if(google.accounts.oauth2.hasGrantedAllScopes&&
+         !google.accounts.oauth2.hasGrantedAllScopes(resp,"https://www.googleapis.com/auth/drive")){
+        toast("⚠ 동의 화면에서 'Google Drive' 체크박스를 선택해야 합니다. 다시 로그인해 주세요.");
+        setTimeout(()=>tokenClient.requestAccessToken({prompt:"consent"}),1800);return;
+      }
+      accessToken=resp.access_token;
+      fetch("https://www.googleapis.com/oauth2/v3/userinfo",{headers:{Authorization:"Bearer "+accessToken}})
+      .then(r=>r.json()).then(info=>{
+        myEmail=(info.email||"").toLowerCase();
+        const ok=CONFIG.adminEmails.some(e=>e.toLowerCase()===myEmail);
+        if(!ok){accessToken=null;$("deniedMsg").style.display="block";return;}
+        $("lockScreen").style.display="none";$("panel").style.display="block";
+        $("whoAmI").innerHTML="로그인: <b>"+myEmail+"</b>";
+        loadAll();
+      }).catch(()=>toast("계정 정보를 가져오지 못했습니다"));
+    }
+  });
+};
+$("signInBtn").addEventListener("click",()=>{
+  if(!tokenClient){ if(window.google&&google.accounts)initAuth();
+    else{toast("Google 로그인 로딩 중… 잠시 후 다시 눌러주세요");return;} }
+  $("deniedMsg").style.display="none";tokenClient.requestAccessToken();
+});
+$("signOutBtn").addEventListener("click",()=>{
+  if(accessToken)google.accounts.oauth2.revoke(accessToken,function(){});location.reload();});
+$("refreshBtn").addEventListener("click",()=>loadAll());
+window.addEventListener("load",()=>{if(window.google&&google.accounts)initAuth();});
+
+/* ══════════════ Drive API ══════════════ */
+const authHeaders=()=>({Authorization:"Bearer "+accessToken});
+const listFolder=(folderId)=>
+  fetch("https://www.googleapis.com/drive/v3/files?q="
+    +encodeURIComponent("'"+folderId+"' in parents and trashed=false")
+    +"&fields="+encodeURIComponent("files(id,name,mimeType)")+"&pageSize=1000",
+    {headers:authHeaders()})
+  .then(r=>{ if(!r.ok){ return r.json().catch(()=>({})).then(d=>{
+      const g=d&&d.error?d.error:{};let hint="";
+      if(r.status===403&&/insufficient/i.test(g.message||""))hint=" → 로그아웃 후 재로그인하며 Drive 체크박스를 선택하세요.";
+      else if(r.status===403)hint=" → 이 계정이 폴더 편집자인지, Drive API가 사용 설정됐는지 확인하세요.";
+      else if(r.status===404)hint=" → 폴더 ID를 확인하세요.";
+      throw new Error("목록 읽기 실패 "+r.status+(g.message?" · "+g.message:"")+hint);});}
+    return r.json();}).then(d=>d.files||[]);
+
+const deleteFile=(id)=>
+  fetch("https://www.googleapis.com/drive/v3/files/"+id,{method:"DELETE",headers:authHeaders()})
+  .then(r=>{if(!r.ok&&r.status!==404)throw new Error("삭제 실패 ("+r.status+")");});
+
+const createFolder=(name,parentId)=>
+  fetch("https://www.googleapis.com/drive/v3/files?fields=id,name",{
+    method:"POST",headers:Object.assign({"Content-Type":"application/json"},authHeaders()),
+    body:JSON.stringify({name:name,mimeType:"application/vnd.google-apps.folder",parents:[parentId]})})
+  .then(r=>{if(!r.ok)throw new Error("폴더 생성 실패 ("+r.status+")");return r.json();});
+
+const uploadFile=(name,mime,blob,folderId,onProgress)=>new Promise((resolve,reject)=>{
+  const meta={name:name,parents:[folderId]};
+  const boundary="camino"+Date.now();
+  const head="--"+boundary+"\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n"
+    +JSON.stringify(meta)+"\r\n--"+boundary+"\r\nContent-Type: "+mime+"\r\n\r\n";
+  const tail="\r\n--"+boundary+"--";
+  const body=new Blob([head,blob,tail]);
+  const xhr=new XMLHttpRequest();
+  xhr.open("POST","https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name");
+  xhr.setRequestHeader("Authorization","Bearer "+accessToken);
+  xhr.setRequestHeader("Content-Type","multipart/related; boundary="+boundary);
+  xhr.upload.onprogress=e=>{if(e.lengthComputable&&onProgress)onProgress(e.loaded/e.total);};
+  xhr.onload=()=>{ if(xhr.status>=200&&xhr.status<300)resolve(JSON.parse(xhr.responseText));
+    else reject(new Error("업로드 실패 ("+xhr.status+")")); };
+  xhr.onerror=()=>reject(new Error("네트워크 오류"));
+  xhr.send(body);
+});
+
+/* 카톡/iOS 웹뷰 호환 이미지 로더 */
+const DRIVE_HOSTS=[
+  (id,w)=>"https://lh3.googleusercontent.com/d/"+id+"=w"+w,
+  (id,w)=>"https://drive.google.com/thumbnail?id="+id+"&sz=w"+w
+];
+const setDriveImg=(img,id,w)=>{let k=0;
+  img.onerror=()=>{k++;if(k<DRIVE_HOSTS.length)img.src=DRIVE_HOSTS[k](id,w);
+    else{img.onerror=null;img.style.display="none";}};
+  img.style.display="";img.src=DRIVE_HOSTS[0](id,w);};
+
+/* ══════════════ WebP 변환 ══════════════ */
+const toWebp=(file)=>new Promise((resolve,reject)=>{
+  const url=URL.createObjectURL(file);const img=new Image();
+  img.onload=()=>{
+    let w=img.naturalWidth,h=img.naturalHeight;
+    const sc=Math.min(1,CONFIG.webpMaxDim/Math.max(w,h));
+    w=Math.round(w*sc);h=Math.round(h*sc);
+    const c=document.createElement("canvas");c.width=w;c.height=h;
+    c.getContext("2d").drawImage(img,0,0,w,h);URL.revokeObjectURL(url);
+    c.toBlob(b=>b?resolve(b):reject(new Error("WebP 변환 실패")),"image/webp",CONFIG.webpQuality);
+  };
+  img.onerror=()=>{URL.revokeObjectURL(url);
+    reject(new Error("이미지를 읽을 수 없습니다 (HEIC는 '높은 호환성' 설정 또는 jpg 변환 후 업로드)"));};
+  img.src=url;
+});
+
+/* ══════════════ 데이터 로드 ══════════════ */
+const IMG_RE=/\.(webp|jpe?g|png|gif)$/i;
+const numOf=n=>{const m=n.match(/^photo_(\d+)\.webp$/i);return m?parseInt(m[1],10):null;};
+
+const loadAll=()=>{
+  toast("불러오는 중…");
+  listFolder(CONFIG.parentFolder).then(items=>{
+    dayFolders={};
+    items.forEach(f=>{
+      if(f.mimeType==="application/vnd.google-apps.folder"){
+        const m=f.name.match(/^day\s*(\d{1,2})$/i);
+        if(m)dayFolders[parseInt(m[1],10)]=f.id;
+      }});
+    const jobs=[];
+    for(let d=1;d<=CONFIG.dayCount;d++){
+      if(dayFolders[d])jobs.push(listFolder(dayFolders[d]).then(fs=>{dayFiles[d]=fs.filter(x=>IMG_RE.test(x.name));}));
+      else dayFiles[d]=null; /* 폴더 없음 */
+    }
+    return Promise.all(jobs);
+  })
+  .then(()=>{renderAll();toast("불러오기 완료");})
+  .catch(e=>{toast(e.message);
+    $("daysRoot").innerHTML='<div class="frame" style="padding:16px;color:var(--err);font-size:13px">⚠ '+e.message+'</div>';});
+};
+
+const reloadDay=(d)=>listFolder(dayFolders[d]).then(fs=>{
+  dayFiles[d]=fs.filter(x=>IMG_RE.test(x.name));renderDay(d);});
+
+/* ══════════════ 렌더 ══════════════ */
+const sortFiles=(fs)=>fs.slice().sort((a,b)=>{
+  const na=numOf(a.name),nb=numOf(b.name);
+  if(na!=null&&nb!=null)return na-nb;
+  if(na!=null)return -1; if(nb!=null)return 1;
+  return a.name.localeCompare(b.name);});
+
+const renderAll=()=>{
+  $("dayNav").innerHTML=Array.from({length:CONFIG.dayCount},(_,i)=>
+    '<a href="#usec-day'+(i+1)+'">D'+(i+1)+'</a>').join("");
+  $("daysRoot").innerHTML=Array.from({length:CONFIG.dayCount},(_,i)=>
+    '<section class="daysec" id="usec-day'+(i+1)+'"></section>').join("");
+  for(let d=1;d<=CONFIG.dayCount;d++)renderDay(d);
+};
+
+const renderDay=(d)=>{
+  const sec=$("usec-day"+d);const files=dayFiles[d];
+  let head='<h2>DAY '+d+' <small>Drive 폴더: day'+d+'</small> '
+    +'<span class="cnt">'+(files?files.length:0)+'장</span></h2>';
+  if(files===null){
+    sec.innerHTML=head+'<p class="empty-note">⚠ Drive에 <b>day'+d+'</b> 폴더가 없습니다. '
+      +'첫 사진을 올리면 자동으로 만들어집니다.</p>'
+      +'<div class="pgrid"><button class="addtile" data-day="'+d+'"><b>＋</b>사진 추가</button></div>';
+  }else{
+    const cards=sortFiles(files).map(f=>{
+      return '<div class="pcard frame" data-fid="'+f.id+'">'
+        +'<div class="pimg"><img data-id="'+f.id+'" alt="'+f.name+'"></div>'
+        +'<div class="pname">'+f.name+'</div>'
+        +'<div class="pbtns">'
+        +'<button class="up-btn" data-act="replace" data-day="'+d+'" data-fid="'+f.id+'" data-name="'+f.name+'">교체</button>'
+        +'<button class="up-btn danger" data-act="del" data-day="'+d+'" data-fid="'+f.id+'" data-name="'+f.name+'">삭제</button>'
+        +'</div></div>';
+    }).join("");
+    sec.innerHTML=head
+      +(files.length===0?'<p class="empty-note">아직 사진이 없습니다 — 아래 버튼으로 추가하세요.</p>':'')
+      +'<div class="pgrid">'+cards
+      +'<button class="addtile" data-day="'+d+'"><b>＋</b>사진 추가<br><small>(여러 장 선택 가능)</small></button></div>';
+    sec.querySelectorAll(".pimg img").forEach(img=>{
+      setDriveImg(img,img.dataset.id,300);
+      img.addEventListener("click",()=>openLb(img.dataset.id));
+    });
+  }
+  sec.querySelector(".addtile").addEventListener("click",e=>pickFiles(d));
+  sec.querySelectorAll("[data-act]").forEach(b=>b.addEventListener("click",onAction));
+};
+
+/* ══════════════ 동작 ══════════════ */
+const hiddenInput=(multi,cb)=>{
+  const inp=document.createElement("input");
+  inp.type="file";inp.accept="image/*";if(multi)inp.multiple=true;
+  inp.style.display="none";document.body.appendChild(inp);
+  inp.addEventListener("change",()=>{cb(Array.from(inp.files||[]));inp.remove();});
+  inp.click();
+};
+
+const nextNumbers=(d,count)=>{
+  const used=new Set((dayFiles[d]||[]).map(f=>numOf(f.name)).filter(n=>n!=null));
+  const out=[];let n=1;
+  while(out.length<count){ if(!used.has(n))out.push(n); n++; }
+  return out;
+};
+
+const pickFiles=(d)=>hiddenInput(true,async files=>{
+  if(!files.length)return;
+  try{
+    if(dayFiles[d]===null){
+      toast("day"+d+" 폴더 생성 중…");
+      const nf=await createFolder("day"+d,CONFIG.parentFolder);
+      dayFolders[d]=nf.id;dayFiles[d]=[];
+    }
+    const nums=nextNumbers(d,files.length);
+    for(let i=0;i<files.length;i++){
+      toast("DAY "+d+" · "+(i+1)+"/"+files.length+" 변환 중…");
+      const blob=await toWebp(files[i]);
+      toast("DAY "+d+" · "+(i+1)+"/"+files.length+" 업로드 중…");
+      await uploadFile("photo_"+nums[i]+".webp","image/webp",blob,dayFolders[d],
+        p=>toast("DAY "+d+" · "+(i+1)+"/"+files.length+" 업로드 "+Math.round(p*100)+"%"));
+    }
+    toast("완료! "+files.length+"장 추가됨");
+    await reloadDay(d);
+  }catch(e){toast("⚠ "+e.message);}
+});
+
+const onAction=(ev)=>{
+  const b=ev.currentTarget;
+  const d=parseInt(b.dataset.day,10),fid=b.dataset.fid,name=b.dataset.name;
+  if(b.dataset.act==="del"){
+    if(!confirm("DAY "+d+"의 '"+name+"' 사진을 삭제할까요?"))return;
+    b.closest(".pcard").classList.add("busy");
+    deleteFile(fid).then(()=>{toast("삭제 완료");return reloadDay(d);})
+      .catch(e=>toast("⚠ "+e.message));
+  }
+  if(b.dataset.act==="replace"){
+    hiddenInput(false,async files=>{
+      if(!files.length)return;
+      const card=b.closest(".pcard");card.classList.add("busy");
+      try{
+        toast("변환 중…");
+        const blob=await toWebp(files[0]);
+        const keep=numOf(name);
+        const newName=keep!=null?("photo_"+keep+".webp"):name.replace(/\.[^.]+$/,".webp");
+        await deleteFile(fid);
+        toast("업로드 중…");
+        await uploadFile(newName,"image/webp",blob,dayFolders[d],
+          p=>toast("업로드 "+Math.round(p*100)+"%"));
+        toast("교체 완료!");await reloadDay(d);
+      }catch(e){toast("⚠ "+e.message);card.classList.remove("busy");}
+    });
+  }
+};
+
+/* 라이트박스 */
+const openLb=(id)=>{
+  const img=$("lbImg");setDriveImg(img,id,1600);$("lb").classList.add("show");};
+$("lb").addEventListener("click",()=>$("lb").classList.remove("show"));
+</script>
+</body>
+</html>
