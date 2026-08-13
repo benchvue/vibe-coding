@@ -585,57 +585,332 @@
   <div class="wrap">
     <div class="sec-head">
       <div class="no">Ⅴ · Tránsito</div>
-      <h2>항공 · 환승 흐름</h2>
+      <h2>항공 · 환승 상세 일정</h2>
+      <p>모든 시각은 현지시간입니다 (EDT 뉴어크 · CEST 유럽 · KST 한국).
+      완주 5/21(금) → 산티아고 1박 → <b>5/22(토) 귀국</b> 기준이며,
+      아래 모든 편의 시간대 계산을 검증했습니다 — 결과는 맨 아래 ✔ 박스 참고.</p>
     </div>
-    <div class="note warn" style="margin-top:0;margin-bottom:14px">⚠ 레온 휴식일(8일차)이 추가되어 완주가 <b>5/21(금)</b>이 되었습니다.
-    산티아고에서 1박 후 귀국편은 <b>5/22(토)</b>로 예약하세요.
-    (귀국을 꼭 5/21로 해야 한다면 휴식일을 빼고 12일 라이딩으로 되돌리면 됩니다.)</div>
-    <div class="flow-grid">
-      <div class="flow">
-        <h3>가는 길<span class="who bin">BIN</span> <span class="chip">5/6 – 5/7</span></h3>
-        <ol class="steps">
-          <li><b>Newark (EWR)</b><span>5/6 목 저녁 출발 · 야간 직항</span></li>
-          <li><b>Paris (CDG)</b><span>5/7 금 오전 도착</span></li>
-          <li class="end"><b>CDG에서 Jin과 합류</b><span>파리 시내 1박 (몽파르나스 인근)</span></li>
-        </ol>
+
+    <!-- Bin 가는 길 -->
+    <div class="flow" style="margin-bottom:14px">
+      <h3>가는 길<span class="who bin">BIN</span> <span class="chip">5/6 목 → 5/7 금</span></h3>
+      <div class="sched-wrap" style="margin-top:4px">
+      <table class="sched" style="min-width:620px">
+        <thead><tr><th>편명 · 기종</th><th>출발</th><th>도착</th><th style="text-align:right">소요</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>AF0071</b> 에어프랑스<br><small style="color:var(--ink-soft)">A350-900</small></td>
+            <td><b>EWR</b> 뉴어크<br><small>5/6 목 17:00 EDT</small></td>
+            <td><b>CDG</b> 파리<br><small>5/7 금 06:10 CEST</small></td>
+            <td class="km">7h 10m</td>
+          </tr>
+        </tbody>
+      </table>
       </div>
-      <div class="flow">
-        <h3>가는 길<span class="who jin">JIN</span> <span class="chip">5/7</span></h3>
-        <ol class="steps">
-          <li><b>Incheon (ICN)</b><span>대한항공 파리 직항 출발</span></li>
-          <li><b>Paris (CDG)</b><span>5/7 금 도착</span></li>
-          <li class="end"><b>CDG에서 Bin과 합류</b><span>파리 시내 1박 — 저녁 도착이어도 여유</span></li>
-        </ol>
+      <div class="note" style="margin-top:10px">Bin은 새벽 6시 도착 — 시내로 이동해 호텔에 짐 맡기고 쉬다가,
+      저녁에 Jin과 호텔에서 합류하는 편이 CDG에서 12시간 기다리는 것보다 낫습니다.</div>
+    </div>
+
+    <!-- Jin 가는 길 -->
+    <div class="flow" style="margin-bottom:14px">
+      <h3>가는 길<span class="who jin">JIN</span> <span class="chip">5/7 금</span></h3>
+      <div class="sched-wrap" style="margin-top:4px">
+      <table class="sched" style="min-width:620px">
+        <thead><tr><th>편명 · 기종</th><th>출발</th><th>도착</th><th style="text-align:right">소요</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>KE901</b> 대한항공<br><small style="color:var(--ink-soft)">B777-300ER</small></td>
+            <td><b>ICN</b> 인천 T2<br><small>5/7 금 11:20 KST</small></td>
+            <td><b>CDG</b> 파리 T2E<br><small>5/7 금 18:30 CEST</small></td>
+            <td class="km">14h 10m</td>
+          </tr>
+        </tbody>
+      </table>
       </div>
-      <div class="flow">
-        <h3>합류 후 함께 <span class="chip">5/8</span></h3>
-        <ol class="steps">
-          <li><b>Montparnasse 10:05 TGV</b><span>→ Bayonne 14:05</span></li>
-          <li><b>Bayonne 14:25 TER</b><span>완행 약 1시간</span></li>
-          <li class="end"><b>생장 15:26 도착 · 숙박</b><span>Credencial 수령 · 렌탈 자전거 2대 수령·점검</span></li>
-        </ol>
-      </div>
-      <div class="flow">
-        <h3>오는 길<span class="who bin">BIN</span> <span class="chip">5/22</span></h3>
-        <ol class="steps">
-          <li><b>Santiago 시내</b><span>자전거는 5/21 대성당 인근 반납 완료</span></li>
-          <li><b>Santiago 공항 (SCQ)</b><span>버스 약 20분 · 가장 가까운 공항</span></li>
-          <li><b>유럽 허브 경유</b><span>Madrid · Paris · Lisbon 중 택 1</span></li>
-          <li class="end"><b>Newark (EWR)</b><span>5/22 토 미국 귀국</span></li>
-        </ol>
-      </div>
-      <div class="flow">
-        <h3>오는 길<span class="who jin">JIN</span> <span class="chip">5/22</span></h3>
-        <ol class="steps">
-          <li><b>Santiago 시내</b><span>자전거는 5/21 대성당 인근 반납 완료</span></li>
-          <li><b>Santiago 공항 (SCQ)</b><span>버스 약 20분</span></li>
-          <li><b>Paris (CDG) 경유</b><span>대한항공 연결 허브 (또는 Madrid·Amsterdam)</span></li>
-          <li class="end"><b>Incheon (ICN)</b><span>대한항공 · 한국 귀국</span></li>
-        </ol>
+      <div class="note" style="margin-top:10px">18:30 도착 → 몽파르나스 인근 호텔에서 Bin과 합류, 파리 1박.
+      다음 날 5/8(토) 10:05 몽파르나스發 TGV로 함께 생장 이동 (섹션 Ⅳ 참고).</div>
+    </div>
+
+    <!-- Bin 귀국 -->
+    <div class="flow" style="margin-bottom:14px">
+      <h3>귀국<span class="who bin">BIN</span> <span class="chip">5/22 토 · SCQ → MAD → EWR · 총 14h 45m</span></h3>
+      <div class="sched-wrap" style="margin-top:4px">
+      <table class="sched" style="min-width:620px">
+        <thead><tr><th>편명 · 기종</th><th>출발</th><th>도착</th><th style="text-align:right">소요</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>AY4808</b> 핀에어 공동운항<br><small style="color:var(--ink-soft)">운항: Air Nostrum(이베리아) · CRJ-1000</small></td>
+            <td><b>SCQ</b> 산티아고<br><small>5/22 토 13:40 CEST</small></td>
+            <td><b>MAD</b> 마드리드 T4<br><small>5/22 토 15:00 CEST</small></td>
+            <td class="km">1h 20m</td>
+          </tr>
+          <tr style="background:#F3F6EC"><td colspan="4" style="font-size:.8rem">🔁 <b>마드리드 환승 4h 35m</b> — T4 → T4S (셔틀 열차 이동 + 여권심사) · 여유 충분</td></tr>
+          <tr>
+            <td><b>AY5372</b> 핀에어 공동운항<br><small style="color:var(--ink-soft)">운항: 이베리아 · A321</small></td>
+            <td><b>MAD</b> 마드리드 T4S<br><small>5/22 토 19:35 CEST</small></td>
+            <td><b>EWR</b> 뉴어크 T B<br><small>5/22 토 22:25 EDT</small></td>
+            <td class="km">8h 50m</td>
+          </tr>
+        </tbody>
+      </table>
       </div>
     </div>
+
+    <!-- Jin 귀국 시나리오 지도 -->
+    <div class="flow" style="margin-bottom:14px">
+      <h3>귀국 시나리오 지도<span class="who jin">JIN</span> <span class="chip">4개 안 · 환승 공항 위치와 방향</span></h3>
+      <div class="sched-wrap" style="margin-top:4px;border:none">
+      <svg viewBox="0 0 1000 470" xmlns="http://www.w3.org/2000/svg" role="img" style="min-width:720px;width:100%;height:auto;display:block;background:#F4F7FB;border-radius:12px"
+           aria-label="Jin 귀국 시나리오 4개 지도: 산티아고에서 마드리드·바르셀로나·파리·로마를 거쳐 인천으로">
+        <!-- 나침반 -->
+        <g transform="translate(60,52)" fill="#8A93A6" font-family="IBM Plex Sans KR,sans-serif" font-size="11" text-anchor="middle">
+          <circle r="20" fill="none" stroke="#C6CEDC" stroke-width="1.5"/>
+          <path d="M0,-16 l5,12 -5,-4 -5,4 z" fill="#3E4B66"/>
+          <text y="-26" font-weight="700" fill="#3E4B66">N</text>
+          <text x="30" y="4" text-anchor="start" font-size="10">동 → 인천 방향</text>
+        </g>
+        <!-- 지역 라벨 -->
+        <g fill="#B4BCCB" font-family="IBM Plex Sans KR,sans-serif" font-size="13" letter-spacing="3" text-anchor="middle">
+          <text x="250" y="450">스페인</text>
+          <text x="480" y="70">프랑스</text>
+          <text x="860" y="420">이탈리아</text>
+        </g>
+
+        <defs>
+          <marker id="ah-n" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#152A55"/></marker>
+        </defs>
+
+        <!-- ── 구간 곡선 ── -->
+        <!-- SCQ→MAD ①③ (IB1136) -->
+        <path d="M57,308 Q150,360 243,383" fill="none" stroke="#3E7BD6" stroke-width="4" stroke-linecap="round"/>
+        <path d="M57,308 Q150,360 243,383" fill="none" stroke="#C4485C" stroke-width="4" stroke-linecap="round" stroke-dasharray="1 9"/>
+        <!-- SCQ→MAD ④ (W47451, 평행 오프셋 점선) -->
+        <path d="M62,320 Q152,374 240,394" fill="none" stroke="#2E9E5B" stroke-width="3" stroke-dasharray="7 5" stroke-linecap="round"/>
+        <!-- SCQ→BCN ② -->
+        <path d="M57,308 Q250,295 460,356" fill="none" stroke="#E0A800" stroke-width="4" stroke-linecap="round"/>
+        <!-- MAD→CDG ① -->
+        <path d="M243,383 Q345,240 470,130" fill="none" stroke="#3E7BD6" stroke-width="4" stroke-linecap="round"/>
+        <!-- BCN→CDG ② -->
+        <path d="M460,356 Q472,235 475,132" fill="none" stroke="#E0A800" stroke-width="4" stroke-linecap="round"/>
+        <!-- MAD→FCO ③ -->
+        <path d="M243,383 Q545,432 843,344" fill="none" stroke="#C4485C" stroke-width="4" stroke-linecap="round"/>
+        <!-- MAD→FCO ④ (평행 점선) -->
+        <path d="M241,393 Q545,446 845,354" fill="none" stroke="#2E9E5B" stroke-width="3" stroke-dasharray="7 5" stroke-linecap="round"/>
+        <!-- CDG→ICN ①② (방향 화살표만) -->
+        <path d="M492,118 Q680,58 930,50" fill="none" stroke="#152A55" stroke-width="3.5" stroke-linecap="round" marker-end="url(#ah-n)"/>
+        <!-- FCO→ICN ③④ -->
+        <path d="M862,332 Q925,290 965,235" fill="none" stroke="#152A55" stroke-width="3.5" stroke-linecap="round" marker-end="url(#ah-n)"/>
+
+        <!-- ── 구간 라벨 (편명·소요) ── -->
+        <g font-family="IBM Plex Sans KR,sans-serif" font-size="11" fill="#3E4B66">
+          <text x="118" y="337">✈ IB1136 · 1h20 <tspan font-weight="700" fill="#3E7BD6">①</tspan><tspan font-weight="700" fill="#C4485C">③</tspan></text>
+          <text x="96" y="405">✈ W47451 · 1h15 <tspan font-weight="700" fill="#2E9E5B">④</tspan></text>
+          <text x="215" y="292">✈ VY1623 · 1h40 <tspan font-weight="700" fill="#E0A800">②</tspan></text>
+          <text x="278" y="243">✈ IB589 · 2h10 <tspan font-weight="700" fill="#3E7BD6">①</tspan></text>
+          <text x="487" y="248">✈ VY8062 · 2h <tspan font-weight="700" fill="#E0A800">②</tspan></text>
+          <text x="530" y="440">✈ IB655 · 2h25 <tspan font-weight="700" fill="#C4485C">③</tspan><tspan font-weight="700" fill="#2E9E5B">④</tspan></text>
+          <text x="640" y="42" font-weight="600">✈ KE902 · 12h15 → ICN 인천 <tspan fill="#3E7BD6">①</tspan><tspan fill="#E0A800">②</tspan></text>
+          <text x="998" y="230" text-anchor="end" font-weight="600">✈ KE932 · 11h30</text>
+          <text x="998" y="245" text-anchor="end" font-weight="600">→ ICN 인천 <tspan fill="#C4485C">③</tspan><tspan fill="#2E9E5B">④</tspan></text>
+        </g>
+
+        <!-- ── 공항 노드 ── -->
+        <g font-family="IBM Plex Sans KR,sans-serif" text-anchor="middle">
+          <!-- SCQ 출발 -->
+          <circle cx="57" cy="308" r="9" fill="#1E7A46" stroke="#fff" stroke-width="3"/>
+          <text x="57" y="285" font-size="13" font-weight="700" fill="#1E7A46">SCQ</text>
+          <text x="57" y="270" font-size="10" fill="#5B6270">산티아고 · 출발</text>
+          <!-- MAD 환승 -->
+          <circle cx="243" cy="383" r="8" fill="#fff" stroke="#F5B917" stroke-width="4"/>
+          <text x="243" y="367" font-size="13" font-weight="700" fill="#3E4B66">MAD</text>
+          <text x="243" y="412" font-size="10" fill="#5B6270">마드리드 환승 ①③④</text>
+          <!-- BCN 환승 -->
+          <circle cx="460" cy="356" r="8" fill="#fff" stroke="#F5B917" stroke-width="4"/>
+          <text x="460" y="340" font-size="13" font-weight="700" fill="#3E4B66">BCN</text>
+          <text x="460" y="385" font-size="10" fill="#5B6270">바르셀로나 환승 ②</text>
+          <!-- CDG 환승 -->
+          <circle cx="478" cy="125" r="8" fill="#fff" stroke="#F5B917" stroke-width="4"/>
+          <text x="478" y="108" font-size="13" font-weight="700" fill="#3E4B66">CDG</text>
+          <text x="478" y="152" font-size="10" fill="#5B6270">파리 환승 ①②</text>
+          <!-- FCO 환승 -->
+          <circle cx="848" cy="341" r="8" fill="#fff" stroke="#F5B917" stroke-width="4"/>
+          <text x="848" y="325" font-size="13" font-weight="700" fill="#3E4B66">FCO</text>
+          <text x="848" y="370" font-size="10" fill="#5B6270">로마 환승 ③④</text>
+        </g>
+      </svg>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:12px;font-size:.78rem">
+        <span><i style="display:inline-block;width:22px;height:4px;background:#3E7BD6;border-radius:2px;vertical-align:3px"></i> <b>①</b> MAD→CDG 경유 · 19h10</span>
+        <span><i style="display:inline-block;width:22px;height:4px;background:#E0A800;border-radius:2px;vertical-align:3px"></i> <b>②</b> BCN→CDG 경유 · 21h30</span>
+        <span><i style="display:inline-block;width:22px;height:4px;background:#C4485C;border-radius:2px;vertical-align:3px"></i> <b>③</b> MAD→FCO 경유 · 19h15</span>
+        <span><i style="display:inline-block;width:22px;height:4px;background:repeating-linear-gradient(90deg,#2E9E5B 0 6px,transparent 6px 10px);border-radius:2px;vertical-align:3px"></i> <b>④</b> MAD→FCO 경유(이른 출발) · 21h10</span>
+      </div>
+      <div class="note" style="margin-top:10px">지리는 근사치입니다 — 환승 공항의 상대 위치와 방향 감각용.
+      ③과 ④는 같은 경로(마드리드→로마)를 지나므로 ④를 초록 점선으로 나란히 그렸고,
+      인천行 장거리 구간(파리發 KE902 · 로마發 KE932)은 방향 화살표로만 표시했습니다.
+      모든 안이 동쪽으로 향하며 5/23(일) 오후 인천에 도착합니다.</div>
+    </div>
+
+    <!-- Jin 귀국 시나리오 1 -->
+    <div class="flow" style="margin-bottom:14px">
+      <h3>귀국<span class="who jin">JIN</span> 시나리오 ① <span class="chip">5/22 토 · SCQ → MAD → CDG → ICN · 총 19h 10m</span></h3>
+      <div class="sched-wrap" style="margin-top:4px">
+      <table class="sched" style="min-width:620px">
+        <thead><tr><th>편명 · 기종</th><th>출발</th><th>도착</th><th style="text-align:right">소요</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>IB1136</b> 이베리아<br><small style="color:var(--ink-soft)">운항: Air Nostrum · CRJ-1000 — <b>Bin과 같은 비행기</b> (AY4808 공동운항)</small></td>
+            <td><b>SCQ</b> 산티아고<br><small>5/22 토 13:40 CEST</small></td>
+            <td><b>MAD</b> 마드리드 T4<br><small>5/22 토 15:00 CEST</small></td>
+            <td class="km">1h 20m</td>
+          </tr>
+          <tr style="background:#FBEBCB"><td colspan="4" style="font-size:.8rem">⚠ <b>마드리드 환승 45m</b> — 최소 환승시간 수준. 같은 이베리아 발권이라 보호되지만 매우 빠듯</td></tr>
+          <tr>
+            <td><b>IB589</b> 이베리아<br><small style="color:var(--ink-soft)">A320</small></td>
+            <td><b>MAD</b> 마드리드 T4<br><small>5/22 토 15:45 CEST</small></td>
+            <td><b>CDG</b> 파리 T3<br><small>5/22 토 17:55 CEST</small></td>
+            <td class="km">2h 10m</td>
+          </tr>
+          <tr style="background:#FBEBCB"><td colspan="4" style="font-size:.8rem">⚠ <b>파리 환승 2h 40m</b> — T3 → T2E 터미널 이동(CDGVAL) + 이베리아→대한항공 <b>별도 발권이면 수하물 찾아 재수속</b> 필요. 가능하지만 여유 없음</td></tr>
+          <tr>
+            <td><b>KE902</b> 대한항공<br><small style="color:var(--ink-soft)">B777-300ER</small></td>
+            <td><b>CDG</b> 파리 T2E<br><small>5/22 토 20:35 CEST</small></td>
+            <td><b>ICN</b> 인천 T2<br><small>5/23 일 15:50 KST</small></td>
+            <td class="km">12h 15m</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <!-- Jin 귀국 시나리오 2 -->
+    <div class="flow" style="margin-bottom:14px">
+      <h3>귀국<span class="who jin">JIN</span> 시나리오 ② <span class="chip">5/22 토 · SCQ → BCN → CDG → ICN · 총 21h 30m</span></h3>
+      <div class="sched-wrap" style="margin-top:4px">
+      <table class="sched" style="min-width:620px">
+        <thead><tr><th>편명 · 기종</th><th>출발</th><th>도착</th><th style="text-align:right">소요</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>VY1623</b> 부엘링<br><small style="color:var(--ink-soft)">A320 · 저가항공</small></td>
+            <td><b>SCQ</b> 산티아고<br><small>5/22 토 11:20 CEST</small></td>
+            <td><b>BCN</b> 바르셀로나<br><small>5/22 토 13:00 CEST</small></td>
+            <td class="km">1h 40m</td>
+          </tr>
+          <tr style="background:#F3F6EC"><td colspan="4" style="font-size:.8rem">🔁 <b>바르셀로나 환승 1h 55m</b> — 같은 부엘링 발권이면 무난</td></tr>
+          <tr>
+            <td><b>VY8062</b> 부엘링<br><small style="color:var(--ink-soft)">A320 Sharklets</small></td>
+            <td><b>BCN</b> 바르셀로나<br><small>5/22 토 14:55 CEST</small></td>
+            <td><b>CDG</b> 파리 T3<br><small>5/22 토 16:55 CEST</small></td>
+            <td class="km">2h 00m</td>
+          </tr>
+          <tr style="background:#F3F6EC"><td colspan="4" style="font-size:.8rem">🔁 <b>파리 환승 3h 40m</b> — T3 → T2E 이동(CDGVAL). 부엘링→대한항공 별도 발권이라 <b>짐 찾아 재수속 필수</b>지만 3h40이면 여유 있게 가능</td></tr>
+          <tr>
+            <td><b>KE902</b> 대한항공<br><small style="color:var(--ink-soft)">B777-300ER — 시나리오 ①과 동일 편</small></td>
+            <td><b>CDG</b> 파리 T2E<br><small>5/22 토 20:35 CEST</small></td>
+            <td><b>ICN</b> 인천 T2<br><small>5/23 일 15:50 KST</small></td>
+            <td class="km">12h 15m</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="note" style="margin-top:10px">산티아고를 일찍(11:20) 출발해 CDG에 일찍 닿는 안 —
+      시나리오 ①의 빠듯한 파리 환승(2h40)을 3h40으로 늘리는 것이 목적입니다.</div>
+    </div>
+
+    <!-- Jin 귀국 시나리오 2 -->
+    <div class="flow" style="margin-bottom:14px">
+      <h3>귀국<span class="who jin">JIN</span> 시나리오 ③ <span class="chip">5/22 토 · SCQ → MAD → FCO → ICN · 총 19h 15m</span></h3>
+      <div class="sched-wrap" style="margin-top:4px">
+      <table class="sched" style="min-width:620px">
+        <thead><tr><th>편명 · 기종</th><th>출발</th><th>도착</th><th style="text-align:right">소요</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>IB1136</b> 이베리아<br><small style="color:var(--ink-soft)">운항: Air Nostrum · CRJ-1000 — <b>Bin과 같은 비행기</b></small></td>
+            <td><b>SCQ</b> 산티아고<br><small>5/22 토 13:40 CEST</small></td>
+            <td><b>MAD</b> 마드리드 T4<br><small>5/22 토 15:00 CEST</small></td>
+            <td class="km">1h 20m</td>
+          </tr>
+          <tr style="background:#F3F6EC"><td colspan="4" style="font-size:.8rem">🔁 <b>마드리드 환승 2h 15m</b> — 같은 T4 · 여유 있음</td></tr>
+          <tr>
+            <td><b>IB655</b> 이베리아<br><small style="color:var(--ink-soft)">A320</small></td>
+            <td><b>MAD</b> 마드리드 T4<br><small>5/22 토 17:15 CEST</small></td>
+            <td><b>FCO</b> 로마 T1<br><small>5/22 토 19:40 CEST</small></td>
+            <td class="km">2h 25m</td>
+          </tr>
+          <tr style="background:#FBEBCB"><td colspan="4" style="font-size:.8rem">⚠ <b>로마 환승 1h 45m</b> — T1 → T3 이동. 별도 발권이면 빠듯, 통합 발권·짐 최종 목적지 수속이면 무난</td></tr>
+          <tr>
+            <td><b>KE932</b> 대한항공<br><small style="color:var(--ink-soft)">A350-900</small></td>
+            <td><b>FCO</b> 로마 T3<br><small>5/22 토 21:25 CEST</small></td>
+            <td><b>ICN</b> 인천 T2<br><small>5/23 일 15:55 KST</small></td>
+            <td class="km">11h 30m</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <!-- Jin 귀국 시나리오 4 -->
+    <div class="flow" style="margin-bottom:14px">
+      <h3>귀국<span class="who jin">JIN</span> 시나리오 ④ <span class="chip">5/22 토 · SCQ → MAD → FCO → ICN · 총 21h 10m</span></h3>
+      <div class="sched-wrap" style="margin-top:4px">
+      <table class="sched" style="min-width:620px">
+        <thead><tr><th>편명 · 기종</th><th>출발</th><th>도착</th><th style="text-align:right">소요</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>W47451</b> 위즈에어 몰타<br><small style="color:var(--ink-soft)">저가항공</small></td>
+            <td><b>SCQ</b> 산티아고<br><small>5/22 토 11:45 CEST</small></td>
+            <td><b>MAD</b> 마드리드<br><small>5/22 토 13:00 CEST</small></td>
+            <td class="km">1h 15m</td>
+          </tr>
+          <tr style="background:#F3F6EC"><td colspan="4" style="font-size:.8rem">🔁 <b>마드리드 환승 4h 15m</b> — 위즈에어(보통 T1) → 이베리아 T4 터미널 이동 + 별도 발권 <b>짐 재수속</b>까지 여유 충분</td></tr>
+          <tr>
+            <td><b>IB655</b> 이베리아<br><small style="color:var(--ink-soft)">A320 — 시나리오 ③과 동일 편</small></td>
+            <td><b>MAD</b> 마드리드 T4<br><small>5/22 토 17:15 CEST</small></td>
+            <td><b>FCO</b> 로마 T1<br><small>5/22 토 19:40 CEST</small></td>
+            <td class="km">2h 25m</td>
+          </tr>
+          <tr style="background:#FBEBCB"><td colspan="4" style="font-size:.8rem">⚠ <b>로마 환승 1h 45m</b> — T1 → T3 이동. 별도 발권이면 빠듯, 통합 발권이면 무난</td></tr>
+          <tr>
+            <td><b>KE932</b> 대한항공<br><small style="color:var(--ink-soft)">A350-900 — 시나리오 ③과 동일 편</small></td>
+            <td><b>FCO</b> 로마 T3<br><small>5/22 토 21:25 CEST</small></td>
+            <td><b>ICN</b> 인천 T2<br><small>5/23 일 15:55 KST</small></td>
+            <td class="km">11h 30m</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="note" style="margin-top:10px">산티아고를 일찍(11:45) 출발해 시나리오 ③의 짧은 마드리드 환승(45분 → 여기선 4h15)을
+      해결하는 안 — MAD→ICN 뒷부분은 시나리오 ③과 동일합니다.</div>
+    </div>
+
+    <!-- 시간대 검증 -->
+    <div class="flow" style="margin-bottom:14px;background:#F3F6EC;border-color:#CBDCC9">
+      <h3>✔ 시간대 검증 결과</h3>
+      <p style="font-size:.85rem;margin-bottom:8px">각 편의 출발·도착 현지시각을 UTC로 환산해 소요시간과 대조했습니다
+      (EDT=UTC−4 · CEST=UTC+2 · KST=UTC+9). <b>다섯 개 일정 모두 계산이 정확히 맞습니다:</b></p>
+      <ul style="list-style:none;font-size:.83rem;line-height:1.9">
+        <li>✔ AF0071: 17:00 EDT +7h10 = 06:10 CEST 익일 — 일치</li>
+        <li>✔ KE901: 11:20 KST +14h10 = 18:30 CEST 당일 — 일치</li>
+        <li>✔ AY5372: 19:35 CEST +8h50 = 22:25 EDT 당일(5/22) 도착 — 일치, 날짜 안 넘어감</li>
+        <li>✔ KE902: 20:35 CEST +12h15 = 15:50 KST 익일(5/23 일) — 일치</li>
+        <li>✔ KE932: 21:25 CEST +11h30 = 15:55 KST 익일(5/23 일) — 일치</li>
+        <li>✔ VY1623/VY8062: 11:20+1h40=13:00 · 14:55+2h=16:55 CEST — 일치 (동일 시간대)</li>
+        <li>✔ W47451: 11:45+1h15=13:00 CEST — 일치</li>
+        <li>✔ 요일: 2027-05-22는 토요일, 05-23은 일요일 — 표기와 일치</li>
+        <li>✔ 인천 도착: ①·② 15:50 vs ③·④ 15:55 — 네 시나리오 모두 사실상 동일 (5/23 일 오후)</li>
+      </ul>
+      <p style="font-size:.83rem;margin-top:8px"><b>주의할 점은 시간대가 아니라 환승 여유입니다:</b>
+      ①은 마드리드 45분이 지연에 취약하고, ③은 마드리드는 여유(2h15)지만 로마 1h45가 관건.
+      ②·④는 산티아고를 일찍 떠나 그 빠듯한 지점을 각각 3h40(파리)·4h15(마드리드)로 넓힌 안입니다 —
+      대신 부엘링·위즈에어는 확실히 별도 발권이라 <b>짐을 찾아 재수속</b>해야 하고, 저가항공 지연 시 뒷편이 보호되지 않습니다.
+      어느 안이든 <b>짐 인천까지 통합 수속 가능 여부</b>와 <b>대한항공/이베리아 발권 보호 범위</b>를 예약 전에 확인하세요.</p>
+    </div>
+
     <div class="note">자전거는 <b>생장에서 렌탈 → 산티아고 대성당 인근 반납</b>(편도)이라 비행기·기차에 실을 필요가 없습니다.
-    5월 성수기 원웨이 렌탈은 조기 마감 — 2대를 미리 예약하고 패니어·헬멧·수리 키트 포함 여부를 확인하세요.</div>
+    5월 성수기 원웨이 렌탈은 조기 마감 — 2대를 미리 예약하고 패니어·헬멧·수리 키트 포함 여부를 확인하세요.
+    Jin이 시나리오 ①·③을 고르면 Bin과 <b>SCQ→MAD 구간을 같은 비행기</b>(IB1136 = AY4808 공동운항)로 이동한 뒤
+    마드리드에서 헤어지고, ②·④를 고르면 Jin이 2시간쯤 먼저 산티아고 공항으로 출발합니다.</div>
   </div>
 </section>
 
@@ -823,7 +1098,7 @@
    ※ apiKey는 읽기 전용 키 — SUPER-ADMIN-camino.md의 발급 방법 참고.
      키가 비어 있으면 사진 없이 빈 프레임만 표시됩니다. */
 const PHOTOS = {
-  apiKey: "AIzaSyDzahk0Yhz3faRfMhDS2vQzQ2oADYXhPRg",          /* Google Cloud → API key (Drive API, 리퍼러 제한) */
+  apiKey: "여기에_읽기전용_API_KEY",          /* Google Cloud → API key (Drive API, 리퍼러 제한) */
   parentId: "1z6EJEVanJ_Hal3gIzqeAc0eOUfr1EOAK",
   dayCount: 13,
   thumbW: 400, fullW: 1600, placeholders: 3
