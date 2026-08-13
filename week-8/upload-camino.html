@@ -119,6 +119,11 @@
   <div class="daynav" id="dayNav"></div>
   <p class="empty-note">사진은 아무 형식(jpg·png·webp)이나 올려도 <b>자동으로 WebP로 변환·압축</b>되어 Drive의 해당 day 폴더에 저장됩니다.
   아이폰 HEIC이 안 올라가면 설정→카메라→포맷을 "높은 호환성"으로 바꾸세요. 한 번에 여러 장 선택 가능합니다.</p>
+  <p class="empty-note" style="margin-top:6px">
+    <label style="cursor:pointer"><input type="checkbox" id="gpsStamp" checked>
+    <b>GPS 위치가 있으면 사진에 도시명 새기기</b></label>
+    — 사진 속 위치 정보로 가장 가까운 카미노 마을 이름을 사진 오른쪽 아래에 워터마크로 넣습니다.
+    ⚠ 아이폰은 <b>Choose Files(파일 앱)</b>로 올려야 위치가 유지됩니다 (Photo Library·Take Photo는 위치가 제거됨).</p>
   <div id="daysRoot"></div>
 </div>
 
@@ -243,15 +248,110 @@ const setDriveImg=(img,id,w)=>{let k=0;
     else{img.onerror=null;img.style.display="none";}};
   img.style.display="";img.src=DRIVE_HOSTS[0](id,w);};
 
+/* ══════════════ GPS → 도시명 워터마크 ══════════════ */
+/* 카미노 프란세스 경로 마을 좌표 (근사치) — 가장 가까운 마을을 찾는다 */
+const CAMINO_TOWNS=[
+["Saint-Jean-Pied-de-Port",43.163,-1.237],["Orisson",43.110,-1.290],["Roncesvalles",43.009,-1.320],
+["Zubiri",42.930,-1.505],["Pamplona",42.817,-1.645],["Puente la Reina",42.672,-1.815],
+["Estella",42.672,-2.032],["Los Arcos",42.568,-2.192],["Viana",42.515,-2.371],
+["Logroño",42.465,-2.445],["Navarrete",42.430,-2.561],["Nájera",42.416,-2.734],
+["Santo Domingo de la Calzada",42.440,-2.953],["Belorado",42.420,-3.191],
+["San Juan de Ortega",42.376,-3.437],["Burgos",42.343,-3.700],["Hornillos del Camino",42.338,-3.924],
+["Castrojeriz",42.288,-4.138],["Frómista",42.267,-4.406],["Carrión de los Condes",42.338,-4.603],
+["Calzadilla de la Cueza",42.330,-4.803],["Sahagún",42.371,-5.029],["El Burgo Ranero",42.423,-5.220],
+["Mansilla de las Mulas",42.499,-5.417],["León",42.599,-5.571],["San Martín del Camino",42.494,-5.807],
+["Hospital de Órbigo",42.463,-5.882],["Astorga",42.458,-6.056],["Rabanal del Camino",42.481,-6.284],
+["Foncebadón",42.490,-6.340],["Molinaseca",42.537,-6.518],["Ponferrada",42.546,-6.590],
+["Cacabelos",42.600,-6.723],["Villafranca del Bierzo",42.608,-6.811],["Vega de Valcarce",42.663,-6.946],
+["O Cebreiro",42.708,-7.043],["Triacastela",42.756,-7.240],["Sarria",42.777,-7.414],
+["Portomarín",42.807,-7.616],["Palas de Rei",42.873,-7.869],["Melide",42.914,-8.013],
+["Arzúa",42.930,-8.161],["O Pedrouzo",42.905,-8.362],["Monte do Gozo",42.887,-8.507],
+["Santiago de Compostela",42.881,-8.545],["Bayonne",43.493,-1.475],["Paris",48.857,2.352]
+];
+const TOWN_MAX_KM=25;   /* 이 거리 안에 카미노 마을이 없으면 온라인 지오코딩 폴백 */
+
+const haversine=(a,b,c,d)=>{const R=6371,r=Math.PI/180;
+  const x=Math.sin((c-a)*r/2)**2+Math.cos(a*r)*Math.cos(c*r)*Math.sin((d-b)*r/2)**2;
+  return 2*R*Math.asin(Math.sqrt(x));};
+
+/* JPEG EXIF에서 GPS만 최소 파싱 (png/webp는 GPS 표준이 없어 건너뜀) */
+const readGps=(file)=>new Promise(resolve=>{
+  if(!/\.jpe?g$/i.test(file.name)&&file.type!=="image/jpeg")return resolve(null);
+  const fr=new FileReader();
+  fr.onerror=()=>resolve(null);
+  fr.onload=()=>{
+    try{
+      const v=new DataView(fr.result);
+      if(v.getUint16(0)!==0xFFD8)return resolve(null);
+      let off=2;
+      while(off+4<v.byteLength){
+        const marker=v.getUint16(off);const size=v.getUint16(off+2);
+        if(marker===0xFFE1){ /* APP1 = EXIF */
+          const base=off+4;
+          if(v.getUint32(base)===0x45786966){ /* "Exif" */
+            const t=base+6; /* TIFF 헤더 시작 */
+            const le=v.getUint16(t)===0x4949; /* II=little endian */
+            const g16=o=>v.getUint16(t+o,le), g32=o=>v.getUint32(t+o,le);
+            const rat=o=>g32(o)/(g32(o+4)||1);
+            const ifd0=g32(4);
+            let gpsIfd=0, n=g16(ifd0);
+            for(let i=0;i<n;i++){const e=ifd0+2+i*12;
+              if(g16(e)===0x8825){gpsIfd=g32(e+8);break;}}
+            if(!gpsIfd)return resolve(null);
+            let latR="",lonR="",lat=null,lon=null;
+            const dms=o=>rat(o)+rat(o+8)/60+rat(o+16)/3600;
+            n=g16(gpsIfd);
+            for(let i=0;i<n;i++){const e=gpsIfd+2+i*12;const tag=g16(e);
+              if(tag===1)latR=String.fromCharCode(v.getUint8(t+e+8));
+              else if(tag===2)lat=dms(g32(e+8));
+              else if(tag===3)lonR=String.fromCharCode(v.getUint8(t+e+8));
+              else if(tag===4)lon=dms(g32(e+8));}
+            if(lat==null||lon==null)return resolve(null);
+            if(latR==="S")lat=-lat; if(lonR==="W")lon=-lon;
+            return resolve({lat:lat,lon:lon});
+          }
+        }
+        if((marker&0xFF00)!==0xFF00)break;
+        off+=2+size;
+      }
+      resolve(null);
+    }catch(e){resolve(null);}
+  };
+  fr.readAsArrayBuffer(file.slice(0,256*1024)); /* EXIF는 앞부분에 있음 */
+});
+
+/* 좌표 → 마을 이름 (카미노 목록 우선, 없으면 온라인 지오코딩, 실패 시 null) */
+const townFor=(gps)=>{
+  let best=null,bd=1e9;
+  CAMINO_TOWNS.forEach(t=>{const d=haversine(gps.lat,gps.lon,t[1],t[2]);
+    if(d<bd){bd=d;best=t[0];}});
+  if(bd<=TOWN_MAX_KM)return Promise.resolve(best);
+  return fetch("https://api.bigdatacloud.net/data/reverse-geocode-client?latitude="
+      +gps.lat+"&longitude="+gps.lon+"&localityLanguage=en")
+    .then(r=>r.json()).then(d=>d.city||d.locality||best||null)
+    .catch(()=>null);
+};
+
 /* ══════════════ WebP 변환 ══════════════ */
-const toWebp=(file)=>new Promise((resolve,reject)=>{
+const toWebp=(file,stampText)=>new Promise((resolve,reject)=>{
   const url=URL.createObjectURL(file);const img=new Image();
   img.onload=()=>{
     let w=img.naturalWidth,h=img.naturalHeight;
     const sc=Math.min(1,CONFIG.webpMaxDim/Math.max(w,h));
     w=Math.round(w*sc);h=Math.round(h*sc);
     const c=document.createElement("canvas");c.width=w;c.height=h;
-    c.getContext("2d").drawImage(img,0,0,w,h);URL.revokeObjectURL(url);
+    const ctx=c.getContext("2d");
+    ctx.drawImage(img,0,0,w,h);URL.revokeObjectURL(url);
+    if(stampText){ /* 도시명 워터마크 — 오른쪽 아래 */
+      const fs=Math.max(16,Math.round(w*0.034));
+      ctx.font="600 "+fs+"px 'IBM Plex Sans KR',sans-serif";
+      ctx.textAlign="right";ctx.textBaseline="bottom";
+      ctx.shadowColor="rgba(0,0,0,.75)";ctx.shadowBlur=fs*0.35;
+      ctx.shadowOffsetX=0;ctx.shadowOffsetY=fs*0.06;
+      ctx.fillStyle="rgba(255,255,255,.92)";
+      ctx.fillText("⛿ "+stampText,w-fs*0.8,h-fs*0.7);
+      ctx.shadowColor="transparent";
+    }
     c.toBlob(b=>b?resolve(b):reject(new Error("WebP 변환 실패")),"image/webp",CONFIG.webpQuality);
   };
   img.onerror=()=>{URL.revokeObjectURL(url);
@@ -358,9 +458,16 @@ const pickFiles=(d)=>hiddenInput(true,async files=>{
       dayFolders[d]=nf.id;dayFiles[d]=[];
     }
     const nums=nextNumbers(d,files.length);
+    const useStamp=$("gpsStamp").checked;
     for(let i=0;i<files.length;i++){
+      let stamp=null;
+      if(useStamp){
+        const gps=await readGps(files[i]);
+        if(gps){stamp=await townFor(gps);
+          if(stamp)toast("DAY "+d+" · "+(i+1)+"/"+files.length+" 위치: "+stamp);}
+      }
       toast("DAY "+d+" · "+(i+1)+"/"+files.length+" 변환 중…");
-      const blob=await toWebp(files[i]);
+      const blob=await toWebp(files[i],stamp);
       toast("DAY "+d+" · "+(i+1)+"/"+files.length+" 업로드 중…");
       await uploadFile("photo_"+nums[i]+".webp","image/webp",blob,dayFolders[d],
         p=>toast("DAY "+d+" · "+(i+1)+"/"+files.length+" 업로드 "+Math.round(p*100)+"%"));
@@ -384,8 +491,13 @@ const onAction=(ev)=>{
       if(!files.length)return;
       const card=b.closest(".pcard");card.classList.add("busy");
       try{
+        let stamp=null;
+        if($("gpsStamp").checked){
+          const gps=await readGps(files[0]);
+          if(gps){stamp=await townFor(gps);if(stamp)toast("위치: "+stamp);}
+        }
         toast("변환 중…");
-        const blob=await toWebp(files[0]);
+        const blob=await toWebp(files[0],stamp);
         const keep=numOf(name);
         const newName=keep!=null?("photo_"+keep+".webp"):name.replace(/\.[^.]+$/,".webp");
         await deleteFile(fid);
