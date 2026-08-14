@@ -1073,11 +1073,17 @@ const PHOTOS = {
   var plb=document.getElementById("plb"),plbImg=document.getElementById("plbImg"),
       plbVideo=document.getElementById("plbVideo"),plbLoc=document.getElementById("plbLoc"),
       plbCnt=document.getElementById("plbCnt"),plbFrame=document.getElementById("plbFrame");
-  /* 네이티브 <video> 소스 후보: ① API alt=media(미디어 키 우선) ② uc 다운로드 */
-  function videoSrcs(id){return [
-    "https://www.googleapis.com/drive/v3/files/"+id+"?alt=media&key="+(PHOTOS.mediaKey||PHOTOS.apiKey),
-    "https://drive.google.com/uc?export=download&id="+id
-  ];}
+  /* 네이티브 <video> 소스 후보 — mediaKey(도메인 제한 없는 보조 키)가 있으면 그것부터.
+     아이폰은 미디어 요청에 Referer를 안 붙여 도메인 제한 키가 403이 나므로,
+     폰에서 깨끗한 네이티브 재생을 원하면 mediaKey 설정이 필수 (SUPER-ADMIN §11 참고) */
+  function videoSrcs(id){
+    var base="https://www.googleapis.com/drive/v3/files/"+id+"?alt=media&key=";
+    var a=[];
+    if(PHOTOS.mediaKey)a.push(base+PHOTOS.mediaKey);
+    a.push(base+PHOTOS.apiKey);
+    a.push("https://drive.google.com/uc?export=download&id="+id);
+    return a;
+  }
   function hideAll(){plbImg.style.display="none";
     plbVideo.onerror=plbVideo.onloadeddata=plbVideo.onplaying=null;
     plbVideo.pause();plbVideo.removeAttribute("src");plbVideo.load();plbVideo.style.display="none";
