@@ -1310,7 +1310,7 @@ const PHOTOS = {
   function drawElevBase(){
     var dpr=window.devicePixelRatio||1,W=gElev.clientWidth,H=120;
     gElev.width=W*dpr;gElev.height=H*dpr;
-    var ctx=gElev.getContext("2d");ctx.scale(dpr,dpr);
+    var ctx=gElev.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);
     var pts=G.pts,km=pts[pts.length-1].d;
     var minE=1e9,maxE=-1e9;
     pts.forEach(function(p){if(p.el<minE)minE=p.el;if(p.el>maxE)maxE=p.el;});
@@ -1333,15 +1333,18 @@ const PHOTOS = {
   }
   function drawElevCursor(i){
     var ctx=gElev.getContext("2d");
-    ctx.putImageData(G.elevBase,0,0);
     var dpr=window.devicePixelRatio||1;
-    ctx.save();ctx.scale(dpr,dpr);
+    /* ⚠ drawElevBase가 남긴 scale(dpr) 위에 save+scale(dpr)을 또 하면 dpr²가 되어
+       레티나 기기에서 커서가 그래프 범위를 넘어 3배 빨리 움직인다 —
+       setTransform으로 매번 절대 배율을 지정해 중복을 원천 차단 */
+    ctx.setTransform(1,0,0,1,0,0);           /* putImageData는 픽셀 좌표 기준 */
+    ctx.putImageData(G.elevBase,0,0);
+    ctx.setTransform(dpr,0,0,dpr,0,0);       /* 이후 그리기는 CSS 좌표 */
     var p=G.pts[i],x=G.eb.x(p.d),y=G.eb.y(p.el);
     ctx.strokeStyle="rgba(255,255,255,.55)";ctx.lineWidth=1;
     ctx.beginPath();ctx.moveTo(x,6);ctx.lineTo(x,G.eb.H-18);ctx.stroke();
     ctx.fillStyle="#F5B917";ctx.beginPath();ctx.arc(x,y,5.5,0,7);ctx.fill();
     ctx.strokeStyle="#fff";ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(x,y,5.5,0,7);ctx.stroke();
-    ctx.restore();
   }
   function renderPos(){
     var i=idxAt(G.u);            /* 지도 점·고도 커서가 같은 인덱스 → 완전 동기 */
