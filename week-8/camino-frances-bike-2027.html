@@ -230,6 +230,12 @@
   .gpxbar input[type=range]{flex:1;accent-color:var(--flecha);min-width:60px}
   .gpxstats{color:#C6D0E4;font-size:.72rem;white-space:nowrap;font-variant-numeric:tabular-nums}
   .gpxtitle{color:#fff;font-size:.82rem;font-weight:700;padding:10px 14px 0}
+  /* 3D 주행 보기 (Cesium) */
+  #g3dMap{flex:1;min-height:300px;position:relative}
+  #g3dMap .cesium-viewer-bottom{font-size:9px;opacity:.75}  /* 저작자 표시는 유지(필수) */
+  .g3dhint{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:5;
+    background:rgba(21,42,85,.8);color:#fff;font-size:.7rem;border-radius:20px;padding:4px 12px;
+    pointer-events:none;transition:opacity .5s}
   @media(max-width:600px){.gpxstats{display:none}}
   .plightbox .pnav{display:flex;gap:14px;align-items:center;color:#fff;font-size:.85rem}
   .plightbox button{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);
@@ -1000,6 +1006,22 @@
   </div>
 </div>
 
+<div class="gpxbox" id="g3dbox">
+  <div class="gpxwrap" style="height:94vh">
+    <div class="gpxtitle" id="g3dTitle">⛰ 3D 주행 보기</div>
+    <div id="g3dMap"><div class="g3dhint" id="g3dHint">🎥 자동 카메라 — 화면을 만지면 수동으로 전환됩니다</div></div>
+    <div class="gpxbar">
+      <button id="g3dPlay">▶ 재생</button>
+      <input type="range" id="g3dSeek" min="0" max="1000" value="0">
+      <button id="g3dSpeed">1×</button>
+      <button id="g3dCam">🎥 자동</button>
+      <button id="g3dTo2d">🗺 2D</button>
+      <span class="gpxstats" id="g3dStats"></span>
+      <button id="g3dClose">닫기 ×</button>
+    </div>
+  </div>
+</div>
+
 <div class="gpxbox" id="gpxbox">
   <div class="gpxwrap">
     <div class="gpxtitle" id="gpxTitle">🗺 주행 기록</div>
@@ -1009,6 +1031,7 @@
       <button id="gpxPlay">▶ 재생</button>
       <input type="range" id="gpxSeek" min="0" max="1000" value="0">
       <button id="gpxSpeed">1×</button>
+      <button id="gpxTo3d">⛰ 3D</button>
       <span class="gpxstats" id="gpxStats"></span>
       <button id="gpxClose">닫기 ×</button>
     </div>
@@ -1024,7 +1047,9 @@ const PHOTOS = {
   apiKey: "AIzaSyDzahk0Yhz3faRfMhDS2vQzQ2oADYXhPRg",
   /* (선택) 폰에서 유튜브식 네이티브 재생을 원하면: Drive API만 제한 + 웹사이트 제한 '없는'
      보조 키를 만들어 여기에. 비워두면 apiKey 사용 → 폰은 Drive 플레이어로 자동 폴백 */
-  mediaKey: "",          /* Google Cloud → API key (Drive API, 리퍼러 제한) */
+  mediaKey: "",
+  /* Relive식 3D 주행 보기용 — cesium.com/ion 에서 발급한 Access Token을 붙여넣기 */
+  cesiumToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJkNmY1YjBhNi1mOWU5LTRmMTYtYjNjMi01ZTgxOTkyZmJlOWIiLCJpZCI6OTg5MzksInN1YiI6Inltam9uZ2JpbiIsImlzcyI6Imh0dHBzOi8vYXBpLmNlc2l1bS5jb20iLCJhdWQiOiJkcm9uZSIsImlhdCI6MTc4NTExNDA0MH0.CzGt5r2mi4jKQlSdwwq6_gfxeRAGZkzpypf7eHjCNzU",          /* Google Cloud → API key (Drive API, 리퍼러 제한) */
   parentId: "1z6EJEVanJ_Hal3gIzqeAc0eOUfr1EOAK",
   dayCount: 13,
   thumbW: 400, fullW: 1600, placeholders: 3
@@ -1427,6 +1452,7 @@ const PHOTOS = {
   gpxbox.addEventListener("click",function(e){if(e.target===gpxbox)closeGpx();});
 
   function openGpx(id,title){
+    gpxCache_lastId=id;C3.title=title;
     gTitle.textContent="🗺 "+title;
     gpxbox.classList.add("show");
     Promise.all([loadLeaflet(),fetchGpx(id)]).then(function(rr){
@@ -1467,6 +1493,128 @@ const PHOTOS = {
     }).catch(function(e){
       gTitle.textContent="🗺 불러오기 실패 — "+(e&&e.message?e.message:"알 수 없는 오류");
       if(window.console)console.error("GPX player:",e);
+    });
+  }
+
+  /* ══════ 3D 주행 보기 (Cesium — Relive 스타일) ══════ */
+  var C3={viewer:null,pts:null,lls:null,T:0,u:0,playing:false,speed:1,raf:0,last:0,
+          auto:true,head:0,route:null,dot:null,title:""};
+  var g3dbox=document.getElementById("g3dbox"),g3dPlay=document.getElementById("g3dPlay"),
+      g3dSeek=document.getElementById("g3dSeek"),g3dSpeed=document.getElementById("g3dSpeed"),
+      g3dCam=document.getElementById("g3dCam"),g3dStats=document.getElementById("g3dStats"),
+      g3dTitle=document.getElementById("g3dTitle"),g3dHint=document.getElementById("g3dHint");
+  function loadCesium(){
+    if(window.Cesium)return Promise.resolve();
+    return new Promise(function(res,rej){
+      var css=document.createElement("link");css.rel="stylesheet";
+      css.href="https://cesium.com/downloads/cesiumjs/releases/1.119/Build/Cesium/Widgets/widgets.css";
+      document.head.appendChild(css);
+      var js=document.createElement("script");
+      js.src="https://cesium.com/downloads/cesiumjs/releases/1.119/Build/Cesium/Cesium.js";
+      js.onload=res;js.onerror=function(){rej(new Error("Cesium 로드 실패 — 네트워크 확인"));};
+      document.head.appendChild(js);
+    });
+  }
+  function c3IdxAt(u){var target=u*C3.T,lo=0,hi=C3.pts.length-1;
+    while(lo<hi){var mid=(lo+hi)>>1;if(C3.pts[mid].tt<target)lo=mid+1;else hi=mid;}return lo;}
+  function bearingRad(a,b){ /* 진행 방향(라디안) */
+    var r=Math.PI/180,la1=a.la*r,la2=b.la*r,dlo=(b.lo-a.lo)*r;
+    return Math.atan2(Math.sin(dlo)*Math.cos(la2),
+      Math.cos(la1)*Math.sin(la2)-Math.sin(la1)*Math.cos(la2)*Math.cos(dlo));}
+  function lerpAngle(a,b,t){var d=b-a;while(d>Math.PI)d-=2*Math.PI;while(d<-Math.PI)d+=2*Math.PI;
+    return a+d*t;}
+  function c3Render(){
+    var i=c3IdxAt(C3.u),p=C3.pts[i];
+    var pos=Cesium.Cartesian3.fromDegrees(p.lo,p.la);
+    C3.dot.position=pos;
+    if(C3.auto){ /* Relive식 추적 카메라: 진행 방향 뒤에서 비스듬히 */
+      var j=i;while(j<C3.pts.length-1&&C3.pts[j].d-p.d<150)j++;   /* 150m 앞 지점으로 방위 */
+      var hd=bearingRad(p,C3.pts[Math.max(j,Math.min(i+1,C3.pts.length-1))]);
+      C3.head=lerpAngle(C3.head,hd,0.08);                          /* 부드럽게 회전 */
+      C3.viewer.camera.lookAt(pos,
+        new Cesium.HeadingPitchRange(C3.head,Cesium.Math.toRadians(-28),1000));
+    }
+    g3dSeek.value=Math.round(1000*C3.u);
+    var txt=(p.d/1000<10?(p.d/1000).toFixed(2):(p.d/1000).toFixed(1))+" km · 고도 "+Math.round(p.el)+" m";
+    if(C3.hasTime){txt+=" · "+Math.round(p.sp)+" km/h";
+      var m=Math.floor(p.tt/60);txt+=" · "+Math.floor(m/60)+":"+("0"+(m%60)).slice(-2);}
+    g3dStats.textContent=txt;
+    C3.viewer.scene.requestRender();
+  }
+  function c3Tick(ts){
+    if(!C3.playing)return;
+    if(!C3.last)C3.last=ts;
+    var dt=(ts-C3.last)/1000;C3.last=ts;
+    C3.u+=dt*C3.speed/BASE_SEC;
+    if(C3.u>=1){C3.u=1;c3Pause();}
+    c3Render();
+    if(C3.playing)C3.raf=requestAnimationFrame(c3Tick);
+  }
+  function c3Play(){if(C3.u>=1)C3.u=0;
+    C3.playing=true;C3.last=0;g3dPlay.textContent="⏸ 정지";C3.raf=requestAnimationFrame(c3Tick);}
+  function c3Pause(){C3.playing=false;cancelAnimationFrame(C3.raf);g3dPlay.textContent="▶ 재생";}
+  function c3SetAuto(on){
+    C3.auto=on;g3dCam.textContent=on?"🎥 자동":"🖐 수동";
+    g3dHint.style.opacity=on?"1":"0";
+    if(!on)C3.viewer.camera.lookAtTransform(Cesium.Matrix4.IDENTITY); /* 카메라 잠금 해제 */
+    else c3Render();
+  }
+  g3dPlay.addEventListener("click",function(){C3.playing?c3Pause():c3Play();});
+  g3dSpeed.addEventListener("click",function(){
+    C3.speed=C3.speed===1?2:(C3.speed===2?4:1);g3dSpeed.textContent=C3.speed+"×";});
+  g3dSeek.addEventListener("input",function(){c3Pause();C3.u=g3dSeek.value/1000;c3Render();});
+  g3dCam.addEventListener("click",function(){c3SetAuto(!C3.auto);});
+  function closeG3d(){c3Pause();g3dbox.classList.remove("show");}
+  document.getElementById("g3dClose").addEventListener("click",closeG3d);
+  document.getElementById("g3dTo2d").addEventListener("click",function(){
+    /* 2D로 복귀 — 재생 위치 유지 */
+    closeG3d();G.u=C3.u;gpxbox.classList.add("show");renderPos();});
+  document.getElementById("gpxTo3d").addEventListener("click",function(){
+    if(!PHOTOS.cesiumToken||/여기에/.test(PHOTOS.cesiumToken)){
+      alert("3D 보기를 쓰려면 PHOTOS.cesiumToken에 Cesium Ion 토큰을 넣어주세요 (cesium.com/ion)");return;}
+    pause();gpxbox.classList.remove("show");
+    open3d(gpxCache_lastId,G.u);
+  });
+  var gpxCache_lastId=null;   /* 마지막으로 연 GPX id — openGpx에서 기록 */
+  function open3d(id,startU){
+    g3dbox.classList.add("show");
+    g3dTitle.textContent="⛰ 3D 로딩 중…";
+    loadCesium().then(function(){
+      var g=gpxCache[id];
+      C3.pts=g.pts;C3.T=g.T;C3.hasTime=g.hasTime;
+      C3.u=startU||0;C3.speed=1;g3dSpeed.textContent="1×";
+      g3dTitle.textContent="⛰ "+C3.title+" · "+g.km.toFixed(1)+"km · ↑"+g.gain+"m";
+      if(!C3.viewer){
+        Cesium.Ion.defaultAccessToken=PHOTOS.cesiumToken;
+        C3.viewer=new Cesium.Viewer("g3dMap",{
+          terrain:Cesium.Terrain.fromWorldTerrain(),   /* 3차원 지형 */
+          animation:false,timeline:false,baseLayerPicker:false,geocoder:false,
+          homeButton:false,sceneModePicker:false,navigationHelpButton:false,
+          fullscreenButton:false,infoBox:false,selectionIndicator:false,
+          requestRenderMode:true});
+        C3.viewer.scene.globe.depthTestAgainstTerrain=true;
+        /* 화면을 만지면 자동 카메라 해제 (핀치 줌·패닝 지원) */
+        C3.viewer.canvas.addEventListener("pointerdown",function(){if(C3.auto)c3SetAuto(false);});
+        C3.viewer.canvas.addEventListener("wheel",function(){if(C3.auto)c3SetAuto(false);},{passive:true});
+      }
+      if(C3.route)C3.viewer.entities.remove(C3.route);
+      if(C3.dot)C3.viewer.entities.remove(C3.dot);
+      var flat=[];g.pts.forEach(function(p){flat.push(p.lo,p.la);});
+      C3.route=C3.viewer.entities.add({polyline:{
+        positions:Cesium.Cartesian3.fromDegreesArray(flat),
+        clampToGround:true,width:4,
+        material:Cesium.Color.fromCssColorString("#F5B917")}});   /* Relive처럼 노란 경로 */
+      C3.dot=C3.viewer.entities.add({position:Cesium.Cartesian3.fromDegrees(g.pts[0].lo,g.pts[0].la),
+        point:{pixelSize:13,color:Cesium.Color.fromCssColorString("#152A55"),
+          outlineColor:Cesium.Color.WHITE,outlineWidth:3,
+          heightReference:Cesium.HeightReference.CLAMP_TO_GROUND,
+          disableDepthTestDistance:Number.POSITIVE_INFINITY}});
+      C3.head=bearingRad(g.pts[0],g.pts[Math.min(5,g.pts.length-1)]);
+      c3SetAuto(true);
+      c3Render();
+      setTimeout(c3Play,800);   /* 지형 뜨면 자동 재생 */
+    }).catch(function(e){
+      g3dTitle.textContent="⛰ 3D 로드 실패 — "+(e&&e.message?e.message:"토큰·네트워크 확인");
     });
   }
 
