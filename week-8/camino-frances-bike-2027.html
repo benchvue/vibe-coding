@@ -1520,7 +1520,7 @@ const PHOTOS = {
 
   /* ══════ 3D 주행 보기 (Cesium — Relive 스타일) ══════ */
   var C3={viewer:null,pts:null,lls:null,T:0,u:0,playing:false,speed:1,raf:0,last:0,
-          auto:true,head:0,route:null,dot:null,title:""};
+          auto:true,head:0,heat:null,dot:null,title:""};
   var g3dbox=document.getElementById("g3dbox"),g3dPlay=document.getElementById("g3dPlay"),
       g3dSeek=document.getElementById("g3dSeek"),g3dSpeed=document.getElementById("g3dSpeed"),
       g3dCam=document.getElementById("g3dCam"),g3dStats=document.getElementById("g3dStats"),
@@ -1607,7 +1607,8 @@ const PHOTOS = {
       var g=rr[1];
       C3.pts=g.pts;C3.T=g.T;C3.hasTime=g.hasTime;
       C3.u=startU||0;C3.speed=1;g3dSpeed.textContent="1×";
-      g3dTitle.textContent="⛰ "+C3.title+" · "+g.km.toFixed(1)+"km · ↑"+g.gain+"m";
+      g3dTitle.innerHTML="⛰ "+C3.title+" · "+g.km.toFixed(1)+"km · ↑"+g.gain+"m"
+        +(g.hasTime?' · <span style="font-weight:400;color:#8A93A6;font-size:.72rem">경로 색 = 속도 (🔵 느림 → 🔴 빠름)</span>':"");
       if(!C3.viewer){
         Cesium.Ion.defaultAccessToken=PHOTOS.cesiumToken;
         C3.viewer=new Cesium.Viewer("g3dMap",{
@@ -1621,13 +1622,33 @@ const PHOTOS = {
         C3.viewer.canvas.addEventListener("pointerdown",function(){if(C3.auto)c3SetAuto(false);});
         C3.viewer.canvas.addEventListener("wheel",function(){if(C3.auto)c3SetAuto(false);},{passive:true});
       }
-      if(C3.route)C3.viewer.entities.remove(C3.route);
+      if(C3.heat){C3.viewer.scene.groundPrimitives.remove(C3.heat);C3.heat=null;}
       if(C3.dot)C3.viewer.entities.remove(C3.dot);
-      var flat=[];g.pts.forEach(function(p){flat.push(p.lo,p.la);});
-      C3.route=C3.viewer.entities.add({polyline:{
-        positions:Cesium.Cartesian3.fromDegreesArray(flat),
-        clampToGround:true,width:4,
-        material:Cesium.Color.fromCssColorString("#F5B917")}});   /* Relive처럼 노란 경로 */
+      /* 속도 히트맵 (2D와 동일한 스케일: ~700구간 · 10~90백분위 정규화)
+         구간별 색을 GeometryInstance로 만들어 한 GroundPolylinePrimitive에 묶음 — 지형 밀착 + 고성능 */
+      var N3=g.pts.length,step3=Math.max(1,Math.ceil(N3/700));
+      var sp3=[];for(var k=step3;k<N3;k+=step3)sp3.push(g.pts[k].sp);
+      sp3.sort(function(a,b){return a-b;});
+      var q10=sp3[Math.floor(sp3.length*0.10)]||0,
+          q90=sp3[Math.floor(sp3.length*0.90)]||1;
+      if(q90-q10<1)q90=q10+1;
+      var inst=[];
+      for(var k=0;k<N3-1;k+=step3){
+        var end=Math.min(k+step3,N3-1),pos=[];
+        for(var q=k;q<=end;q++)pos.push(g.pts[q].lo,g.pts[q].la);
+        var css=g.hasTime?heatColor((g.pts[end].sp-q10)/(q90-q10)):"#F5B917";
+        inst.push(new Cesium.GeometryInstance({
+          geometry:new Cesium.GroundPolylineGeometry({
+            positions:Cesium.Cartesian3.fromDegreesArray(pos),width:5}),
+          attributes:{color:Cesium.ColorGeometryInstanceAttribute.fromColor(
+            Cesium.Color.fromCssColorString(css))}}));
+      }
+      C3.heat=C3.viewer.scene.groundPrimitives.add(new Cesium.GroundPolylinePrimitive({
+        geometryInstances:inst,appearance:new Cesium.PolylineColorAppearance()}));
+      /* requestRenderMode에서 비동기 지형·프리미티브가 뜨도록 첫 4초간 렌더 보장 */
+      (function(){var t0=Date.now(),iv=setInterval(function(){
+        C3.viewer.scene.requestRender();
+        if(Date.now()-t0>4000)clearInterval(iv);},250);})();
       C3.dot=C3.viewer.entities.add({position:Cesium.Cartesian3.fromDegrees(g.pts[0].lo,g.pts[0].la),
         point:{pixelSize:13,color:Cesium.Color.fromCssColorString("#152A55"),
           outlineColor:Cesium.Color.WHITE,outlineWidth:3,

@@ -203,7 +203,6 @@
   .plightbox.show{display:flex}
   .plightbox img{max-width:96vw;max-height:84vh;border-radius:10px}
   .plightbox video{max-width:96vw;max-height:84vh;width:auto;border-radius:10px;background:#000;display:block}
-  .plightbox iframe{width:min(96vw,900px);height:min(70vh,540px);border:none;border-radius:10px;background:#000}
   .plb-stage{position:relative;display:flex;align-items:center;justify-content:center}
   .plb-loc{position:absolute;left:10px;top:10px;background:rgba(21,42,85,.82);color:#fff;
     font-size:.72rem;font-weight:700;border-radius:20px;padding:3px 11px;pointer-events:none;z-index:2}
@@ -214,6 +213,30 @@
     border-color:transparent transparent transparent #fff}
   .pthumb .ploc{position:absolute;left:4px;bottom:4px;background:rgba(21,42,85,.78);color:#fff;
     font-size:.56rem;font-weight:600;border-radius:20px;padding:1px 7px;pointer-events:none}
+  .pthumb.istrk{background:#EAF3EC}
+  .pthumb.istrk canvas{position:absolute;inset:0;width:100%;height:100%}
+  /* GPX 플레이어 */
+  .gpxbox{position:fixed;inset:0;background:rgba(15,20,35,.96);display:none;z-index:92;
+    align-items:center;justify-content:center;padding:12px}
+  .gpxbox.show{display:flex}
+  .gpxwrap{width:min(96vw,900px);background:#0F1526;border-radius:14px;overflow:hidden;
+    display:flex;flex-direction:column;max-height:94vh}
+  #gpxMap{height:48vh;min-height:220px;background:#1a2238}
+  #gpxElev{width:100%;height:120px;display:block;background:#131A2E}
+  .gpxbar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#0F1526}
+  .gpxbar button{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.28);color:#fff;
+    border-radius:999px;padding:7px 15px;font-size:.85rem;cursor:pointer;font-family:inherit;white-space:nowrap}
+  .gpxbar button:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
+  .gpxbar input[type=range]{flex:1;accent-color:var(--flecha);min-width:60px}
+  .gpxstats{color:#C6D0E4;font-size:.72rem;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .gpxtitle{color:#fff;font-size:.82rem;font-weight:700;padding:10px 14px 0}
+  /* 3D 주행 보기 (Cesium) */
+  #g3dMap{flex:1;min-height:300px;position:relative}
+  #g3dMap .cesium-viewer-bottom{font-size:9px;opacity:.75}  /* 저작자 표시는 유지(필수) */
+  .g3dhint{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:5;
+    background:rgba(21,42,85,.8);color:#fff;font-size:.7rem;border-radius:20px;padding:4px 12px;
+    pointer-events:none;transition:opacity .5s}
+  @media(max-width:600px){.gpxstats{display:none}}
   .plightbox .pnav{display:flex;gap:14px;align-items:center;color:#fff;font-size:.85rem}
   .plightbox button{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);
     color:#fff;border-radius:999px;padding:7px 18px;font-size:.9rem;cursor:pointer;font-family:inherit}
@@ -967,9 +990,13 @@
 <div class="plightbox" id="plb">
   <div class="plb-stage">
     <span class="plb-loc" id="plbLoc" style="display:none"></span>
+    <span id="plbDl" style="display:none;position:absolute;bottom:12px;left:50%;transform:translateX(-50%);
+      background:rgba(21,42,85,.85);color:#fff;font-size:.74rem;font-weight:600;
+      border-radius:20px;padding:5px 14px;z-index:2;white-space:nowrap"></span>
     <img id="plbImg" alt="카미노 사진 크게 보기">
     <video id="plbVideo" style="display:none" controls playsinline preload="metadata"></video>
-    <iframe id="plbVid" style="display:none" allow="autoplay; fullscreen" allowfullscreen title="카미노 동영상 재생"></iframe>
+    <iframe id="plbFrame" style="display:none;width:min(96vw,900px);height:min(64vh,506px);border:none;border-radius:10px;background:#000"
+      allow="autoplay; fullscreen" allowfullscreen title="카미노 동영상 재생 (Drive 플레이어)"></iframe>
   </div>
   <div class="pnav">
     <button id="plbPrev">◀ 이전</button>
@@ -979,13 +1006,54 @@
   </div>
 </div>
 
+<div class="gpxbox" id="g3dbox">
+  <div class="gpxwrap" style="height:94vh">
+    <div class="gpxtitle" id="g3dTitle">⛰ 3D 주행 보기</div>
+    <div id="g3dMap"><div class="g3dhint" id="g3dHint">🎥 자동 카메라 — 화면을 만지면 수동으로 전환됩니다</div></div>
+    <div class="gpxbar">
+      <button id="g3dPlay">▶ 재생</button>
+      <input type="range" id="g3dSeek" min="0" max="1000" value="0">
+      <button id="g3dSpeed">1×</button>
+      <button id="g3dCam">🎥 자동</button>
+      <button id="g3dTo2d">🗺 2D</button>
+      <span class="gpxstats" id="g3dStats"></span>
+      <button id="g3dClose">닫기 ×</button>
+    </div>
+  </div>
+</div>
+
+<div class="gpxbox" id="gpxbox">
+  <div class="gpxwrap">
+    <div class="gpxtitle" id="gpxTitle">🗺 주행 기록</div>
+    <div id="gpxMap"></div>
+    <canvas id="gpxElev"></canvas>
+    <div class="gpxbar">
+      <button id="gpxPlay">▶ 재생</button>
+      <input type="range" id="gpxSeek" min="0" max="1000" value="0">
+      <button id="gpxSpeed">1×</button>
+      <button id="gpxTo3d">⛰ 3D</button>
+      <span class="gpxstats" id="gpxStats"></span>
+      <button id="gpxClose">닫기 ×</button>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ══════ DAY별 사진 (Google Drive) ══════
    각 day 카드 아래에 Drive의 day1~day13 하위 폴더 사진(webp)을 표시합니다.
    ※ apiKey는 읽기 전용 키 — SUPER-ADMIN-camino.md의 발급 방법 참고.
      키가 비어 있으면 사진 없이 빈 프레임만 표시됩니다. */
 const PHOTOS = {
-  apiKey: "AIzaSyDzahk0Yhz3faRfMhDS2vQzQ2oADYXhPRg",          /* Google Cloud → API key (Drive API, 리퍼러 제한) */
+  apiKey: "AIzaSyDzahk0Yhz3faRfMhDS2vQzQ2oADYXhPRg",
+  /* (선택) 폰에서 유튜브식 네이티브 재생을 원하면: Drive API만 제한 + 웹사이트 제한 '없는'
+     보조 키를 만들어 여기에. 비워두면 apiKey 사용 → 폰은 Drive 플레이어로 자동 폴백 */
+  mediaKey: "",
+  /* Relive식 3D 주행 보기용 — cesium.com/ion 에서 발급한 Access Token을 붙여넣기 */
+  /* (권장) GPX용 Apps Script 프록시 URL — 구글이 alt=media에 CORS를 안 줘서 필요.
+     SUPER-ADMIN §12의 5분 설정 후 "https://script.google.com/macros/s/.../exec" 붙여넣기.
+     비워두면 공영 CORS 프록시로 자동 폴백(설정 없이 동작하나 속도·안정성은 프록시가 남) */
+  gpxProxy: "",
+  cesiumToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJkNmY1YjBhNi1mOWU5LTRmMTYtYjNjMi01ZTgxOTkyZmJlOWIiLCJpZCI6OTg5MzksInN1YiI6Inltam9uZ2JpbiIsImlzcyI6Imh0dHBzOi8vYXBpLmNlc2l1bS5jb20iLCJhdWQiOiJkcm9uZSIsImlhdCI6MTc4NTExNDA0MH0.CzGt5r2mi4jKQlSdwwq6_gfxeRAGZkzpypf7eHjCNzU",          /* Google Cloud → API key (Drive API, 리퍼러 제한) */
   parentId: "1z6EJEVanJ_Hal3gIzqeAc0eOUfr1EOAK",
   dayCount: 13,
   thumbW: 400, fullW: 1600, placeholders: 3
@@ -993,27 +1061,35 @@ const PHOTOS = {
 (function(){
   var IMG_RE=/\.(webp|jpe?g|png|gif)$/i;
   var VID_RE=/\.(mp4|mov|m4v|webm)$/i;
-  var MEDIA_RE=/\.(webp|jpe?g|png|gif|mp4|mov|m4v|webm)$/i;
+  var TRK_RE=/\.gpx$/i;
+  var MEDIA_RE=/\.(webp|jpe?g|png|gif|mp4|mov|m4v|webm|gpx)$/i;
+  function trkNum(n){var m=n.match(/^track_(\d+)/i);return m?parseInt(m[1],10):999;}
   function vidTown(n){var m=n.match(/^video_\d+__(.+)\.\w+$/i);return m?m[1].replace(/-/g," "):null;}
   function vidNum(n){var m=n.match(/^video_(\d+)/i);return m?parseInt(m[1],10):999;}
   var HOSTS=[
     function(id,w){return "https://lh3.googleusercontent.com/d/"+id+"=w"+w;},
     function(id,w){return "https://drive.google.com/thumbnail?id="+id+"&sz=w"+w;}
   ];
-  function setImg(img,id,w,vid){
-    /* 동영상 썸네일은 thumbnail 엔드포인트가 정답 (Drive가 첫 프레임을 자동 생성) */
-    var hosts=vid?[HOSTS[1],HOSTS[0]]:[HOSTS[0],HOSTS[1]];
+  function thumbLinkUrl(link,w){ /* Drive가 준 공식 썸네일 URL을 원하는 크기로 */
+    return link?link.replace(/=s\d+[^&]*$/,"=s"+w):null;}
+  function setImg(img,id,w,vid,link){
+    /* 우선순위: ① 목록 응답의 thumbnailLink(가장 확실) ② thumbnail 엔드포인트 ③ lh3 */
+    var chain=[];
+    var tl=thumbLinkUrl(link,w);
+    if(tl)chain.push(function(){return tl;});
+    if(vid){chain.push(function(){return HOSTS[1](id,w);});chain.push(function(){return HOSTS[0](id,w);});}
+    else   {chain.push(function(){return HOSTS[0](id,w);});chain.push(function(){return HOSTS[1](id,w);});}
     var k=0;
     img.onerror=function(){k++;
-      if(k<hosts.length)img.src=hosts[k](id,w);
+      if(k<chain.length)img.src=chain[k]();
       else{img.onerror=null;
         var box=img.closest(".pthumb");
-        if(box&&box.classList.contains("isvid"))img.style.visibility="hidden"; /* 생성 전이면 ▶만 표시 */
+        if(box&&box.classList.contains("isvid"))img.style.visibility="hidden"; /* 처리 전이면 ▶만 표시 */
         else if(box)box.style.display="none";}};
-    img.src=hosts[0](id,w);}
+    img.src=chain[0]();}
   function drive(q){
     return fetch("https://www.googleapis.com/drive/v3/files?q="+encodeURIComponent(q)
-      +"&fields="+encodeURIComponent("files(id,name,mimeType)")
+      +"&fields="+encodeURIComponent("files(id,name,mimeType,thumbnailLink,size)")
       +"&pageSize=1000&key="+PHOTOS.apiKey)
       .then(function(r){if(!r.ok)throw new Error("drive "+r.status);return r.json();})
       .then(function(d){return d.files||[];});}
@@ -1027,13 +1103,28 @@ const PHOTOS = {
   /* 라이트박스 (사진 + 동영상: 네이티브 플레이어 → 실패 시 Drive iframe) */
   var gallery=[],idx=0;   /* 항목: {id, vid:bool, town} */
   var plb=document.getElementById("plb"),plbImg=document.getElementById("plbImg"),
-      plbVideo=document.getElementById("plbVideo"),plbVid=document.getElementById("plbVid"),
-      plbLoc=document.getElementById("plbLoc"),plbCnt=document.getElementById("plbCnt");
-  function mediaUrl(id){return "https://www.googleapis.com/drive/v3/files/"+id
-    +"?alt=media&key="+PHOTOS.apiKey;}
+      plbVideo=document.getElementById("plbVideo"),plbLoc=document.getElementById("plbLoc"),
+      plbCnt=document.getElementById("plbCnt"),plbFrame=document.getElementById("plbFrame"),
+      plbDl=document.getElementById("plbDl");
+  var vidBlobCache={};   /* {fileId: objectURL} — 같은 세션에서 재다운로드 방지 */
+  var BLOB_MAX=250*1024*1024;  /* 이보다 크면 blob 대신 Drive 플레이어 */
+  /* 네이티브 <video> 소스 후보 — mediaKey(도메인 제한 없는 보조 키)가 있으면 그것부터.
+     아이폰은 미디어 요청에 Referer를 안 붙여 도메인 제한 키가 403이 나므로,
+     폰에서 깨끗한 네이티브 재생을 원하면 mediaKey 설정이 필수 (SUPER-ADMIN §11 참고) */
+  function videoSrcs(id){
+    var base="https://www.googleapis.com/drive/v3/files/"+id+"?alt=media&key=";
+    var a=[];
+    if(PHOTOS.mediaKey)a.push(base+PHOTOS.mediaKey);
+    a.push(base+PHOTOS.apiKey);
+    a.push("https://drive.google.com/uc?export=download&id="+id);
+    return a;
+  }
   function hideAll(){plbImg.style.display="none";
+    if(G._vAbort){G._vAbort();G._vAbort=null;}
+    plbVideo.onerror=plbVideo.onloadeddata=plbVideo.onplaying=null;
     plbVideo.pause();plbVideo.removeAttribute("src");plbVideo.load();plbVideo.style.display="none";
-    plbVid.src="about:blank";plbVid.style.display="none";plbLoc.style.display="none";}
+    plbFrame.src="about:blank";plbFrame.style.display="none";
+    plbLoc.style.display="none";plbDl.style.display="none";}
   function show(i){
     if(!gallery.length)return;
     idx=(i+gallery.length)%gallery.length;
@@ -1041,17 +1132,56 @@ const PHOTOS = {
     hideAll();
     if(it.town){plbLoc.textContent="⛿ "+it.town;plbLoc.style.display="";}
     if(it.vid){
-      /* 유튜브처럼: 네이티브 <video> = 컨트롤이 하단 바에만, 화면 최대 노출 */
+      /* 유튜브처럼: 네이티브 <video> = 컨트롤이 하단 바에만, 재생 시작하면 자동 숨김 */
       plbVideo.style.display="";
-      plbVideo.onerror=function(){ /* 스트리밍 실패 → Drive 플레이어 폴백 */
-        plbVideo.onerror=null;plbVideo.style.display="none";
-        plbVid.style.display="";
-        plbVid.src="https://drive.google.com/file/d/"+it.id+"/preview";};
-      plbVideo.src=mediaUrl(it.id);
+      if(it.tl)plbVideo.poster=thumbLinkUrl(it.tl,800); else plbVideo.removeAttribute("poster");
+      var srcs=videoSrcs(it.id),si=0,wd=null,aborted=false;
+      var toFrame=function(){ /* 최후: Drive 플레이어 (재생은 보장, UI는 구글 것) */
+        clearTimeout(wd);plbVideo.onerror=null;
+        plbVideo.pause();plbVideo.removeAttribute("src");plbVideo.load();
+        plbVideo.style.display="none";plbDl.style.display="none";
+        plbFrame.style.display="";
+        plbFrame.src="https://drive.google.com/file/d/"+it.id+"/preview";};
+      var playUrl=function(u){clearTimeout(wd);plbVideo.onerror=null;
+        plbDl.style.display="none";plbVideo.style.display="";
+        plbVideo.src=u;plbVideo.play().catch(function(){});};
+      var toBlob=function(){ /* fetch는 Referer를 붙이므로 도메인 제한 키도 통과 →
+          내려받아 네이티브로 재생 (폰에서 깨끗한 UI의 핵심) */
+        clearTimeout(wd);plbVideo.onerror=null;
+        if(vidBlobCache[it.id])return playUrl(vidBlobCache[it.id]);
+        if(it.size&&it.size>BLOB_MAX)return toFrame();
+        plbDl.style.display="";plbDl.textContent="영상 불러오는 중…";
+        fetch(srcs[0]).then(function(r){
+          if(!r.ok)throw 0;
+          var total=it.size||parseInt(r.headers.get("Content-Length")||"0",10);
+          if(!r.body||!r.body.getReader)return r.blob();
+          var reader=r.body.getReader(),chunks=[],got=0;
+          return new Promise(function(res,rej){
+            (function pump(){reader.read().then(function(x){
+              if(aborted)return rej(0);
+              if(x.done)return res(new Blob(chunks,{type:"video/mp4"}));
+              chunks.push(x.value);got+=x.value.length;
+              if(total)plbDl.textContent="영상 불러오는 중 "+Math.round(got/total*100)+"% (이번 한 번만)";
+              pump();
+            }).catch(rej);})();
+          });
+        }).then(function(b){
+          if(aborted)return;
+          var u=URL.createObjectURL(b);vidBlobCache[it.id]=u;playUrl(u);
+        }).catch(function(){if(!aborted)toFrame();});};
+      var advance=function(){clearTimeout(wd);toBlob();};
+      var armWd=function(){ /* 직접 스트리밍이 4초 무반응(주로 폰: Referer 미포함 403)이면 blob 경로로 */
+        clearTimeout(wd);wd=setTimeout(advance,4000);};
+      plbVideo.onerror=advance;
+      plbVideo.onloadeddata=function(){clearTimeout(wd);};
+      plbVideo.onplaying=function(){clearTimeout(wd);};
+      G._vAbort=function(){aborted=true;clearTimeout(wd);};
+      armWd();
+      plbVideo.src=srcs[0];
       plbVideo.play().catch(function(){});
     }else{
       plbImg.style.display="";
-      plbImg.onerror=null;setImg(plbImg,it.id,PHOTOS.fullW);
+      plbImg.onerror=null;setImg(plbImg,it.id,PHOTOS.fullW,false,it.tl);
     }
     plbCnt.textContent=(idx+1)+" / "+gallery.length;
     plb.classList.add("show");}
@@ -1070,8 +1200,10 @@ const PHOTOS = {
     if(!card)return;
     var photos=media?media.filter(function(f){return IMG_RE.test(f.name);}):[];
     var vids  =media?media.filter(function(f){return VID_RE.test(f.name);}):[];
+    var trks  =media?media.filter(function(f){return TRK_RE.test(f.name);}):[];
     photos=sortFiles(photos);
     vids.sort(function(a,b){return vidNum(a.name)-vidNum(b.name);});
+    trks.sort(function(a,b){return trkNum(a.name)-trkNum(b.name);});
     var sec=document.createElement("div");sec.className="dphotos";
     var html="";
 
@@ -1099,24 +1231,415 @@ const PHOTOS = {
           +'</div>';});
       html+="</div>";
     }
+    /* ── 주행 기록 row (GPX가 있을 때만) ── */
+    if(trks.length){
+      html+='<h4 style="margin-top:10px">🗺 DAY '+d+' 주행 기록 <small>· '+trks.length+'개 · 탭하면 지도+고도 재생</small></h4>';
+      html+='<div class="pstrip" data-kind="t">';
+      trks.forEach(function(f,i){
+        html+='<div class="pthumb istrk" data-gi="'+i+'" data-id="'+f.id+'">'
+          +'<canvas width="118" height="88"></canvas>'
+          +'<span class="vplay"><i></i></span>'
+          +'<span class="ploc" style="display:none"></span>'
+          +'</div>';});
+      html+="</div>";
+    }
     sec.innerHTML=html;
 
-    var pItems=photos.map(function(f){return {id:f.id,vid:false};});
-    var vItems=vids.map(function(f){return {id:f.id,vid:true,town:vidTown(f.name)};});
-    sec.querySelectorAll('[data-kind="p"] .pthumb:not(.ph)').forEach(function(box){
+    var pItems=photos.map(function(f){return {id:f.id,vid:false,tl:f.thumbnailLink||null};});
+    var vItems=vids.map(function(f){return {id:f.id,vid:true,town:vidTown(f.name),tl:f.thumbnailLink||null,size:parseInt(f.size||"0",10)};});
+    sec.querySelectorAll('[data-kind="p"] .pthumb:not(.ph)').forEach(function(box,i){
       var img=box.querySelector("img");
-      setImg(img,img.dataset.id,PHOTOS.thumbW,false);
+      setImg(img,img.dataset.id,PHOTOS.thumbW,false,pItems[i]&&pItems[i].tl);
       box.style.cursor="zoom-in";
       box.addEventListener("click",function(){gallery=pItems;show(parseInt(box.dataset.gi,10));});
     });
-    sec.querySelectorAll('[data-kind="v"] .pthumb').forEach(function(box){
+    sec.querySelectorAll('[data-kind="v"] .pthumb').forEach(function(box,i){
       var img=box.querySelector("img");
-      setImg(img,img.dataset.id,PHOTOS.thumbW,true);
+      setImg(img,img.dataset.id,PHOTOS.thumbW,true,vItems[i]&&vItems[i].tl);
       box.style.cursor="pointer";
       box.addEventListener("click",function(){gallery=vItems;show(parseInt(box.dataset.gi,10));});
     });
+    sec.querySelectorAll('[data-kind="t"] .pthumb').forEach(function(box){
+      box.style.cursor="pointer";
+      gpxThumb(box);   /* 경로 모양 미리보기 그리기 */
+      box.addEventListener("click",function(){openGpx(box.dataset.id,"DAY "+d+" 주행 기록");});
+    });
     var foot=card.querySelector(".dfoot");
     card.insertBefore(sec,foot||null);
+  }
+
+  /* ══════ GPX: 파싱·미리보기·재생 ══════ */
+  var gpxCache={};
+  function fetchGpx(id){
+    if(gpxCache[id])return Promise.resolve(gpxCache[id]);
+    /* 구글이 alt=media 응답에 CORS 헤더를 안 줘서(2024~ 정책) 직접 fetch가 막힐 수 있음
+       → 다단계: ①직접 ②Apps Script 프록시(설정 시) ③④공영 CORS 프록시(무설정 폴백) */
+    var uc="https://drive.google.com/uc?export=download&id="+id;
+    var cands=[
+      "https://www.googleapis.com/drive/v3/files/"+id+"?alt=media&key="+PHOTOS.apiKey
+    ];
+    if(PHOTOS.gpxProxy)cands.push(PHOTOS.gpxProxy+(PHOTOS.gpxProxy.indexOf("?")<0?"?":"&")+"id="+id);
+    cands.push("https://api.allorigins.win/raw?url="+encodeURIComponent(uc));
+    cands.push("https://corsproxy.io/?url="+encodeURIComponent(uc));
+    var tryFetch=function(k){
+      if(k>=cands.length)
+        return Promise.reject(new Error("GPX를 받을 수 없습니다 — 구글이 직접 다운로드의 CORS를 차단 중. "
+          +"SUPER-ADMIN §12의 Apps Script 프록시(5분)를 설정하면 확실히 해결됩니다"));
+      return fetch(cands[k],{referrerPolicy:"strict-origin-when-cross-origin"})
+        .then(function(r){if(!r.ok)throw 0;return r.text();})
+        .then(function(txt){
+          if(txt.indexOf("<trkpt")<0)throw 0;   /* 프록시가 에러 페이지를 줄 수 있어 내용 검증 */
+          return txt;})
+        .catch(function(){return tryFetch(k+1);});
+    };
+    return tryFetch(0)
+      .then(function(txt){
+        var doc=new DOMParser().parseFromString(txt,"application/xml");
+        var nodes=doc.querySelectorAll("trkpt");
+        var pts=[],R=6371000,rad=Math.PI/180,dist=0,prev=null,gain=0,lastEl=null,t0=null;
+        nodes.forEach(function(n){
+          var la=parseFloat(n.getAttribute("lat")),lo=parseFloat(n.getAttribute("lon"));
+          if(isNaN(la)||isNaN(lo))return;
+          var eN=n.querySelector("ele"),tN=n.querySelector("time");
+          var el=eN?parseFloat(eN.textContent):0;
+          if(prev){
+            var x=Math.sin((la-prev.la)*rad/2),y=Math.sin((lo-prev.lo)*rad/2);
+            var h=x*x+Math.cos(prev.la*rad)*Math.cos(la*rad)*y*y;
+            dist+=2*R*Math.asin(Math.sqrt(h));
+          }
+          if(lastEl!=null&&el-lastEl>0.5)gain+=el-lastEl;
+          if(lastEl==null||Math.abs(el-lastEl)>0.5)lastEl=el;
+          var tt=null;
+          if(tN){var ms=Date.parse(tN.textContent);
+            if(!isNaN(ms)){if(t0==null)t0=ms;tt=(ms-t0)/1000;}}
+          pts.push({la:la,lo:lo,el:el,d:dist,tt:tt});
+          prev={la:la,lo:lo};
+        });
+        /* 재생 축 = 실제 기록 시간(기본). 시간이 없으면 누적 거리로 대체 */
+        var hasTime=pts.length>1&&pts[pts.length-1].tt!=null&&pts[pts.length-1].tt>0;
+        if(hasTime){var last=0;pts.forEach(function(p){if(p.tt==null)p.tt=last;else last=p.tt;});}
+        else pts.forEach(function(p){p.tt=p.d;});
+        var T=pts.length?pts[pts.length-1].tt:0;
+        /* 구간 속도(km/h) — 히트맵·상태표시용 */
+        for(var i=0;i<pts.length;i++){
+          if(i===0){pts[i].sp=0;continue;}
+          var dd=pts[i].d-pts[i-1].d, dts=Math.max(pts[i].tt-pts[i-1].tt,0.5);
+          pts[i].sp=hasTime?(dd/dts*3.6):0;
+        }
+        var data={pts:pts,km:dist/1000,gain:Math.round(gain),T:T,hasTime:hasTime};
+        gpxCache[id]=data;return data;
+      });
+  }
+  function gpxThumb(box){
+    fetchGpx(box.dataset.id).then(function(g){
+      var cv=box.querySelector("canvas"),ctx=cv.getContext("2d");
+      var pts=g.pts;if(!pts.length)return;
+      var minLa=1e9,maxLa=-1e9,minLo=1e9,maxLo=-1e9;
+      pts.forEach(function(p){if(p.la<minLa)minLa=p.la;if(p.la>maxLa)maxLa=p.la;
+        if(p.lo<minLo)minLo=p.lo;if(p.lo>maxLo)maxLo=p.lo;});
+      var cos=Math.cos((minLa+maxLa)/2*Math.PI/180);
+      var w=cv.width,h=cv.height,pad=10;
+      var sx=(w-pad*2)/Math.max((maxLo-minLo)*cos,1e-9),
+          sy=(h-pad*2)/Math.max(maxLa-minLa,1e-9),
+          sc=Math.min(sx,sy);
+      ctx.fillStyle="#EAF3EC";ctx.fillRect(0,0,w,h);
+      ctx.strokeStyle="#152A55";ctx.lineWidth=2.4;ctx.lineJoin="round";ctx.beginPath();
+      pts.forEach(function(p,i){
+        var x=pad+((p.lo-minLo)*cos)*sc+((w-pad*2)-((maxLo-minLo)*cos)*sc)/2;
+        var y=h-pad-(p.la-minLa)*sc-((h-pad*2)-(maxLa-minLa)*sc)/2;
+        i?ctx.lineTo(x,y):ctx.moveTo(x,y);});
+      ctx.stroke();
+      var lab=box.querySelector(".ploc");
+      lab.textContent=g.km.toFixed(1)+"km ↑"+g.gain+"m";lab.style.display="";
+    }).catch(function(e){
+      var lab=box.querySelector(".ploc");
+      lab.textContent="⚠ 불러오기 실패";lab.style.display="";
+      box.title=e&&e.message?e.message:"";});
+  }
+
+  /* ── 플레이어 ── */
+  var gpxbox=document.getElementById("gpxbox"),gMapEl=document.getElementById("gpxMap"),
+      gElev=document.getElementById("gpxElev"),gPlay=document.getElementById("gpxPlay"),
+      gSeek=document.getElementById("gpxSeek"),gSpeed=document.getElementById("gpxSpeed"),
+      gStats=document.getElementById("gpxStats"),gTitle=document.getElementById("gpxTitle");
+  var G={map:null,segs:null,dot:null,pts:[],lls:[],T:0,hasTime:false,
+         playing:false,u:0,speed:1,raf:0,last:0,elevBase:null};
+  function idxAt(u){ /* 재생 위치 u(0~1) → 포인트 인덱스 (tt 이진 탐색) */
+    var target=u*G.T,lo=0,hi=G.pts.length-1;
+    while(lo<hi){var mid=(lo+hi)>>1;
+      if(G.pts[mid].tt<target)lo=mid+1;else hi=mid;}
+    return lo;}
+  /* 속도 히트맵 색 (🔵 느림 → 🟢 → 🟡 → 🔴 빠름) */
+  var HEAT=[[59,130,246],[34,197,94],[245,185,23],[239,68,68]];
+  function heatColor(t){
+    t=Math.max(0,Math.min(1,t));var seg=Math.min(2,Math.floor(t*3)),f=t*3-seg;
+    var a=HEAT[seg],b=HEAT[seg+1];
+    return "rgb("+Math.round(a[0]+(b[0]-a[0])*f)+","+Math.round(a[1]+(b[1]-a[1])*f)+","
+      +Math.round(a[2]+(b[2]-a[2])*f)+")";}
+  var BASE_SEC=45; /* 1×에서 완주 재생 시간 */
+  function loadLeaflet(){
+    if(window.L)return Promise.resolve();
+    var CDN=[
+      ["https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css",
+       "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"],
+      ["https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+       "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"]
+    ];
+    function tryCdn(i){
+      if(i>=CDN.length)return Promise.reject(new Error("지도 라이브러리 로드 실패 — 네트워크가 cdnjs·unpkg를 차단하는지 확인"));
+      return new Promise(function(res,rej){
+        var css=document.createElement("link");css.rel="stylesheet";css.href=CDN[i][0];
+        document.head.appendChild(css);
+        var js=document.createElement("script");js.src=CDN[i][1];
+        js.onload=res;js.onerror=rej;
+        document.head.appendChild(js);
+      }).catch(function(){return tryCdn(i+1);});
+    }
+    return tryCdn(0);
+  }
+  function drawElevBase(){
+    var dpr=window.devicePixelRatio||1,W=gElev.clientWidth,H=120;
+    gElev.width=W*dpr;gElev.height=H*dpr;
+    var ctx=gElev.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);
+    var pts=G.pts,km=pts[pts.length-1].d;
+    var minE=1e9,maxE=-1e9;
+    pts.forEach(function(p){if(p.el<minE)minE=p.el;if(p.el>maxE)maxE=p.el;});
+    if(maxE-minE<50)maxE=minE+50;
+    G.eb={W:W,H:H,minE:minE,maxE:maxE,km:km,
+      x:function(d){return 8+(W-16)*(d/km);},
+      y:function(e){return H-18-(H-34)*((e-G.eb.minE)/(G.eb.maxE-G.eb.minE));}};
+    ctx.fillStyle="#131A2E";ctx.fillRect(0,0,W,H);
+    ctx.beginPath();ctx.moveTo(G.eb.x(0),H-18);
+    pts.forEach(function(p){ctx.lineTo(G.eb.x(p.d),G.eb.y(p.el));});
+    ctx.lineTo(G.eb.x(km),H-18);ctx.closePath();
+    ctx.fillStyle="rgba(245,185,23,.25)";ctx.fill();
+    ctx.beginPath();
+    pts.forEach(function(p,i){i?ctx.lineTo(G.eb.x(p.d),G.eb.y(p.el)):ctx.moveTo(G.eb.x(p.d),G.eb.y(p.el));});
+    ctx.strokeStyle="#F5B917";ctx.lineWidth=1.6;ctx.stroke();
+    ctx.fillStyle="#8A93A6";ctx.font="10px sans-serif";
+    ctx.fillText(Math.round(G.eb.maxE)+"m",8,14);
+    ctx.fillText(Math.round(G.eb.minE)+"m",8,H-6);
+    G.elevBase=ctx.getImageData(0,0,gElev.width,gElev.height);
+  }
+  function drawElevCursor(i){
+    var ctx=gElev.getContext("2d");
+    var dpr=window.devicePixelRatio||1;
+    /* ⚠ drawElevBase가 남긴 scale(dpr) 위에 save+scale(dpr)을 또 하면 dpr²가 되어
+       레티나 기기에서 커서가 그래프 범위를 넘어 3배 빨리 움직인다 —
+       setTransform으로 매번 절대 배율을 지정해 중복을 원천 차단 */
+    ctx.setTransform(1,0,0,1,0,0);           /* putImageData는 픽셀 좌표 기준 */
+    ctx.putImageData(G.elevBase,0,0);
+    ctx.setTransform(dpr,0,0,dpr,0,0);       /* 이후 그리기는 CSS 좌표 */
+    var p=G.pts[i],x=G.eb.x(p.d),y=G.eb.y(p.el);
+    ctx.strokeStyle="rgba(255,255,255,.55)";ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(x,6);ctx.lineTo(x,G.eb.H-18);ctx.stroke();
+    ctx.fillStyle="#F5B917";ctx.beginPath();ctx.arc(x,y,5.5,0,7);ctx.fill();
+    ctx.strokeStyle="#fff";ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(x,y,5.5,0,7);ctx.stroke();
+  }
+  function renderPos(){
+    if(!G.pts.length||!G.dot)return;   /* 로드 실패 상태 가드 */
+    var i=idxAt(G.u);            /* 지도 점·고도 커서가 같은 인덱스 → 완전 동기 */
+    var p=G.pts[i];
+    G.dot.setLatLng(G.lls[i]);
+    drawElevCursor(i);
+    gSeek.value=Math.round(1000*G.u);
+    var txt=(p.d/1000<10?(p.d/1000).toFixed(2):(p.d/1000).toFixed(1))+" km · 고도 "+Math.round(p.el)+" m";
+    if(G.hasTime){
+      txt+=" · "+Math.round(p.sp)+" km/h";
+      var m=Math.floor(p.tt/60);
+      txt+=" · "+Math.floor(m/60)+":"+("0"+(m%60)).slice(-2);   /* 경과 h:mm */
+    }
+    gStats.textContent=txt;
+  }
+  function tick(ts){
+    if(!G.playing)return;
+    if(!G.last)G.last=ts;
+    var dt=(ts-G.last)/1000;G.last=ts;
+    G.u+=dt*G.speed/BASE_SEC;    /* 시간 비율로 진행 — 휴식 구간도 실제처럼 표현 */
+    if(G.u>=1){G.u=1;pause();}
+    renderPos();
+    if(G.playing)G.raf=requestAnimationFrame(tick);
+  }
+  function play(){if(!G.pts.length||!G.dot)return;
+    if(G.u>=1)G.u=0;
+    G.playing=true;G.last=0;gPlay.textContent="⏸ 정지";G.raf=requestAnimationFrame(tick);}
+  function pause(){G.playing=false;cancelAnimationFrame(G.raf);gPlay.textContent="▶ 재생";}
+  gPlay.addEventListener("click",function(){G.playing?pause():play();});
+  gSpeed.addEventListener("click",function(){
+    G.speed=G.speed===1?2:(G.speed===2?4:1);gSpeed.textContent=G.speed+"×";});
+  gSeek.addEventListener("input",function(){
+    pause();G.u=gSeek.value/1000;renderPos();});
+  function closeGpx(){pause();gpxbox.classList.remove("show");}
+  document.getElementById("gpxClose").addEventListener("click",closeGpx);
+  gpxbox.addEventListener("click",function(e){if(e.target===gpxbox)closeGpx();});
+
+  function openGpx(id,title){
+    gpxCache_lastId=id;C3.title=title;
+    gTitle.textContent="🗺 "+title;
+    gpxbox.classList.add("show");
+    Promise.all([loadLeaflet(),fetchGpx(id)]).then(function(rr){
+      var g=rr[1];
+      G.pts=g.pts;G.lls=g.pts.map(function(p){return [p.la,p.lo];});
+      G.T=g.T;G.hasTime=g.hasTime;
+      G.u=0;G.speed=1;gSpeed.textContent="1×";
+      gTitle.innerHTML="🗺 "+title+" · "+g.km.toFixed(1)+"km · ↑"+g.gain+"m"
+        +(g.hasTime?' · <span style="font-weight:400;color:#8A93A6;font-size:.72rem">경로 색 = 속도 (🔵 느림 → 🔴 빠름)</span>':"");
+      if(!G.map){
+        G.map=L.map(gMapEl,{zoomControl:true,preferCanvas:true});
+        L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+          {attribution:'© OpenStreetMap',maxZoom:18}).addTo(G.map);
+      }
+      if(G.segs)G.map.removeLayer(G.segs);
+      if(G.dot)G.map.removeLayer(G.dot);
+      /* ⚠ 캔버스 렌더러(preferCanvas)는 시점(view) 설정 전에 선을 추가하면
+         내부 _bounds.min 오류가 나므로, 반드시 fitBounds 먼저 → 레이어 추가 순서 */
+      G.map.invalidateSize();
+      G.map.fitBounds(L.latLngBounds(G.lls),{padding:[20,20]});
+      /* 속도 히트맵: 경로를 최대 700구간으로 축약, 10~90백분위 정규화 */
+      var N=G.pts.length,step=Math.max(1,Math.ceil(N/700));
+      var speeds=[];for(var k=step;k<N;k+=step)speeds.push(G.pts[k].sp);
+      speeds.sort(function(a,b){return a-b;});
+      var p10=speeds[Math.floor(speeds.length*0.10)]||0,
+          p90=speeds[Math.floor(speeds.length*0.90)]||1;
+      if(p90-p10<1)p90=p10+1;
+      var layers=[];
+      for(var k=0;k<N-1;k+=step){
+        var end=Math.min(k+step,N-1);
+        var col=g.hasTime?heatColor((G.pts[end].sp-p10)/(p90-p10)):"#F5B917"; /* 시간 없으면 노란 단색 */
+        layers.push(L.polyline(G.lls.slice(k,end+1),{color:col,weight:5,opacity:.95}));
+      }
+      G.segs=L.layerGroup(layers).addTo(G.map);
+      G.dot=L.circleMarker(G.lls[0],{radius:8,color:"#fff",weight:3,fillColor:"#152A55",fillOpacity:1}).addTo(G.map);
+      drawElevBase();renderPos();
+      setTimeout(play,600);   /* 지도 뜨면 자동 재생 */
+    }).catch(function(e){
+      gTitle.textContent="🗺 불러오기 실패 — "+(e&&e.message?e.message:"알 수 없는 오류");
+      if(window.console)console.error("GPX player:",e);
+    });
+  }
+
+  /* ══════ 3D 주행 보기 (Cesium — Relive 스타일) ══════ */
+  var C3={viewer:null,pts:null,lls:null,T:0,u:0,playing:false,speed:1,raf:0,last:0,
+          auto:true,head:0,route:null,dot:null,title:""};
+  var g3dbox=document.getElementById("g3dbox"),g3dPlay=document.getElementById("g3dPlay"),
+      g3dSeek=document.getElementById("g3dSeek"),g3dSpeed=document.getElementById("g3dSpeed"),
+      g3dCam=document.getElementById("g3dCam"),g3dStats=document.getElementById("g3dStats"),
+      g3dTitle=document.getElementById("g3dTitle"),g3dHint=document.getElementById("g3dHint");
+  function loadCesium(){
+    if(window.Cesium)return Promise.resolve();
+    return new Promise(function(res,rej){
+      var css=document.createElement("link");css.rel="stylesheet";
+      css.href="https://cesium.com/downloads/cesiumjs/releases/1.119/Build/Cesium/Widgets/widgets.css";
+      document.head.appendChild(css);
+      var js=document.createElement("script");
+      js.src="https://cesium.com/downloads/cesiumjs/releases/1.119/Build/Cesium/Cesium.js";
+      js.onload=res;js.onerror=function(){rej(new Error("Cesium 로드 실패 — 네트워크 확인"));};
+      document.head.appendChild(js);
+    });
+  }
+  function c3IdxAt(u){var target=u*C3.T,lo=0,hi=C3.pts.length-1;
+    while(lo<hi){var mid=(lo+hi)>>1;if(C3.pts[mid].tt<target)lo=mid+1;else hi=mid;}return lo;}
+  function bearingRad(a,b){ /* 진행 방향(라디안) */
+    var r=Math.PI/180,la1=a.la*r,la2=b.la*r,dlo=(b.lo-a.lo)*r;
+    return Math.atan2(Math.sin(dlo)*Math.cos(la2),
+      Math.cos(la1)*Math.sin(la2)-Math.sin(la1)*Math.cos(la2)*Math.cos(dlo));}
+  function lerpAngle(a,b,t){var d=b-a;while(d>Math.PI)d-=2*Math.PI;while(d<-Math.PI)d+=2*Math.PI;
+    return a+d*t;}
+  function c3Render(){
+    if(!C3.pts||!C3.pts.length||!C3.dot)return;   /* 로드 실패 상태 가드 */
+    var i=c3IdxAt(C3.u),p=C3.pts[i];
+    var pos=Cesium.Cartesian3.fromDegrees(p.lo,p.la);
+    C3.dot.position=pos;
+    if(C3.auto){ /* Relive식 추적 카메라: 진행 방향 뒤에서 비스듬히 */
+      var j=i;while(j<C3.pts.length-1&&C3.pts[j].d-p.d<150)j++;   /* 150m 앞 지점으로 방위 */
+      var hd=bearingRad(p,C3.pts[Math.max(j,Math.min(i+1,C3.pts.length-1))]);
+      C3.head=lerpAngle(C3.head,hd,0.08);                          /* 부드럽게 회전 */
+      C3.viewer.camera.lookAt(pos,
+        new Cesium.HeadingPitchRange(C3.head,Cesium.Math.toRadians(-28),1000));
+    }
+    g3dSeek.value=Math.round(1000*C3.u);
+    var txt=(p.d/1000<10?(p.d/1000).toFixed(2):(p.d/1000).toFixed(1))+" km · 고도 "+Math.round(p.el)+" m";
+    if(C3.hasTime){txt+=" · "+Math.round(p.sp)+" km/h";
+      var m=Math.floor(p.tt/60);txt+=" · "+Math.floor(m/60)+":"+("0"+(m%60)).slice(-2);}
+    g3dStats.textContent=txt;
+    C3.viewer.scene.requestRender();
+  }
+  function c3Tick(ts){
+    if(!C3.playing)return;
+    if(!C3.last)C3.last=ts;
+    var dt=(ts-C3.last)/1000;C3.last=ts;
+    C3.u+=dt*C3.speed/BASE_SEC;
+    if(C3.u>=1){C3.u=1;c3Pause();}
+    c3Render();
+    if(C3.playing)C3.raf=requestAnimationFrame(c3Tick);
+  }
+  function c3Play(){if(!C3.pts||!C3.pts.length||!C3.dot)return;
+    if(C3.u>=1)C3.u=0;
+    C3.playing=true;C3.last=0;g3dPlay.textContent="⏸ 정지";C3.raf=requestAnimationFrame(c3Tick);}
+  function c3Pause(){C3.playing=false;cancelAnimationFrame(C3.raf);g3dPlay.textContent="▶ 재생";}
+  function c3SetAuto(on){
+    C3.auto=on;g3dCam.textContent=on?"🎥 자동":"🖐 수동";
+    g3dHint.style.opacity=on?"1":"0";
+    if(!on)C3.viewer.camera.lookAtTransform(Cesium.Matrix4.IDENTITY); /* 카메라 잠금 해제 */
+    else c3Render();
+  }
+  g3dPlay.addEventListener("click",function(){C3.playing?c3Pause():c3Play();});
+  g3dSpeed.addEventListener("click",function(){
+    C3.speed=C3.speed===1?2:(C3.speed===2?4:1);g3dSpeed.textContent=C3.speed+"×";});
+  g3dSeek.addEventListener("input",function(){c3Pause();C3.u=g3dSeek.value/1000;c3Render();});
+  g3dCam.addEventListener("click",function(){c3SetAuto(!C3.auto);});
+  function closeG3d(){c3Pause();g3dbox.classList.remove("show");}
+  document.getElementById("g3dClose").addEventListener("click",closeG3d);
+  document.getElementById("g3dTo2d").addEventListener("click",function(){
+    /* 2D로 복귀 — 재생 위치 유지 */
+    closeG3d();G.u=C3.u;gpxbox.classList.add("show");renderPos();});
+  document.getElementById("gpxTo3d").addEventListener("click",function(){
+    if(!PHOTOS.cesiumToken||/여기에/.test(PHOTOS.cesiumToken)){
+      alert("3D 보기를 쓰려면 PHOTOS.cesiumToken에 Cesium Ion 토큰을 넣어주세요 (cesium.com/ion)");return;}
+    pause();gpxbox.classList.remove("show");
+    open3d(gpxCache_lastId,G.u);
+  });
+  var gpxCache_lastId=null;   /* 마지막으로 연 GPX id — openGpx에서 기록 */
+  function open3d(id,startU){
+    g3dbox.classList.add("show");
+    g3dTitle.textContent="⛰ 3D 로딩 중…";
+    Promise.all([loadCesium(),fetchGpx(id)]).then(function(rr){  /* 캐시 없으면 여기서 직접 로드 */
+      var g=rr[1];
+      C3.pts=g.pts;C3.T=g.T;C3.hasTime=g.hasTime;
+      C3.u=startU||0;C3.speed=1;g3dSpeed.textContent="1×";
+      g3dTitle.textContent="⛰ "+C3.title+" · "+g.km.toFixed(1)+"km · ↑"+g.gain+"m";
+      if(!C3.viewer){
+        Cesium.Ion.defaultAccessToken=PHOTOS.cesiumToken;
+        C3.viewer=new Cesium.Viewer("g3dMap",{
+          terrain:Cesium.Terrain.fromWorldTerrain(),   /* 3차원 지형 */
+          animation:false,timeline:false,baseLayerPicker:false,geocoder:false,
+          homeButton:false,sceneModePicker:false,navigationHelpButton:false,
+          fullscreenButton:false,infoBox:false,selectionIndicator:false,
+          requestRenderMode:true});
+        C3.viewer.scene.globe.depthTestAgainstTerrain=true;
+        /* 화면을 만지면 자동 카메라 해제 (핀치 줌·패닝 지원) */
+        C3.viewer.canvas.addEventListener("pointerdown",function(){if(C3.auto)c3SetAuto(false);});
+        C3.viewer.canvas.addEventListener("wheel",function(){if(C3.auto)c3SetAuto(false);},{passive:true});
+      }
+      if(C3.route)C3.viewer.entities.remove(C3.route);
+      if(C3.dot)C3.viewer.entities.remove(C3.dot);
+      var flat=[];g.pts.forEach(function(p){flat.push(p.lo,p.la);});
+      C3.route=C3.viewer.entities.add({polyline:{
+        positions:Cesium.Cartesian3.fromDegreesArray(flat),
+        clampToGround:true,width:4,
+        material:Cesium.Color.fromCssColorString("#F5B917")}});   /* Relive처럼 노란 경로 */
+      C3.dot=C3.viewer.entities.add({position:Cesium.Cartesian3.fromDegrees(g.pts[0].lo,g.pts[0].la),
+        point:{pixelSize:13,color:Cesium.Color.fromCssColorString("#152A55"),
+          outlineColor:Cesium.Color.WHITE,outlineWidth:3,
+          heightReference:Cesium.HeightReference.CLAMP_TO_GROUND,
+          disableDepthTestDistance:Number.POSITIVE_INFINITY}});
+      C3.head=bearingRad(g.pts[0],g.pts[Math.min(5,g.pts.length-1)]);
+      c3SetAuto(true);
+      c3Render();
+      setTimeout(c3Play,800);   /* 지형 뜨면 자동 재생 */
+    }).catch(function(e){
+      g3dTitle.textContent="⛰ 3D 로드 실패 — "+(e&&e.message?e.message:"토큰·네트워크 확인");
+    });
   }
 
   function init(){
