@@ -222,7 +222,7 @@
   .gpxwrap{width:min(96vw,900px);background:#0F1526;border-radius:14px;overflow:hidden;
     display:flex;flex-direction:column;max-height:94vh}
   #gpxMap{height:48vh;min-height:220px;background:#1a2238}
-  #gpxElev{width:100%;height:120px;display:block;background:#131A2E}
+  #gpxElev,#g3dElev{width:100%;height:120px;display:block;background:#131A2E}
   .gpxbar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#0F1526}
   .gpxbar button{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.28);color:#fff;
     border-radius:999px;padding:7px 15px;font-size:.85rem;cursor:pointer;font-family:inherit;white-space:nowrap}
@@ -1010,6 +1010,7 @@
   <div class="gpxwrap" style="height:94vh">
     <div class="gpxtitle" id="g3dTitle">⛰ 3D 주행 보기</div>
     <div id="g3dMap"><div class="g3dhint" id="g3dHint">🎥 자동 카메라 — 화면을 만지면 수동으로 전환됩니다</div></div>
+    <canvas id="g3dElev"></canvas>
     <div class="gpxbar">
       <button id="g3dPlay">▶ 재생</button>
       <input type="range" id="g3dSeek" min="0" max="1000" value="0">
@@ -1524,7 +1525,44 @@ const PHOTOS = {
   var g3dbox=document.getElementById("g3dbox"),g3dPlay=document.getElementById("g3dPlay"),
       g3dSeek=document.getElementById("g3dSeek"),g3dSpeed=document.getElementById("g3dSpeed"),
       g3dCam=document.getElementById("g3dCam"),g3dStats=document.getElementById("g3dStats"),
-      g3dTitle=document.getElementById("g3dTitle"),g3dHint=document.getElementById("g3dHint");
+      g3dTitle=document.getElementById("g3dTitle"),g3dHint=document.getElementById("g3dHint"),
+      g3dElev=document.getElementById("g3dElev");
+  function c3ElevBase(){ /* 3D용 고도 프로필 — 2D drawElevBase와 동일 로직 */
+    var dpr=window.devicePixelRatio||1,W=g3dElev.clientWidth,H=120;
+    g3dElev.width=W*dpr;g3dElev.height=H*dpr;
+    var ctx=g3dElev.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);
+    var pts=C3.pts,km=pts[pts.length-1].d;
+    var minE=1e9,maxE=-1e9;
+    pts.forEach(function(p){if(p.el<minE)minE=p.el;if(p.el>maxE)maxE=p.el;});
+    if(maxE-minE<50)maxE=minE+50;
+    C3.eb={W:W,H:H,minE:minE,maxE:maxE,km:km,
+      x:function(d){return 8+(W-16)*(d/km);},
+      y:function(e){return H-18-(H-34)*((e-C3.eb.minE)/(C3.eb.maxE-C3.eb.minE));}};
+    ctx.fillStyle="#131A2E";ctx.fillRect(0,0,W,H);
+    ctx.beginPath();ctx.moveTo(C3.eb.x(0),H-18);
+    pts.forEach(function(p){ctx.lineTo(C3.eb.x(p.d),C3.eb.y(p.el));});
+    ctx.lineTo(C3.eb.x(km),H-18);ctx.closePath();
+    ctx.fillStyle="rgba(245,185,23,.25)";ctx.fill();
+    ctx.beginPath();
+    pts.forEach(function(p,i){i?ctx.lineTo(C3.eb.x(p.d),C3.eb.y(p.el)):ctx.moveTo(C3.eb.x(p.d),C3.eb.y(p.el));});
+    ctx.strokeStyle="#F5B917";ctx.lineWidth=1.6;ctx.stroke();
+    ctx.fillStyle="#8A93A6";ctx.font="10px sans-serif";
+    ctx.fillText(Math.round(C3.eb.maxE)+"m",8,14);
+    ctx.fillText(Math.round(C3.eb.minE)+"m",8,H-6);
+    C3.elevBase=ctx.getImageData(0,0,g3dElev.width,g3dElev.height);
+  }
+  function c3ElevCursor(i){ /* ⚠ setTransform 절대 배율 — dpr 중복 금지 (2D에서 잡은 버그) */
+    if(!C3.eb||!C3.elevBase)return;
+    var ctx=g3dElev.getContext("2d"),dpr=window.devicePixelRatio||1;
+    ctx.setTransform(1,0,0,1,0,0);
+    ctx.putImageData(C3.elevBase,0,0);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    var p=C3.pts[i],x=C3.eb.x(p.d),y=C3.eb.y(p.el);
+    ctx.strokeStyle="rgba(255,255,255,.55)";ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(x,6);ctx.lineTo(x,C3.eb.H-18);ctx.stroke();
+    ctx.fillStyle="#F5B917";ctx.beginPath();ctx.arc(x,y,5.5,0,7);ctx.fill();
+    ctx.strokeStyle="#fff";ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(x,y,5.5,0,7);ctx.stroke();
+  }
   function loadCesium(){
     if(window.Cesium)return Promise.resolve();
     return new Promise(function(res,rej){
@@ -1550,6 +1588,7 @@ const PHOTOS = {
     var i=c3IdxAt(C3.u),p=C3.pts[i];
     var pos=Cesium.Cartesian3.fromDegrees(p.lo,p.la);
     C3.dot.position=pos;
+    c3ElevCursor(i);                       /* 고도 커서 — 지도 점과 같은 인덱스로 완전 동기 */
     if(C3.auto){ /* Relive식 추적 카메라: 진행 방향 뒤에서 비스듬히 */
       var j=i;while(j<C3.pts.length-1&&C3.pts[j].d-p.d<150)j++;   /* 150m 앞 지점으로 방위 */
       var hd=bearingRad(p,C3.pts[Math.max(j,Math.min(i+1,C3.pts.length-1))]);
@@ -1686,6 +1725,7 @@ const PHOTOS = {
           heightReference:Cesium.HeightReference.CLAMP_TO_GROUND,
           disableDepthTestDistance:Number.POSITIVE_INFINITY}});
       C3.head=bearingRad(g.pts[0],g.pts[Math.min(5,g.pts.length-1)]);
+      c3ElevBase();                        /* 지도 아래 주행 고도 프로필 */
       c3SetAuto(true);
       c3Render();
       setTimeout(c3Play,800);   /* 지형 뜨면 자동 재생 */
