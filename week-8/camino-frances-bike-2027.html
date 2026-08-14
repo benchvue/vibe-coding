@@ -1268,14 +1268,16 @@ const PHOTOS = {
   var gpxCache={};
   function fetchGpx(id){
     if(gpxCache[id])return Promise.resolve(gpxCache[id]);
-    return fetch("https://www.googleapis.com/drive/v3/files/"+id+"?alt=media&key="+PHOTOS.apiKey)
+    return fetch("https://www.googleapis.com/drive/v3/files/"+id+"?alt=media&key="+PHOTOS.apiKey,
+        {referrerPolicy:"strict-origin-when-cross-origin"})  /* 웹뷰가 Referer를 빼면 키 제한에 걸리므로 명시 */
       .then(function(r){
         if(!r.ok)throw new Error("GPX 다운로드 실패 HTTP "+r.status
           +(r.status===403?" (API 키 제한 또는 폴더 공유 확인)":r.status===404?" (파일 없음)":""));
         return r.text();})
       .catch(function(e){
         if(e&&/HTTP/.test(e.message))throw e;
-        throw new Error("GPX 네트워크 오류 — 인터넷 연결 확인");})
+        if(window.console)console.error("fetchGpx:",e);
+        throw new Error("GPX 요청 차단됨("+(e&&e.name?e.name:"?")+") — 카톡 등 인앱이면 Safari/Chrome으로, PC면 F12 콘솔 확인");})
       .then(function(txt){
         var doc=new DOMParser().parseFromString(txt,"application/xml");
         var nodes=doc.querySelectorAll("trkpt");
@@ -1334,7 +1336,10 @@ const PHOTOS = {
       ctx.stroke();
       var lab=box.querySelector(".ploc");
       lab.textContent=g.km.toFixed(1)+"km ↑"+g.gain+"m";lab.style.display="";
-    }).catch(function(){});
+    }).catch(function(e){
+      var lab=box.querySelector(".ploc");
+      lab.textContent="⚠ 불러오기 실패";lab.style.display="";
+      box.title=e&&e.message?e.message:"";});
   }
 
   /* ── 플레이어 ── */
@@ -1579,8 +1584,8 @@ const PHOTOS = {
   function open3d(id,startU){
     g3dbox.classList.add("show");
     g3dTitle.textContent="⛰ 3D 로딩 중…";
-    loadCesium().then(function(){
-      var g=gpxCache[id];
+    Promise.all([loadCesium(),fetchGpx(id)]).then(function(rr){  /* 캐시 없으면 여기서 직접 로드 */
+      var g=rr[1];
       C3.pts=g.pts;C3.T=g.T;C3.hasTime=g.hasTime;
       C3.u=startU||0;C3.speed=1;g3dSpeed.textContent="1×";
       g3dTitle.textContent="⛰ "+C3.title+" · "+g.km.toFixed(1)+"km · ↑"+g.gain+"m";
