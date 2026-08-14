@@ -1203,7 +1203,7 @@ const PHOTOS = {
       .then(function(txt){
         var doc=new DOMParser().parseFromString(txt,"application/xml");
         var nodes=doc.querySelectorAll("trkpt");
-        var pts=[],R=6371000,rad=Math.PI/180,dist=0,prev=null,gain=0,lastEl=null;
+        var pts=[],R=6371000,rad=Math.PI/180,dist=0,prev=null,gain=0,lastEl=null,t0=null;
         nodes.forEach(function(n){
           var la=parseFloat(n.getAttribute("lat")),lo=parseFloat(n.getAttribute("lon"));
           if(isNaN(la)||isNaN(lo))return;
@@ -1216,10 +1216,24 @@ const PHOTOS = {
           }
           if(lastEl!=null&&el-lastEl>0.5)gain+=el-lastEl;
           if(lastEl==null||Math.abs(el-lastEl)>0.5)lastEl=el;
-          pts.push({la:la,lo:lo,el:el,d:dist,t:tN?tN.textContent:null});
+          var tt=null;
+          if(tN){var ms=Date.parse(tN.textContent);
+            if(!isNaN(ms)){if(t0==null)t0=ms;tt=(ms-t0)/1000;}}
+          pts.push({la:la,lo:lo,el:el,d:dist,tt:tt});
           prev={la:la,lo:lo};
         });
-        var data={pts:pts,km:dist/1000,gain:Math.round(gain)};
+        /* 재생 축 = 실제 기록 시간(기본). 시간이 없으면 누적 거리로 대체 */
+        var hasTime=pts.length>1&&pts[pts.length-1].tt!=null&&pts[pts.length-1].tt>0;
+        if(hasTime){var last=0;pts.forEach(function(p){if(p.tt==null)p.tt=last;else last=p.tt;});}
+        else pts.forEach(function(p){p.tt=p.d;});
+        var T=pts.length?pts[pts.length-1].tt:0;
+        /* 구간 속도(km/h) — 히트맵·상태표시용 */
+        for(var i=0;i<pts.length;i++){
+          if(i===0){pts[i].sp=0;continue;}
+          var dd=pts[i].d-pts[i-1].d, dts=Math.max(pts[i].tt-pts[i-1].tt,0.5);
+          pts[i].sp=hasTime?(dd/dts*3.6):0;
+        }
+        var data={pts:pts,km:dist/1000,gain:Math.round(gain),T:T,hasTime:hasTime};
         gpxCache[id]=data;return data;
       });
   }
@@ -1252,7 +1266,20 @@ const PHOTOS = {
       gElev=document.getElementById("gpxElev"),gPlay=document.getElementById("gpxPlay"),
       gSeek=document.getElementById("gpxSeek"),gSpeed=document.getElementById("gpxSpeed"),
       gStats=document.getElementById("gpxStats"),gTitle=document.getElementById("gpxTitle");
-  var G={map:null,base:null,prog:null,dot:null,pts:[],lls:[],playing:false,pos:0,speed:1,raf:0,last:0,elevBase:null};
+  var G={map:null,segs:null,dot:null,pts:[],lls:[],T:0,hasTime:false,
+         playing:false,u:0,speed:1,raf:0,last:0,elevBase:null};
+  function idxAt(u){ /* 재생 위치 u(0~1) → 포인트 인덱스 (tt 이진 탐색) */
+    var target=u*G.T,lo=0,hi=G.pts.length-1;
+    while(lo<hi){var mid=(lo+hi)>>1;
+      if(G.pts[mid].tt<target)lo=mid+1;else hi=mid;}
+    return lo;}
+  /* 속도 히트맵 색 (🔵 느림 → 🟢 → 🟡 → 🔴 빠름) */
+  var HEAT=[[59,130,246],[34,197,94],[245,185,23],[239,68,68]];
+  function heatColor(t){
+    t=Math.max(0,Math.min(1,t));var seg=Math.min(2,Math.floor(t*3)),f=t*3-seg;
+    var a=HEAT[seg],b=HEAT[seg+1];
+    return "rgb("+Math.round(a[0]+(b[0]-a[0])*f)+","+Math.round(a[1]+(b[1]-a[1])*f)+","
+      +Math.round(a[2]+(b[2]-a[2])*f)+")";}
   var BASE_SEC=45; /* 1×에서 완주 재생 시간 */
   function loadLeaflet(){
     if(window.L)return Promise.resolve();
@@ -1298,37 +1325,41 @@ const PHOTOS = {
     var p=G.pts[i],x=G.eb.x(p.d),y=G.eb.y(p.el);
     ctx.strokeStyle="rgba(255,255,255,.55)";ctx.lineWidth=1;
     ctx.beginPath();ctx.moveTo(x,6);ctx.lineTo(x,G.eb.H-18);ctx.stroke();
-    ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(x,y,4,0,7);ctx.fill();
-    ctx.strokeStyle="#F5B917";ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,4,0,7);ctx.stroke();
+    ctx.fillStyle="#F5B917";ctx.beginPath();ctx.arc(x,y,5.5,0,7);ctx.fill();
+    ctx.strokeStyle="#fff";ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(x,y,5.5,0,7);ctx.stroke();
     ctx.restore();
   }
   function renderPos(){
-    var i=Math.min(G.pts.length-1,Math.max(0,Math.round(G.pos)));
+    var i=idxAt(G.u);            /* 지도 점·고도 커서가 같은 인덱스 → 완전 동기 */
     var p=G.pts[i];
-    G.prog.setLatLngs(G.lls.slice(0,i+1));
     G.dot.setLatLng(G.lls[i]);
     drawElevCursor(i);
-    gSeek.value=Math.round(1000*i/(G.pts.length-1));
-    gStats.textContent=p.d/1000<10?( (p.d/1000).toFixed(2)+" km"):((p.d/1000).toFixed(1)+" km");
-    gStats.textContent+=" · 고도 "+Math.round(p.el)+" m";
+    gSeek.value=Math.round(1000*G.u);
+    var txt=(p.d/1000<10?(p.d/1000).toFixed(2):(p.d/1000).toFixed(1))+" km · 고도 "+Math.round(p.el)+" m";
+    if(G.hasTime){
+      txt+=" · "+Math.round(p.sp)+" km/h";
+      var m=Math.floor(p.tt/60);
+      txt+=" · "+Math.floor(m/60)+":"+("0"+(m%60)).slice(-2);   /* 경과 h:mm */
+    }
+    gStats.textContent=txt;
   }
   function tick(ts){
     if(!G.playing)return;
     if(!G.last)G.last=ts;
     var dt=(ts-G.last)/1000;G.last=ts;
-    G.pos+=(G.pts.length-1)/BASE_SEC*G.speed*dt;
-    if(G.pos>=G.pts.length-1){G.pos=G.pts.length-1;pause();}
+    G.u+=dt*G.speed/BASE_SEC;    /* 시간 비율로 진행 — 휴식 구간도 실제처럼 표현 */
+    if(G.u>=1){G.u=1;pause();}
     renderPos();
     if(G.playing)G.raf=requestAnimationFrame(tick);
   }
-  function play(){if(G.pos>=G.pts.length-1)G.pos=0;
+  function play(){if(G.u>=1)G.u=0;
     G.playing=true;G.last=0;gPlay.textContent="⏸ 정지";G.raf=requestAnimationFrame(tick);}
   function pause(){G.playing=false;cancelAnimationFrame(G.raf);gPlay.textContent="▶ 재생";}
   gPlay.addEventListener("click",function(){G.playing?pause():play();});
   gSpeed.addEventListener("click",function(){
     G.speed=G.speed===1?2:(G.speed===2?4:1);gSpeed.textContent=G.speed+"×";});
   gSeek.addEventListener("input",function(){
-    pause();G.pos=gSeek.value/1000*(G.pts.length-1);renderPos();});
+    pause();G.u=gSeek.value/1000;renderPos();});
   function closeGpx(){pause();gpxbox.classList.remove("show");}
   document.getElementById("gpxClose").addEventListener("click",closeGpx);
   gpxbox.addEventListener("click",function(e){if(e.target===gpxbox)closeGpx();});
@@ -1339,21 +1370,34 @@ const PHOTOS = {
     Promise.all([loadLeaflet(),fetchGpx(id)]).then(function(rr){
       var g=rr[1];
       G.pts=g.pts;G.lls=g.pts.map(function(p){return [p.la,p.lo];});
-      G.pos=0;G.speed=1;gSpeed.textContent="1×";
-      gTitle.textContent="🗺 "+title+" · "+g.km.toFixed(1)+"km · ↑"+g.gain+"m";
+      G.T=g.T;G.hasTime=g.hasTime;
+      G.u=0;G.speed=1;gSpeed.textContent="1×";
+      gTitle.innerHTML="🗺 "+title+" · "+g.km.toFixed(1)+"km · ↑"+g.gain+"m"
+        +(g.hasTime?' · <span style="font-weight:400;color:#8A93A6;font-size:.72rem">경로 색 = 속도 (🔵 느림 → 🔴 빠름)</span>':"");
       if(!G.map){
-        G.map=L.map(gMapEl,{zoomControl:true});
+        G.map=L.map(gMapEl,{zoomControl:true,preferCanvas:true});
         L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",
           {attribution:'© OpenStreetMap',maxZoom:18}).addTo(G.map);
       }
-      if(G.base)G.map.removeLayer(G.base);
-      if(G.prog)G.map.removeLayer(G.prog);
+      if(G.segs)G.map.removeLayer(G.segs);
       if(G.dot)G.map.removeLayer(G.dot);
-      G.base=L.polyline(G.lls,{color:"#8A93A6",weight:4,opacity:.7}).addTo(G.map);
-      G.prog=L.polyline([],{color:"#F5B917",weight:5}).addTo(G.map);
-      G.dot=L.circleMarker(G.lls[0],{radius:7,color:"#fff",weight:2,fillColor:"#8E2C3A",fillOpacity:1}).addTo(G.map);
+      /* 속도 히트맵: 경로를 최대 700구간으로 축약, 10~90백분위 정규화 */
+      var N=G.pts.length,step=Math.max(1,Math.ceil(N/700));
+      var speeds=[];for(var k=step;k<N;k+=step)speeds.push(G.pts[k].sp);
+      speeds.sort(function(a,b){return a-b;});
+      var p10=speeds[Math.floor(speeds.length*0.10)]||0,
+          p90=speeds[Math.floor(speeds.length*0.90)]||1;
+      if(p90-p10<1)p90=p10+1;
+      var layers=[];
+      for(var k=0;k<N-1;k+=step){
+        var end=Math.min(k+step,N-1);
+        var col=g.hasTime?heatColor((G.pts[end].sp-p10)/(p90-p10)):"#F5B917"; /* 시간 없으면 노란 단색 */
+        layers.push(L.polyline(G.lls.slice(k,end+1),{color:col,weight:5,opacity:.95}));
+      }
+      G.segs=L.layerGroup(layers).addTo(G.map);
+      G.dot=L.circleMarker(G.lls[0],{radius:8,color:"#fff",weight:3,fillColor:"#152A55",fillOpacity:1}).addTo(G.map);
       G.map.invalidateSize();
-      G.map.fitBounds(G.base.getBounds(),{padding:[20,20]});
+      G.map.fitBounds(L.latLngBounds(G.lls),{padding:[20,20]});
       drawElevBase();renderPos();
       setTimeout(play,600);   /* 지도 뜨면 자동 재생 */
     }).catch(function(e){
