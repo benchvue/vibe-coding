@@ -1079,6 +1079,7 @@ const PHOTOS = {
     "https://drive.google.com/uc?export=download&id="+id
   ];}
   function hideAll(){plbImg.style.display="none";
+    plbVideo.onerror=plbVideo.onloadeddata=plbVideo.onplaying=null;
     plbVideo.pause();plbVideo.removeAttribute("src");plbVideo.load();plbVideo.style.display="none";
     plbFrame.src="about:blank";plbFrame.style.display="none";plbLoc.style.display="none";}
   function show(i){
@@ -1091,15 +1092,24 @@ const PHOTOS = {
       /* 유튜브처럼: 네이티브 <video> = 컨트롤이 하단 바에만, 재생 시작하면 자동 숨김 */
       plbVideo.style.display="";
       if(it.tl)plbVideo.poster=thumbLinkUrl(it.tl,800); else plbVideo.removeAttribute("poster");
-      var srcs=videoSrcs(it.id),si=0;
-      plbVideo.onerror=function(){
-        si++;
-        if(si<srcs.length){plbVideo.src=srcs[si];plbVideo.play().catch(function(){});return;}
-        /* 네이티브 전부 실패(주로 아이폰: 미디어 요청에 Referer가 빠져 키 제한에 걸림)
-           → 재생이 안 되는 것보단 낫다: Drive 플레이어로 자동 폴백 (재생 보장) */
-        plbVideo.onerror=null;plbVideo.style.display="none";
+      var srcs=videoSrcs(it.id),si=0,wd=null;
+      var toFrame=function(){ /* Drive 플레이어 폴백 (재생 보장) */
+        clearTimeout(wd);plbVideo.onerror=null;
+        plbVideo.pause();plbVideo.removeAttribute("src");plbVideo.load();
+        plbVideo.style.display="none";
         plbFrame.style.display="";
         plbFrame.src="https://drive.google.com/file/d/"+it.id+"/preview";};
+      var advance=function(){
+        clearTimeout(wd);
+        si++;
+        if(si<srcs.length){armWd();plbVideo.src=srcs[si];plbVideo.play().catch(function(){});}
+        else toFrame();};
+      var armWd=function(){ /* 카톡 등 웹뷰는 에러 없이 멈추기도 함 → 4초 무반응 시 다음 단계 */
+        clearTimeout(wd);wd=setTimeout(advance,4000);};
+      plbVideo.onerror=advance;
+      plbVideo.onloadeddata=function(){clearTimeout(wd);};
+      plbVideo.onplaying=function(){clearTimeout(wd);};
+      armWd();
       plbVideo.src=srcs[0];
       plbVideo.play().catch(function(){});
     }else{
