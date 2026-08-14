@@ -1395,6 +1395,10 @@ const PHOTOS = {
       }
       if(G.segs)G.map.removeLayer(G.segs);
       if(G.dot)G.map.removeLayer(G.dot);
+      /* ⚠ 캔버스 렌더러(preferCanvas)는 시점(view) 설정 전에 선을 추가하면
+         내부 _bounds.min 오류가 나므로, 반드시 fitBounds 먼저 → 레이어 추가 순서 */
+      G.map.invalidateSize();
+      G.map.fitBounds(L.latLngBounds(G.lls),{padding:[20,20]});
       /* 속도 히트맵: 경로를 최대 700구간으로 축약, 10~90백분위 정규화 */
       var N=G.pts.length,step=Math.max(1,Math.ceil(N/700));
       var speeds=[];for(var k=step;k<N;k+=step)speeds.push(G.pts[k].sp);
@@ -1410,8 +1414,6 @@ const PHOTOS = {
       }
       G.segs=L.layerGroup(layers).addTo(G.map);
       G.dot=L.circleMarker(G.lls[0],{radius:8,color:"#fff",weight:3,fillColor:"#152A55",fillOpacity:1}).addTo(G.map);
-      G.map.invalidateSize();
-      G.map.fitBounds(L.latLngBounds(G.lls),{padding:[20,20]});
       drawElevBase();renderPos();
       setTimeout(play,600);   /* 지도 뜨면 자동 재생 */
     }).catch(function(e){
