@@ -123,7 +123,9 @@
     <label style="cursor:pointer"><input type="checkbox" id="gpsStamp" checked>
     <b>GPS 위치가 있으면 사진에 도시명 새기기</b></label>
     — 사진 속 위치 정보로 가장 가까운 카미노 마을 이름을 사진 오른쪽 아래에 워터마크로 넣습니다.
-    ⚠ 아이폰은 <b>Choose Files(파일 앱)</b>로 올려야 위치가 유지됩니다 (Photo Library·Take Photo는 위치가 제거됨).</p>
+    ⚠ 아이폰은 <b>Choose Files(파일 앱)</b>로 올려야 위치가 유지됩니다 (Photo Library·Take Photo는 위치가 제거됨).
+    아이폰 ProRAW <b>.DNG 파일도 지원</b> — 내장 프리뷰를 자동 추출해 WebP로 변환하며, 위치도 함께 읽습니다.
+    카미노 밖 지역(예: 한국)은 <b>영어 지명 우선, 안 되면 한글 지명</b>으로 워터마크합니다.</p>
   <div id="daysRoot"></div>
 </div>
 
@@ -135,12 +137,12 @@
 const CONFIG = {
   /* Google Cloud Console → Credentials → OAuth client ID (Web application)
      Authorized JavaScript origins에 배포 도메인 추가 후 Client ID 붙여넣기 */
-  clientId: "1075824030904-7meginmu8gsmmsvm606tnpb38f83rkf2.apps.googleusercontent.com",
+  clientId: "여기에_OAUTH_CLIENT_ID.apps.googleusercontent.com",
 
   /* 관리자 Gmail — Bin과 Jin의 실제 주소로 교체 */
   adminEmails: [
-    "benchvue101@gmail.com",
-    "jinookpaul@naver.com"
+    "BIN_GMAIL@gmail.com",
+    "JIN_GMAIL@gmail.com"
   ],
 
   /* 카미노 사진 최상위 폴더 (day1~day13 하위 폴더 포함) */
@@ -274,50 +276,88 @@ const haversine=(a,b,c,d)=>{const R=6371,r=Math.PI/180;
   const x=Math.sin((c-a)*r/2)**2+Math.cos(a*r)*Math.cos(c*r)*Math.sin((d-b)*r/2)**2;
   return 2*R*Math.asin(Math.sqrt(x));};
 
-/* JPEG EXIF에서 GPS만 최소 파싱 (png/webp는 GPS 표준이 없어 건너뜀) */
+/* ── GPS 파싱: JPEG(EXIF) + DNG/TIFF(애플 ProRAW 등) 지원 ── */
+const IS_DNG=f=>/\.dng\s*$/i.test((f.name||"").trim())||/dng|tiff/i.test(f.type||"");
+const parseTiffGps=(v,t)=>{ /* t = TIFF 헤더 시작 오프셋 (II/MM 리틀·빅엔디언 모두 지원) */
+  const le=v.getUint16(t)===0x4949;
+  const g16=o=>v.getUint16(t+o,le), g32=o=>v.getUint32(t+o,le);
+  const rat=o=>g32(o)/(g32(o+4)||1);
+  const ifd0=g32(4);
+  let gpsIfd=0, n=g16(ifd0);
+  for(let i=0;i<n;i++){const e=ifd0+2+i*12;
+    if(g16(e)===0x8825){gpsIfd=g32(e+8);break;}}
+  if(!gpsIfd)return null;
+  let latR="",lonR="",lat=null,lon=null;
+  const dms=o=>rat(o)+rat(o+8)/60+rat(o+16)/3600;
+  n=g16(gpsIfd);
+  for(let i=0;i<n;i++){const e=gpsIfd+2+i*12;const tag=g16(e);
+    if(tag===1)latR=String.fromCharCode(v.getUint8(t+e+8));
+    else if(tag===2)lat=dms(g32(e+8));
+    else if(tag===3)lonR=String.fromCharCode(v.getUint8(t+e+8));
+    else if(tag===4)lon=dms(g32(e+8));}
+  if(lat==null||lon==null)return null;
+  if(latR==="S")lat=-lat; if(lonR==="W")lon=-lon;
+  return {lat:lat,lon:lon};
+};
 const readGps=(file)=>new Promise(resolve=>{
-  if(!/\.jpe?g$/i.test(file.name)&&file.type!=="image/jpeg")return resolve(null);
+  const isJpg=/\.jpe?g$/i.test(file.name)||file.type==="image/jpeg";
+  if(!isJpg&&!IS_DNG(file))return resolve(null);
   const fr=new FileReader();
   fr.onerror=()=>resolve(null);
   fr.onload=()=>{
     try{
       const v=new DataView(fr.result);
-      if(v.getUint16(0)!==0xFFD8)return resolve(null);
+      const m0=v.getUint16(0);
+      if(m0===0x4949||m0===0x4D4D)         /* DNG/TIFF: 파일 자체가 TIFF */
+        return resolve(parseTiffGps(v,0));
+      if(m0!==0xFFD8)return resolve(null); /* JPEG */
       let off=2;
       while(off+4<v.byteLength){
         const marker=v.getUint16(off);const size=v.getUint16(off+2);
-        if(marker===0xFFE1){ /* APP1 = EXIF */
-          const base=off+4;
-          if(v.getUint32(base)===0x45786966){ /* "Exif" */
-            const t=base+6; /* TIFF 헤더 시작 */
-            const le=v.getUint16(t)===0x4949; /* II=little endian */
-            const g16=o=>v.getUint16(t+o,le), g32=o=>v.getUint32(t+o,le);
-            const rat=o=>g32(o)/(g32(o+4)||1);
-            const ifd0=g32(4);
-            let gpsIfd=0, n=g16(ifd0);
-            for(let i=0;i<n;i++){const e=ifd0+2+i*12;
-              if(g16(e)===0x8825){gpsIfd=g32(e+8);break;}}
-            if(!gpsIfd)return resolve(null);
-            let latR="",lonR="",lat=null,lon=null;
-            const dms=o=>rat(o)+rat(o+8)/60+rat(o+16)/3600;
-            n=g16(gpsIfd);
-            for(let i=0;i<n;i++){const e=gpsIfd+2+i*12;const tag=g16(e);
-              if(tag===1)latR=String.fromCharCode(v.getUint8(t+e+8));
-              else if(tag===2)lat=dms(g32(e+8));
-              else if(tag===3)lonR=String.fromCharCode(v.getUint8(t+e+8));
-              else if(tag===4)lon=dms(g32(e+8));}
-            if(lat==null||lon==null)return resolve(null);
-            if(latR==="S")lat=-lat; if(lonR==="W")lon=-lon;
-            return resolve({lat:lat,lon:lon});
-          }
-        }
+        if(marker===0xFFE1&&v.getUint32(off+4)===0x45786966)
+          return resolve(parseTiffGps(v,off+4+6));
         if((marker&0xFF00)!==0xFF00)break;
         off+=2+size;
       }
       resolve(null);
     }catch(e){resolve(null);}
   };
-  fr.readAsArrayBuffer(file.slice(0,256*1024)); /* EXIF는 앞부분에 있음 */
+  fr.readAsArrayBuffer(file.slice(0, IS_DNG(file)?4*1024*1024:256*1024));
+});
+
+/* DNG(ProRAW)에 내장된 풀사이즈 JPEG 프리뷰 추출 — 큰 조각부터 디코딩 시도 */
+const extractDngPreview=(file)=>new Promise(resolve=>{
+  const fr=new FileReader();
+  fr.onerror=()=>resolve(null);
+  fr.onload=()=>{
+    const b=new Uint8Array(fr.result);
+    const starts=[],ends=[];
+    for(let i=0;i<b.length-1;i++){
+      if(b[i]!==0xFF)continue;
+      if(b[i+1]===0xD8&&i+2<b.length&&b[i+2]===0xFF)starts.push(i);
+      else if(b[i+1]===0xD9)ends.push(i+2);   /* 파일 맨 끝의 EOI까지 포함 */
+    }
+    if(!starts.length||!ends.length)return resolve(null);
+    const spans=[];
+    starts.forEach(st=>{
+      for(let j=0;j<ends.length;j++)if(ends[j]>st){spans.push([st,ends[j]]);break;}   /* 가장 가까운 EOI */
+      if(ends[ends.length-1]>st)spans.push([st,ends[ends.length-1]]);                  /* 가장 먼 EOI */
+    });
+    const seen={};
+    const uniq=spans.filter(sp=>{const k=sp[0]+"-"+sp[1];if(seen[k])return false;seen[k]=1;return true;})
+      .sort((a,c)=>(c[1]-c[0])-(a[1]-a[0])).slice(0,8);
+    const tryNext=(k)=>{
+      if(k>=uniq.length)return resolve(null);
+      const blob=new Blob([b.subarray(uniq[k][0],uniq[k][1])],{type:"image/jpeg"});
+      const u=URL.createObjectURL(blob);const im=new Image();
+      im.onload=()=>{URL.revokeObjectURL(u);
+        im.naturalWidth>=600?resolve(blob):tryNext(k+1);};   /* 썸네일 크기면 다음 후보 */
+      im.onerror=()=>{URL.revokeObjectURL(u);tryNext(k+1);};
+      im.src=u;
+    };
+    tryNext(0);
+  };
+  fr.readAsArrayBuffer(file);
 });
 
 /* 좌표 → 마을 이름 (카미노 목록 우선, 없으면 온라인 지오코딩, 실패 시 null) */
@@ -326,15 +366,25 @@ const townFor=(gps)=>{
   CAMINO_TOWNS.forEach(t=>{const d=haversine(gps.lat,gps.lon,t[1],t[2]);
     if(d<bd){bd=d;best=t[0];}});
   if(bd<=TOWN_MAX_KM)return Promise.resolve(best);
-  return fetch("https://api.bigdatacloud.net/data/reverse-geocode-client?latitude="
-      +gps.lat+"&longitude="+gps.lon+"&localityLanguage=en")
-    .then(r=>r.json()).then(d=>d.city||d.locality||best||null)
-    .catch(()=>null);
+  /* 카미노 밖(예: 한국) → 온라인 역지오코딩: 영어 이름 먼저, 없으면 한글로 폴백 */
+  const geo=(lang)=>fetch("https://api.bigdatacloud.net/data/reverse-geocode-client?latitude="
+      +gps.lat+"&longitude="+gps.lon+"&localityLanguage="+lang)
+    .then(r=>r.json()).then(d=>d.city||d.locality||"");
+  return geo("en").then(en=>{
+    if(en&&/[A-Za-z]/.test(en))return en;                 /* 영어 이름 확보 */
+    return geo("ko").then(ko=>ko||en||null).catch(()=>en||null); /* 한글이라도 */
+  }).catch(()=>geo("ko").catch(()=>null));
 };
 
 /* ══════════════ WebP 변환 ══════════════ */
 const toWebp=(file,stampText)=>new Promise((resolve,reject)=>{
-  const url=URL.createObjectURL(file);const img=new Image();
+  const srcP=IS_DNG(file)
+    ? extractDngPreview(file).then(b=>{
+        if(!b)throw new Error("DNG 프리뷰를 찾지 못했습니다 — 사진 앱에서 JPEG로 내보낸 뒤 올려주세요");
+        return b;})
+    : Promise.resolve(file);
+  srcP.then(function(srcBlob){
+  const url=URL.createObjectURL(srcBlob);const img=new Image();
   img.onload=()=>{
     let w=img.naturalWidth,h=img.naturalHeight;
     const sc=Math.min(1,CONFIG.webpMaxDim/Math.max(w,h));
@@ -355,8 +405,19 @@ const toWebp=(file,stampText)=>new Promise((resolve,reject)=>{
     c.toBlob(b=>b?resolve(b):reject(new Error("WebP 변환 실패")),"image/webp",CONFIG.webpQuality);
   };
   img.onerror=()=>{URL.revokeObjectURL(url);
+    /* 브라우저가 직접 못 읽는 파일 → DNG/TIFF일 가능성으로 프리뷰 추출 한 번 더 시도 */
+    if(!toWebp._retried&&srcBlob===file){
+      extractDngPreview(file).then(b2=>{
+        if(!b2)return reject(new Error("이미지를 읽을 수 없습니다 (HEIC는 '높은 호환성' 설정 또는 jpg 변환 후 업로드)"));
+        toWebp._retried=true;
+        toWebp(b2,stampText).then(r=>{toWebp._retried=false;resolve(r);})
+          .catch(e=>{toWebp._retried=false;reject(e);});
+      });
+      return;
+    }
     reject(new Error("이미지를 읽을 수 없습니다 (HEIC는 '높은 호환성' 설정 또는 jpg 변환 후 업로드)"));};
   img.src=url;
+  }).catch(reject);
 });
 
 /* ══════════════ 데이터 로드 ══════════════ */
@@ -436,7 +497,7 @@ const renderDay=(d)=>{
 /* ══════════════ 동작 ══════════════ */
 const hiddenInput=(multi,cb)=>{
   const inp=document.createElement("input");
-  inp.type="file";inp.accept="image/*";if(multi)inp.multiple=true;
+  inp.type="file";inp.accept="image/*,.dng";if(multi)inp.multiple=true;
   inp.style.display="none";document.body.appendChild(inp);
   inp.addEventListener("change",()=>{cb(Array.from(inp.files||[]));inp.remove();});
   inp.click();
