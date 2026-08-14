@@ -215,7 +215,7 @@ const authHeaders=()=>({Authorization:"Bearer "+accessToken});
 const listFolder=(folderId)=>
   fetch("https://www.googleapis.com/drive/v3/files?q="
     +encodeURIComponent("'"+folderId+"' in parents and trashed=false")
-    +"&fields="+encodeURIComponent("files(id,name,mimeType)")+"&pageSize=1000",
+    +"&fields="+encodeURIComponent("files(id,name,mimeType,thumbnailLink)")+"&pageSize=1000",
     {headers:authHeaders()})
   .then(r=>{ if(!r.ok){ return r.json().catch(()=>({})).then(d=>{
       const g=d&&d.error?d.error:{};let hint="";
@@ -258,10 +258,15 @@ const DRIVE_HOSTS=[
   (id,w)=>"https://lh3.googleusercontent.com/d/"+id+"=w"+w,
   (id,w)=>"https://drive.google.com/thumbnail?id="+id+"&sz=w"+w
 ];
-const setDriveImg=(img,id,w)=>{let k=0;
-  img.onerror=()=>{k++;if(k<DRIVE_HOSTS.length)img.src=DRIVE_HOSTS[k](id,w);
+const setDriveImg=(img,id,w,link)=>{
+  const chain=[];
+  if(link)chain.push(link.replace(/=s\d+[^&]*$/,"=s"+w));
+  chain.push(DRIVE_HOSTS[1](id,w));  /* thumbnail 엔드포인트 (동영상 포함 확실) */
+  chain.push(DRIVE_HOSTS[0](id,w));
+  let k=0;
+  img.onerror=()=>{k++;if(k<chain.length)img.src=chain[k];
     else{img.onerror=null;img.style.display="none";}};
-  img.style.display="";img.src=DRIVE_HOSTS[0](id,w);};
+  img.style.display="";img.src=chain[0];};
 
 /* ══════════════ GPS → 도시명 워터마크 ══════════════ */
 /* 카미노 프란세스 경로 마을 좌표 (근사치) — 가장 가까운 마을을 찾는다 */
@@ -522,7 +527,7 @@ const renderDay=(d)=>{
   }else{
     const cards=sortFiles(files).map(f=>{
       return '<div class="pcard frame" data-fid="'+f.id+'">'
-        +'<div class="pimg"><img data-id="'+f.id+'" alt="'+f.name+'"></div>'
+        +'<div class="pimg"><img data-id="'+f.id+'" data-tl="'+(f.thumbnailLink||"")+'" alt="'+f.name+'"></div>'
         +'<div class="pname">'+f.name+'</div>'
         +'<div class="pbtns">'
         +'<button class="up-btn" data-act="replace" data-day="'+d+'" data-fid="'+f.id+'" data-name="'+f.name+'">교체</button>'
@@ -532,7 +537,7 @@ const renderDay=(d)=>{
     const vcards=vids.slice().sort((a,b)=>(numOfVid(a.name)||99)-(numOfVid(b.name)||99)).map(f=>{
       const town=townOfVid(f.name);
       return '<div class="pcard frame" data-fid="'+f.id+'">'
-        +'<div class="pimg vid"><img data-id="'+f.id+'" alt="'+f.name+'">'
+        +'<div class="pimg vid"><img data-id="'+f.id+'" data-tl="'+(f.thumbnailLink||"")+'" alt="'+f.name+'">'
         +'<span class="vplay"><i></i></span>'
         +(town?'<span class="vloc">⛿ '+town+'</span>':'')
         +'</div>'
@@ -549,12 +554,12 @@ const renderDay=(d)=>{
       +'<div class="pgrid" style="margin-top:10px">'+vcards
       +'<button class="addtile" data-vday="'+d+'"><b>🎬</b>동영상 추가<br><small>MP4·MOV (H.264)</small></button></div>';
     sec.querySelectorAll(".pimg:not(.vid) img").forEach(img=>{
-      setDriveImg(img,img.dataset.id,300);
+      setDriveImg(img,img.dataset.id,300,img.dataset.tl);
       img.addEventListener("click",()=>openLb(img.dataset.id));
     });
     sec.querySelectorAll(".pimg.vid").forEach(box=>{
       const img=box.querySelector("img");
-      setDriveImg(img,img.dataset.id,300);
+      setDriveImg(img,img.dataset.id,300,img.dataset.tl);
       box.style.cursor="pointer";
       box.addEventListener("click",()=>window.open("https://drive.google.com/file/d/"+img.dataset.id+"/view","_blank"));
     });

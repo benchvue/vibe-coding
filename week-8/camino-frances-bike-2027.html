@@ -1000,20 +1000,26 @@ const PHOTOS = {
     function(id,w){return "https://lh3.googleusercontent.com/d/"+id+"=w"+w;},
     function(id,w){return "https://drive.google.com/thumbnail?id="+id+"&sz=w"+w;}
   ];
-  function setImg(img,id,w,vid){
-    /* 동영상 썸네일은 thumbnail 엔드포인트가 정답 (Drive가 첫 프레임을 자동 생성) */
-    var hosts=vid?[HOSTS[1],HOSTS[0]]:[HOSTS[0],HOSTS[1]];
+  function thumbLinkUrl(link,w){ /* Drive가 준 공식 썸네일 URL을 원하는 크기로 */
+    return link?link.replace(/=s\d+[^&]*$/,"=s"+w):null;}
+  function setImg(img,id,w,vid,link){
+    /* 우선순위: ① 목록 응답의 thumbnailLink(가장 확실) ② thumbnail 엔드포인트 ③ lh3 */
+    var chain=[];
+    var tl=thumbLinkUrl(link,w);
+    if(tl)chain.push(function(){return tl;});
+    if(vid){chain.push(function(){return HOSTS[1](id,w);});chain.push(function(){return HOSTS[0](id,w);});}
+    else   {chain.push(function(){return HOSTS[0](id,w);});chain.push(function(){return HOSTS[1](id,w);});}
     var k=0;
     img.onerror=function(){k++;
-      if(k<hosts.length)img.src=hosts[k](id,w);
+      if(k<chain.length)img.src=chain[k]();
       else{img.onerror=null;
         var box=img.closest(".pthumb");
-        if(box&&box.classList.contains("isvid"))img.style.visibility="hidden"; /* 생성 전이면 ▶만 표시 */
+        if(box&&box.classList.contains("isvid"))img.style.visibility="hidden"; /* 처리 전이면 ▶만 표시 */
         else if(box)box.style.display="none";}};
-    img.src=hosts[0](id,w);}
+    img.src=chain[0]();}
   function drive(q){
     return fetch("https://www.googleapis.com/drive/v3/files?q="+encodeURIComponent(q)
-      +"&fields="+encodeURIComponent("files(id,name,mimeType)")
+      +"&fields="+encodeURIComponent("files(id,name,mimeType,thumbnailLink)")
       +"&pageSize=1000&key="+PHOTOS.apiKey)
       .then(function(r){if(!r.ok)throw new Error("drive "+r.status);return r.json();})
       .then(function(d){return d.files||[];});}
@@ -1043,6 +1049,7 @@ const PHOTOS = {
     if(it.vid){
       /* 유튜브처럼: 네이티브 <video> = 컨트롤이 하단 바에만, 화면 최대 노출 */
       plbVideo.style.display="";
+      if(it.tl)plbVideo.poster=thumbLinkUrl(it.tl,800); else plbVideo.removeAttribute("poster");
       plbVideo.onerror=function(){ /* 스트리밍 실패 → Drive 플레이어 폴백 */
         plbVideo.onerror=null;plbVideo.style.display="none";
         plbVid.style.display="";
@@ -1051,7 +1058,7 @@ const PHOTOS = {
       plbVideo.play().catch(function(){});
     }else{
       plbImg.style.display="";
-      plbImg.onerror=null;setImg(plbImg,it.id,PHOTOS.fullW);
+      plbImg.onerror=null;setImg(plbImg,it.id,PHOTOS.fullW,false,it.tl);
     }
     plbCnt.textContent=(idx+1)+" / "+gallery.length;
     plb.classList.add("show");}
@@ -1101,17 +1108,17 @@ const PHOTOS = {
     }
     sec.innerHTML=html;
 
-    var pItems=photos.map(function(f){return {id:f.id,vid:false};});
-    var vItems=vids.map(function(f){return {id:f.id,vid:true,town:vidTown(f.name)};});
-    sec.querySelectorAll('[data-kind="p"] .pthumb:not(.ph)').forEach(function(box){
+    var pItems=photos.map(function(f){return {id:f.id,vid:false,tl:f.thumbnailLink||null};});
+    var vItems=vids.map(function(f){return {id:f.id,vid:true,town:vidTown(f.name),tl:f.thumbnailLink||null};});
+    sec.querySelectorAll('[data-kind="p"] .pthumb:not(.ph)').forEach(function(box,i){
       var img=box.querySelector("img");
-      setImg(img,img.dataset.id,PHOTOS.thumbW,false);
+      setImg(img,img.dataset.id,PHOTOS.thumbW,false,pItems[i]&&pItems[i].tl);
       box.style.cursor="zoom-in";
       box.addEventListener("click",function(){gallery=pItems;show(parseInt(box.dataset.gi,10));});
     });
-    sec.querySelectorAll('[data-kind="v"] .pthumb').forEach(function(box){
+    sec.querySelectorAll('[data-kind="v"] .pthumb').forEach(function(box,i){
       var img=box.querySelector("img");
-      setImg(img,img.dataset.id,PHOTOS.thumbW,true);
+      setImg(img,img.dataset.id,PHOTOS.thumbW,true,vItems[i]&&vItems[i].tl);
       box.style.cursor="pointer";
       box.addEventListener("click",function(){gallery=vItems;show(parseInt(box.dataset.gi,10));});
     });
