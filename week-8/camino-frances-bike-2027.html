@@ -213,6 +213,24 @@
     border-color:transparent transparent transparent #fff}
   .pthumb .ploc{position:absolute;left:4px;bottom:4px;background:rgba(21,42,85,.78);color:#fff;
     font-size:.56rem;font-weight:600;border-radius:20px;padding:1px 7px;pointer-events:none}
+  .pthumb.istrk{background:#EAF3EC}
+  .pthumb.istrk canvas{position:absolute;inset:0;width:100%;height:100%}
+  /* GPX 플레이어 */
+  .gpxbox{position:fixed;inset:0;background:rgba(15,20,35,.96);display:none;z-index:92;
+    align-items:center;justify-content:center;padding:12px}
+  .gpxbox.show{display:flex}
+  .gpxwrap{width:min(96vw,900px);background:#0F1526;border-radius:14px;overflow:hidden;
+    display:flex;flex-direction:column;max-height:94vh}
+  #gpxMap{height:48vh;min-height:220px;background:#1a2238}
+  #gpxElev{width:100%;height:120px;display:block;background:#131A2E}
+  .gpxbar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#0F1526}
+  .gpxbar button{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.28);color:#fff;
+    border-radius:999px;padding:7px 15px;font-size:.85rem;cursor:pointer;font-family:inherit;white-space:nowrap}
+  .gpxbar button:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
+  .gpxbar input[type=range]{flex:1;accent-color:var(--flecha);min-width:60px}
+  .gpxstats{color:#C6D0E4;font-size:.72rem;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .gpxtitle{color:#fff;font-size:.82rem;font-weight:700;padding:10px 14px 0}
+  @media(max-width:600px){.gpxstats{display:none}}
   .plightbox .pnav{display:flex;gap:14px;align-items:center;color:#fff;font-size:.85rem}
   .plightbox button{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);
     color:#fff;border-radius:999px;padding:7px 18px;font-size:.9rem;cursor:pointer;font-family:inherit}
@@ -983,6 +1001,21 @@
   </div>
 </div>
 
+<div class="gpxbox" id="gpxbox">
+  <div class="gpxwrap">
+    <div class="gpxtitle" id="gpxTitle">🗺 주행 기록</div>
+    <div id="gpxMap"></div>
+    <canvas id="gpxElev"></canvas>
+    <div class="gpxbar">
+      <button id="gpxPlay">▶ 재생</button>
+      <input type="range" id="gpxSeek" min="0" max="1000" value="0">
+      <button id="gpxSpeed">1×</button>
+      <span class="gpxstats" id="gpxStats"></span>
+      <button id="gpxClose">닫기 ×</button>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ══════ DAY별 사진 (Google Drive) ══════
    각 day 카드 아래에 Drive의 day1~day13 하위 폴더 사진(webp)을 표시합니다.
@@ -997,7 +1030,9 @@ const PHOTOS = {
 (function(){
   var IMG_RE=/\.(webp|jpe?g|png|gif)$/i;
   var VID_RE=/\.(mp4|mov|m4v|webm)$/i;
-  var MEDIA_RE=/\.(webp|jpe?g|png|gif|mp4|mov|m4v|webm)$/i;
+  var TRK_RE=/\.gpx$/i;
+  var MEDIA_RE=/\.(webp|jpe?g|png|gif|mp4|mov|m4v|webm|gpx)$/i;
+  function trkNum(n){var m=n.match(/^track_(\d+)/i);return m?parseInt(m[1],10):999;}
   function vidTown(n){var m=n.match(/^video_\d+__(.+)\.\w+$/i);return m?m[1].replace(/-/g," "):null;}
   function vidNum(n){var m=n.match(/^video_(\d+)/i);return m?parseInt(m[1],10):999;}
   var HOSTS=[
@@ -1091,8 +1126,10 @@ const PHOTOS = {
     if(!card)return;
     var photos=media?media.filter(function(f){return IMG_RE.test(f.name);}):[];
     var vids  =media?media.filter(function(f){return VID_RE.test(f.name);}):[];
+    var trks  =media?media.filter(function(f){return TRK_RE.test(f.name);}):[];
     photos=sortFiles(photos);
     vids.sort(function(a,b){return vidNum(a.name)-vidNum(b.name);});
+    trks.sort(function(a,b){return trkNum(a.name)-trkNum(b.name);});
     var sec=document.createElement("div");sec.className="dphotos";
     var html="";
 
@@ -1120,6 +1157,18 @@ const PHOTOS = {
           +'</div>';});
       html+="</div>";
     }
+    /* ── 주행 기록 row (GPX가 있을 때만) ── */
+    if(trks.length){
+      html+='<h4 style="margin-top:10px">🗺 DAY '+d+' 주행 기록 <small>· '+trks.length+'개 · 탭하면 지도+고도 재생</small></h4>';
+      html+='<div class="pstrip" data-kind="t">';
+      trks.forEach(function(f,i){
+        html+='<div class="pthumb istrk" data-gi="'+i+'" data-id="'+f.id+'">'
+          +'<canvas width="118" height="88"></canvas>'
+          +'<span class="vplay"><i></i></span>'
+          +'<span class="ploc" style="display:none"></span>'
+          +'</div>';});
+      html+="</div>";
+    }
     sec.innerHTML=html;
 
     var pItems=photos.map(function(f){return {id:f.id,vid:false,tl:f.thumbnailLink||null};});
@@ -1136,8 +1185,180 @@ const PHOTOS = {
       box.style.cursor="pointer";
       box.addEventListener("click",function(){gallery=vItems;show(parseInt(box.dataset.gi,10));});
     });
+    sec.querySelectorAll('[data-kind="t"] .pthumb').forEach(function(box){
+      box.style.cursor="pointer";
+      gpxThumb(box);   /* 경로 모양 미리보기 그리기 */
+      box.addEventListener("click",function(){openGpx(box.dataset.id,"DAY "+d+" 주행 기록");});
+    });
     var foot=card.querySelector(".dfoot");
     card.insertBefore(sec,foot||null);
+  }
+
+  /* ══════ GPX: 파싱·미리보기·재생 ══════ */
+  var gpxCache={};
+  function fetchGpx(id){
+    if(gpxCache[id])return Promise.resolve(gpxCache[id]);
+    return fetch("https://www.googleapis.com/drive/v3/files/"+id+"?alt=media&key="+PHOTOS.apiKey)
+      .then(function(r){if(!r.ok)throw new Error("gpx "+r.status);return r.text();})
+      .then(function(txt){
+        var doc=new DOMParser().parseFromString(txt,"application/xml");
+        var nodes=doc.querySelectorAll("trkpt");
+        var pts=[],R=6371000,rad=Math.PI/180,dist=0,prev=null,gain=0,lastEl=null;
+        nodes.forEach(function(n){
+          var la=parseFloat(n.getAttribute("lat")),lo=parseFloat(n.getAttribute("lon"));
+          if(isNaN(la)||isNaN(lo))return;
+          var eN=n.querySelector("ele"),tN=n.querySelector("time");
+          var el=eN?parseFloat(eN.textContent):0;
+          if(prev){
+            var x=Math.sin((la-prev.la)*rad/2),y=Math.sin((lo-prev.lo)*rad/2);
+            var h=x*x+Math.cos(prev.la*rad)*Math.cos(la*rad)*y*y;
+            dist+=2*R*Math.asin(Math.sqrt(h));
+          }
+          if(lastEl!=null&&el-lastEl>0.5)gain+=el-lastEl;
+          if(lastEl==null||Math.abs(el-lastEl)>0.5)lastEl=el;
+          pts.push({la:la,lo:lo,el:el,d:dist,t:tN?tN.textContent:null});
+          prev={la:la,lo:lo};
+        });
+        var data={pts:pts,km:dist/1000,gain:Math.round(gain)};
+        gpxCache[id]=data;return data;
+      });
+  }
+  function gpxThumb(box){
+    fetchGpx(box.dataset.id).then(function(g){
+      var cv=box.querySelector("canvas"),ctx=cv.getContext("2d");
+      var pts=g.pts;if(!pts.length)return;
+      var minLa=1e9,maxLa=-1e9,minLo=1e9,maxLo=-1e9;
+      pts.forEach(function(p){if(p.la<minLa)minLa=p.la;if(p.la>maxLa)maxLa=p.la;
+        if(p.lo<minLo)minLo=p.lo;if(p.lo>maxLo)maxLo=p.lo;});
+      var cos=Math.cos((minLa+maxLa)/2*Math.PI/180);
+      var w=cv.width,h=cv.height,pad=10;
+      var sx=(w-pad*2)/Math.max((maxLo-minLo)*cos,1e-9),
+          sy=(h-pad*2)/Math.max(maxLa-minLa,1e-9),
+          sc=Math.min(sx,sy);
+      ctx.fillStyle="#EAF3EC";ctx.fillRect(0,0,w,h);
+      ctx.strokeStyle="#152A55";ctx.lineWidth=2.4;ctx.lineJoin="round";ctx.beginPath();
+      pts.forEach(function(p,i){
+        var x=pad+((p.lo-minLo)*cos)*sc+((w-pad*2)-((maxLo-minLo)*cos)*sc)/2;
+        var y=h-pad-(p.la-minLa)*sc-((h-pad*2)-(maxLa-minLa)*sc)/2;
+        i?ctx.lineTo(x,y):ctx.moveTo(x,y);});
+      ctx.stroke();
+      var lab=box.querySelector(".ploc");
+      lab.textContent=g.km.toFixed(1)+"km ↑"+g.gain+"m";lab.style.display="";
+    }).catch(function(){});
+  }
+
+  /* ── 플레이어 ── */
+  var gpxbox=document.getElementById("gpxbox"),gMapEl=document.getElementById("gpxMap"),
+      gElev=document.getElementById("gpxElev"),gPlay=document.getElementById("gpxPlay"),
+      gSeek=document.getElementById("gpxSeek"),gSpeed=document.getElementById("gpxSpeed"),
+      gStats=document.getElementById("gpxStats"),gTitle=document.getElementById("gpxTitle");
+  var G={map:null,base:null,prog:null,dot:null,pts:[],lls:[],playing:false,pos:0,speed:1,raf:0,last:0,elevBase:null};
+  var BASE_SEC=45; /* 1×에서 완주 재생 시간 */
+  function loadLeaflet(){
+    if(window.L)return Promise.resolve();
+    return new Promise(function(res,rej){
+      var css=document.createElement("link");css.rel="stylesheet";
+      css.href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css";
+      document.head.appendChild(css);
+      var js=document.createElement("script");
+      js.src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js";
+      js.onload=res;js.onerror=function(){rej(new Error("지도 라이브러리 로드 실패"));};
+      document.head.appendChild(js);
+    });
+  }
+  function drawElevBase(){
+    var dpr=window.devicePixelRatio||1,W=gElev.clientWidth,H=120;
+    gElev.width=W*dpr;gElev.height=H*dpr;
+    var ctx=gElev.getContext("2d");ctx.scale(dpr,dpr);
+    var pts=G.pts,km=pts[pts.length-1].d;
+    var minE=1e9,maxE=-1e9;
+    pts.forEach(function(p){if(p.el<minE)minE=p.el;if(p.el>maxE)maxE=p.el;});
+    if(maxE-minE<50)maxE=minE+50;
+    G.eb={W:W,H:H,minE:minE,maxE:maxE,km:km,
+      x:function(d){return 8+(W-16)*(d/km);},
+      y:function(e){return H-18-(H-34)*((e-G.eb.minE)/(G.eb.maxE-G.eb.minE));}};
+    ctx.fillStyle="#131A2E";ctx.fillRect(0,0,W,H);
+    ctx.beginPath();ctx.moveTo(G.eb.x(0),H-18);
+    pts.forEach(function(p){ctx.lineTo(G.eb.x(p.d),G.eb.y(p.el));});
+    ctx.lineTo(G.eb.x(km),H-18);ctx.closePath();
+    ctx.fillStyle="rgba(245,185,23,.25)";ctx.fill();
+    ctx.beginPath();
+    pts.forEach(function(p,i){i?ctx.lineTo(G.eb.x(p.d),G.eb.y(p.el)):ctx.moveTo(G.eb.x(p.d),G.eb.y(p.el));});
+    ctx.strokeStyle="#F5B917";ctx.lineWidth=1.6;ctx.stroke();
+    ctx.fillStyle="#8A93A6";ctx.font="10px sans-serif";
+    ctx.fillText(Math.round(G.eb.maxE)+"m",8,14);
+    ctx.fillText(Math.round(G.eb.minE)+"m",8,H-6);
+    G.elevBase=ctx.getImageData(0,0,gElev.width,gElev.height);
+  }
+  function drawElevCursor(i){
+    var ctx=gElev.getContext("2d");
+    ctx.putImageData(G.elevBase,0,0);
+    var dpr=window.devicePixelRatio||1;
+    ctx.save();ctx.scale(dpr,dpr);
+    var p=G.pts[i],x=G.eb.x(p.d),y=G.eb.y(p.el);
+    ctx.strokeStyle="rgba(255,255,255,.55)";ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(x,6);ctx.lineTo(x,G.eb.H-18);ctx.stroke();
+    ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(x,y,4,0,7);ctx.fill();
+    ctx.strokeStyle="#F5B917";ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,4,0,7);ctx.stroke();
+    ctx.restore();
+  }
+  function renderPos(){
+    var i=Math.min(G.pts.length-1,Math.max(0,Math.round(G.pos)));
+    var p=G.pts[i];
+    G.prog.setLatLngs(G.lls.slice(0,i+1));
+    G.dot.setLatLng(G.lls[i]);
+    drawElevCursor(i);
+    gSeek.value=Math.round(1000*i/(G.pts.length-1));
+    gStats.textContent=p.d/1000<10?( (p.d/1000).toFixed(2)+" km"):((p.d/1000).toFixed(1)+" km");
+    gStats.textContent+=" · 고도 "+Math.round(p.el)+" m";
+  }
+  function tick(ts){
+    if(!G.playing)return;
+    if(!G.last)G.last=ts;
+    var dt=(ts-G.last)/1000;G.last=ts;
+    G.pos+=(G.pts.length-1)/BASE_SEC*G.speed*dt;
+    if(G.pos>=G.pts.length-1){G.pos=G.pts.length-1;pause();}
+    renderPos();
+    if(G.playing)G.raf=requestAnimationFrame(tick);
+  }
+  function play(){if(G.pos>=G.pts.length-1)G.pos=0;
+    G.playing=true;G.last=0;gPlay.textContent="⏸ 정지";G.raf=requestAnimationFrame(tick);}
+  function pause(){G.playing=false;cancelAnimationFrame(G.raf);gPlay.textContent="▶ 재생";}
+  gPlay.addEventListener("click",function(){G.playing?pause():play();});
+  gSpeed.addEventListener("click",function(){
+    G.speed=G.speed===1?2:(G.speed===2?4:1);gSpeed.textContent=G.speed+"×";});
+  gSeek.addEventListener("input",function(){
+    pause();G.pos=gSeek.value/1000*(G.pts.length-1);renderPos();});
+  function closeGpx(){pause();gpxbox.classList.remove("show");}
+  document.getElementById("gpxClose").addEventListener("click",closeGpx);
+  gpxbox.addEventListener("click",function(e){if(e.target===gpxbox)closeGpx();});
+
+  function openGpx(id,title){
+    gTitle.textContent="🗺 "+title;
+    gpxbox.classList.add("show");
+    Promise.all([loadLeaflet(),fetchGpx(id)]).then(function(rr){
+      var g=rr[1];
+      G.pts=g.pts;G.lls=g.pts.map(function(p){return [p.la,p.lo];});
+      G.pos=0;G.speed=1;gSpeed.textContent="1×";
+      gTitle.textContent="🗺 "+title+" · "+g.km.toFixed(1)+"km · ↑"+g.gain+"m";
+      if(!G.map){
+        G.map=L.map(gMapEl,{zoomControl:true});
+        L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+          {attribution:'© OpenStreetMap',maxZoom:18}).addTo(G.map);
+      }
+      if(G.base)G.map.removeLayer(G.base);
+      if(G.prog)G.map.removeLayer(G.prog);
+      if(G.dot)G.map.removeLayer(G.dot);
+      G.base=L.polyline(G.lls,{color:"#8A93A6",weight:4,opacity:.7}).addTo(G.map);
+      G.prog=L.polyline([],{color:"#F5B917",weight:5}).addTo(G.map);
+      G.dot=L.circleMarker(G.lls[0],{radius:7,color:"#fff",weight:2,fillColor:"#8E2C3A",fillOpacity:1}).addTo(G.map);
+      G.map.invalidateSize();
+      G.map.fitBounds(G.base.getBounds(),{padding:[20,20]});
+      drawElevBase();renderPos();
+      setTimeout(play,600);   /* 지도 뜨면 자동 재생 */
+    }).catch(function(e){
+      gTitle.textContent="🗺 불러오기 실패 — 인터넷 연결과 API 키를 확인하세요";
+    });
   }
 
   function init(){
