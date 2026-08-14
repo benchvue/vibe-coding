@@ -202,7 +202,11 @@
     align-items:center;justify-content:center;z-index:90;padding:16px;flex-direction:column;gap:10px}
   .plightbox.show{display:flex}
   .plightbox img{max-width:96vw;max-height:84vh;border-radius:10px}
+  .plightbox video{max-width:96vw;max-height:84vh;width:auto;border-radius:10px;background:#000;display:block}
   .plightbox iframe{width:min(96vw,900px);height:min(70vh,540px);border:none;border-radius:10px;background:#000}
+  .plb-stage{position:relative;display:flex;align-items:center;justify-content:center}
+  .plb-loc{position:absolute;left:10px;top:10px;background:rgba(21,42,85,.82);color:#fff;
+    font-size:.72rem;font-weight:700;border-radius:20px;padding:3px 11px;pointer-events:none;z-index:2}
   .pthumb .vplay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
   .pthumb .vplay i{width:32px;height:32px;border-radius:50%;background:rgba(21,42,85,.72);
     display:flex;align-items:center;justify-content:center}
@@ -961,8 +965,12 @@
 
 
 <div class="plightbox" id="plb">
-  <img id="plbImg" alt="카미노 사진 크게 보기">
-  <iframe id="plbVid" style="display:none" allow="autoplay; fullscreen" allowfullscreen title="카미노 동영상 재생"></iframe>
+  <div class="plb-stage">
+    <span class="plb-loc" id="plbLoc" style="display:none"></span>
+    <img id="plbImg" alt="카미노 사진 크게 보기">
+    <video id="plbVideo" style="display:none" controls playsinline preload="metadata"></video>
+    <iframe id="plbVid" style="display:none" allow="autoplay; fullscreen" allowfullscreen title="카미노 동영상 재생"></iframe>
+  </div>
   <div class="pnav">
     <button id="plbPrev">◀ 이전</button>
     <span id="plbCnt"></span>
@@ -992,14 +1000,17 @@ const PHOTOS = {
     function(id,w){return "https://lh3.googleusercontent.com/d/"+id+"=w"+w;},
     function(id,w){return "https://drive.google.com/thumbnail?id="+id+"&sz=w"+w;}
   ];
-  function setImg(img,id,w){var k=0;
+  function setImg(img,id,w,vid){
+    /* 동영상 썸네일은 thumbnail 엔드포인트가 정답 (Drive가 첫 프레임을 자동 생성) */
+    var hosts=vid?[HOSTS[1],HOSTS[0]]:[HOSTS[0],HOSTS[1]];
+    var k=0;
     img.onerror=function(){k++;
-      if(k<HOSTS.length)img.src=HOSTS[k](id,w);
+      if(k<hosts.length)img.src=hosts[k](id,w);
       else{img.onerror=null;
         var box=img.closest(".pthumb");
-        if(box&&box.classList.contains("isvid"))img.style.visibility="hidden"; /* 영상: 썸네일 생성 전이면 ▶만 표시 */
+        if(box&&box.classList.contains("isvid"))img.style.visibility="hidden"; /* 생성 전이면 ▶만 표시 */
         else if(box)box.style.display="none";}};
-    img.src=HOSTS[0](id,w);}
+    img.src=hosts[0](id,w);}
   function drive(q){
     return fetch("https://www.googleapis.com/drive/v3/files?q="+encodeURIComponent(q)
       +"&fields="+encodeURIComponent("files(id,name,mimeType)")
@@ -1013,74 +1024,88 @@ const PHOTOS = {
     if(na!=null)return -1; if(nb!=null)return 1;
     return a.name.localeCompare(b.name);});}
 
-  /* 라이트박스 (사진 + 동영상) */
-  var gallery=[],idx=0;   /* 항목: {id, vid:bool} */
+  /* 라이트박스 (사진 + 동영상: 네이티브 플레이어 → 실패 시 Drive iframe) */
+  var gallery=[],idx=0;   /* 항목: {id, vid:bool, town} */
   var plb=document.getElementById("plb"),plbImg=document.getElementById("plbImg"),
-      plbVid=document.getElementById("plbVid"),plbCnt=document.getElementById("plbCnt");
+      plbVideo=document.getElementById("plbVideo"),plbVid=document.getElementById("plbVid"),
+      plbLoc=document.getElementById("plbLoc"),plbCnt=document.getElementById("plbCnt");
+  function mediaUrl(id){return "https://www.googleapis.com/drive/v3/files/"+id
+    +"?alt=media&key="+PHOTOS.apiKey;}
+  function hideAll(){plbImg.style.display="none";
+    plbVideo.pause();plbVideo.removeAttribute("src");plbVideo.load();plbVideo.style.display="none";
+    plbVid.src="about:blank";plbVid.style.display="none";plbLoc.style.display="none";}
   function show(i){
     if(!gallery.length)return;
     idx=(i+gallery.length)%gallery.length;
     var it=gallery[idx];
+    hideAll();
+    if(it.town){plbLoc.textContent="⛿ "+it.town;plbLoc.style.display="";}
     if(it.vid){
-      plbImg.style.display="none";
-      plbVid.style.display="";
-      plbVid.src="https://drive.google.com/file/d/"+it.id+"/preview";
+      /* 유튜브처럼: 네이티브 <video> = 컨트롤이 하단 바에만, 화면 최대 노출 */
+      plbVideo.style.display="";
+      plbVideo.onerror=function(){ /* 스트리밍 실패 → Drive 플레이어 폴백 */
+        plbVideo.onerror=null;plbVideo.style.display="none";
+        plbVid.style.display="";
+        plbVid.src="https://drive.google.com/file/d/"+it.id+"/preview";};
+      plbVideo.src=mediaUrl(it.id);
+      plbVideo.play().catch(function(){});
     }else{
-      plbVid.src="about:blank";plbVid.style.display="none";
       plbImg.style.display="";
       plbImg.onerror=null;setImg(plbImg,it.id,PHOTOS.fullW);
     }
     plbCnt.textContent=(idx+1)+" / "+gallery.length;
     plb.classList.add("show");}
-  function closeLb(){plb.classList.remove("show");plbVid.src="about:blank";}
-  document.getElementById("plbPrev").addEventListener("click",function(e){e.stopPropagation();show(idx-1);});
-  document.getElementById("plbNext").addEventListener("click",function(e){e.stopPropagation();show(idx+1);});
-  document.getElementById("plbClose").addEventListener("click",closeLb);
-  plb.addEventListener("click",function(e){if(e.target===plb)closeLb();});
-  document.addEventListener("keydown",function(e){
-    if(!plb.classList.contains("show"))return;
-    if(e.key==="ArrowLeft")show(idx-1);
-    else if(e.key==="ArrowRight")show(idx+1);
-    else if(e.key==="Escape")closeLb();});
-
+  function closeLb(){plb.classList.remove("show");hideAll();}
   function mountDay(d,media){
     var card=document.getElementById("day"+d);
     if(!card)return;
     var photos=media?media.filter(function(f){return IMG_RE.test(f.name);}):[];
     var vids  =media?media.filter(function(f){return VID_RE.test(f.name);}):[];
+    photos=sortFiles(photos);
     vids.sort(function(a,b){return vidNum(a.name)-vidNum(b.name);});
     var sec=document.createElement("div");sec.className="dphotos";
-    var label=[];
-    if(photos.length)label.push(photos.length+"장");
-    if(vids.length)label.push(vids.length+"영상");
-    var h="<h4>📷 DAY "+d+" 사진·영상 <small>· "+(label.length?label.join(" · "):"아직 없음")+"</small></h4>";
-    var strip='<div class="pstrip">';
-    var items=[];
-    if(photos.length||vids.length){
-      photos=sortFiles(photos);
-      photos.forEach(function(f){items.push({id:f.id,vid:false});});
-      vids.forEach(function(f){items.push({id:f.id,vid:true,town:vidTown(f.name)});});
-      items.forEach(function(it,i){
-        strip+='<div class="pthumb'+(it.vid?' isvid':'')+'" data-gi="'+i+'">'
-          +'<img loading="lazy" alt="DAY '+d+(it.vid?' 동영상':' 사진')+'" data-id="'+it.id+'">'
-          +(it.vid?'<span class="vplay"><i></i></span>':'')
-          +(it.vid&&it.town?'<span class="ploc">⛿ '+it.town+'</span>':'')
-          +'</div>';
-      });
-      strip+="</div>";
-      sec.innerHTML=h+strip;
-      sec.querySelectorAll(".pthumb").forEach(function(box){
-        var img=box.querySelector("img");
-        setImg(img,img.dataset.id,PHOTOS.thumbW);
-        box.style.cursor="zoom-in";
-        box.addEventListener("click",function(){
-          gallery=items;show(parseInt(box.dataset.gi,10));});
-      });
+    var html="";
+
+    /* ── 사진 row ── */
+    html+="<h4>📷 DAY "+d+" 사진 <small>· "+(photos.length?photos.length+"장":"아직 없음")+"</small></h4>";
+    html+='<div class="pstrip" data-kind="p">';
+    if(photos.length){
+      photos.forEach(function(f,i){
+        html+='<div class="pthumb" data-gi="'+i+'"><img loading="lazy" alt="DAY '+d+' 사진 '+(i+1)+'" data-id="'+f.id+'"></div>';});
     }else{
-      for(var i=0;i<PHOTOS.placeholders;i++)strip+='<div class="pthumb ph">사진 예정</div>';
-      strip+="</div>";
-      sec.innerHTML=h+strip;
+      for(var i=0;i<PHOTOS.placeholders;i++)html+='<div class="pthumb ph">사진 예정</div>';
     }
+    html+="</div>";
+
+    /* ── 동영상 row (영상이 있을 때만) ── */
+    if(vids.length){
+      html+='<h4 style="margin-top:10px">🎬 DAY '+d+' 영상 <small>· '+vids.length+'개</small></h4>';
+      html+='<div class="pstrip" data-kind="v">';
+      vids.forEach(function(f,i){
+        var town=vidTown(f.name);
+        html+='<div class="pthumb isvid" data-gi="'+i+'">'
+          +'<img loading="lazy" alt="DAY '+d+' 동영상 '+(i+1)+'" data-id="'+f.id+'">'
+          +'<span class="vplay"><i></i></span>'
+          +(town?'<span class="ploc">⛿ '+town+'</span>':'')
+          +'</div>';});
+      html+="</div>";
+    }
+    sec.innerHTML=html;
+
+    var pItems=photos.map(function(f){return {id:f.id,vid:false};});
+    var vItems=vids.map(function(f){return {id:f.id,vid:true,town:vidTown(f.name)};});
+    sec.querySelectorAll('[data-kind="p"] .pthumb:not(.ph)').forEach(function(box){
+      var img=box.querySelector("img");
+      setImg(img,img.dataset.id,PHOTOS.thumbW,false);
+      box.style.cursor="zoom-in";
+      box.addEventListener("click",function(){gallery=pItems;show(parseInt(box.dataset.gi,10));});
+    });
+    sec.querySelectorAll('[data-kind="v"] .pthumb').forEach(function(box){
+      var img=box.querySelector("img");
+      setImg(img,img.dataset.id,PHOTOS.thumbW,true);
+      box.style.cursor="pointer";
+      box.addEventListener("click",function(){gallery=vItems;show(parseInt(box.dataset.gi,10));});
+    });
     var foot=card.querySelector(".dfoot");
     card.insertBefore(sec,foot||null);
   }
