@@ -203,7 +203,6 @@
   .plightbox.show{display:flex}
   .plightbox img{max-width:96vw;max-height:84vh;border-radius:10px}
   .plightbox video{max-width:96vw;max-height:84vh;width:auto;border-radius:10px;background:#000;display:block}
-  .plightbox iframe{width:min(96vw,900px);height:min(70vh,540px);border:none;border-radius:10px;background:#000}
   .plb-stage{position:relative;display:flex;align-items:center;justify-content:center}
   .plb-loc{position:absolute;left:10px;top:10px;background:rgba(21,42,85,.82);color:#fff;
     font-size:.72rem;font-weight:700;border-radius:20px;padding:3px 11px;pointer-events:none;z-index:2}
@@ -969,7 +968,12 @@
     <span class="plb-loc" id="plbLoc" style="display:none"></span>
     <img id="plbImg" alt="카미노 사진 크게 보기">
     <video id="plbVideo" style="display:none" controls playsinline preload="metadata"></video>
-    <iframe id="plbVid" style="display:none" allow="autoplay; fullscreen" allowfullscreen title="카미노 동영상 재생"></iframe>
+    <div id="plbFallback" style="display:none;flex-direction:column;align-items:center;gap:14px;padding:30px 20px;text-align:center">
+      <img id="plbFbPoster" alt="" style="max-width:80vw;max-height:50vh;border-radius:10px">
+      <p style="color:#C6D0E4;font-size:.85rem">이 브라우저에서 직접 재생이 되지 않는 영상입니다.</p>
+      <a id="plbFbOpen" href="#" target="_blank" rel="noopener"
+         style="background:var(--flecha);color:#3B2E00;font-weight:700;text-decoration:none;border-radius:999px;padding:11px 24px;font-size:.9rem">▶ 새 창에서 재생하기</a>
+    </div>
   </div>
   <div class="pnav">
     <button id="plbPrev">◀ 이전</button>
@@ -1033,13 +1037,17 @@ const PHOTOS = {
   /* 라이트박스 (사진 + 동영상: 네이티브 플레이어 → 실패 시 Drive iframe) */
   var gallery=[],idx=0;   /* 항목: {id, vid:bool, town} */
   var plb=document.getElementById("plb"),plbImg=document.getElementById("plbImg"),
-      plbVideo=document.getElementById("plbVideo"),plbVid=document.getElementById("plbVid"),
-      plbLoc=document.getElementById("plbLoc"),plbCnt=document.getElementById("plbCnt");
-  function mediaUrl(id){return "https://www.googleapis.com/drive/v3/files/"+id
-    +"?alt=media&key="+PHOTOS.apiKey;}
+      plbVideo=document.getElementById("plbVideo"),plbLoc=document.getElementById("plbLoc"),
+      plbCnt=document.getElementById("plbCnt"),plbFallback=document.getElementById("plbFallback"),
+      plbFbPoster=document.getElementById("plbFbPoster"),plbFbOpen=document.getElementById("plbFbOpen");
+  /* 네이티브 <video> 소스 후보: ① API alt=media ② uc 다운로드 (작은 파일용) */
+  function videoSrcs(id){return [
+    "https://www.googleapis.com/drive/v3/files/"+id+"?alt=media&key="+PHOTOS.apiKey,
+    "https://drive.google.com/uc?export=download&id="+id
+  ];}
   function hideAll(){plbImg.style.display="none";
     plbVideo.pause();plbVideo.removeAttribute("src");plbVideo.load();plbVideo.style.display="none";
-    plbVid.src="about:blank";plbVid.style.display="none";plbLoc.style.display="none";}
+    plbFallback.style.display="none";plbLoc.style.display="none";}
   function show(i){
     if(!gallery.length)return;
     idx=(i+gallery.length)%gallery.length;
@@ -1047,14 +1055,20 @@ const PHOTOS = {
     hideAll();
     if(it.town){plbLoc.textContent="⛿ "+it.town;plbLoc.style.display="";}
     if(it.vid){
-      /* 유튜브처럼: 네이티브 <video> = 컨트롤이 하단 바에만, 화면 최대 노출 */
+      /* 유튜브처럼: 네이티브 <video> = 컨트롤이 하단 바에만, 재생 시작하면 자동 숨김 */
       plbVideo.style.display="";
       if(it.tl)plbVideo.poster=thumbLinkUrl(it.tl,800); else plbVideo.removeAttribute("poster");
-      plbVideo.onerror=function(){ /* 스트리밍 실패 → Drive 플레이어 폴백 */
+      var srcs=videoSrcs(it.id),si=0;
+      plbVideo.onerror=function(){
+        si++;
+        if(si<srcs.length){plbVideo.src=srcs[si];plbVideo.play().catch(function(){});return;}
+        /* 모든 네이티브 소스 실패 → 화면을 가리는 임베드 대신 새 창 안내 */
         plbVideo.onerror=null;plbVideo.style.display="none";
-        plbVid.style.display="";
-        plbVid.src="https://drive.google.com/file/d/"+it.id+"/preview";};
-      plbVideo.src=mediaUrl(it.id);
+        plbFallback.style.display="flex";
+        plbFbPoster.style.display=it.tl?"":"none";
+        if(it.tl)plbFbPoster.src=thumbLinkUrl(it.tl,800);
+        plbFbOpen.href="https://drive.google.com/file/d/"+it.id+"/view";};
+      plbVideo.src=srcs[0];
       plbVideo.play().catch(function(){});
     }else{
       plbImg.style.display="";
