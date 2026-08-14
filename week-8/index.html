@@ -222,7 +222,7 @@
   .gpxwrap{width:min(96vw,900px);background:#0F1526;border-radius:14px;overflow:hidden;
     display:flex;flex-direction:column;max-height:94vh}
   #gpxMap{height:48vh;min-height:220px;background:#1a2238}
-  #gpxElev{width:100%;height:120px;display:block;background:#131A2E}
+  #gpxElev,#g3dElev{width:100%;height:120px;display:block;background:#131A2E}
   .gpxbar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#0F1526}
   .gpxbar button{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.28);color:#fff;
     border-radius:999px;padding:7px 15px;font-size:.85rem;cursor:pointer;font-family:inherit;white-space:nowrap}
@@ -1010,6 +1010,7 @@
   <div class="gpxwrap" style="height:94vh">
     <div class="gpxtitle" id="g3dTitle">⛰ 3D 주행 보기</div>
     <div id="g3dMap"><div class="g3dhint" id="g3dHint">🎥 자동 카메라 — 화면을 만지면 수동으로 전환됩니다</div></div>
+    <canvas id="g3dElev"></canvas>
     <div class="gpxbar">
       <button id="g3dPlay">▶ 재생</button>
       <input type="range" id="g3dSeek" min="0" max="1000" value="0">
@@ -1520,11 +1521,48 @@ const PHOTOS = {
 
   /* ══════ 3D 주행 보기 (Cesium — Relive 스타일) ══════ */
   var C3={viewer:null,pts:null,lls:null,T:0,u:0,playing:false,speed:1,raf:0,last:0,
-          auto:true,head:0,route:null,dot:null,title:""};
+          auto:true,head:0,heat:null,dot:null,title:""};
   var g3dbox=document.getElementById("g3dbox"),g3dPlay=document.getElementById("g3dPlay"),
       g3dSeek=document.getElementById("g3dSeek"),g3dSpeed=document.getElementById("g3dSpeed"),
       g3dCam=document.getElementById("g3dCam"),g3dStats=document.getElementById("g3dStats"),
-      g3dTitle=document.getElementById("g3dTitle"),g3dHint=document.getElementById("g3dHint");
+      g3dTitle=document.getElementById("g3dTitle"),g3dHint=document.getElementById("g3dHint"),
+      g3dElev=document.getElementById("g3dElev");
+  function c3ElevBase(){ /* 3D용 고도 프로필 — 2D drawElevBase와 동일 로직 */
+    var dpr=window.devicePixelRatio||1,W=g3dElev.clientWidth,H=120;
+    g3dElev.width=W*dpr;g3dElev.height=H*dpr;
+    var ctx=g3dElev.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);
+    var pts=C3.pts,km=pts[pts.length-1].d;
+    var minE=1e9,maxE=-1e9;
+    pts.forEach(function(p){if(p.el<minE)minE=p.el;if(p.el>maxE)maxE=p.el;});
+    if(maxE-minE<50)maxE=minE+50;
+    C3.eb={W:W,H:H,minE:minE,maxE:maxE,km:km,
+      x:function(d){return 8+(W-16)*(d/km);},
+      y:function(e){return H-18-(H-34)*((e-C3.eb.minE)/(C3.eb.maxE-C3.eb.minE));}};
+    ctx.fillStyle="#131A2E";ctx.fillRect(0,0,W,H);
+    ctx.beginPath();ctx.moveTo(C3.eb.x(0),H-18);
+    pts.forEach(function(p){ctx.lineTo(C3.eb.x(p.d),C3.eb.y(p.el));});
+    ctx.lineTo(C3.eb.x(km),H-18);ctx.closePath();
+    ctx.fillStyle="rgba(245,185,23,.25)";ctx.fill();
+    ctx.beginPath();
+    pts.forEach(function(p,i){i?ctx.lineTo(C3.eb.x(p.d),C3.eb.y(p.el)):ctx.moveTo(C3.eb.x(p.d),C3.eb.y(p.el));});
+    ctx.strokeStyle="#F5B917";ctx.lineWidth=1.6;ctx.stroke();
+    ctx.fillStyle="#8A93A6";ctx.font="10px sans-serif";
+    ctx.fillText(Math.round(C3.eb.maxE)+"m",8,14);
+    ctx.fillText(Math.round(C3.eb.minE)+"m",8,H-6);
+    C3.elevBase=ctx.getImageData(0,0,g3dElev.width,g3dElev.height);
+  }
+  function c3ElevCursor(i){ /* ⚠ setTransform 절대 배율 — dpr 중복 금지 (2D에서 잡은 버그) */
+    if(!C3.eb||!C3.elevBase)return;
+    var ctx=g3dElev.getContext("2d"),dpr=window.devicePixelRatio||1;
+    ctx.setTransform(1,0,0,1,0,0);
+    ctx.putImageData(C3.elevBase,0,0);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    var p=C3.pts[i],x=C3.eb.x(p.d),y=C3.eb.y(p.el);
+    ctx.strokeStyle="rgba(255,255,255,.55)";ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(x,6);ctx.lineTo(x,C3.eb.H-18);ctx.stroke();
+    ctx.fillStyle="#F5B917";ctx.beginPath();ctx.arc(x,y,5.5,0,7);ctx.fill();
+    ctx.strokeStyle="#fff";ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(x,y,5.5,0,7);ctx.stroke();
+  }
   function loadCesium(){
     if(window.Cesium)return Promise.resolve();
     return new Promise(function(res,rej){
@@ -1550,6 +1588,7 @@ const PHOTOS = {
     var i=c3IdxAt(C3.u),p=C3.pts[i];
     var pos=Cesium.Cartesian3.fromDegrees(p.lo,p.la);
     C3.dot.position=pos;
+    c3ElevCursor(i);                       /* 고도 커서 — 지도 점과 같은 인덱스로 완전 동기 */
     if(C3.auto){ /* Relive식 추적 카메라: 진행 방향 뒤에서 비스듬히 */
       var j=i;while(j<C3.pts.length-1&&C3.pts[j].d-p.d<150)j++;   /* 150m 앞 지점으로 방위 */
       var hd=bearingRad(p,C3.pts[Math.max(j,Math.min(i+1,C3.pts.length-1))]);
@@ -1607,7 +1646,8 @@ const PHOTOS = {
       var g=rr[1];
       C3.pts=g.pts;C3.T=g.T;C3.hasTime=g.hasTime;
       C3.u=startU||0;C3.speed=1;g3dSpeed.textContent="1×";
-      g3dTitle.textContent="⛰ "+C3.title+" · "+g.km.toFixed(1)+"km · ↑"+g.gain+"m";
+      g3dTitle.innerHTML="⛰ "+C3.title+" · "+g.km.toFixed(1)+"km · ↑"+g.gain+"m"
+        +(g.hasTime?' · <span style="font-weight:400;color:#8A93A6;font-size:.72rem">경로 색 = 속도 (🔵 느림 → 🔴 빠름)</span>':"");
       if(!C3.viewer){
         Cesium.Ion.defaultAccessToken=PHOTOS.cesiumToken;
         C3.viewer=new Cesium.Viewer("g3dMap",{
@@ -1621,19 +1661,71 @@ const PHOTOS = {
         C3.viewer.canvas.addEventListener("pointerdown",function(){if(C3.auto)c3SetAuto(false);});
         C3.viewer.canvas.addEventListener("wheel",function(){if(C3.auto)c3SetAuto(false);},{passive:true});
       }
-      if(C3.route)C3.viewer.entities.remove(C3.route);
+      if(C3.heat){
+        (C3.heatGround?C3.viewer.scene.groundPrimitives:C3.viewer.scene.primitives).remove(C3.heat);
+        C3.heat=null;}
       if(C3.dot)C3.viewer.entities.remove(C3.dot);
-      var flat=[];g.pts.forEach(function(p){flat.push(p.lo,p.la);});
-      C3.route=C3.viewer.entities.add({polyline:{
-        positions:Cesium.Cartesian3.fromDegreesArray(flat),
-        clampToGround:true,width:4,
-        material:Cesium.Color.fromCssColorString("#F5B917")}});   /* Relive처럼 노란 경로 */
+      /* 속도 히트맵 (2D와 동일한 스케일: ~700구간 · 10~90백분위 정규화) */
+      var N3=g.pts.length,step3=Math.max(1,Math.ceil(N3/700));
+      var sp3=[];for(var k=step3;k<N3;k+=step3)sp3.push(g.pts[k].sp);
+      sp3.sort(function(a,b){return a-b;});
+      var q10=sp3[Math.floor(sp3.length*0.10)]||0,
+          q90=sp3[Math.floor(sp3.length*0.90)]||1;
+      if(q90-q10<1)q90=q10+1;
+      var colAt=function(endIdx){return Cesium.ColorGeometryInstanceAttribute.fromColor(
+        Cesium.Color.fromCssColorString(
+          g.hasTime?heatColor((g.pts[endIdx].sp-q10)/(q90-q10)):"#F5B917"));};
+      var groundOK=Cesium.GroundPolylinePrimitive.isSupported(C3.viewer.scene);
+      if(groundOK){
+        /* 데스크톱 등: 지면 밀착선 한 프리미티브로 (최고 품질) */
+        var inst=[];
+        for(var k=0;k<N3-1;k+=step3){
+          var end=Math.min(k+step3,N3-1),pos=[];
+          for(var q=k;q<=end;q++)pos.push(g.pts[q].lo,g.pts[q].la);
+          inst.push(new Cesium.GeometryInstance({
+            geometry:new Cesium.GroundPolylineGeometry({
+              positions:Cesium.Cartesian3.fromDegreesArray(pos),width:5}),
+            attributes:{color:colAt(end)}}));
+        }
+        C3.heat=C3.viewer.scene.groundPrimitives.add(new Cesium.GroundPolylinePrimitive({
+          geometryInstances:inst,appearance:new Cesium.PolylineColorAppearance()}));
+        C3.heatGround=true;
+      }else{
+        /* 일부 폰 GPU/웹뷰: 지면 밀착선 미지원 → 지형 높이를 샘플링해 일반 색상선으로 (색 동일) */
+        if(window.console)console.log("3D: GroundPolyline 미지원 → 지형 샘플링 폴백");
+        var idxs=[];for(var k=0;k<N3-1;k+=step3)idxs.push(k);idxs.push(N3-1);
+        var carts=idxs.map(function(i){return Cesium.Cartographic.fromDegrees(g.pts[i].lo,g.pts[i].la);});
+        var buildFlat=function(cs){
+          var inst=[];
+          for(var m=0;m<idxs.length-1;m++){
+            var a=cs[m],b=cs[m+1];
+            inst.push(new Cesium.GeometryInstance({
+              geometry:new Cesium.PolylineGeometry({positions:[
+                Cesium.Cartesian3.fromRadians(a.longitude,a.latitude,(a.height||0)+4),
+                Cesium.Cartesian3.fromRadians(b.longitude,b.latitude,(b.height||0)+4)],
+                width:5,vertexFormat:Cesium.PolylineColorAppearance.VERTEX_FORMAT}),
+              attributes:{color:colAt(idxs[m+1])}}));
+          }
+          C3.heat=C3.viewer.scene.primitives.add(new Cesium.Primitive({
+            geometryInstances:inst,appearance:new Cesium.PolylineColorAppearance()}));
+          C3.heatGround=false;
+          C3.viewer.scene.requestRender();
+        };
+        Cesium.sampleTerrainMostDetailed(C3.viewer.terrainProvider,carts)
+          .then(buildFlat)
+          .catch(function(){buildFlat(carts);});   /* 샘플 실패 시 지표 근사 */
+      }
+      /* requestRenderMode에서 비동기 지형·프리미티브가 뜨도록 첫 8초간 렌더 보장 */
+      (function(){var t0=Date.now(),iv=setInterval(function(){
+        C3.viewer.scene.requestRender();
+        if(Date.now()-t0>8000)clearInterval(iv);},250);})();
       C3.dot=C3.viewer.entities.add({position:Cesium.Cartesian3.fromDegrees(g.pts[0].lo,g.pts[0].la),
         point:{pixelSize:13,color:Cesium.Color.fromCssColorString("#152A55"),
           outlineColor:Cesium.Color.WHITE,outlineWidth:3,
           heightReference:Cesium.HeightReference.CLAMP_TO_GROUND,
           disableDepthTestDistance:Number.POSITIVE_INFINITY}});
       C3.head=bearingRad(g.pts[0],g.pts[Math.min(5,g.pts.length-1)]);
+      c3ElevBase();                        /* 지도 아래 주행 고도 프로필 */
       c3SetAuto(true);
       c3Render();
       setTimeout(c3Play,800);   /* 지형 뜨면 자동 재생 */
