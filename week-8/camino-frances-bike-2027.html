@@ -984,6 +984,9 @@
 <div class="plightbox" id="plb">
   <div class="plb-stage">
     <span class="plb-loc" id="plbLoc" style="display:none"></span>
+    <span id="plbDl" style="display:none;position:absolute;bottom:12px;left:50%;transform:translateX(-50%);
+      background:rgba(21,42,85,.85);color:#fff;font-size:.74rem;font-weight:600;
+      border-radius:20px;padding:5px 14px;z-index:2;white-space:nowrap"></span>
     <img id="plbImg" alt="카미노 사진 크게 보기">
     <video id="plbVideo" style="display:none" controls playsinline preload="metadata"></video>
     <iframe id="plbFrame" style="display:none;width:min(96vw,900px);height:min(64vh,506px);border:none;border-radius:10px;background:#000"
@@ -1057,7 +1060,7 @@ const PHOTOS = {
     img.src=chain[0]();}
   function drive(q){
     return fetch("https://www.googleapis.com/drive/v3/files?q="+encodeURIComponent(q)
-      +"&fields="+encodeURIComponent("files(id,name,mimeType,thumbnailLink)")
+      +"&fields="+encodeURIComponent("files(id,name,mimeType,thumbnailLink,size)")
       +"&pageSize=1000&key="+PHOTOS.apiKey)
       .then(function(r){if(!r.ok)throw new Error("drive "+r.status);return r.json();})
       .then(function(d){return d.files||[];});}
@@ -1072,7 +1075,10 @@ const PHOTOS = {
   var gallery=[],idx=0;   /* 항목: {id, vid:bool, town} */
   var plb=document.getElementById("plb"),plbImg=document.getElementById("plbImg"),
       plbVideo=document.getElementById("plbVideo"),plbLoc=document.getElementById("plbLoc"),
-      plbCnt=document.getElementById("plbCnt"),plbFrame=document.getElementById("plbFrame");
+      plbCnt=document.getElementById("plbCnt"),plbFrame=document.getElementById("plbFrame"),
+      plbDl=document.getElementById("plbDl");
+  var vidBlobCache={};   /* {fileId: objectURL} — 같은 세션에서 재다운로드 방지 */
+  var BLOB_MAX=250*1024*1024;  /* 이보다 크면 blob 대신 Drive 플레이어 */
   /* 네이티브 <video> 소스 후보 — mediaKey(도메인 제한 없는 보조 키)가 있으면 그것부터.
      아이폰은 미디어 요청에 Referer를 안 붙여 도메인 제한 키가 403이 나므로,
      폰에서 깨끗한 네이티브 재생을 원하면 mediaKey 설정이 필수 (SUPER-ADMIN §11 참고) */
@@ -1085,9 +1091,11 @@ const PHOTOS = {
     return a;
   }
   function hideAll(){plbImg.style.display="none";
+    if(G._vAbort){G._vAbort();G._vAbort=null;}
     plbVideo.onerror=plbVideo.onloadeddata=plbVideo.onplaying=null;
     plbVideo.pause();plbVideo.removeAttribute("src");plbVideo.load();plbVideo.style.display="none";
-    plbFrame.src="about:blank";plbFrame.style.display="none";plbLoc.style.display="none";}
+    plbFrame.src="about:blank";plbFrame.style.display="none";
+    plbLoc.style.display="none";plbDl.style.display="none";}
   function show(i){
     if(!gallery.length)return;
     idx=(i+gallery.length)%gallery.length;
@@ -1098,23 +1106,47 @@ const PHOTOS = {
       /* 유튜브처럼: 네이티브 <video> = 컨트롤이 하단 바에만, 재생 시작하면 자동 숨김 */
       plbVideo.style.display="";
       if(it.tl)plbVideo.poster=thumbLinkUrl(it.tl,800); else plbVideo.removeAttribute("poster");
-      var srcs=videoSrcs(it.id),si=0,wd=null;
-      var toFrame=function(){ /* Drive 플레이어 폴백 (재생 보장) */
+      var srcs=videoSrcs(it.id),si=0,wd=null,aborted=false;
+      var toFrame=function(){ /* 최후: Drive 플레이어 (재생은 보장, UI는 구글 것) */
         clearTimeout(wd);plbVideo.onerror=null;
         plbVideo.pause();plbVideo.removeAttribute("src");plbVideo.load();
-        plbVideo.style.display="none";
+        plbVideo.style.display="none";plbDl.style.display="none";
         plbFrame.style.display="";
         plbFrame.src="https://drive.google.com/file/d/"+it.id+"/preview";};
-      var advance=function(){
-        clearTimeout(wd);
-        si++;
-        if(si<srcs.length){armWd();plbVideo.src=srcs[si];plbVideo.play().catch(function(){});}
-        else toFrame();};
-      var armWd=function(){ /* 카톡 등 웹뷰는 에러 없이 멈추기도 함 → 4초 무반응 시 다음 단계 */
+      var playUrl=function(u){clearTimeout(wd);plbVideo.onerror=null;
+        plbDl.style.display="none";plbVideo.style.display="";
+        plbVideo.src=u;plbVideo.play().catch(function(){});};
+      var toBlob=function(){ /* fetch는 Referer를 붙이므로 도메인 제한 키도 통과 →
+          내려받아 네이티브로 재생 (폰에서 깨끗한 UI의 핵심) */
+        clearTimeout(wd);plbVideo.onerror=null;
+        if(vidBlobCache[it.id])return playUrl(vidBlobCache[it.id]);
+        if(it.size&&it.size>BLOB_MAX)return toFrame();
+        plbDl.style.display="";plbDl.textContent="영상 불러오는 중…";
+        fetch(srcs[0]).then(function(r){
+          if(!r.ok)throw 0;
+          var total=it.size||parseInt(r.headers.get("Content-Length")||"0",10);
+          if(!r.body||!r.body.getReader)return r.blob();
+          var reader=r.body.getReader(),chunks=[],got=0;
+          return new Promise(function(res,rej){
+            (function pump(){reader.read().then(function(x){
+              if(aborted)return rej(0);
+              if(x.done)return res(new Blob(chunks,{type:"video/mp4"}));
+              chunks.push(x.value);got+=x.value.length;
+              if(total)plbDl.textContent="영상 불러오는 중 "+Math.round(got/total*100)+"% (이번 한 번만)";
+              pump();
+            }).catch(rej);})();
+          });
+        }).then(function(b){
+          if(aborted)return;
+          var u=URL.createObjectURL(b);vidBlobCache[it.id]=u;playUrl(u);
+        }).catch(function(){if(!aborted)toFrame();});};
+      var advance=function(){clearTimeout(wd);toBlob();};
+      var armWd=function(){ /* 직접 스트리밍이 4초 무반응(주로 폰: Referer 미포함 403)이면 blob 경로로 */
         clearTimeout(wd);wd=setTimeout(advance,4000);};
       plbVideo.onerror=advance;
       plbVideo.onloadeddata=function(){clearTimeout(wd);};
       plbVideo.onplaying=function(){clearTimeout(wd);};
+      G._vAbort=function(){aborted=true;clearTimeout(wd);};
       armWd();
       plbVideo.src=srcs[0];
       plbVideo.play().catch(function(){});
@@ -1185,7 +1217,7 @@ const PHOTOS = {
     sec.innerHTML=html;
 
     var pItems=photos.map(function(f){return {id:f.id,vid:false,tl:f.thumbnailLink||null};});
-    var vItems=vids.map(function(f){return {id:f.id,vid:true,town:vidTown(f.name),tl:f.thumbnailLink||null};});
+    var vItems=vids.map(function(f){return {id:f.id,vid:true,town:vidTown(f.name),tl:f.thumbnailLink||null,size:parseInt(f.size||"0",10)};});
     sec.querySelectorAll('[data-kind="p"] .pthumb:not(.ph)').forEach(function(box,i){
       var img=box.querySelector("img");
       setImg(img,img.dataset.id,PHOTOS.thumbW,false,pItems[i]&&pItems[i].tl);
