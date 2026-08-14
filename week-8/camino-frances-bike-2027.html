@@ -1622,33 +1622,64 @@ const PHOTOS = {
         C3.viewer.canvas.addEventListener("pointerdown",function(){if(C3.auto)c3SetAuto(false);});
         C3.viewer.canvas.addEventListener("wheel",function(){if(C3.auto)c3SetAuto(false);},{passive:true});
       }
-      if(C3.heat){C3.viewer.scene.groundPrimitives.remove(C3.heat);C3.heat=null;}
+      if(C3.heat){
+        (C3.heatGround?C3.viewer.scene.groundPrimitives:C3.viewer.scene.primitives).remove(C3.heat);
+        C3.heat=null;}
       if(C3.dot)C3.viewer.entities.remove(C3.dot);
-      /* 속도 히트맵 (2D와 동일한 스케일: ~700구간 · 10~90백분위 정규화)
-         구간별 색을 GeometryInstance로 만들어 한 GroundPolylinePrimitive에 묶음 — 지형 밀착 + 고성능 */
+      /* 속도 히트맵 (2D와 동일한 스케일: ~700구간 · 10~90백분위 정규화) */
       var N3=g.pts.length,step3=Math.max(1,Math.ceil(N3/700));
       var sp3=[];for(var k=step3;k<N3;k+=step3)sp3.push(g.pts[k].sp);
       sp3.sort(function(a,b){return a-b;});
       var q10=sp3[Math.floor(sp3.length*0.10)]||0,
           q90=sp3[Math.floor(sp3.length*0.90)]||1;
       if(q90-q10<1)q90=q10+1;
-      var inst=[];
-      for(var k=0;k<N3-1;k+=step3){
-        var end=Math.min(k+step3,N3-1),pos=[];
-        for(var q=k;q<=end;q++)pos.push(g.pts[q].lo,g.pts[q].la);
-        var css=g.hasTime?heatColor((g.pts[end].sp-q10)/(q90-q10)):"#F5B917";
-        inst.push(new Cesium.GeometryInstance({
-          geometry:new Cesium.GroundPolylineGeometry({
-            positions:Cesium.Cartesian3.fromDegreesArray(pos),width:5}),
-          attributes:{color:Cesium.ColorGeometryInstanceAttribute.fromColor(
-            Cesium.Color.fromCssColorString(css))}}));
+      var colAt=function(endIdx){return Cesium.ColorGeometryInstanceAttribute.fromColor(
+        Cesium.Color.fromCssColorString(
+          g.hasTime?heatColor((g.pts[endIdx].sp-q10)/(q90-q10)):"#F5B917"));};
+      var groundOK=Cesium.GroundPolylinePrimitive.isSupported(C3.viewer.scene);
+      if(groundOK){
+        /* 데스크톱 등: 지면 밀착선 한 프리미티브로 (최고 품질) */
+        var inst=[];
+        for(var k=0;k<N3-1;k+=step3){
+          var end=Math.min(k+step3,N3-1),pos=[];
+          for(var q=k;q<=end;q++)pos.push(g.pts[q].lo,g.pts[q].la);
+          inst.push(new Cesium.GeometryInstance({
+            geometry:new Cesium.GroundPolylineGeometry({
+              positions:Cesium.Cartesian3.fromDegreesArray(pos),width:5}),
+            attributes:{color:colAt(end)}}));
+        }
+        C3.heat=C3.viewer.scene.groundPrimitives.add(new Cesium.GroundPolylinePrimitive({
+          geometryInstances:inst,appearance:new Cesium.PolylineColorAppearance()}));
+        C3.heatGround=true;
+      }else{
+        /* 일부 폰 GPU/웹뷰: 지면 밀착선 미지원 → 지형 높이를 샘플링해 일반 색상선으로 (색 동일) */
+        if(window.console)console.log("3D: GroundPolyline 미지원 → 지형 샘플링 폴백");
+        var idxs=[];for(var k=0;k<N3-1;k+=step3)idxs.push(k);idxs.push(N3-1);
+        var carts=idxs.map(function(i){return Cesium.Cartographic.fromDegrees(g.pts[i].lo,g.pts[i].la);});
+        var buildFlat=function(cs){
+          var inst=[];
+          for(var m=0;m<idxs.length-1;m++){
+            var a=cs[m],b=cs[m+1];
+            inst.push(new Cesium.GeometryInstance({
+              geometry:new Cesium.PolylineGeometry({positions:[
+                Cesium.Cartesian3.fromRadians(a.longitude,a.latitude,(a.height||0)+4),
+                Cesium.Cartesian3.fromRadians(b.longitude,b.latitude,(b.height||0)+4)],
+                width:5,vertexFormat:Cesium.PolylineColorAppearance.VERTEX_FORMAT}),
+              attributes:{color:colAt(idxs[m+1])}}));
+          }
+          C3.heat=C3.viewer.scene.primitives.add(new Cesium.Primitive({
+            geometryInstances:inst,appearance:new Cesium.PolylineColorAppearance()}));
+          C3.heatGround=false;
+          C3.viewer.scene.requestRender();
+        };
+        Cesium.sampleTerrainMostDetailed(C3.viewer.terrainProvider,carts)
+          .then(buildFlat)
+          .catch(function(){buildFlat(carts);});   /* 샘플 실패 시 지표 근사 */
       }
-      C3.heat=C3.viewer.scene.groundPrimitives.add(new Cesium.GroundPolylinePrimitive({
-        geometryInstances:inst,appearance:new Cesium.PolylineColorAppearance()}));
-      /* requestRenderMode에서 비동기 지형·프리미티브가 뜨도록 첫 4초간 렌더 보장 */
+      /* requestRenderMode에서 비동기 지형·프리미티브가 뜨도록 첫 8초간 렌더 보장 */
       (function(){var t0=Date.now(),iv=setInterval(function(){
         C3.viewer.scene.requestRender();
-        if(Date.now()-t0>4000)clearInterval(iv);},250);})();
+        if(Date.now()-t0>8000)clearInterval(iv);},250);})();
       C3.dot=C3.viewer.entities.add({position:Cesium.Cartesian3.fromDegrees(g.pts[0].lo,g.pts[0].la),
         point:{pixelSize:13,color:Cesium.Color.fromCssColorString("#152A55"),
           outlineColor:Cesium.Color.WHITE,outlineWidth:3,
