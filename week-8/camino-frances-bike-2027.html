@@ -1049,6 +1049,10 @@ const PHOTOS = {
      보조 키를 만들어 여기에. 비워두면 apiKey 사용 → 폰은 Drive 플레이어로 자동 폴백 */
   mediaKey: "",
   /* Relive식 3D 주행 보기용 — cesium.com/ion 에서 발급한 Access Token을 붙여넣기 */
+  /* (권장) GPX용 Apps Script 프록시 URL — 구글이 alt=media에 CORS를 안 줘서 필요.
+     SUPER-ADMIN §12의 5분 설정 후 "https://script.google.com/macros/s/.../exec" 붙여넣기.
+     비워두면 공영 CORS 프록시로 자동 폴백(설정 없이 동작하나 속도·안정성은 프록시가 남) */
+  gpxProxy: "",
   cesiumToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJkNmY1YjBhNi1mOWU5LTRmMTYtYjNjMi01ZTgxOTkyZmJlOWIiLCJpZCI6OTg5MzksInN1YiI6Inltam9uZ2JpbiIsImlzcyI6Imh0dHBzOi8vYXBpLmNlc2l1bS5jb20iLCJhdWQiOiJkcm9uZSIsImlhdCI6MTc4NTExNDA0MH0.CzGt5r2mi4jKQlSdwwq6_gfxeRAGZkzpypf7eHjCNzU",          /* Google Cloud → API key (Drive API, 리퍼러 제한) */
   parentId: "1z6EJEVanJ_Hal3gIzqeAc0eOUfr1EOAK",
   dayCount: 13,
@@ -1268,16 +1272,27 @@ const PHOTOS = {
   var gpxCache={};
   function fetchGpx(id){
     if(gpxCache[id])return Promise.resolve(gpxCache[id]);
-    return fetch("https://www.googleapis.com/drive/v3/files/"+id+"?alt=media&key="+PHOTOS.apiKey,
-        {referrerPolicy:"strict-origin-when-cross-origin"})  /* 웹뷰가 Referer를 빼면 키 제한에 걸리므로 명시 */
-      .then(function(r){
-        if(!r.ok)throw new Error("GPX 다운로드 실패 HTTP "+r.status
-          +(r.status===403?" (API 키 제한 또는 폴더 공유 확인)":r.status===404?" (파일 없음)":""));
-        return r.text();})
-      .catch(function(e){
-        if(e&&/HTTP/.test(e.message))throw e;
-        if(window.console)console.error("fetchGpx:",e);
-        throw new Error("GPX 요청 차단됨("+(e&&e.name?e.name:"?")+") — 카톡 등 인앱이면 Safari/Chrome으로, PC면 F12 콘솔 확인");})
+    /* 구글이 alt=media 응답에 CORS 헤더를 안 줘서(2024~ 정책) 직접 fetch가 막힐 수 있음
+       → 다단계: ①직접 ②Apps Script 프록시(설정 시) ③④공영 CORS 프록시(무설정 폴백) */
+    var uc="https://drive.google.com/uc?export=download&id="+id;
+    var cands=[
+      "https://www.googleapis.com/drive/v3/files/"+id+"?alt=media&key="+PHOTOS.apiKey
+    ];
+    if(PHOTOS.gpxProxy)cands.push(PHOTOS.gpxProxy+(PHOTOS.gpxProxy.indexOf("?")<0?"?":"&")+"id="+id);
+    cands.push("https://api.allorigins.win/raw?url="+encodeURIComponent(uc));
+    cands.push("https://corsproxy.io/?url="+encodeURIComponent(uc));
+    var tryFetch=function(k){
+      if(k>=cands.length)
+        return Promise.reject(new Error("GPX를 받을 수 없습니다 — 구글이 직접 다운로드의 CORS를 차단 중. "
+          +"SUPER-ADMIN §12의 Apps Script 프록시(5분)를 설정하면 확실히 해결됩니다"));
+      return fetch(cands[k],{referrerPolicy:"strict-origin-when-cross-origin"})
+        .then(function(r){if(!r.ok)throw 0;return r.text();})
+        .then(function(txt){
+          if(txt.indexOf("<trkpt")<0)throw 0;   /* 프록시가 에러 페이지를 줄 수 있어 내용 검증 */
+          return txt;})
+        .catch(function(){return tryFetch(k+1);});
+    };
+    return tryFetch(0)
       .then(function(txt){
         var doc=new DOMParser().parseFromString(txt,"application/xml");
         var nodes=doc.querySelectorAll("trkpt");
@@ -1422,6 +1437,7 @@ const PHOTOS = {
     ctx.strokeStyle="#fff";ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(x,y,5.5,0,7);ctx.stroke();
   }
   function renderPos(){
+    if(!G.pts.length||!G.dot)return;   /* 로드 실패 상태 가드 */
     var i=idxAt(G.u);            /* 지도 점·고도 커서가 같은 인덱스 → 완전 동기 */
     var p=G.pts[i];
     G.dot.setLatLng(G.lls[i]);
@@ -1444,7 +1460,8 @@ const PHOTOS = {
     renderPos();
     if(G.playing)G.raf=requestAnimationFrame(tick);
   }
-  function play(){if(G.u>=1)G.u=0;
+  function play(){if(!G.pts.length||!G.dot)return;
+    if(G.u>=1)G.u=0;
     G.playing=true;G.last=0;gPlay.textContent="⏸ 정지";G.raf=requestAnimationFrame(tick);}
   function pause(){G.playing=false;cancelAnimationFrame(G.raf);gPlay.textContent="▶ 재생";}
   gPlay.addEventListener("click",function(){G.playing?pause():play();});
@@ -1529,6 +1546,7 @@ const PHOTOS = {
   function lerpAngle(a,b,t){var d=b-a;while(d>Math.PI)d-=2*Math.PI;while(d<-Math.PI)d+=2*Math.PI;
     return a+d*t;}
   function c3Render(){
+    if(!C3.pts||!C3.pts.length||!C3.dot)return;   /* 로드 실패 상태 가드 */
     var i=c3IdxAt(C3.u),p=C3.pts[i];
     var pos=Cesium.Cartesian3.fromDegrees(p.lo,p.la);
     C3.dot.position=pos;
@@ -1555,7 +1573,8 @@ const PHOTOS = {
     c3Render();
     if(C3.playing)C3.raf=requestAnimationFrame(c3Tick);
   }
-  function c3Play(){if(C3.u>=1)C3.u=0;
+  function c3Play(){if(!C3.pts||!C3.pts.length||!C3.dot)return;
+    if(C3.u>=1)C3.u=0;
     C3.playing=true;C3.last=0;g3dPlay.textContent="⏸ 정지";C3.raf=requestAnimationFrame(c3Tick);}
   function c3Pause(){C3.playing=false;cancelAnimationFrame(C3.raf);g3dPlay.textContent="▶ 재생";}
   function c3SetAuto(on){
