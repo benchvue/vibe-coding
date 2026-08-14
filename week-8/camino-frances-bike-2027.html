@@ -1199,7 +1199,13 @@ const PHOTOS = {
   function fetchGpx(id){
     if(gpxCache[id])return Promise.resolve(gpxCache[id]);
     return fetch("https://www.googleapis.com/drive/v3/files/"+id+"?alt=media&key="+PHOTOS.apiKey)
-      .then(function(r){if(!r.ok)throw new Error("gpx "+r.status);return r.text();})
+      .then(function(r){
+        if(!r.ok)throw new Error("GPX 다운로드 실패 HTTP "+r.status
+          +(r.status===403?" (API 키 제한 또는 폴더 공유 확인)":r.status===404?" (파일 없음)":""));
+        return r.text();})
+      .catch(function(e){
+        if(e&&/HTTP/.test(e.message))throw e;
+        throw new Error("GPX 네트워크 오류 — 인터넷 연결 확인");})
       .then(function(txt){
         var doc=new DOMParser().parseFromString(txt,"application/xml");
         var nodes=doc.querySelectorAll("trkpt");
@@ -1283,15 +1289,23 @@ const PHOTOS = {
   var BASE_SEC=45; /* 1×에서 완주 재생 시간 */
   function loadLeaflet(){
     if(window.L)return Promise.resolve();
-    return new Promise(function(res,rej){
-      var css=document.createElement("link");css.rel="stylesheet";
-      css.href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css";
-      document.head.appendChild(css);
-      var js=document.createElement("script");
-      js.src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js";
-      js.onload=res;js.onerror=function(){rej(new Error("지도 라이브러리 로드 실패"));};
-      document.head.appendChild(js);
-    });
+    var CDN=[
+      ["https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css",
+       "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"],
+      ["https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+       "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"]
+    ];
+    function tryCdn(i){
+      if(i>=CDN.length)return Promise.reject(new Error("지도 라이브러리 로드 실패 — 네트워크가 cdnjs·unpkg를 차단하는지 확인"));
+      return new Promise(function(res,rej){
+        var css=document.createElement("link");css.rel="stylesheet";css.href=CDN[i][0];
+        document.head.appendChild(css);
+        var js=document.createElement("script");js.src=CDN[i][1];
+        js.onload=res;js.onerror=rej;
+        document.head.appendChild(js);
+      }).catch(function(){return tryCdn(i+1);});
+    }
+    return tryCdn(0);
   }
   function drawElevBase(){
     var dpr=window.devicePixelRatio||1,W=gElev.clientWidth,H=120;
@@ -1401,7 +1415,8 @@ const PHOTOS = {
       drawElevBase();renderPos();
       setTimeout(play,600);   /* 지도 뜨면 자동 재생 */
     }).catch(function(e){
-      gTitle.textContent="🗺 불러오기 실패 — 인터넷 연결과 API 키를 확인하세요";
+      gTitle.textContent="🗺 불러오기 실패 — "+(e&&e.message?e.message:"알 수 없는 오류");
+      if(window.console)console.error("GPX player:",e);
     });
   }
 
