@@ -1425,10 +1425,10 @@ const PHOTOS = {
     /* 구글이 alt=media 응답에 CORS 헤더를 안 줘서(2024~ 정책) 직접 fetch가 막힐 수 있음
        → 다단계: ①직접 ②Apps Script 프록시(설정 시) ③④공영 CORS 프록시(무설정 폴백) */
     var uc="https://drive.google.com/uc?export=download&id="+id;
-    var cands=[
-      "https://www.googleapis.com/drive/v3/files/"+id+"?alt=media&key="+PHOTOS.apiKey
-    ];
+    var cands=[];
+    /* 프록시가 있으면 1순위 — 직접 다운로드는 구글이 CORS를 막아 콘솔 에러만 남기므로 */
     if(PHOTOS.gpxProxy)cands.push(PHOTOS.gpxProxy+(PHOTOS.gpxProxy.indexOf("?")<0?"?":"&")+"id="+id);
+    cands.push("https://www.googleapis.com/drive/v3/files/"+id+"?alt=media&key="+PHOTOS.apiKey);
     cands.push("https://api.allorigins.win/raw?url="+encodeURIComponent(uc));
     cands.push("https://corsproxy.io/?url="+encodeURIComponent(uc));
     cands.push("https://api.codetabs.com/v1/proxy?quest="+encodeURIComponent(uc));
@@ -1562,6 +1562,7 @@ const PHOTOS = {
   }
   function drawElevBase(){
     var dpr=window.devicePixelRatio||1,W=gElev.clientWidth,H=120;
+    if(!W){G.eb=null;G.elevBase=null;return;} /* 창이 안 보이는 상태 — 그리기 생략 */
     gElev.width=W*dpr;gElev.height=H*dpr;
     var ctx=gElev.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);
     var pts=G.pts,km=pts[pts.length-1].d;
@@ -1585,6 +1586,7 @@ const PHOTOS = {
     G.elevBase=ctx.getImageData(0,0,gElev.width,gElev.height);
   }
   function drawElevCursor(i){
+    if(!G.eb||!G.elevBase)return;
     var ctx=gElev.getContext("2d");
     var dpr=window.devicePixelRatio||1;
     /* ⚠ drawElevBase가 남긴 scale(dpr) 위에 save+scale(dpr)을 또 하면 dpr²가 되어
@@ -1641,6 +1643,7 @@ const PHOTOS = {
     gTitle.textContent="🗺 "+title;
     gpxbox.classList.add("show");
     Promise.all([loadLeaflet(),fetchGpx(id)]).then(function(rr){
+      if(!gpxbox.classList.contains("show"))return; /* 로딩 중 3D로 넘어갔거나 닫음 — 데이터는 캐시됨 */
       var g=rr[1];
       G.pts=g.pts;G.lls=g.pts.map(function(p){return [p.la,p.lo];});
       G.T=g.pts.length?g.pts[g.pts.length-1].d:1;  /* 재생 축 = 총 주행거리 */
@@ -1702,6 +1705,7 @@ const PHOTOS = {
       g3dElev=document.getElementById("g3dElev");
   function c3ElevBase(){ /* 3D용 고도 프로필 — 2D drawElevBase와 동일 로직 */
     var dpr=window.devicePixelRatio||1,W=g3dElev.clientWidth,H=120;
+    if(!W){C3.eb=null;C3.elevBase=null;return;}
     g3dElev.width=W*dpr;g3dElev.height=H*dpr;
     var ctx=g3dElev.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);
     var pts=C3.pts,km=pts[pts.length-1].d;
@@ -1817,6 +1821,7 @@ const PHOTOS = {
     g3dbox.classList.add("show");
     g3dTitle.textContent="⛰ 3D 로딩 중…";
     Promise.all([loadCesium(),fetchGpx(id)]).then(function(rr){  /* 캐시 없으면 여기서 직접 로드 */
+      if(!g3dbox.classList.contains("show"))return; /* 로딩 중 닫음 */
       var g=rr[1];
       C3.pts=g.pts;
       C3.T=g.pts.length?g.pts[g.pts.length-1].d:1;  /* 재생 축 = 총 주행거리 */
