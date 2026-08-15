@@ -242,6 +242,30 @@
     color:#fff;border-radius:999px;padding:7px 18px;font-size:.9rem;cursor:pointer;font-family:inherit}
   .plightbox button:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
 
+
+  /* Ⅸ 식당 */
+  .fd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+  .fd-row{padding:14px;position:relative}
+  .fd-row.fd-final{grid-column:1/-1;border-color:var(--flecha);border-width:2px;background:#FFFDF4}
+  .fd-chip{display:inline-block;background:var(--camino-blue);color:var(--flecha);font-weight:700;
+    font-size:.72rem;border-radius:20px;padding:2px 10px}
+  .fd-chip.final{background:var(--flecha);color:#3B2E00}
+  .fd-head{font-size:.86rem;margin-bottom:6px}
+  .fd-head small{color:var(--ink-soft)}
+  .fd-name{font-weight:700;color:var(--camino-blue);font-size:.95rem}
+  .fd-menu{font-size:.83rem;margin-top:3px}
+  .fd-addr{font-size:.75rem;color:var(--ink-soft);margin-top:4px}
+  .fd-phrase{font-size:.8rem;margin-top:8px;padding:8px 10px;background:var(--stone);border-radius:8px;line-height:1.5}
+  .fd-phrase small{color:var(--ink-soft)}
+  .fd-links{margin-top:10px}
+  .fd-map{display:inline-block;background:var(--camino-blue);color:#fff;text-decoration:none;
+    font-size:.76rem;font-weight:600;border-radius:999px;padding:6px 14px;margin-right:6px;margin-top:4px}
+  .fd-map:hover{background:var(--flecha);color:#3B2E00}
+  .fd-map.alt{background:none;color:var(--camino-blue);border:1px solid var(--line)}
+  .fd-img{float:right;width:96px;height:72px;margin:0 0 6px 10px}
+  .fd-overview{width:100%;height:auto;aspect-ratio:16/6;max-height:260px;margin-bottom:14px}
+  .fd-overview img,.fd-img img{width:100%;height:100%;object-fit:cover;cursor:zoom-in;display:block}
+
   @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -977,6 +1001,131 @@
         <img src="images/bike-shape-B.png" alt="가지고 갈 장비와 현지에서 빌릴 장비를 구분한 그림" loading="lazy">
       </figure>
     </div>
+  </div>
+</section>
+
+<!-- ───────── Ⅸ. 날짜별 추천 식당 ───────── -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="no">Ⅸ · Gastronomía</div>
+      <h2>날짜별 추천 식당 — 순례자의 저녁 🦐</h2>
+      <p>해산물을 따라가는 13일. 사진은 Drive의 <b>food</b> 폴더에서 자동으로 불러오며,
+      각 식당의 🗺 버튼은 구글 지도 검색으로 바로 연결됩니다.</p>
+    </div>
+    <div class="fd-overview pthumb" id="fdOverview" style="display:none"><img alt="13일 해산물 개요"></div>
+    <div class="fd-grid">
+      <div class="fd-row frame">
+        <div class="fd-img pthumb" data-fd="1" style="display:none"><img alt="DAY 1 추천 요리"></div>
+        <div class="fd-head"><span class="fd-chip">D1</span> <b>생장 → 수비리</b> <small>5/9 일</small></div>
+        <div class="fd-name">🍽 Restaurant Oillarburu</div>
+        <div class="fd-menu">Chipirons / Calamares</div>
+        <div class="fd-links"><a class="fd-map" href="https://www.google.com/maps/search/?api=1&query=Restaurant+Oillarburu+Saint-Jean-Pied-de-Port+France" target="_blank" rel="noopener">🗺 구글 지도</a></div>
+      </div>
+      <div class="fd-row frame">
+        <div class="fd-img pthumb" data-fd="2" style="display:none"><img alt="DAY 2 추천 요리"></div>
+        <div class="fd-head"><span class="fd-chip">D2</span> <b>수비리 → 에스떼야</b> <small>5/10 월</small></div>
+        <div class="fd-name">🍽 Kinari Restaurante</div>
+        <div class="fd-menu">Vieiras (가리비)</div>
+        <div class="fd-addr">📍 C. Espoz y Mina, 3 Bajo, 31200 Estella, Navarra</div>
+        <div class="fd-links"><a class="fd-map" href="https://www.google.com/maps/search/?api=1&query=Kinari+Restaurante+Estella+Navarra" target="_blank" rel="noopener">🗺 구글 지도</a></div>
+      </div>
+      <div class="fd-row frame">
+        <div class="fd-img pthumb" data-fd="3" style="display:none"><img alt="DAY 3 추천 요리"></div>
+        <div class="fd-head"><span class="fd-chip">D3</span> <b>에스떼야 → 나바레테</b> <small>5/11 화</small></div>
+        <div class="fd-name">🔎 당일 나바레테에서 선택</div>
+        <div class="fd-menu">해산물보다 리오하(Rioja) 지역 음식 추천</div>
+        <div class="fd-links"><a class="fd-map" href="https://www.google.com/maps/search/?api=1&query=restaurants+Navarrete+La+Rioja+Spain" target="_blank" rel="noopener">🗺 구글 지도</a></div>
+      </div>
+      <div class="fd-row frame">
+        <div class="fd-img pthumb" data-fd="4" style="display:none"><img alt="DAY 4 추천 요리"></div>
+        <div class="fd-head"><span class="fd-chip">D4</span> <b>나바레테 → 벨로라도</b> <small>5/12 수</small></div>
+        <div class="fd-name">🍽 Restaurante Cuatro Cantones</div>
+        <div class="fd-menu">Pescado del día / Merluza</div>
+        <div class="fd-addr">📍 C. Hipólito López Bernal, 10, 09250 Belorado, Burgos</div>
+        <div class="fd-links"><a class="fd-map" href="https://www.google.com/maps/search/?api=1&query=Restaurante+Cuatro+Cantones+Belorado+Spain" target="_blank" rel="noopener">🗺 구글 지도</a></div>
+      </div>
+      <div class="fd-row frame">
+        <div class="fd-img pthumb" data-fd="5" style="display:none"><img alt="DAY 5 추천 요리"></div>
+        <div class="fd-head"><span class="fd-chip">D5</span> <b>벨로라도 → 카스트로헤리스</b> <small>5/13 목</small></div>
+        <div class="fd-name">🔎 이날은 카스티야 육류의 날</div>
+        <div class="fd-menu">Lechazo Asado (새끼양 구이)</div>
+        <div class="fd-links"><a class="fd-map" href="https://www.google.com/maps/search/?api=1&query=Lechazo+Asado+Castrojeriz+Spain" target="_blank" rel="noopener">🗺 구글 지도</a></div>
+      </div>
+      <div class="fd-row frame">
+        <div class="fd-img pthumb" data-fd="6" style="display:none"><img alt="DAY 6 추천 요리"></div>
+        <div class="fd-head"><span class="fd-chip">D6</span> <b>카스트로헤리스 → 사아군</b> <small>5/14 금</small></div>
+        <div class="fd-name">🍽 Restaurante Luis</div>
+        <div class="fd-menu">Gambas / Pescado del día</div>
+        <div class="fd-addr">📍 Plaza Mayor, 4, 24320 Sahagún, León</div>
+        <div class="fd-links"><a class="fd-map" href="https://www.google.com/maps/search/?api=1&query=Restaurante+Luis+Sahagun+Leon+Spain" target="_blank" rel="noopener">🗺 구글 지도</a></div>
+      </div>
+      <div class="fd-row frame">
+        <div class="fd-img pthumb" data-fd="7" style="display:none"><img alt="DAY 7 추천 요리"></div>
+        <div class="fd-head"><span class="fd-chip">D7</span> <b>사아군 → 레온</b> <small>5/15 토</small></div>
+        <div class="fd-name">🍽 Restaurante Bitácora</div>
+        <div class="fd-menu">Mariscos · Zamburiñas · Navajas · Gambas · Rodaballo · Arroz meloso con marisco</div>
+        <div class="fd-addr">📍 C. García I, 8, 24003 León</div>
+        <div class="fd-links"><a class="fd-map" href="https://www.google.com/maps/search/?api=1&query=Restaurante+Bitacora+Leon+Spain" target="_blank" rel="noopener">🗺 구글 지도</a></div>
+      </div>
+      <div class="fd-row frame">
+        <div class="fd-img pthumb" data-fd="8" style="display:none"><img alt="DAY 8 추천 요리"></div>
+        <div class="fd-head"><span class="fd-chip">D8</span> <b>레온</b> <small>5/16 일 · 휴식</small></div>
+        <div class="fd-name">🍽 Marcela</div>
+        <div class="fd-menu">Pescado del día / Marisco del día</div>
+        <div class="fd-addr">📍 Plaza de San Marcelo, 9, 24003 León</div>
+        <div class="fd-links"><a class="fd-map" href="https://www.google.com/maps/search/?api=1&query=Marcela+Plaza+San+Marcelo+Leon+Spain" target="_blank" rel="noopener">🗺 구글 지도</a> <a class="fd-map alt" href="https://www.google.com/maps/search/?api=1&query=Restaurante+Bitacora+Leon+Spain" target="_blank" rel="noopener">대안: Restaurante Bitácora</a></div>
+      </div>
+      <div class="fd-row frame">
+        <div class="fd-img pthumb" data-fd="9" style="display:none"><img alt="DAY 9 추천 요리"></div>
+        <div class="fd-head"><span class="fd-chip">D9</span> <b>레온 → 라바날 델 까미노</b> <small>5/17 월</small></div>
+        <div class="fd-name">🍽 El Refugio Hostería</div>
+        <div class="fd-menu">지역 요리 · 좋은 생선 있으면 Pescado del día</div>
+        <div class="fd-addr">📍 Calle Real, S/N, 24722 Rabanal del Camino, León</div>
+        <div class="fd-links"><a class="fd-map" href="https://www.google.com/maps/search/?api=1&query=El+Refugio+Hosteria+Rabanal+del+Camino+Spain" target="_blank" rel="noopener">🗺 구글 지도</a></div>
+      </div>
+      <div class="fd-row frame">
+        <div class="fd-img pthumb" data-fd="10" style="display:none"><img alt="DAY 10 추천 요리"></div>
+        <div class="fd-head"><span class="fd-chip">D10</span> <b>라바날 → 베가 데 발까르세</b> <small>5/18 화</small></div>
+        <div class="fd-name">🔎 도착 후 현지 식당에서 당일 메뉴 확인</div>
+        <div class="fd-menu">Arroz / Pescado del día</div>
+        <div class="fd-links"><a class="fd-map" href="https://www.google.com/maps/search/?api=1&query=restaurants+Vega+de+Valcarce+Spain" target="_blank" rel="noopener">🗺 구글 지도</a></div>
+      </div>
+      <div class="fd-row frame">
+        <div class="fd-img pthumb" data-fd="11" style="display:none"><img alt="DAY 11 추천 요리"></div>
+        <div class="fd-head"><span class="fd-chip">D11</span> <b>베가 데 발까르세 → 사리아</b> <small>5/19 수</small></div>
+        <div class="fd-name">🍽 Mesón Roberto</div>
+        <div class="fd-menu">Pescado fresco · Vieiras · 그날의 생선</div>
+        <div class="fd-phrase">💬 “¿Qué pescado o marisco fresco tienen hoy?”<br><small>오늘 신선한 생선이나 해산물은 무엇이 있나요?</small></div>
+        <div class="fd-links"><a class="fd-map" href="https://www.google.com/maps/search/?api=1&query=Meson+Roberto+Sarria+Lugo+Spain" target="_blank" rel="noopener">🗺 구글 지도</a></div>
+      </div>
+      <div class="fd-row frame">
+        <div class="fd-img pthumb" data-fd="12" style="display:none"><img alt="DAY 12 추천 요리"></div>
+        <div class="fd-head"><span class="fd-chip">D12</span> <b>사리아 → 아르수아</b> <small>5/20 목</small></div>
+        <div class="fd-name">🍽 Fonte do Picho</div>
+        <div class="fd-menu">그날 들어온 갈리시아 생선·해산물 확인</div>
+        <div class="fd-phrase">💬 “¿Qué marisco gallego fresco tienen hoy?”<br><small>오늘 신선한 갈리시아산 해산물은 무엇이 있나요?</small></div>
+        <div class="fd-links"><a class="fd-map" href="https://www.google.com/maps/search/?api=1&query=Fonte+do+Picho+Arzua+Spain" target="_blank" rel="noopener">🗺 구글 지도</a></div>
+      </div>
+      <!-- Day 13 완주 기념 -->
+      <div class="fd-row frame fd-final">
+        <div class="fd-img pthumb" data-fd="13" style="display:none"><img alt="DAY 13 완주 기념 요리"></div>
+        <div class="fd-head"><span class="fd-chip final">D13</span> <b>아르수아 → 산티아고 데 콤포스텔라</b> <small>5/21 금</small></div>
+        <div class="fd-name">⭐ 808.5km 완주 기념 저녁 — Restaurante El Puente</div>
+        <div class="fd-menu">전통 갈리시아 마리스께리아 (Marisquería tradicional gallega)</div>
+        <div class="fd-addr">📍 Viaducto da Rocha, 11, Bajo, 15706 Santiago de Compostela</div>
+        <div class="fd-menu" style="margin-top:8px"><b>추천 메뉴:</b>
+          Rodaballo(터봇) · Cigalas(랑구스틴) · Percebes(거북손) · Zamburiñas(작은 가리비) ·
+          Bogavante(유럽 바닷가재) · Parrillada de mariscos(해산물 모둠) · Arroz con bogavante(바닷가재 쌀요리)</div>
+        <div class="fd-phrase">💬 가장 먼저: “¿Tienen rodaballo salvaje gallego hoy?”<br>
+          <small>오늘 갈리시아산 자연산 터봇이 있나요?</small><br>
+          💬 그리고: “¿Qué marisco de las rías está mejor hoy?”<br>
+          <small>오늘 리아스산 해산물 중 무엇이 가장 좋나요?</small></div>
+        <div class="fd-links"><a class="fd-map" href="https://www.google.com/maps/search/?api=1&query=Restaurante+El+Puente+Viaducto+da+Rocha+Santiago+de+Compostela" target="_blank" rel="noopener">🗺 구글 지도</a></div>
+      </div>
+    </div>
+    <div class="note" style="margin-top:14px">주문 팁: 대부분의 식당에서 “Pescado del día(오늘의 생선)”를 물어보면
+    그날 들어온 가장 신선한 것을 추천해 줍니다. 5월 갈리시아는 해산물 제철 — 마지막 날을 위해 아껴 두세요.</div>
   </div>
 </section>
 
@@ -1741,11 +1890,39 @@ const PHOTOS = {
     }
     drive("'"+PHOTOS.parentId+"' in parents and trashed=false")
     .then(function(items){
-      var map={};
+      var map={},foodId=null;
       items.forEach(function(f){
         if(f.mimeType==="application/vnd.google-apps.folder"){
           var m=f.name.match(/^day\s*(\d{1,2})$/i);
-          if(m)map[parseInt(m[1],10)]=f.id;}});
+          if(m)map[parseInt(m[1],10)]=f.id;
+          else if(/^food$/i.test(f.name))foodId=f.id;}});
+      /* ── Ⅸ 식당 섹션: food 폴더 이미지 자동 배치 ── */
+      if(foodId)drive("'"+foodId+"' in parents and trashed=false").then(function(fs){
+        var imgs=fs.filter(function(x){return IMG_RE.test(x.name);});
+        var fdItems=[],byDay={},ov=null;
+        imgs.sort(function(a,b){return a.name.localeCompare(b.name);});
+        imgs.forEach(function(f){
+          var m=f.name.match(/^Day(\d{1,2})_/i);
+          if(m)byDay[parseInt(m[1],10)]=f;
+          else if(/^00_/.test(f.name))ov=f;});
+        var seq=[];if(ov)seq.push(ov);
+        for(var d=1;d<=13;d++)if(byDay[d])seq.push(byDay[d]);
+        seq.forEach(function(f){fdItems.push({id:f.id,vid:false,tl:f.thumbnailLink||null});});
+        var mountFd=function(box,f,gi,w){
+          box.style.display="";
+          var img=box.querySelector("img");
+          setImg(img,f.id,w,false,f.thumbnailLink||null);
+          box.style.cursor="zoom-in";
+          box.addEventListener("click",function(){gallery=fdItems;show(gi);});};
+        var gi=0;
+        if(ov){mountFd(document.getElementById("fdOverview"),ov,gi++,1200);}
+        for(var d=1;d<=13;d++){
+          if(!byDay[d])continue;
+          var box=document.querySelector('.fd-img[data-fd="'+d+'"]');
+          if(box)mountFd(box,byDay[d],gi,300);
+          gi++;
+        }
+      }).catch(function(){});
       var chain=Promise.resolve();
       var d;
       var run=function(day){
