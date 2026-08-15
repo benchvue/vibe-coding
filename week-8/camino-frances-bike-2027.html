@@ -1482,11 +1482,13 @@ const PHOTOS = {
           var dd=pts[i].d-pts[i-1].d, dts=Math.max(pts[i].tt-pts[i-1].tt,0.5);
           pts[i].sp=hasTime?(dd/dts*3.6):0;
         }
-        /* ☕ 휴식 지점: 기록 간격이 60초 이상이면 그 자리에서 쉰 것으로 판단 */
+        /* ☕ 휴식 지점: 기록 간격이 10분 이상이면 진짜 휴식으로 판단
+           (1분 기준은 신호등·잠깐 멈춤까지 다 잡혀서 상향) */
+        var REST_MIN_SEC=600;
         var rests=[];
         if(hasTime)for(var i=1;i<pts.length;i++){
           var gap=pts[i].tt-pts[i-1].tt;
-          if(gap>=60)rests.push({la:pts[i-1].la,lo:pts[i-1].lo,min:Math.round(gap/60)});
+          if(gap>=REST_MIN_SEC)rests.push({la:pts[i-1].la,lo:pts[i-1].lo,min:Math.round(gap/60)});
         }
         var data={pts:pts,km:dist/1000,gain:Math.round(gain),T:T,hasTime:hasTime,rests:rests};
         gpxCache[id]=data;return data;
