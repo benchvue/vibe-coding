@@ -589,7 +589,11 @@ const renderDay=(d)=>{
 const hiddenInput=(multi,cb,kind)=>{
   const inp=document.createElement("input");
   inp.type="file";
-  inp.accept=kind==="vid"?"video/*,.mov,.mp4":(kind==="trk"?".gpx,application/gpx+xml":"image/*,.dng");if(multi)inp.multiple=true;
+  /* ⚠ GPX는 accept를 지정하면 일부 아이폰에서 파일이 회색으로 비활성화됨
+     (iOS에 .gpx 표준 UTI가 없어 기기·다운로드 경로에 따라 형식 판정이 갈림)
+     → accept 미지정(전체 허용)하고, 대신 확장자+<trkpt 내용 이중 검증으로 거른다 */
+  const acc=kind==="vid"?"video/*,.mov,.mp4":(kind==="trk"?"":"image/*,.dng");
+  if(acc)inp.accept=acc;if(multi)inp.multiple=true;
   inp.style.display="none";document.body.appendChild(inp);
   inp.addEventListener("change",()=>{cb(Array.from(inp.files||[]));inp.remove();});
   inp.click();
