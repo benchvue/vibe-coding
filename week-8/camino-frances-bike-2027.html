@@ -266,10 +266,39 @@
   .fd-overview{width:100%;height:auto;aspect-ratio:16/6;max-height:260px;margin-bottom:14px}
   .fd-overview img,.fd-img img{width:100%;height:100%;object-fit:cover;cursor:zoom-in;display:block}
 
+
+  /* Ⅹ To Do */
+  .todo{list-style:none;font-size:.86rem}
+  .todo li{padding:7px 0;border-bottom:1px dashed var(--line)}
+  .todo li:last-child{border-bottom:none}
+  .todo label{display:flex;gap:10px;align-items:flex-start;cursor:pointer;line-height:1.55}
+  .todo input{width:17px;height:17px;flex:0 0 auto;margin-top:2px;accent-color:var(--camino-blue)}
+  .todo input:checked+*,.todo li.done label{color:var(--ink-soft)}
+  .todo li.done label{text-decoration:line-through}
+  /* 목차 */
+  #tocBtn{position:fixed;right:14px;bottom:14px;z-index:80;background:var(--camino-blue);color:var(--flecha);
+    border:none;border-radius:999px;padding:11px 18px;font-weight:700;font-size:.85rem;
+    box-shadow:0 4px 14px rgba(21,42,85,.35);font-family:inherit}
+  #tocBtn:hover{background:var(--flecha);color:#3B2E00}
+  #tocSheet{position:fixed;inset:0;background:rgba(15,20,35,.55);display:none;z-index:81;
+    align-items:flex-end;justify-content:center}
+  #tocSheet.show{display:flex}
+  .toc-in{background:var(--paper);width:min(100%,520px);max-height:78vh;overflow-y:auto;
+    border-radius:16px 16px 0 0;padding:14px 18px 26px}
+  .toc-head{display:flex;justify-content:space-between;align-items:center;font-weight:700;
+    color:var(--camino-blue);margin-bottom:6px;font-size:1rem}
+  .toc-head button{border:1px solid var(--line);background:none;border-radius:999px;
+    padding:5px 13px;font-size:.8rem;cursor:pointer;font-family:inherit}
+  .toc-in a{display:block;padding:11px 8px;text-decoration:none;color:var(--ink);
+    border-bottom:1px dashed var(--line);font-size:.92rem}
+  .toc-in a:last-child{border-bottom:none}
+  .toc-in a:hover{background:var(--stone);border-radius:8px}
+  section[id]{scroll-margin-top:10px}
+
   @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
-<body>
+<body id="top">
 
 <header class="hero">
   <div class="wrap">
@@ -294,7 +323,7 @@
 </header>
 
 <!-- ───────── Ⅰ. 고도 프로필 ───────── -->
-<section>
+<section id="sec1">
   <div class="wrap">
     <div class="sec-head">
       <div class="no">Ⅰ · Perfil</div>
@@ -309,7 +338,7 @@
 </section>
 
 <!-- ───────── Ⅱ. 일정 한눈에 ───────── -->
-<section style="padding-top:0">
+<section id="sec2" style="padding-top:0">
   <div class="wrap">
     <div class="sec-head">
       <div class="no">Ⅱ · Etapas</div>
@@ -344,7 +373,7 @@
 
 <!-- ───────── Ⅲ. 날짜별 카드 ───────── -->
 <div class="daynav"><div class="in wrap" style="max-width:1040px"><a href="#day1" class="">D1<small>5/9</small></a><a href="#day2" class="">D2<small>5/10</small></a><a href="#day3" class="">D3<small>5/11</small></a><a href="#day4" class="">D4<small>5/12</small></a><a href="#day5" class="">D5<small>5/13</small></a><a href="#day6" class="">D6<small>5/14</small></a><a href="#day7" class="">D7<small>5/15</small></a><a href="#day8" class="rest">D8<small>5/16</small></a><a href="#day9" class="">D9<small>5/17</small></a><a href="#day10" class="">D10<small>5/18</small></a><a href="#day11" class="">D11<small>5/19</small></a><a href="#day12" class="">D12<small>5/20</small></a><a href="#day13" class="">D13<small>5/21</small></a></div></div>
-<section style="padding-top:22px">
+<section id="sec3" style="padding-top:22px">
   <div class="wrap">
     <div class="sec-head">
       <div class="no">Ⅲ · Día a Día</div>
@@ -606,7 +635,7 @@
 </section>
 
 <!-- ───────── Ⅳ. 파리 → 생장 기차 ───────── -->
-<section style="padding-top:0">
+<section id="sec4" style="padding-top:0">
   <div class="wrap">
     <div class="sec-head">
       <div class="no">Ⅳ · Tren</div>
@@ -640,7 +669,7 @@
 </section>
 
 <!-- ───────── Ⅴ. 항공 · 환승 ───────── -->
-<section style="padding-top:0">
+<section id="sec5" style="padding-top:0">
   <div class="wrap">
     <div class="sec-head">
       <div class="no">Ⅴ · Tránsito</div>
@@ -844,7 +873,7 @@
 </section>
 
 <!-- ───────── Ⅵ. 숙소 ───────── -->
-<section style="padding-top:0;padding-bottom:48px">
+<section id="sec6" style="padding-top:0;padding-bottom:48px">
   <div class="wrap">
     <div class="sec-head">
       <div class="no">Ⅵ · Albergues</div>
@@ -908,7 +937,7 @@
 
 
 <!-- ───────── Ⅶ. 준비물 ───────── -->
-<section style="padding-top:0;padding-bottom:48px">
+<section id="sec7" style="padding-top:0;padding-bottom:48px">
   <div class="wrap">
     <div class="sec-head">
       <div class="no">Ⅶ · Equipaje</div>
@@ -983,7 +1012,7 @@
 
 
 <!-- ───────── Ⅷ. 자전거 짐 배치 · 장비 구분 ───────── -->
-<section style="padding-top:0;padding-bottom:48px">
+<section id="sec8" style="padding-top:0;padding-bottom:48px">
   <div class="wrap">
     <div class="sec-head">
       <div class="no">Ⅷ · Bicicleta</div>
@@ -1005,7 +1034,7 @@
 </section>
 
 <!-- ───────── Ⅸ. 날짜별 추천 식당 ───────── -->
-<section>
+<section id="sec9">
   <div class="wrap">
     <div class="sec-head">
       <div class="no">Ⅸ · Gastronomía</div>
@@ -1129,6 +1158,89 @@
   </div>
 </section>
 
+<!-- ───────── Ⅹ. To Do List ───────── -->
+<section style="padding-top:0;padding-bottom:48px" id="sec10">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="no">Ⅹ · Lista</div>
+      <h2>To Do List ✅</h2>
+      <p>체크하면 이 기기에 저장됩니다 — 출발 전 하나씩 지워 나가세요.</p>
+    </div>
+
+    <div class="flow" style="margin-bottom:14px">
+      <h3>① 여행 가기 전</h3>
+      <ul class="todo" data-td="pre">
+        <li><label><input type="checkbox"> 항공권 발권 — Bin(AF0071·AY4808/5372) · Jin(KE901 + 귀국편, <b>VY1623 2027/5/22 운항 예매 오픈 시 확정</b> · BCN→ICN은 KE 통합 발권)</label></li>
+        <li><label><input type="checkbox"> TGV 예약 — 5/8(토) 몽파르나스 10:05 → 바욘 (예매 오픈 약 4개월 전, SNCF Connect)</label></li>
+        <li><label><input type="checkbox"> 자전거 원웨이 렌탈 2대 예약 (생장 수령 → 산티아고 반납) — 패니어·헬멧·수리 키트 포함 확인</label></li>
+        <li><label><input type="checkbox"> 숙소 예약 — <b>산티아고 최종 호텔부터 확정</b> (아래 캐리어 직송의 수령지) → 파리 → 경유지 순</label></li>
+        <li><label><input type="checkbox"> 산티아고 호텔에 이메일 — "guest luggage storage before arrival"(도착 전 짐 보관) 가능 여부 확인</label></li>
+        <li><label><input type="checkbox"> Jacotrans에 캐리어 직송 견적 요청 — 아래 🧳 박스 참고</label></li>
+        <li><label><input type="checkbox"> 순례자 여권(Credencial) 준비 — 한국 까미노 협회 또는 생장 순례자 사무소 수령</label></li>
+        <li><label><input type="checkbox"> 여행자 보험 (자전거 사고 보장 포함 여부 확인)</label></li>
+        <li><label><input type="checkbox"> 유심/로밍 · 체크카드 환전 준비</label></li>
+        <li><label><input type="checkbox"> Jin 연습 2가지 — 사진 위치 살려 올리기(안내서 §7) · 가민 GPX 내보내기(안내서 §9)</label></li>
+      </ul>
+      <div class="frame" style="margin-top:12px;padding:14px;border-color:var(--flecha);border-width:2px;background:#FFFDF4">
+        <b>🧳 캐리어 가방: 생장 → 산티아고 호텔 직송</b>
+        <p style="font-size:.83rem;margin-top:6px">집에서 캐리어로 물품을 가져가 → 생장에서 자전거 패니어로 옮겨 싣고 →
+        빈 캐리어(+불필요 짐)를 산티아고 마지막 호텔로 미리 보내 두는 방식입니다.</p>
+        <ol style="font-size:.83rem;line-height:1.9;margin:8px 0 0 18px">
+          <li>산티아고 최종 숙소 예약 확정</li>
+          <li>호텔에 "도착 전 투숙객 짐 보관(guest luggage storage before arrival)" 가능 여부 확인</li>
+          <li><b>Jacotrans</b>(jacotrans@jacotrans.com)에 이메일 — <i>"Saint Jean Pied de Port → Santiago hotel, direct luggage shipment"</i> + 호텔 주소·날짜, 견적 수령</li>
+          <li>5/8 생장 도착 후 캐리어 인계 (픽업 장소·시간은 예약 시 안내)</li>
+          <li>5/21 산티아고 호텔 체크인하며 캐리어 수령 ✅</li>
+        </ol>
+        <p style="font-size:.78rem;color:var(--ink-soft);margin-top:8px">
+        · 대안 ①: <b>Correos Paq Peregrino</b> (스페인 우체국 순례자 서비스 — 공신력, 산티아고 우체국 수령 기본 · 호텔 수령은 사전 확인)<br>
+        · 대안 ②: Pilbeo · Camino Fácil 등 (구간별 운송 중심, 장거리는 별도 문의)<br>
+        · 비용: 구간별(20~40€)보다 높은 장거리 요금 — 이메일 견적 필수 · 사전 예약 권장</p>
+      </div>
+    </div>
+
+    <div class="flow" style="margin-bottom:14px">
+      <h3>② 여행 중</h3>
+      <ul class="todo" data-td="mid">
+        <li><label><input type="checkbox"> 5/8 생장: 렌탈 자전거 수령·안장 피팅 · <b>캐리어 Jacotrans 인계</b> · 순례자 사무소에서 크레덴시알 첫 도장</label></li>
+        <li><label><input type="checkbox"> 매일 숙소·바에서 크레덴시알 도장 (하루 2개 권장)</label></li>
+        <li><label><input type="checkbox"> 매일 저녁(와이파이): 사진·영상 업로드 + 가민 GPX 내보내서 주행 기록 업로드</label></li>
+        <li><label><input type="checkbox"> 매일 아침: 그날 카드의 QR/버튼으로 경로 확인 · 물·간식 보급</label></li>
+        <li><label><input type="checkbox"> 5/16 레온 휴식일: 빨래 · 체인 청소·주유 · 브레이크 점검</label></li>
+        <li><label><input type="checkbox"> 5/21 산티아고: 순례자 사무소에서 <b>콤포스텔라 증서</b> 수령 (자전거는 마지막 200km 이상 — 우리 전 구간 OK) · 자전거 반납 · <b>호텔 체크인하며 캐리어 수령</b></label></li>
+      </ul>
+    </div>
+
+    <div class="flow">
+      <h3>③ 여행 후</h3>
+      <ul class="todo" data-td="post">
+        <li><label><input type="checkbox"> Drive 폴더(day1~13·food) 통째로 다운로드 백업</label></li>
+        <li><label><input type="checkbox"> 못 올린 사진·영상·GPX 마저 업로드 — 사이트가 곧 여행 앨범</label></li>
+        <li><label><input type="checkbox"> 렌탈 보증금 환급·카드 정산 확인 · 항공 마일리지 적립 확인</label></li>
+        <li><label><input type="checkbox"> 사이트 주소 가족·친구에게 공유 🎉</label></li>
+        <li><label><input type="checkbox"> (관리) Google OAuth 앱은 6개월 미사용 시 삭제될 수 있음 — 가끔 로그인 한 번</label></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<button id="tocBtn" aria-label="목차 열기">☰ 목차</button>
+<div id="tocSheet">
+  <div class="toc-in">
+    <div class="toc-head">목차 <button id="tocClose">닫기 ×</button></div>
+    <a href="#top">⬆ 맨 위로</a>
+    <a href="#sec1">Ⅰ · 고도 프로필</a>
+    <a href="#sec2">Ⅱ · 일정 한눈에</a>
+    <a href="#sec3">Ⅲ · 날짜별 카드 (D1~D13)</a>
+    <a href="#sec4">Ⅳ · 파리 → 생장 기차</a>
+    <a href="#sec5">Ⅴ · 항공 · 환승</a>
+    <a href="#sec6">Ⅵ · 숙소</a>
+    <a href="#sec7">Ⅶ · 준비물</a>
+    <a href="#sec8">Ⅷ · 자전거 짐 배치</a>
+    <a href="#sec9">Ⅸ · 날짜별 추천 식당 🦐</a>
+    <a href="#sec10">Ⅹ · To Do List ✅</a>
+  </div>
+</div>
 <footer class="site">
   <div class="buen display">¡Buen Camino!</div>
   <p>Camino Francés 808.5km · 2027. 5. 6 – 5. 22 · <b>Bin &amp; Jin</b>의 Bicigrino 일정표<br>
@@ -1993,6 +2105,38 @@ const PHOTOS = {
   }
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);
   else init();
+})();
+</script>
+
+<script>
+/* ══ 목차 ══ */
+(function(){
+  var btn=document.getElementById("tocBtn"),sheet=document.getElementById("tocSheet");
+  btn.addEventListener("click",function(){sheet.classList.add("show");});
+  document.getElementById("tocClose").addEventListener("click",function(){sheet.classList.remove("show");});
+  sheet.addEventListener("click",function(e){
+    if(e.target===sheet)sheet.classList.remove("show");
+    if(e.target.tagName==="A")sheet.classList.remove("show");  /* 링크 탭 → 닫고 이동 */
+  });
+})();
+/* ══ To Do 체크 저장 (기기별, localStorage — 미지원 환경에서도 무해) ══ */
+(function(){
+  var KEY="camino-todo-2027";
+  var saved={};
+  try{saved=JSON.parse(localStorage.getItem(KEY)||"{}");}catch(e){}
+  document.querySelectorAll(".todo").forEach(function(ul){
+    var grp=ul.dataset.td;
+    ul.querySelectorAll("li").forEach(function(li,i){
+      var cb=li.querySelector("input");
+      var k=grp+"-"+i;
+      if(saved[k]){cb.checked=true;li.classList.add("done");}
+      cb.addEventListener("change",function(){
+        li.classList.toggle("done",cb.checked);
+        saved[k]=cb.checked;
+        try{localStorage.setItem(KEY,JSON.stringify(saved));}catch(e){}
+      });
+    });
+  });
 })();
 </script>
 </body>
