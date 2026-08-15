@@ -1164,8 +1164,8 @@
       <button id="g3dPlay">▶ 재생</button>
       <input type="range" id="g3dSeek" min="0" max="1000" value="0">
       <button id="g3dSpeed">1×</button>
-      <button id="g3dCam">🎥 자동</button>
-      <button id="g3dTo2d">🗺 2D</button>
+      <button id="g3dTo2d">2D</button>
+      <button id="g3dCam">자동</button>
       <span class="gpxstats" id="g3dStats"></span>
       <button id="g3dClose">닫기 ×</button>
     </div>
@@ -1476,7 +1476,13 @@ const PHOTOS = {
           var dd=pts[i].d-pts[i-1].d, dts=Math.max(pts[i].tt-pts[i-1].tt,0.5);
           pts[i].sp=hasTime?(dd/dts*3.6):0;
         }
-        var data={pts:pts,km:dist/1000,gain:Math.round(gain),T:T,hasTime:hasTime};
+        /* ☕ 휴식 지점: 기록 간격이 60초 이상이면 그 자리에서 쉰 것으로 판단 */
+        var rests=[];
+        if(hasTime)for(var i=1;i<pts.length;i++){
+          var gap=pts[i].tt-pts[i-1].tt;
+          if(gap>=60)rests.push({la:pts[i-1].la,lo:pts[i-1].lo,min:Math.round(gap/60)});
+        }
+        var data={pts:pts,km:dist/1000,gain:Math.round(gain),T:T,hasTime:hasTime,rests:rests};
         gpxCache[id]=data;return data;
       });
   }
@@ -1514,10 +1520,11 @@ const PHOTOS = {
       gStats=document.getElementById("gpxStats"),gTitle=document.getElementById("gpxTitle");
   var G={map:null,segs:null,dot:null,pts:[],lls:[],T:0,hasTime:false,
          playing:false,u:0,speed:1,raf:0,last:0,elevBase:null};
-  function idxAt(u){ /* 재생 위치 u(0~1) → 포인트 인덱스 (tt 이진 탐색) */
+  function idxAt(u){ /* 재생 위치 u(0~1) → 포인트 인덱스 (주행거리 d 이진 탐색)
+       — 시간 축은 휴식마다 멈춰 어색해서 거리 축으로: 끊김 없이 자연스럽게 진행 */
     var target=u*G.T,lo=0,hi=G.pts.length-1;
     while(lo<hi){var mid=(lo+hi)>>1;
-      if(G.pts[mid].tt<target)lo=mid+1;else hi=mid;}
+      if(G.pts[mid].d<target)lo=mid+1;else hi=mid;}
     return lo;}
   /* 속도 히트맵 색 (🔵 느림 → 🟢 → 🟡 → 🔴 빠름) */
   var HEAT=[[59,130,246],[34,197,94],[245,185,23],[239,68,68]];
@@ -1605,7 +1612,7 @@ const PHOTOS = {
     if(!G.playing)return;
     if(!G.last)G.last=ts;
     var dt=(ts-G.last)/1000;G.last=ts;
-    G.u+=dt*G.speed/BASE_SEC;    /* 시간 비율로 진행 — 휴식 구간도 실제처럼 표현 */
+    G.u+=dt*G.speed/BASE_SEC;    /* 거리 비율로 진행 — 휴식에서 멈추지 않고 계속 흐름 */
     if(G.u>=1){G.u=1;pause();}
     renderPos();
     if(G.playing)G.raf=requestAnimationFrame(tick);
@@ -1630,9 +1637,11 @@ const PHOTOS = {
     Promise.all([loadLeaflet(),fetchGpx(id)]).then(function(rr){
       var g=rr[1];
       G.pts=g.pts;G.lls=g.pts.map(function(p){return [p.la,p.lo];});
-      G.T=g.T;G.hasTime=g.hasTime;
+      G.T=g.pts.length?g.pts[g.pts.length-1].d:1;  /* 재생 축 = 총 주행거리 */
+      G.hasTime=g.hasTime;
       G.u=0;G.speed=1;gSpeed.textContent="1×";
       gTitle.innerHTML="🗺 "+title+" · "+g.km.toFixed(1)+"km · ↑"+g.gain+"m"
+        +(g.rests&&g.rests.length?" · ☕ 휴식 "+g.rests.length+"회":"")
         +(g.hasTime?' · <span style="font-weight:400;color:#8A93A6;font-size:.72rem">경로 색 = 속도 (🔵 느림 → 🔴 빠름)</span>':"");
       if(!G.map){
         G.map=L.map(gMapEl,{zoomControl:true,preferCanvas:true});
@@ -1659,6 +1668,15 @@ const PHOTOS = {
         layers.push(L.polyline(G.lls.slice(k,end+1),{color:col,weight:5,opacity:.95}));
       }
       G.segs=L.layerGroup(layers).addTo(G.map);
+      /* ☕ 휴식 지점: 빈 원 + 탭하면 몇 분 쉬었는지 */
+      if(G.rests)G.map.removeLayer(G.rests);
+      G.rests=null;
+      if(g.rests&&g.rests.length){
+        G.rests=L.layerGroup(g.rests.map(function(r){
+          return L.circleMarker([r.la,r.lo],{radius:9,color:"#152A55",weight:3,
+            fillColor:"#fff",fillOpacity:.25})
+            .bindTooltip("☕ "+r.min+"분 휴식");})).addTo(G.map);
+      }
       G.dot=L.circleMarker(G.lls[0],{radius:8,color:"#fff",weight:3,fillColor:"#152A55",fillOpacity:1}).addTo(G.map);
       drawElevBase();renderPos();
       setTimeout(play,600);   /* 지도 뜨면 자동 재생 */
@@ -1724,8 +1742,9 @@ const PHOTOS = {
       document.head.appendChild(js);
     });
   }
-  function c3IdxAt(u){var target=u*C3.T,lo=0,hi=C3.pts.length-1;
-    while(lo<hi){var mid=(lo+hi)>>1;if(C3.pts[mid].tt<target)lo=mid+1;else hi=mid;}return lo;}
+  function c3IdxAt(u){ /* 거리 축 재생 (2D와 동일) */
+    var target=u*C3.T,lo=0,hi=C3.pts.length-1;
+    while(lo<hi){var mid=(lo+hi)>>1;if(C3.pts[mid].d<target)lo=mid+1;else hi=mid;}return lo;}
   function bearingRad(a,b){ /* 진행 방향(라디안) */
     var r=Math.PI/180,la1=a.la*r,la2=b.la*r,dlo=(b.lo-a.lo)*r;
     return Math.atan2(Math.sin(dlo)*Math.cos(la2),
@@ -1756,7 +1775,7 @@ const PHOTOS = {
     if(!C3.playing)return;
     if(!C3.last)C3.last=ts;
     var dt=(ts-C3.last)/1000;C3.last=ts;
-    C3.u+=dt*C3.speed/BASE_SEC;
+    C3.u+=dt*C3.speed/(BASE_SEC*2);   /* 3D는 1×를 2D의 절반 속도로 — 지형 감상용 */
     if(C3.u>=1){C3.u=1;c3Pause();}
     c3Render();
     if(C3.playing)C3.raf=requestAnimationFrame(c3Tick);
@@ -1766,7 +1785,7 @@ const PHOTOS = {
     C3.playing=true;C3.last=0;g3dPlay.textContent="⏸ 정지";C3.raf=requestAnimationFrame(c3Tick);}
   function c3Pause(){C3.playing=false;cancelAnimationFrame(C3.raf);g3dPlay.textContent="▶ 재생";}
   function c3SetAuto(on){
-    C3.auto=on;g3dCam.textContent=on?"🎥 자동":"🖐 수동";
+    C3.auto=on;g3dCam.textContent=on?"자동":"수동";
     g3dHint.style.opacity=on?"1":"0";
     if(!on)C3.viewer.camera.lookAtTransform(Cesium.Matrix4.IDENTITY); /* 카메라 잠금 해제 */
     else c3Render();
@@ -1793,9 +1812,12 @@ const PHOTOS = {
     g3dTitle.textContent="⛰ 3D 로딩 중…";
     Promise.all([loadCesium(),fetchGpx(id)]).then(function(rr){  /* 캐시 없으면 여기서 직접 로드 */
       var g=rr[1];
-      C3.pts=g.pts;C3.T=g.T;C3.hasTime=g.hasTime;
+      C3.pts=g.pts;
+      C3.T=g.pts.length?g.pts[g.pts.length-1].d:1;  /* 재생 축 = 총 주행거리 */
+      C3.hasTime=g.hasTime;
       C3.u=startU||0;C3.speed=1;g3dSpeed.textContent="1×";
       g3dTitle.innerHTML="⛰ "+C3.title+" · "+g.km.toFixed(1)+"km · ↑"+g.gain+"m"
+        +(g.rests&&g.rests.length?" · ☕ 휴식 "+g.rests.length+"회":"")
         +(g.hasTime?' · <span style="font-weight:400;color:#8A93A6;font-size:.72rem">경로 색 = 속도 (🔵 느림 → 🔴 빠름)</span>':"");
       if(!C3.viewer){
         Cesium.Ion.defaultAccessToken=PHOTOS.cesiumToken;
@@ -1868,6 +1890,23 @@ const PHOTOS = {
       (function(){var t0=Date.now(),iv=setInterval(function(){
         C3.viewer.scene.requestRender();
         if(Date.now()-t0>8000)clearInterval(iv);},250);})();
+      /* ☕ 휴식 지점: 빈 원 + 분 라벨 */
+      if(C3.rests)C3.rests.forEach(function(e){C3.viewer.entities.remove(e);});
+      C3.rests=[];
+      (g.rests||[]).forEach(function(r){
+        C3.rests.push(C3.viewer.entities.add({
+          position:Cesium.Cartesian3.fromDegrees(r.lo,r.la),
+          point:{pixelSize:14,color:Cesium.Color.WHITE.withAlpha(0.2),
+            outlineColor:Cesium.Color.fromCssColorString("#152A55"),outlineWidth:3,
+            heightReference:Cesium.HeightReference.CLAMP_TO_GROUND,
+            disableDepthTestDistance:Number.POSITIVE_INFINITY},
+          label:{text:"☕"+r.min+"분",font:"12px sans-serif",
+            fillColor:Cesium.Color.WHITE,showBackground:true,
+            backgroundColor:Cesium.Color.fromCssColorString("#152A55").withAlpha(0.8),
+            pixelOffset:new Cesium.Cartesian2(0,-20),
+            heightReference:Cesium.HeightReference.CLAMP_TO_GROUND,
+            disableDepthTestDistance:Number.POSITIVE_INFINITY}}));
+      });
       C3.dot=C3.viewer.entities.add({position:Cesium.Cartesian3.fromDegrees(g.pts[0].lo,g.pts[0].la),
         point:{pixelSize:13,color:Cesium.Color.fromCssColorString("#152A55"),
           outlineColor:Cesium.Color.WHITE,outlineWidth:3,
