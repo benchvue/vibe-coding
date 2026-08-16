@@ -426,6 +426,46 @@
   }
   @media print{ .cvw{display:none!important} .sarrow{display:none} }
 
+  /* ── DAY별 날씨 카드 ───────────────────────────── */
+  .dwx{padding:2px 14px 14px}
+  .dwx h4{font-size:.8rem;color:var(--camino-blue);font-weight:700;margin-bottom:8px;
+    display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .dwx h4 small{color:var(--ink-soft);font-weight:400}
+  .wxgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .wxgrid.one{grid-template-columns:1fr;max-width:520px}
+  @media(max-width:760px){ .wxgrid{grid-template-columns:1fr} }
+  .wxcard{background:#fff;border:1px solid var(--line);border-radius:13px;overflow:hidden;
+    box-shadow:0 4px 14px rgba(21,42,85,.07)}
+  .wxhead{display:flex;align-items:center;gap:8px;padding:9px 11px;border-bottom:1px solid var(--line);
+    background:#FBFAF5;flex-wrap:wrap}
+  .wxb{flex:0 0 auto;font-size:.6rem;font-weight:700;letter-spacing:.08em;border-radius:20px;padding:3px 9px;color:#fff}
+  .wxb.s{background:var(--ok)}
+  .wxb.e{background:var(--rioja)}
+  .wxb.r{background:var(--camino-blue)}
+  .wxnm{display:flex;flex-direction:column;line-height:1.25;min-width:0;flex:1}
+  .wxnm b{font-family:'Gowun Batang',serif;font-size:.92rem}
+  .wxnm small{font-size:.64rem;color:var(--ink-soft)}
+  .wxsum{flex:0 0 auto;font-size:.72rem;font-weight:600;color:var(--camino-blue);
+    background:#EEF3FB;border-radius:20px;padding:3px 10px;white-space:nowrap}
+  .wxchart{padding:6px 6px 0}
+  .wxchart svg{display:block}
+  .wxstats{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 11px 11px;
+    border-top:1px dashed var(--line);font-size:.72rem;color:var(--ink-soft)}
+  .wxstats b{font-variant-numeric:tabular-nums;font-size:.88rem}
+  .wxhi b{color:var(--rioja)}
+  .wxlo b{color:var(--camino-blue)}
+  .wxsun{margin-left:auto;white-space:nowrap}
+  .wxsun + .wxsun{margin-left:0}
+  .wxnote{margin-top:8px;font-size:.68rem;color:var(--ink-soft);line-height:1.6}
+  .wxnote b{color:var(--camino-blue)}
+  .wxload,.wxerr{grid-column:1/-1;padding:22px 12px;text-align:center;font-size:.76rem;
+    color:var(--ink-soft);border:1px dashed var(--line);border-radius:12px;background:#FBFAF5}
+  .wxretry{margin-left:8px;background:var(--camino-blue);color:#fff;border:none;border-radius:20px;
+    padding:5px 12px;font-size:.7rem;cursor:pointer;font-family:inherit}
+  .wxretry:hover{background:var(--flecha);color:#3B2E00}
+  .wxfc{flex:0 0 auto;font-size:.6rem;font-weight:700;color:#7A1F0A;background:#FFE0B2;
+    border-radius:20px;padding:3px 8px;white-space:nowrap}
+
 </style>
 </head>
 <body id="top">
@@ -2882,6 +2922,427 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
   }
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",build);
   else build();
+})();
+
+</script>
+
+<!-- ══════ DAY별 날씨 (출발지/도착지) · Open-Meteo ══════ -->
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   DAY별 날씨 카드 (출발지 / 도착지)  ·  Open-Meteo
+   · 24시간 기온 선그래프
+   · 일출~일몰 = 밝은 배경 / 밤 = 어두운 배경
+   · WMO 날씨 코드 아이콘 + 코드 번호 표시
+   · 최고 / 최저 기온
+   시간은 timezone=auto → 스페인·프랑스 현지시각(5월 = CEST, UTC+2)
+   ══════════════════════════════════════════════════════════════════════ */
+(function(){
+  "use strict";
+
+  /* ── 지점 좌표 ── */
+  var L = {
+    sjpp : {k:"생장",              o:"Saint-Jean-Pied-de-Port", la:43.1633, lo:-1.2372},
+    zubi : {k:"수비리",            o:"Zubiri",                  la:42.9314, lo:-1.5044},
+    este : {k:"에스떼야",          o:"Estella",                 la:42.6714, lo:-2.0299},
+    nava : {k:"나베레테",          o:"Navarrete",               la:42.4297, lo:-2.5606},
+    belo : {k:"벨로라도",          o:"Belorado",                la:42.4200, lo:-3.1919},
+    cast : {k:"키스트로헤리스",    o:"Castrojeriz",             la:42.2886, lo:-4.1383},
+    saha : {k:"사아군",            o:"Sahagún",                 la:42.3713, lo:-5.0296},
+    leon : {k:"레온",              o:"León",                    la:42.5987, lo:-5.5671},
+    raba : {k:"라바날 델 까미노",  o:"Rabanal del Camino",      la:42.4817, lo:-6.2839},
+    vega : {k:"베가 데 발까르세",  o:"Vega de Valcarce",        la:42.6597, lo:-6.9250},
+    sarr : {k:"사리아",            o:"Sarria",                  la:42.7776, lo:-7.4144},
+    arzu : {k:"아르수아",          o:"Arzúa",                   la:42.9296, lo:-8.1620},
+    sant : {k:"산티아고 데 콤포스텔라", o:"Santiago de Compostela", la:42.8805, lo:-8.5457}
+  };
+  /* DAY → [출발지, 도착지] */
+  var DAY = {
+    1:["sjpp","zubi"],  2:["zubi","este"],  3:["este","nava"], 4:["nava","belo"],
+    5:["belo","cast"],  6:["cast","saha"],  7:["saha","leon"], 8:["leon","leon"],
+    9:["leon","raba"], 10:["raba","vega"], 11:["vega","sarr"],12:["sarr","arzu"],
+   13:["arzu","sant"]
+  };
+  var ORDER = Object.keys(L);
+  var TRIP_Y = 2027, TRIP_M = 5, TRIP_D1 = 9;          /* 2027-05-09 ~ 05-21 */
+  var NDAYS = 13;
+
+  /* ── WMO 날씨 코드 ── */
+  function wmo(c){
+    var m = {
+      0:["☀️","맑음"], 1:["🌤️","대체로 맑음"], 2:["⛅","부분 흐림"], 3:["☁️","흐림"],
+      45:["🌫️","안개"], 48:["🌫️","서리 안개"],
+      51:["🌦️","약한 이슬비"], 53:["🌦️","이슬비"], 55:["🌦️","강한 이슬비"],
+      56:["🌧️","어는 이슬비"], 57:["🌧️","강한 어는 이슬비"],
+      61:["🌦️","약한 비"], 63:["🌧️","비"], 65:["🌧️","강한 비"],
+      66:["🌧️","어는 비"], 67:["🌧️","강한 어는 비"],
+      71:["🌨️","약한 눈"], 73:["🌨️","눈"], 75:["❄️","강한 눈"], 77:["🌨️","싸락눈"],
+      80:["🌦️","소나기"], 81:["🌧️","강한 소나기"], 82:["⛈️","매우 강한 소나기"],
+      85:["🌨️","소낙눈"], 86:["❄️","강한 소낙눈"],
+      95:["⛈️","뇌우"], 96:["⛈️","우박 동반 뇌우"], 99:["⛈️","강한 우박 뇌우"]
+    };
+    return m[c] || ["🌡️","코드 "+c];
+  }
+
+  function pad(n){ return (n<10?"0":"")+n; }
+  function dstr(y,m,d){ return y+"-"+pad(m)+"-"+pad(d); }
+  function tripDate(i){ return new Date(TRIP_Y, TRIP_M-1, TRIP_D1+i); }   /* i=0..12 */
+
+  /* ── 캐시 ── */
+  var CK = "caminoWx-v2";
+  function cacheGet(k,ttl){
+    try{
+      var o = JSON.parse(localStorage.getItem(CK+"-"+k)||"null");
+      if(o && Date.now()-o.t < ttl) return o.v;
+    }catch(e){}
+    return null;
+  }
+  function cacheSet(k,v){
+    try{ localStorage.setItem(CK+"-"+k, JSON.stringify({t:Date.now(), v:v})); }catch(e){}
+  }
+
+  /* ── 지정한 날짜 구간을 전 지점에 대해 한 번에 받아오기 ──
+     n일치를 [지점][일자] 구조로 정리해서 돌려줍니다. */
+  function fetchRange(kind, sDate, eDate, ndays, ttl){
+    var key = kind+"-"+sDate+"-"+eDate;
+    var hit = cacheGet(key, ttl);
+    if(hit) return Promise.resolve(hit);
+
+    var host = (kind==="forecast")
+      ? "https://api.open-meteo.com/v1/forecast"
+      : "https://archive-api.open-meteo.com/v1/archive";
+    var la = ORDER.map(function(i){return L[i].la;}).join(",");
+    var lo = ORDER.map(function(i){return L[i].lo;}).join(",");
+    var url = host
+      + "?latitude=" + la + "&longitude=" + lo
+      + "&start_date=" + sDate + "&end_date=" + eDate
+      + "&hourly=temperature_2m,weather_code"
+      + "&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset"
+      + "&timezone=auto";
+    return fetch(url).then(function(r){ if(!r.ok) throw 0; return r.json(); })
+      .then(function(j){
+        if(j && j.error) throw 0;
+        var arr = Array.isArray(j) ? j : [j];
+        var out = {};
+        arr.forEach(function(res,n){
+          var id = ORDER[n]; if(!id || !res || !res.hourly) return;
+          var Hh = res.hourly, D = res.daily || {};
+          var days = [];
+          for(var i=0;i<ndays;i++){
+            days.push({
+              t   : (Hh.temperature_2m||[]).slice(i*24,(i+1)*24),
+              c   : (Hh.weather_code   ||[]).slice(i*24,(i+1)*24),
+              hi  : D.temperature_2m_max ? D.temperature_2m_max[i] : null,
+              lo  : D.temperature_2m_min ? D.temperature_2m_min[i] : null,
+              code: D.weather_code      ? D.weather_code[i]        : null,
+              sr  : D.sunrise ? D.sunrise[i] : null,
+              ss  : D.sunset  ? D.sunset[i]  : null
+            });
+          }
+          out[id] = {tz:res.timezone, ab:res.timezone_abbreviation, days:days};
+        });
+        cacheSet(key,out);
+        return out;
+      });
+  }
+
+  /* 지난 3년 같은 날짜(5/9~5/21)의 실측치 */
+  function pastYears(now){
+    var ys = [], y = now.getFullYear(), lim = new Date(now.getTime() - 6*86400000);
+    while(ys.length < 3 && y > 1990){
+      if(new Date(y, TRIP_M-1, TRIP_D1+NDAYS-1) < lim) ys.push(y);
+      y--;
+    }
+    return ys;
+  }
+
+  function merge(sets){
+    /* 여러 해의 값을 평균(기온) / 최빈값(날씨코드)으로 합침 */
+    var out = {};
+    ORDER.forEach(function(id){
+      var got = sets.filter(function(s){ return s && s[id]; });
+      if(!got.length) return;
+      var days = [];
+      for(var i=0;i<NDAYS;i++){
+        var t=[], c=[], hi=[], lo=[], codes=[], sr=null, ss=null;
+        got.forEach(function(s){
+          var d = s[id].days[i]; if(!d) return;
+          for(var h=0;h<24;h++){
+            if(d.t[h]!=null){ (t[h]=t[h]||[]).push(d.t[h]); }
+            if(d.c[h]!=null){ (c[h]=c[h]||[]).push(d.c[h]); }
+          }
+          if(d.hi!=null) hi.push(d.hi);
+          if(d.lo!=null) lo.push(d.lo);
+          if(d.code!=null) codes.push(d.code);
+          if(!sr && d.sr) sr = d.sr;
+          if(!ss && d.ss) ss = d.ss;
+        });
+        var T=[], C=[];
+        for(var h=0;h<24;h++){
+          T[h] = t[h] ? Math.round(avg(t[h])*10)/10 : null;
+          C[h] = c[h] ? mode(c[h]) : null;
+        }
+        days.push({
+          t:T, c:C, src:"normal",
+          hi: hi.length?Math.round(avg(hi)*10)/10:null,
+          lo: lo.length?Math.round(avg(lo)*10)/10:null,
+          code: codes.length?mode(codes):null,
+          sr:sr, ss:ss
+        });
+      }
+      out[id] = {tz:got[0][id].tz, ab:got[0][id].ab, days:days};
+    });
+    return out;
+  }
+
+  function avg(a){ var s=0,i; for(i=0;i<a.length;i++)s+=a[i]; return s/a.length; }
+  function mode(a){
+    var m={}, best=a[0], bc=0;
+    a.forEach(function(v){ m[v]=(m[v]||0)+1; if(m[v]>bc||(m[v]===bc&&v<best)){bc=m[v];best=v;} });
+    return +best;
+  }
+
+  /* ── 시각 문자열 → 소수 시간 ── */
+  function hourOf(iso){
+    if(!iso) return null;
+    var m = String(iso).match(/T(\d{2}):(\d{2})/);
+    return m ? (+m[1]) + (+m[2])/60 : null;
+  }
+  function hhmm(iso){
+    var m = String(iso||"").match(/T(\d{2}):(\d{2})/);
+    return m ? m[1]+":"+m[2] : "—";
+  }
+
+  /* ── SVG 그래프 ── */
+  var W=360,H=178,X0=32,X1=350,Y0=34,Y1=150;
+  function X(h){ return X0 + (h/24)*(X1-X0); }
+
+  function chart(day,uid){
+    var T = day.t.slice(), i;
+    var vals = T.filter(function(v){return v!=null;});
+    if(!vals.length) return '<p class="wxerr">기온 데이터가 없습니다</p>';
+    var mn = Math.min.apply(null,vals), mx = Math.max.apply(null,vals);
+    var lo = Math.floor(mn-1.5), hi = Math.ceil(mx+1.5);
+    if(hi-lo < 6){ hi = lo+6; }
+    function Y(t){ return Y1 - ((t-lo)/(hi-lo))*(Y1-Y0); }
+
+    var sr = hourOf(day.sr), ss = hourOf(day.ss);
+    if(sr==null) sr=7; if(ss==null) ss=21.5;
+
+    var s = '<svg viewBox="0 0 '+W+' '+H+'" width="100%" role="img" '
+          + 'aria-label="24시간 기온 그래프" preserveAspectRatio="xMidYMid meet">';
+    s += '<defs>'
+       + '<linearGradient id="wxf'+uid+'" x1="0" y1="0" x2="0" y2="1">'
+       + '<stop offset="0" stop-color="#8E2C3A" stop-opacity=".30"/>'
+       + '<stop offset="1" stop-color="#8E2C3A" stop-opacity="0"/></linearGradient>'
+       + '<clipPath id="wxc'+uid+'"><rect x="'+X0+'" y="14" width="'+(X1-X0)+'" height="'+(Y1-14)+'"/></clipPath>'
+       + '</defs>';
+
+    /* 배경: 밤(어둡게) / 낮(밝게) */
+    s += '<g clip-path="url(#wxc'+uid+')">';
+    s += '<rect x="'+X0+'" y="14" width="'+(X1-X0)+'" height="'+(Y1-14)+'" fill="#28344F" opacity=".16"/>';
+    s += '<rect x="'+X(sr)+'" y="14" width="'+(X(ss)-X(sr))+'" height="'+(Y1-14)+'" fill="#FFE9A8" opacity=".62"/>';
+    /* 여명·박명 살짝 */
+    s += '<rect x="'+X(Math.max(0,sr-0.9))+'" y="14" width="'+(X(sr)-X(Math.max(0,sr-0.9)))+'" height="'+(Y1-14)+'" fill="#F5B917" opacity=".18"/>';
+    s += '<rect x="'+X(ss)+'" y="14" width="'+(X(Math.min(24,ss+0.9))-X(ss))+'" height="'+(Y1-14)+'" fill="#F5B917" opacity=".18"/>';
+    s += '</g>';
+
+    /* 일출·일몰 선 */
+    s += '<line x1="'+X(sr)+'" y1="14" x2="'+X(sr)+'" y2="'+Y1+'" stroke="#C79A17" stroke-width="1" stroke-dasharray="3 3"/>';
+    s += '<line x1="'+X(ss)+'" y1="14" x2="'+X(ss)+'" y2="'+Y1+'" stroke="#5B6270" stroke-width="1" stroke-dasharray="3 3"/>';
+
+    /* 가로 격자 + 눈금 */
+    [lo,Math.round((lo+hi)/2),hi].forEach(function(v){
+      s += '<line x1="'+X0+'" y1="'+Y(v)+'" x2="'+X1+'" y2="'+Y(v)+'" stroke="#000" stroke-opacity=".08" stroke-width="1"/>';
+      s += '<text x="'+(X0-5)+'" y="'+(Y(v)+3.5)+'" font-size="9" text-anchor="end" fill="#5B6270">'+v+'°</text>';
+    });
+
+    /* 면적 + 선 */
+    var pts=[], first=null, last=null;
+    for(i=0;i<24;i++){ if(T[i]!=null){ pts.push(X(i+0.5)+","+Y(T[i])); if(first===null)first=i; last=i; } }
+    if(pts.length>1){
+      s += '<polygon points="'+X(first+0.5)+','+Y1+' '+pts.join(" ")+' '+X(last+0.5)+','+Y1
+         + '" fill="url(#wxf'+uid+')"/>';
+      s += '<polyline points="'+pts.join(" ")+'" fill="none" stroke="#8E2C3A" stroke-width="2.1" '
+         + 'stroke-linejoin="round" stroke-linecap="round"/>';
+    }
+    /* 최고·최저 지점 */
+    var iMax=-1,iMin=-1;
+    for(i=0;i<24;i++){ if(T[i]==null)continue;
+      if(iMax<0||T[i]>T[iMax])iMax=i; if(iMin<0||T[i]<T[iMin])iMin=i; }
+    [[iMax,"#8E2C3A"],[iMin,"#1E3A6E"]].forEach(function(p){
+      if(p[0]<0) return;
+      s += '<circle cx="'+X(p[0]+0.5)+'" cy="'+Y(T[p[0]])+'" r="3" fill="#fff" stroke="'+p[1]+'" stroke-width="2"/>';
+      s += '<text x="'+X(p[0]+0.5)+'" y="'+(Y(T[p[0]])-7)+'" font-size="9" font-weight="700" '
+         + 'text-anchor="middle" fill="'+p[1]+'">'+T[p[0]].toFixed(1)+'°</text>';
+    });
+
+    /* 날씨 코드 아이콘 (3시간 간격) */
+    [2,5,8,11,14,17,20,23].forEach(function(h){
+      var c = day.c[h]; if(c==null) return;
+      var w = wmo(c);
+      s += '<text x="'+X(h+0.5)+'" y="14" font-size="11" text-anchor="middle">'+w[0]+'</text>';
+      s += '<text x="'+X(h+0.5)+'" y="24" font-size="6.6" text-anchor="middle" fill="#5B6270">'+c+'</text>';
+    });
+
+    /* 시간축 */
+    s += '<line x1="'+X0+'" y1="'+Y1+'" x2="'+X1+'" y2="'+Y1+'" stroke="#D8D3C4" stroke-width="1"/>';
+    [0,3,6,9,12,15,18,21,24].forEach(function(h){
+      s += '<line x1="'+X(h)+'" y1="'+Y1+'" x2="'+X(h)+'" y2="'+(Y1+3)+'" stroke="#D8D3C4"/>';
+      if(h%6===0)
+        s += '<text x="'+X(h)+'" y="'+(Y1+14)+'" font-size="8.5" text-anchor="middle" fill="#5B6270">'+h+'시</text>';
+    });
+    /* 일출·일몰 라벨 */
+    s += '<text x="'+X(sr)+'" y="'+(Y1+25)+'" font-size="8.5" text-anchor="middle" fill="#B08400">🌅 '+hhmm(day.sr)+'</text>';
+    s += '<text x="'+X(ss)+'" y="'+(Y1+25)+'" font-size="8.5" text-anchor="middle" fill="#41506E">🌇 '+hhmm(day.ss)+'</text>';
+    s += '</svg>';
+    return s;
+  }
+
+  /* ── 카드 ── */
+  function esc(t){ return String(t==null?"":t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+  function cardHTML(role,loc,day,uid){
+    var w = wmo(day.code!=null?day.code:2);
+    var dayCodes = day.c.slice(6,21).filter(function(v){return v!=null;});
+    var dom = dayCodes.length ? wmo(mode(dayCodes)) : w;
+    var badge = role==="s" ? '<span class="wxb s">출발</span>'
+              : role==="e" ? '<span class="wxb e">도착</span>'
+                           : '<span class="wxb r">휴식</span>';
+    return '<div class="wxcard">'
+      + '<div class="wxhead">'+badge
+      + '<span class="wxnm"><b>'+esc(loc.k)+'</b><small>'+esc(loc.o)+'</small></span>'
+      + '<span class="wxsum">'+dom[0]+' '+dom[1]+'</span>'
+      + (day.src==="forecast" ? '<span class="wxfc">실제 예보</span>' : '')
+      + '</div>'
+      + '<div class="wxchart">'+chart(day,uid)+'</div>'
+      + '<div class="wxstats">'
+      + '<span class="wxhi">최고 <b>'+(day.hi!=null?day.hi.toFixed(1):"–")+'°</b></span>'
+      + '<span class="wxlo">최저 <b>'+(day.lo!=null?day.lo.toFixed(1):"–")+'°</b></span>'
+      + '<span class="wxsun">🌅 '+hhmm(day.sr)+'</span>'
+      + '<span class="wxsun">🌇 '+hhmm(day.ss)+'</span>'
+      + '</div></div>';
+  }
+
+  /* ── 렌더 ── */
+  var uidN = 0;
+  function render(data, info){
+    document.querySelectorAll(".dwx").forEach(function(box){
+      var d = +box.dataset.day, i = d-1;
+      var pair = DAY[d]; if(!pair) return;
+      var a = data[pair[0]], b = data[pair[1]];
+      if(!a || !a.days[i]){ box.querySelector(".wxgrid").innerHTML =
+        '<p class="wxerr">날씨 데이터를 불러오지 못했습니다.</p>'; return; }
+      var html;
+      if(pair[0]===pair[1]){
+        html = cardHTML("r", L[pair[0]], a.days[i], ++uidN);
+        box.querySelector(".wxgrid").classList.add("one");
+      }else{
+        html = cardHTML("s", L[pair[0]], a.days[i], ++uidN)
+             + cardHTML("e", L[pair[1]], b.days[i], ++uidN);
+      }
+      box.querySelector(".wxgrid").innerHTML = html;
+      var note = box.querySelector(".wxnote");
+      if(note) note.innerHTML = info;
+    });
+  }
+
+  function fail(msg){
+    document.querySelectorAll(".dwx .wxgrid").forEach(function(g){
+      g.innerHTML = '<p class="wxerr">'+esc(msg)+' <button type="button" class="wxretry">다시 시도</button></p>';
+    });
+    document.querySelectorAll(".wxretry").forEach(function(b){
+      b.addEventListener("click", function(){ try{ Object.keys(localStorage)
+        .filter(function(k){return k.indexOf(CK)===0;})
+        .forEach(function(k){localStorage.removeItem(k);}); }catch(e){}
+        load(); });
+    });
+  }
+
+  function load(){
+    document.querySelectorAll(".dwx .wxgrid").forEach(function(g){
+      g.innerHTML = '<p class="wxload">날씨 불러오는 중…</p>';
+    });
+
+    var now = new Date(); now.setHours(0,0,0,0);
+    var years = pastYears(now);
+
+    /* ① 예년 평균 (지난 3년 5/9~5/21 실측) — 항상 기본값 */
+    var jobs = years.map(function(y){
+      return fetchRange("archive",
+        dstr(y,TRIP_M,TRIP_D1), dstr(y,TRIP_M,TRIP_D1+NDAYS-1), NDAYS, 60*86400e3)
+        .catch(function(){ return null; });
+    });
+
+    /* ② 여행일이 예보 범위(오늘 ~ +15일) 안에 들어오면 그 날들만 실제 예보로 교체 */
+    var tS = tripDate(0), tE = tripDate(NDAYS-1);
+    var wE = new Date(now.getTime() + 15*86400000);
+    var fS = new Date(Math.max(tS.getTime(), now.getTime()));
+    var fE = new Date(Math.min(tE.getTime(), wE.getTime()));
+    var fcOff = Math.round((fS - tS)/86400000);
+    var fcN   = Math.round((fE - fS)/86400000) + 1;
+    var fcJob = (fcN > 0 && fE >= fS && fS <= tE)
+      ? fetchRange("forecast",
+          dstr(fS.getFullYear(),fS.getMonth()+1,fS.getDate()),
+          dstr(fE.getFullYear(),fE.getMonth()+1,fE.getDate()),
+          fcN, 3*3600e3).catch(function(){ return null; })
+      : Promise.resolve(null);
+
+    Promise.all([Promise.all(jobs), fcJob]).then(function(r){
+      var ok = r[0].filter(Boolean), fc = r[1];
+      if(!ok.length && !fc){ fail("날씨 데이터를 불러오지 못했습니다."); return; }
+
+      var data = ok.length ? merge(ok) : {};
+      var nFc = 0;
+      if(fc){
+        ORDER.forEach(function(id){
+          if(!fc[id]) return;
+          if(!data[id]) data[id] = {tz:fc[id].tz, ab:fc[id].ab, days:[]};
+          fc[id].days.forEach(function(d,n){
+            if(!d || !d.t || !d.t.length) return;
+            d.src = "forecast";
+            data[id].days[fcOff+n] = d;
+          });
+        });
+        nFc = fcN;
+      }
+
+      var any = data[ORDER[0]] || data[Object.keys(data)[0]];
+      var tzab = (any && any.ab) ? any.ab : "CEST";
+      var info;
+      if(nFc >= NDAYS){
+        info = '🔴 <b>실제 예보</b> · Open-Meteo · 현지시각 '+esc(tzab)+' (UTC+2) 기준';
+      }else if(nFc > 0){
+        info = '앞의 '+nFc+'일은 <b>실제 예보</b>, 나머지는 <b>예년 평균('
+             + years.slice().sort().join("·")+'년 같은 날짜 실측 평균)</b>입니다 · '
+             + 'Open-Meteo · 현지시각 '+esc(tzab)+' (UTC+2) 기준';
+      }else{
+        info = '2027년 5월은 아직 예보 범위(16일) 밖이라 <b>최근 '+years.length+'년('
+             + years.slice().sort().join("·")+') 같은 날짜 실측치의 평균</b>을 보여줍니다 · '
+             + 'Open-Meteo · 현지시각 '+esc(tzab)+' — 스페인·프랑스 모두 5월엔 '+esc(tzab)
+             + '(UTC+2) · 출발 15일 전부터 실제 예보로 자동 전환됩니다';
+      }
+      render(data, info);
+    }).catch(function(){ fail("날씨 데이터를 불러오지 못했습니다."); });
+  }
+
+  /* ── 자리 만들기: 지도 다음, 명소 앞 ── */
+  function mount(){
+    document.querySelectorAll(".dextra").forEach(function(box){
+      var d = +box.dataset.day; if(!DAY[d]) return;
+      if(box.querySelector(".dwx")) return;
+      var el = document.createElement("div");
+      el.className = "dwx"; el.dataset.day = d;
+      el.innerHTML = '<h4>🌤 DAY '+d+' 날씨 <small>· 출발지 &amp; 도착지 · 24시간 기온</small></h4>'
+        + '<div class="wxgrid"><p class="wxload">날씨 불러오는 중…</p></div>'
+        + '<p class="wxnote"></p>';
+      var spots = box.querySelector(".dspots");
+      if(spots) box.insertBefore(el, spots); else box.appendChild(el);
+    });
+    load();
+  }
+
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",mount);
+  else mount();
 })();
 
 </script>
