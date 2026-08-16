@@ -296,6 +296,136 @@
   section[id]{scroll-margin-top:10px}
 
   @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+  /* ══════════════════════════════════════════════════════════
+     날짜별 경로 지도 + 명소 프리뷰 캐러셀 + 확대 뷰어
+     ══════════════════════════════════════════════════════════ */
+  .dextra{border-top:1px dashed var(--line)}
+  .dextra h4{font-size:.8rem;color:var(--camino-blue);font-weight:700;margin-bottom:8px;
+    display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .dextra h4 small{color:var(--ink-soft);font-weight:400}
+
+  /* ── 경로 지도 ── */
+  .dmapbox{padding:12px 14px 14px}
+  .dmap{display:block;width:100%;padding:0;border:1px solid var(--line);background:var(--stone);
+    border-radius:12px;overflow:hidden;position:relative;cursor:zoom-in;font-family:inherit;
+    box-shadow:0 6px 18px rgba(21,42,85,.10);transition:transform .25s ease,box-shadow .25s ease;
+    -webkit-tap-highlight-color:transparent}
+  .dmap:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(21,42,85,.18)}
+  .dmap img{display:block;width:100%;height:auto}
+  .dmap .zhint{position:absolute;right:9px;bottom:9px;background:rgba(21,42,85,.86);color:#fff;
+    font-size:.68rem;font-weight:600;border-radius:20px;padding:4px 11px;letter-spacing:.02em;
+    pointer-events:none;display:flex;align-items:center;gap:5px}
+  .dmap .dtag{position:absolute;left:9px;top:9px;background:var(--flecha);color:#3B2E00;
+    font-size:.64rem;font-weight:700;border-radius:20px;padding:3px 10px;letter-spacing:.06em;
+    pointer-events:none}
+  .dmap.err{cursor:default;padding:26px 14px;display:flex;align-items:center;justify-content:center;
+    border-style:dashed;color:#A79E86;font-size:.76rem;text-align:center;line-height:1.6}
+  .dmap.err:hover{transform:none;box-shadow:none}
+  .dmap-cap{margin-top:7px;font-size:.7rem;color:var(--ink-soft);text-align:right}
+
+  /* ── 명소 캐러셀 ── */
+  .dspots{padding:2px 14px 16px}
+  .spotwrap{position:relative}
+  .strack{display:grid;grid-auto-flow:column;grid-auto-columns:calc((100% - 2*12px)/3);gap:12px;
+    overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;
+    padding:4px 2px 10px;-webkit-overflow-scrolling:touch}
+  .strack::-webkit-scrollbar{display:none}
+  @media(max-width:900px){ .strack{grid-auto-columns:calc((100% - 12px)/2)} }
+  @media(max-width:600px){ .strack{grid-auto-columns:88%} }
+
+  .scard{scroll-snap-align:start;display:flex;flex-direction:column;text-align:left;padding:0;
+    background:#fff;border:1px solid var(--line);border-radius:13px;overflow:hidden;cursor:pointer;
+    font-family:inherit;color:inherit;box-shadow:0 4px 14px rgba(21,42,85,.07);
+    transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease;
+    -webkit-tap-highlight-color:transparent}
+  .scard:hover{transform:translateY(-3px);box-shadow:0 12px 24px rgba(21,42,85,.15);border-color:#C3BCA6}
+  .sthumb{display:block;position:relative;aspect-ratio:4/3;background:linear-gradient(135deg,#E7E3D6,#D9D3C2);overflow:hidden}
+  @supports not (aspect-ratio:4/3){ .sthumb{height:0;padding-bottom:75%} }
+  .sthumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;
+    opacity:0;transition:opacity .5s ease,transform 4s ease}
+  .sthumb img.on{opacity:1}
+  .scard:hover .sthumb img{transform:scale(1.05)}
+  .sthumb::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(to top,rgba(15,20,35,.55) 0%,transparent 42%)}
+  .sidx{position:absolute;left:8px;top:8px;z-index:2;background:rgba(21,42,85,.85);color:#fff;
+    font-size:.6rem;font-weight:700;letter-spacing:.08em;border-radius:20px;padding:3px 9px}
+  .szoom{position:absolute;right:8px;bottom:8px;z-index:2;color:#fff;font-size:.66rem;font-weight:600;
+    background:rgba(21,42,85,.6);border-radius:20px;padding:3px 9px;backdrop-filter:blur(3px)}
+  .sload{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    color:#A79E86;font-size:.68rem;letter-spacing:.04em}
+  .sbody{padding:10px 12px 12px;display:flex;flex-direction:column;gap:3px;flex:1}
+  .sbody b{display:block;font-family:'Gowun Batang',serif;font-size:.98rem;line-height:1.35;color:var(--ink)}
+  .sbody .sorig{display:block;font-size:.68rem;color:var(--rioja);font-weight:600;letter-spacing:.01em}
+  .sbody .sdesc{font-size:.78rem;color:var(--ink-soft);line-height:1.62;margin-top:4px;
+    display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .smore{display:block;margin-top:auto;padding-top:8px;font-size:.66rem;color:var(--camino-blue);font-weight:600}
+
+  .sarrow{position:absolute;top:34%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;
+    border:1px solid var(--line);background:rgba(255,255,255,.94);color:var(--camino-blue);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:4;
+    box-shadow:0 4px 12px rgba(21,42,85,.18);font-size:1.1rem;line-height:1;padding:0;
+    transition:background .2s,opacity .2s}
+  .sarrow:hover{background:var(--flecha);border-color:var(--flecha);color:#3B2E00}
+  .sarrow[disabled]{opacity:.28;cursor:default}
+  .sarrow.prev{left:-6px}
+  .sarrow.next{right:-6px}
+  @media(max-width:600px){ .sarrow{width:34px;height:34px} .sarrow.prev{left:-4px} .sarrow.next{right:-4px} }
+
+  .sdots{display:flex;gap:5px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:2px}
+  .sdots i{width:6px;height:6px;border-radius:50%;background:var(--line);transition:all .25s}
+  .sdots i.on{background:var(--camino-blue);width:16px;border-radius:4px}
+  .scount{font-size:.68rem;color:var(--ink-soft);margin-left:8px;font-variant-numeric:tabular-nums}
+
+  /* ── 확대 뷰어 (지도 · 명소 공용) ── */
+  .cvw{position:fixed;inset:0;z-index:120;background:rgba(11,16,30,.96);display:none;
+    flex-direction:column;-webkit-tap-highlight-color:transparent}
+  .cvw.show{display:flex}
+  .cv-top{display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 10px) 14px 10px;
+    color:#fff;flex:0 0 auto}
+  .cv-badge{background:var(--flecha);color:#3B2E00;font-size:.64rem;font-weight:700;border-radius:20px;
+    padding:3px 10px;letter-spacing:.06em;white-space:nowrap}
+  .cv-ttl{font-family:'Gowun Batang',serif;font-size:.98rem;font-weight:700;flex:1;min-width:0;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .cv-x{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;width:34px;
+    height:34px;border-radius:50%;cursor:pointer;font-size:1rem;line-height:1;flex:0 0 auto;
+    display:flex;align-items:center;justify-content:center;font-family:inherit}
+  .cv-x:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
+  .cv-stage{flex:1;min-height:0;position:relative;overflow:hidden;display:flex;
+    align-items:center;justify-content:center;cursor:zoom-in;touch-action:none}
+  .cv-stage.grabbing{cursor:grabbing}
+  .cv-stage img{max-width:100%;max-height:100%;display:block;user-select:none;-webkit-user-drag:none;
+    transform-origin:center center;will-change:transform}
+  .cv-spin{position:absolute;color:#8FA3C8;font-size:.78rem;letter-spacing:.05em}
+  .cv-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;
+    border:1px solid rgba(255,255,255,.32);background:rgba(11,16,30,.6);color:#fff;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;font-size:1.3rem;line-height:1;z-index:3;
+    backdrop-filter:blur(4px);font-family:inherit;padding:0}
+  .cv-nav:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
+  .cv-nav.prev{left:10px} .cv-nav.next{right:10px}
+  .cv-nav[hidden]{display:none}
+  .cv-cap{flex:0 0 auto;max-height:34vh;overflow-y:auto;touch-action:pan-y;-webkit-overflow-scrolling:touch;padding:12px 16px;color:#E7ECF6;
+    background:rgba(255,255,255,.05);border-top:1px solid rgba(255,255,255,.12)}
+  .cv-cap b{display:block;font-family:'Gowun Batang',serif;font-size:1.05rem;color:#fff;margin-bottom:2px}
+  .cv-cap .cv-orig{display:block;font-size:.72rem;color:var(--flecha-soft);font-weight:600;margin-bottom:7px}
+  .cv-cap p{font-size:.83rem;line-height:1.75;color:#C6D0E4}
+  .cv-cap .cv-src{display:inline-block;margin-top:9px;font-size:.66rem;color:#8FA3C8;text-decoration:none;
+    border-bottom:1px dotted #56698F}
+  .cv-cap[hidden]{display:none}
+  .cv-bar{flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:8px;
+    padding:9px 14px calc(env(safe-area-inset-bottom,0px) + 11px);background:rgba(11,16,30,.9)}
+  .cv-bar button{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.28);color:#fff;
+    border-radius:999px;padding:6px 14px;font-size:.78rem;cursor:pointer;font-family:inherit;white-space:nowrap}
+  .cv-bar button:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
+  .cv-zl{color:#C6D0E4;font-size:.72rem;font-variant-numeric:tabular-nums;min-width:52px;text-align:center}
+  .cv-cnt{color:#8FA3C8;font-size:.72rem;margin-left:6px;font-variant-numeric:tabular-nums}
+  @media(max-width:600px){
+    .cv-bar button{padding:6px 11px;font-size:.72rem}
+    .cv-cap p{font-size:.8rem}
+    .cv-nav{width:38px;height:38px}
+  }
+  @media print{ .cvw{display:none!important} .sarrow{display:none} }
+
 </style>
 </head>
 <body id="top">
@@ -399,6 +529,7 @@
     </aside>
   </div>
   <div class="dorder"><b>경로 순서</b> 생장 (Saint-Jean-Pied-de-Port) → 오리손 (Orisson) → 론세스바예스 (Roncesvalles) → 수비리 (Zubiri)</div>
+  <div class="dextra" data-day="1"></div>
   <footer class="dfoot">누적 48.0 km · 남은 760.5 km</footer>
 </article>
 
@@ -418,6 +549,7 @@
     </aside>
   </div>
   <div class="dorder"><b>경로 순서</b> 수비리 (Zubiri) → 팜풀로나 (Pamplona) → 푸엔테 라 레이나 (Puente la Reina) → 에스떼야 (Estella)</div>
+  <div class="dextra" data-day="2"></div>
   <footer class="dfoot">누적 113.9 km · 남은 694.6 km</footer>
 </article>
 
@@ -437,6 +569,7 @@
     </aside>
   </div>
   <div class="dorder"><b>경로 순서</b> 에스떼야 (Estella) → 로스 아르꼬스 (Los Arcos) → 로그로뇨 (Logroño) → 나베레테 (Navarrete)</div>
+  <div class="dextra" data-day="3"></div>
   <footer class="dfoot">누적 175.2 km · 남은 633.3 km</footer>
 </article>
 
@@ -456,6 +589,7 @@
     </aside>
   </div>
   <div class="dorder"><b>경로 순서</b> 나베레테 (Navarrete) → 나헤라 (Nájera) → 산토 도밍고 데 라 깔사다 (Santo Domingo de la Calzada) → 벨로라도 (Belorado)</div>
+  <div class="dextra" data-day="4"></div>
   <footer class="dfoot">누적 234.5 km · 남은 574.0 km</footer>
 </article>
 
@@ -475,6 +609,7 @@
     </aside>
   </div>
   <div class="dorder"><b>경로 순서</b> 벨로라도 (Belorado) → 산 후안 데 오르떼가 (San Juan de Ortega) → 부르고스 (Burgos) → 오르니요스 델 까미노 (Hornillos del Camino) → 키스트로헤리스 (Castrojeriz)</div>
+  <div class="dextra" data-day="5"></div>
   <footer class="dfoot">누적 331.0 km · 남은 477.5 km</footer>
 </article>
 
@@ -494,6 +629,7 @@
     </aside>
   </div>
   <div class="dorder"><b>경로 순서</b> 키스트로헤리스 (Castrojeriz) → 프로미스따 (Frómista) → 까리온 데 로스 꼰데스 (Carrión de los Condes) → 깔사디야 데 라 쿠에사 (Calzadilla de la Cueza) → 사아군 (Sahagún)</div>
+  <div class="dextra" data-day="6"></div>
   <footer class="dfoot">누적 414.5 km · 남은 394.0 km</footer>
 </article>
 
@@ -513,6 +649,7 @@
     </aside>
   </div>
   <div class="dorder"><b>경로 순서</b> 사아군 (Sahagún) → 엘 부르고 라네로 (El Burgo Ranero) → 만시야 데 라스 물라스 (Mansilla de las Mulas) → 레온 (León)</div>
+  <div class="dextra" data-day="7"></div>
   <footer class="dfoot">누적 482.5 km · 남은 326.0 km</footer>
 </article>
 
@@ -534,6 +671,7 @@
       </ul>
     </div>
   </div>
+  <div class="dextra" data-day="8"></div>
   <footer class="dfoot">누적 482.5 km · 남은 326.0 km — 여기서 절반 이상을 이미 왔습니다</footer>
 </article>
 
@@ -553,6 +691,7 @@
     </aside>
   </div>
   <div class="dorder"><b>경로 순서</b> 레온 (León) → 산 마르틴 델 까미노 (San Martín del Camino) → 아스토르가 (Astorga) → 라바날 델 까미노 (Rabanal del Camino)</div>
+  <div class="dextra" data-day="9"></div>
   <footer class="dfoot">누적 556.5 km · 남은 252.0 km</footer>
 </article>
 
@@ -572,6 +711,7 @@
     </aside>
   </div>
   <div class="dorder"><b>경로 순서</b> 라바날 델 까미노 (Rabanal del Camino) → 몰리나세까 (Molinaseca) → 폰페라다 (Ponferrada) → 까까벨로스 (Cacabelos) → 베가 데 발까르세 (Vega de Valcarce)</div>
+  <div class="dextra" data-day="10"></div>
   <footer class="dfoot">누적 632.0 km · 남은 176.5 km</footer>
 </article>
 
@@ -591,6 +731,7 @@
     </aside>
   </div>
   <div class="dorder"><b>경로 순서</b> 베가 데 발까르세 (Vega de Valcarce) → 오 세브레이로 (O Cebreiro) → 뜨리아까스떼야 (Triacastela) → 사리아 (Sarria)</div>
+  <div class="dextra" data-day="11"></div>
   <footer class="dfoot">누적 692.0 km · 남은 116.5 km</footer>
 </article>
 
@@ -610,6 +751,7 @@
     </aside>
   </div>
   <div class="dorder"><b>경로 순서</b> 사리아 (Sarria) → 뽀르또마린 (Portomarín) → 빨라스 데 레이 (Palas de Rei) → 메리데 (Melide) → 아르수아 (Arzúa)</div>
+  <div class="dextra" data-day="12"></div>
   <footer class="dfoot">누적 768.5 km · 남은 40.0 km</footer>
 </article>
 
@@ -629,6 +771,7 @@
     </aside>
   </div>
   <div class="dorder"><b>경로 순서</b> 아르수아 (Arzúa) → 뻬드로우소 (O Pedrouzo) → 산티아고 대성당 (Santiago de Compostela)</div>
+  <div class="dextra" data-day="13"></div>
   <footer class="dfoot">누적 808.5 km · ⛿ 완주!</footer>
 </article>
   </div>
@@ -2138,6 +2281,609 @@ const PHOTOS = {
     });
   });
 })();
+</script>
+
+<!-- ══════ DAY별 경로 지도 + 명소 프리뷰 캐러셀 ══════ -->
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   DAY별 명소 데이터
+   k=한글명 · o=현지명(스페인어/프랑스어) · e=영문명 · d=한글 설명
+   w="위키언어|문서제목"  q=위키미디어 커먼즈 검색어(사진 예비 검색)
+   ══════════════════════════════════════════════════════════════════════ */
+var CAMINO_SPOTS = {
+1:[
+ {k:"생장피에드포르 구시가지",o:"Saint-Jean-Pied-de-Port",e:"Saint-Jean-Pied-de-Port Old Town",w:"fr|Saint-Jean-Pied-de-Port",q:"Saint-Jean-Pied-de-Port rue de la Citadelle",
+  d:"프랑스 바스크 지방의 붉은 사암 마을로, 카미노 프란세스 800km가 시작되는 출발점입니다. 성벽으로 둘러싸인 구시가지의 시타델 언덕에 오르면 넘어야 할 피레네 산맥이 한눈에 들어옵니다. 순례자 사무소에서 크레덴시알(순례자 여권)을 발급받고 첫 세요(도장)를 찍는 곳입니다."},
+ {k:"오리송 전망대",o:"Orisson",e:"Orisson Viewpoint",w:"|",q:"Orisson Route Napoleon Pyrenees",
+  d:"생장에서 나폴레옹 루트를 8km 남짓 치고 올라간 해발 약 800m 지점의 산장 겸 전망대입니다. 발아래로 초원과 계곡이 겹겹이 펼쳐지고 양떼가 풀을 뜯는 풍경이 이어집니다. 첫날 가장 힘든 오르막에 대한 보상 같은 장소라 잠시 멈춰 숨을 고르기 좋습니다."},
+ {k:"론세스바예스 왕립 수도원",o:"Real Colegiata de Santa María de Roncesvalles",e:"Royal Collegiate Church of Roncesvalles",w:"es|Real Colegiata de Roncesvalles",q:"Colegiata de Roncesvalles",
+  d:"피레네를 넘어 스페인 땅에서 처음 만나는 13세기 고딕 수도원입니다. 은과 보석으로 장식된 성모상, 산초 7세 왕의 무덤, 롤랑의 전설이 깃든 곳입니다. 매일 저녁 순례자 미사와 여러 언어로 진행되는 축복 기도가 열려 순례의 시작을 실감하게 합니다."},
+ {k:"수비리 중세 다리",o:"Puente de la Rabia",e:"Bridge of the Rabies",w:"|",q:"Puente de la Rabia Zubiri",
+  d:"아르가 강을 건너 수비리 마을로 들어가는 14세기 고딕 다리입니다. 가축을 이 다리 아래 교각을 세 바퀴 돌게 하면 광견병이 낫는다는 전설에서 '라비아(광견병) 다리'라는 이름이 붙었습니다. 첫날 48km, 획득고도 1,350m를 마무리하는 상징적인 도착 지점입니다."}
+],
+2:[
+ {k:"팜플로나 대성당",o:"Catedral de Santa María la Real de Pamplona",e:"Pamplona Cathedral",w:"es|Catedral de Pamplona",q:"Catedral de Pamplona claustro",
+  d:"신고전주의 파사드 뒤에 15세기 고딕 본당과 스페인에서 손꼽히는 아름다운 회랑을 감추고 있는 대성당입니다. 나바라 왕 카를로스 3세 부부의 설화석고 무덤이 본당 중앙에 놓여 있습니다. 부속 교구 박물관(Occidens)까지 둘러보면 팜플로나에서 가장 볼거리가 많은 곳입니다."},
+ {k:"카스티요 광장",o:"Plaza del Castillo",e:"Castle Square",w:"es|Plaza del Castillo (Pamplona)",q:"Plaza del Castillo Pamplona",
+  d:"팜플로나 시민 생활의 중심이 되는 아케이드 광장입니다. 헤밍웨이가 소설 《태양은 다시 떠오른다》를 쓰며 즐겨 앉았던 카페 이루냐가 이 광장에 있습니다. 산 페르민 축제 때 소몰이가 지나는 골목들이 이곳에서 사방으로 뻗어 나갑니다."},
+ {k:"푸엔테 라 레이나 로마네스크 다리",o:"Puente Románico de Puente la Reina",e:"Romanesque Bridge of Puente la Reina",w:"es|Puente la Reina",q:"Puente la Reina puente romanico",
+  d:"11세기 나바라 왕비가 순례자를 위해 놓아 마을 이름까지 '왕비의 다리'가 된 여섯 아치의 로마네스크 다리입니다. 프랑스에서 내려온 여러 길과 아라곤 길이 바로 이 지점에서 하나로 합쳐집니다. 카미노를 상징하는 가장 유명한 다리로, 강물에 비친 아치가 사진 포인트입니다."},
+ {k:"에스테야 구시가지",o:"Casco Antiguo de Estella",e:"Estella Old Town",w:"es|Estella-Lizarra",q:"Estella Navarra casco antiguo",
+  d:"'북쪽의 톨레도'라 불릴 만큼 로마네스크 건축이 밀집한 중세 도시입니다. 스페인에 몇 남지 않은 로마네스크 왕궁인 나바라 왕궁과 산 페드로 데 라 루아 성당의 회랑이 대표 볼거리입니다. 에가 강을 낀 좁은 골목과 계단길이 그대로 남아 있어 하루를 마무리하기 좋습니다."}
+],
+3:[
+ {k:"이라체 수도원",o:"Monasterio de Irache",e:"Irache Monastery",w:"es|Monasterio de Irache",q:"Monasterio de Irache",
+  d:"10세기부터 순례자를 돌보아 온 베네딕토회 수도원으로, 로마네스크 교회에 르네상스 회랑이 더해진 구조입니다. 16세기에는 대학으로도 쓰였을 만큼 이 지역 학문의 중심이었습니다. 지금은 조용한 회랑을 자유롭게 둘러볼 수 있어 아침 라이딩의 첫 쉼표가 됩니다."},
+ {k:"이라체 와인 분수",o:"Fuente del Vino de Irache",e:"Irache Wine Fountain",w:"|",q:"Fuente del vino Irache bodegas",
+  d:"보데가스 이라체가 순례자에게 와인을 무료로 내어주는 벽면 수도꼭지입니다. 왼쪽에서는 리오하 레드와인이, 오른쪽에서는 물이 나옵니다. \"산티아고까지 힘차게 가려거든 이 샘에서 한 잔\"이라는 문구가 새겨져 있지만, 자전거 순례자는 라이딩 중이니 상징적으로 한 모금만 권합니다."},
+ {k:"로스 아르코스 산타 마리아 성당",o:"Iglesia de Santa María de Los Arcos",e:"Church of Santa María de Los Arcos",w:"es|Iglesia de Santa María de Los Arcos",q:"Iglesia Santa Maria Los Arcos Navarra retablo",
+  d:"작은 마을 규모에 비해 놀랍도록 화려한 성당으로, 카미노의 '숨은 보석'으로 불립니다. 금빛으로 뒤덮인 바로크 제단화와 회전하는 듯한 장식이 문을 여는 순간 압도합니다. 고딕 회랑과 르네상스 종탑까지 양식이 층층이 쌓여 있습니다."},
+ {k:"로그로뇨 산타 마리아 라 레돈다 공동대성당",o:"Concatedral de Santa María de la Redonda",e:"Co-Cathedral of Santa María de la Redonda",w:"es|Concatedral de Santa María de la Redonda",q:"Concatedral Santa Maria la Redonda Logrono",
+  d:"'쌍둥이 탑'이라 불리는 두 개의 바로크 탑이 인상적인 라 리오하의 대표 성당입니다. 원형 로마네스크 교회 자리에 세워져 '라 레돈다(둥근)'라는 이름이 붙었습니다. 내부에 미켈란젤로 화풍의 십자가 그림이 소장되어 있습니다."},
+ {k:"로그로뇨 구시가지",o:"Casco Antiguo de Logroño",e:"Logroño Old Town",w:"es|Logroño",q:"Logrono calle Laurel pinchos",
+  d:"라 리오하 와인의 수도이자 카미노에서 손꼽히는 미식 도시입니다. 저녁이면 라우렐 거리(Calle Laurel)의 수십 개 바가 저마다 한 가지 핀초만 전문으로 내놓습니다. 버섯 꼬치, 감자 요리에 리오하 와인 한 잔을 곁들이며 순례 중 가장 즐거운 저녁을 보낼 수 있습니다."}
+],
+4:[
+ {k:"나헤라 산타 마리아 라 레알 수도원",o:"Monasterio de Santa María la Real de Nájera",e:"Monastery of Santa María la Real of Nájera",w:"es|Monasterio de Santa María la Real (Nájera)",q:"Monasterio Santa Maria la Real Najera claustro",
+  d:"붉은 사암 절벽 아래 동굴 위에 세워진 11세기 왕립 수도원입니다. 나바라와 카스티야 왕들이 잠든 판테온, 레이스처럼 정교한 '기사의 회랑', 16세기 성가대석 조각이 백미입니다. 절벽과 건물이 한 몸처럼 붙어 있는 독특한 풍경을 보여줍니다."},
+ {k:"산토 도밍고 데 라 칼사다 대성당",o:"Catedral de Santo Domingo de la Calzada",e:"Santo Domingo de la Calzada Cathedral",w:"es|Catedral de Santo Domingo de la Calzada",q:"Catedral Santo Domingo de la Calzada gallinero",
+  d:"성당 안에서 살아 있는 흰 수탉과 암탉을 기르는, 세계에서 유일한 대성당입니다. 억울하게 처형당한 순례자를 성인이 살려냈다는 '닭의 기적' 전설에서 비롯된 전통입니다. 순례자를 위해 길과 다리를 놓은 성 도밍고의 무덤과 로마네스크 후진도 함께 볼 수 있습니다."},
+ {k:"라 리오하 포도밭",o:"Viñedos de La Rioja",e:"La Rioja Vineyards",w:"es|La Rioja (España)",q:"La Rioja vineyards landscape",
+  d:"나헤라에서 벨로라도까지 붉은 흙과 포도나무의 물결이 끝없이 이어집니다. 5월이면 새순이 올라와 줄줄이 초록빛으로 물들고, 멀리 눈이 남은 시에라 데 라 데만다 산맥이 배경이 됩니다. 자전거 속도로 달릴 때 가장 아름다운 구간 중 하나입니다."}
+],
+5:[
+ {k:"산 후안 데 오르테가 수도원",o:"Monasterio de San Juan de Ortega",e:"Monastery of San Juan de Ortega",w:"es|San Juan de Ortega (Burgos)",q:"Iglesia San Juan de Ortega Burgos",
+  d:"험한 산길에 다리와 순례자 숙소를 지어 길을 닦은 성 후안을 기리는 12세기 로마네스크 성당입니다. 춘분과 추분 무렵 오후 햇빛이 수태고지 주두를 정확히 비추는 '빛의 기적'으로 유명합니다. 깊은 참나무 숲 한가운데라 인적이 드물고 고요합니다."},
+ {k:"부르고스 대성당",o:"Catedral de Santa María de Burgos",e:"Burgos Cathedral",w:"es|Catedral de Burgos",q:"Catedral de Burgos exterior",
+  d:"유네스코 세계유산이자 스페인 고딕 건축의 정점으로 꼽히는 대성당입니다. 별처럼 뚫린 팔각 랜턴 돔 아래에 엘 시드 부부의 무덤이 있고, 황금 계단과 파피모스카 시계 인형이 유명합니다. 카미노 전체에서 가장 압도적인 건축물이라 시간을 넉넉히 쓸 만합니다."},
+ {k:"부르고스 구시가지",o:"Casco Antiguo de Burgos",e:"Burgos Old Town",w:"es|Burgos",q:"Burgos Arco de Santa Maria",
+  d:"아를란손 강변 산책로와 개선문 같은 산타 마리아 문, 엘 시드 기마상이 이어지는 도시입니다. 강가 플라타너스 그늘 아래 벤치가 많아 자전거를 세우고 쉬기 좋습니다. 모르시야(선지 순대)와 부르고스 프레시 치즈가 이 도시의 대표 먹거리입니다."},
+ {k:"오르니요스 델 카미노",o:"Hornillos del Camino",e:"Hornillos del Camino",w:"es|Hornillos del Camino",q:"Hornillos del Camino village",
+  d:"메세타 한가운데 길 하나만 관통하는 전형적인 카미노 마을입니다. 밀밭 사이에 낮게 엎드린 돌집들과 종탑, 그리고 마을 어귀의 수탉 조형물이 전부입니다. 순례길 특유의 고요함과 단순함이 가장 잘 드러나는 곳입니다."},
+ {k:"카스트로헤리스 성",o:"Castillo de Castrojeriz",e:"Castrojeriz Castle",w:"es|Castrojeriz",q:"Castillo de Castrojeriz",
+  d:"마을 위 원뿔형 언덕에 서 있는 9세기 성채 유적입니다. 해 질 무렵 올라가면 끝없이 펼쳐진 메세타 평원과 마을의 붉은 지붕이 황금빛으로 물듭니다. 이날 96.5km를 달린 뒤 맞이하는 보상 같은 전망입니다."}
+],
+6:[
+ {k:"프로미스타 산 마르틴 성당",o:"Iglesia de San Martín de Frómista",e:"Church of San Martín de Frómista",w:"es|Iglesia de San Martín de Tours (Frómista)",q:"Iglesia San Martin de Fromista",
+  d:"1066년에 세워진 스페인 로마네스크 건축의 교과서 같은 성당입니다. 군더더기 없는 완벽한 비례와 원통형 탑 두 개가 특징입니다. 처마를 따라 사람·동물·괴물을 새긴 300여 개의 칸세요 조각을 하나씩 찾아보는 재미가 있습니다."},
+ {k:"카리온 산타 마리아 델 카미노 성당",o:"Iglesia de Santa María del Camino",e:"Church of Santa María del Camino",w:"es|Iglesia de Santa María del Camino (Carrión de los Condes)",q:"Santa Maria del Camino Carrion de los Condes",
+  d:"무어인에게 해마다 처녀 100명을 바치던 시절, 황소가 나타나 그들을 구했다는 전설이 남문 조각에 새겨진 12세기 로마네스크 성당입니다. 소박한 외관과 달리 문 주변 조각의 밀도가 대단합니다."},
+ {k:"카리온 데 로스 콘데스",o:"Carrión de los Condes",e:"Carrión de los Condes",w:"es|Carrión de los Condes",q:"Carrion de los Condes San Zoilo",
+  d:"중세에는 만 명이 넘게 살았던 순례길의 중심 도시로, 산 소일로 수도원의 플라테레스크 회랑이 백미입니다. 이곳을 지나면 그늘도 마을도 없는 로마 가도가 17km 이어집니다. 물과 간식을 반드시 채우고 출발해야 하는 지점입니다."},
+ {k:"카스티야 메세타 평원",o:"Meseta Castellana",e:"Castilian Meseta",w:"es|Meseta Central",q:"Meseta Castilla wheat fields Camino",
+  d:"지평선까지 밀밭과 하늘만 이어지는 해발 800m의 고원입니다. 걷는 순례자에게는 가장 힘든 구간이지만, 자전거로는 시원하게 속도를 낼 수 있습니다. 다만 그늘이 없고 맞바람이 변수라 아침 일찍 통과하는 편이 좋습니다."},
+ {k:"사아군 라 페레그리나 성소",o:"Santuario de la Peregrina",e:"Sanctuary of La Peregrina",w:"es|Santuario de la Peregrina",q:"Santuario de la Peregrina Sahagun",
+  d:"무데하르 양식 벽돌 건축이 아름다운 13세기 수도원으로, 언덕 위에서 마을을 내려다봅니다. 사아군은 카미노 프란세스의 지리적 중간 지점이라 이곳에서 '중간 지점 증명서(Carta Peregrina)'를 받을 수 있습니다."}
+],
+7:[
+ {k:"엘 부르고 라네로 산 페드로 성당",o:"Iglesia de San Pedro de El Burgo Ranero",e:"Church of San Pedro",w:"es|El Burgo Ranero",q:"El Burgo Ranero iglesia adobe",
+  d:"흙벽돌(아도베)로 지은 소박한 마을 성당입니다. 종탑 위 황새 둥지와 마을 어귀의 연못이 메세타 마을의 전형적인 풍경을 만듭니다. 화려함은 없지만 순례길이 지나온 시골의 얼굴을 보여주는 곳입니다."},
+ {k:"만시야 데 라스 물라스 성벽",o:"Murallas de Mansilla de las Mulas",e:"Walls of Mansilla de las Mulas",w:"es|Mansilla de las Mulas",q:"Mansilla de las Mulas murallas",
+  d:"12세기 성벽이 상당 부분 그대로 남아 있는 성곽 마을입니다. 두께 2m가 넘는 흙과 자갈 벽이 마을을 감싸고 네 개의 문이 남아 있습니다. 에슬라 강가에 자리해 레온에 들어가기 전 마지막으로 쉬어 가는 곳입니다."},
+ {k:"에슬라강 다리",o:"Puente sobre el Río Esla",e:"Bridge over the Esla River",w:"es|Río Esla",q:"Rio Esla puente Mansilla",
+  d:"만시야를 나서며 건너는 긴 다리로, 두에로 강의 가장 큰 지류인 에슬라 강을 지납니다. 강변 포플러 숲과 물새가 어우러진 초록빛 풍경이 잠시 이어집니다. 메마른 메세타에서 갑자기 물이 나타나는 반가운 구간입니다."},
+ {k:"레온 대성당",o:"Catedral de León",e:"León Cathedral",w:"es|Catedral de León (España)",q:"Catedral de Leon vidrieras",
+  d:"1,800㎡가 넘는 스테인드글라스 덕에 '빛의 대성당'이라 불리는 프랑스식 고딕 걸작입니다. 벽 대신 유리를 세운 듯한 구조라 해가 기울 무렵 들어가면 내부 전체가 색으로 물듭니다. 카미노에서 가장 감동적인 실내로 꼽히는 공간입니다."}
+],
+8:[
+ {k:"레온 대성당",o:"Catedral de León",e:"León Cathedral",w:"es|Catedral de León (España)",q:"Leon cathedral stained glass interior",
+  d:"휴식일이니 서두르지 말고 오디오 가이드를 빌려 천천히 둘러보기를 권합니다. 130개가 넘는 창을 채운 13~15세기 색유리와 장미창, 회랑의 벽화까지 시간이 넉넉해야 제대로 보입니다. 오후 늦은 빛이 가장 아름답습니다."},
+ {k:"산 이시도로 대성당",o:"Real Colegiata de San Isidoro de León",e:"Basilica of San Isidoro",w:"es|Basílica de San Isidoro de León",q:"Panteon Real San Isidoro Leon frescos",
+  d:"'로마네스크의 시스티나 성당'이라 불리는 왕실 판테온 천장화가 있는 성당입니다. 12세기 프레스코가 덧칠 없이 원형 그대로 남아 색이 놀랍도록 선명합니다. 레온 왕국 왕들의 무덤과 성 이시도로의 유해가 안치되어 있습니다."},
+ {k:"카사 보티네스",o:"Casa Botines",e:"Casa Botines",w:"es|Casa Botines",q:"Casa Botines Leon Gaudi",
+  d:"가우디가 바르셀로나 밖에 남긴 몇 안 되는 건물로, 1892년에 지은 네오고딕 양식의 상가 주택입니다. 뾰족한 첨탑과 화강암 외벽이 동화 속 성처럼 보입니다. 앞 벤치에 앉아 있는 가우디 동상 옆자리가 사진 명소입니다."},
+ {k:"산 마르코스 수도원",o:"Convento de San Marcos",e:"Convent of San Marcos",w:"es|Convento de San Marcos (León)",q:"Convento de San Marcos Leon fachada",
+  d:"길이 100m에 달하는 화려한 플라테레스크 파사드를 지닌 옛 순례자 병원으로, 지금은 국영 파라도르 호텔로 쓰입니다. 앞 광장에는 십자가 발치에서 신발을 벗고 쉬는 지친 순례자 동상이 있어 많은 이들이 옆에 앉아 사진을 찍습니다."},
+ {k:"레온 마요르 광장",o:"Plaza Mayor de León",e:"León Main Square",w:"es|Plaza Mayor de León",q:"Plaza Mayor de Leon",
+  d:"17세기 아케이드에 둘러싸인 광장으로 수요일과 토요일에는 장이 섭니다. 광장 주변 바리오 우메도(Barrio Húmedo) 골목은 음료를 시키면 타파스를 무료로 내주는 전통으로 유명합니다. 휴식일 저녁을 보내기에 가장 좋은 동네입니다."},
+ {k:"카스티야 이 레온 현대미술관",o:"MUSAC",e:"MUSAC Contemporary Art Museum",w:"es|Museo de Arte Contemporáneo de Castilla y León",q:"MUSAC Leon museum facade",
+  d:"대성당 스테인드글라스에서 색을 뽑아낸 3,300여 장의 컬러 유리로 파사드를 만든 미술관입니다. 2007년 유럽 현대건축상(미스 반 데어 로에 상)을 받았습니다. 중세로 가득한 하루 끝에 전혀 다른 감각을 얹어 주는 장소입니다."}
+],
+9:[
+ {k:"오르비고 다리",o:"Puente de Órbigo",e:"Órbigo Bridge",w:"es|Hospital de Órbigo",q:"Puente de Orbigo Paso Honroso",
+  d:"20개의 아치가 이어지는 스페인에서 가장 긴 중세 다리 중 하나입니다. 1434년 기사 수에로 데 키뇨네스가 사랑의 맹세를 지키려 한 달 동안 이 다리를 막고 마상 창 시합을 벌인 '명예의 통로(Paso Honroso)'로 유명합니다. 돌바닥이 울퉁불퉁하니 자전거는 속도를 줄이는 편이 좋습니다."},
+ {k:"아스토르가 대성당",o:"Catedral de Santa María de Astorga",e:"Astorga Cathedral",w:"es|Catedral de Astorga",q:"Catedral de Astorga fachada",
+  d:"고딕에서 바로크까지 300년에 걸쳐 지어져 양식이 층층이 쌓인 대성당입니다. 색이 다른 두 개의 사암 탑과 은세공 제단화가 특징입니다. 바로 옆 가우디의 주교궁과 나란히 서 있어 한 프레임에 담을 수 있습니다."},
+ {k:"아스토르가 주교궁",o:"Palacio Episcopal de Astorga",e:"Episcopal Palace of Astorga",w:"es|Palacio Episcopal de Astorga",q:"Palacio Episcopal de Astorga Gaudi",
+  d:"가우디가 설계한 동화 속 성 같은 네오고딕 건물로, 지금은 카미노 박물관으로 쓰입니다. 흰 화강암과 뾰족한 첨탑, 빛이 쏟아지는 내부 아치가 인상적입니다. 아스토르가에서는 초콜릿과 만테카다(버터 카스텔라)도 함께 맛볼 만합니다."},
+ {k:"라바날 델 카미노",o:"Rabanal del Camino",e:"Rabanal del Camino",w:"es|Rabanal del Camino",q:"Rabanal del Camino village",
+  d:"이라고 산으로 오르기 전 마지막 돌담 마을로, 템플 기사단이 순례자를 보호하던 곳입니다. 산타 마리아 성당에서는 베네딕토회 수도사들이 저녁마다 그레고리오 성가로 만과를 드립니다. 해발 1,150m라 5월에도 밤에는 제법 쌀쌀합니다."}
+],
+10:[
+ {k:"철십자가",o:"Cruz de Ferro",e:"Iron Cross",w:"es|Cruz de Ferro",q:"Cruz de Ferro Camino de Santiago",
+  d:"해발 1,505m, 카미노 프란세스의 최고 지점에 서 있는 철 십자가입니다. 순례자들이 고향에서 가져온 돌을 발밑 돌무더기에 내려놓으며 짐과 근심을 함께 두고 가는, 순례길에서 가장 상징적인 장소입니다. 이른 아침에 도착하면 안개 속에 홀로 서 있는 십자가를 만날 수 있습니다."},
+ {k:"몰리나세카 순례자 다리",o:"Puente de los Peregrinos de Molinaseca",e:"Pilgrims' Bridge of Molinaseca",w:"es|Molinaseca",q:"Molinaseca puente peregrinos rio Meruelo",
+  d:"메루엘로 강을 건너는 중세 다리와 강변 천연 수영장이 있는 예쁜 마을입니다. 이라고 산의 가파른 자갈 내리막을 끝낸 직후라 발을 담그고 쉬어 가기에 완벽합니다. 돌바닥 골목과 문장이 새겨진 저택들이 잘 보존되어 있습니다."},
+ {k:"폰페라다 템플 기사단 성",o:"Castillo de los Templarios de Ponferrada",e:"Templar Castle of Ponferrada",w:"es|Castillo de Ponferrada",q:"Castillo de los Templarios Ponferrada",
+  d:"12세기 템플 기사단이 순례자를 보호하기 위해 세운 8,000㎡ 규모의 성입니다. 성벽 위를 걸어 돌 수 있고 내부에는 중세 필사본 복제본 도서관이 전시되어 있습니다. 카미노에서 가장 '성다운 성'이라 자전거를 세우고 들를 만합니다."},
+ {k:"비에르소 포도밭",o:"Viñedos del Bierzo",e:"Bierzo Vineyards",w:"es|El Bierzo",q:"Bierzo vineyards landscape",
+  d:"산으로 둘러싸인 분지의 온화한 기후 덕에 멘시아(Mencía) 품종 레드와인으로 이름난 산지입니다. 폰페라다에서 카카벨로스까지 포도밭과 체리 과수원이 번갈아 이어집니다. 갈리시아로 넘어가기 전 마지막으로 부드러운 풍경을 즐기는 구간입니다."},
+ {k:"카카벨로스",o:"Cacabelos",e:"Cacabelos",w:"es|Cacabelos",q:"Cacabelos Leon village",
+  d:"쿠아 강변의 와인 마을로, 고고학 박물관과 강 건너 킨타 앙구스티아 성소가 있습니다. 다음 날 오 세브레이로 대오르막을 앞두고 물과 먹거리를 넉넉히 보급하기 좋은 지점입니다."}
+],
+11:[
+ {k:"오 세브레이로",o:"O Cebreiro",e:"O Cebreiro",w:"es|O Cebreiro",q:"O Cebreiro village Galicia",
+  d:"해발 1,300m, 갈리시아의 관문이 되는 돌마을입니다. 8km에 걸쳐 이어지는 카미노 최대 난이도의 오르막 끝에 나타나 성취감이 남다릅니다. 안개가 자주 끼는 능선 위 마을 풍경이 비현실적으로 아름다워 많은 순례자가 최고의 장소로 꼽습니다."},
+ {k:"오 세브레이로 산타 마리아 라 레알 성당",o:"Iglesia de Santa María la Real do Cebreiro",e:"Church of Santa María la Real of O Cebreiro",w:"es|Iglesia de Santa María la Real (O Cebreiro)",q:"Iglesia Santa Maria O Cebreiro",
+  d:"9세기에 세워진 카미노에서 가장 오래된 성당 중 하나입니다. 눈보라를 뚫고 미사에 온 농부 앞에서 빵과 포도주가 살과 피로 변했다는 '성배의 기적' 전설이 전해집니다. 그 기적의 성배와 성반이 지금도 이곳에 보관되어 있습니다."},
+ {k:"오 세브레이로 파요사 전통가옥",o:"Pallozas de O Cebreiro",e:"Traditional Pallozas of O Cebreiro",w:"es|Palloza",q:"Palloza O Cebreiro",
+  d:"켈트 시대부터 이어진 타원형 돌집에 짚으로 이엉을 얹은 갈리시아 전통 가옥입니다. 사람과 가축이 한 지붕 아래 살던 구조로, 몇 채는 민속 박물관으로 공개되어 내부를 볼 수 있습니다."},
+ {k:"산 로케 고개",o:"Alto de San Roque",e:"San Roque Pass",w:"|",q:"Alto de San Roque peregrino estatua Camino",
+  d:"해발 1,270m 고개에 바람을 맞으며 걷는 거대한 순례자 청동상이 서 있습니다. 모자를 붙잡고 앞으로 나아가는 자세가 이 구간의 바람을 그대로 보여줍니다. 갈리시아의 산줄기가 겹겹이 펼쳐지는 최고의 전망 포인트입니다."},
+ {k:"트리아카스텔라",o:"Triacastela",e:"Triacastela",w:"es|Triacastela",q:"Triacastela Galicia",
+  d:"'세 개의 성'이라는 이름을 가진 계곡 마을로, 오 세브레이로 내리막이 끝나는 지점입니다. 중세 순례자들은 이곳에서 석회석을 짊어지고 산티아고까지 날라 대성당 건축을 도왔다고 합니다. 사모스 수도원 길과 산실 길이 여기서 갈라집니다."}
+],
+12:[
+ {k:"포르토마린 산 니콜라스 성당",o:"Iglesia de San Nicolás de Portomarín",e:"Church of San Nicolás of Portomarín",w:"es|Iglesia de San Juan de Portomarín",q:"Iglesia San Nicolas Portomarin",
+  d:"댐 건설로 마을이 수몰될 때 돌 하나하나에 번호를 매겨 언덕 위로 옮겨 재조립한 12세기 요새형 성당입니다. 지금도 벽돌에 새겨진 번호를 눈으로 찾아볼 수 있습니다. 장미창과 마태오 마에스트로 화풍의 정문 조각이 볼거리입니다."},
+ {k:"미뇨강",o:"Río Miño",e:"Miño River",w:"es|Río Miño",q:"Portomarin puente rio Mino",
+  d:"갈리시아에서 가장 긴 강으로, 벨레사르 저수지 위로 놓인 긴 다리를 건너 포르토마린으로 들어갑니다. 다리를 건넌 뒤 가파른 계단을 올라야 마을에 닿습니다. 가뭄으로 수위가 낮아지면 물속에 잠긴 옛 마을과 다리의 잔해가 드러납니다."},
+ {k:"팔라스 데 레이 산 티르소 성당",o:"Iglesia de San Tirso de Palas de Rei",e:"Church of San Tirso",w:"es|Palas de Rei",q:"Palas de Rei igrexa San Tirso",
+  d:"12세기 로마네스크 정문이 남아 있는 마을 성당입니다. 이름은 '왕의 궁전'이라는 뜻으로 서고트 왕의 거처가 있었다는 전설에서 유래했습니다. 산티아고까지 남은 거리를 알리는 표석이 촘촘해지는 구간의 중심 마을입니다."},
+ {k:"멜리데 산타 마리아 성당",o:"Iglesia de Santa María de Melide",e:"Church of Santa María of Melide",w:"es|Melide",q:"Santa Maria de Melide igrexa romanica",
+  d:"마을 외곽에 서 있는 12세기 로마네스크 성당으로, 후진 안쪽의 중세 프레스코화가 잘 남아 있습니다. 소박한 규모지만 갈리시아 로마네스크의 정취를 잘 보여줍니다."},
+ {k:"멜리데",o:"Melide",e:"Melide",w:"es|Melide",q:"pulpo a feira Melide pulperia",
+  d:"북쪽에서 내려온 카미노 프리미티보가 합류하는 갈리시아 미식의 중심 마을입니다. 문어를 구리솥에 삶아 나무 접시에 올리고 올리브유와 파프리카 가루를 뿌린 풀포 아 페이라(pulpo á feira)가 명물입니다. 순례자들이 일부러 점심시간을 맞춰 도착하는 곳입니다."},
+ {k:"아르수아",o:"Arzúa",e:"Arzúa",w:"es|Arzúa",q:"Arzua queso Galicia",
+  d:"부드럽고 크리미한 아르수아-우요아(Arzúa-Ulloa) 치즈로 유명한 마을입니다. 산티아고 전 마지막 큰 마을이라 여러 갈래에서 온 순례자들이 한꺼번에 모입니다. 이날 76.5km를 마무리하고 마지막 날을 준비하는 지점입니다."}
+],
+13:[
+ {k:"오 페드로우소",o:"O Pedrouzo",e:"O Pedrouzo",w:"es|O Pino",q:"O Pedrouzo eucalyptus forest Camino",
+  d:"유칼립투스 숲에 둘러싸인, 산티아고 20km 전 마지막 마을입니다. 이른 새벽 숲길로 출발하면 나무 사이로 빛이 스며드는 장면과 함께 특유의 향을 맡을 수 있습니다."},
+ {k:"라바코야",o:"Lavacolla",e:"Lavacolla",w:"es|Lavacolla",q:"Lavacolla Santiago Camino",
+  d:"중세 순례자들이 성지에 들어가기 전 개울에서 몸을 씻던 곳으로, 지명 자체가 '씻다'라는 말에서 유래했습니다. 지금은 산티아고 공항이 자리한 마을이라 하늘로 내려앉는 비행기를 보며 지나게 됩니다."},
+ {k:"몬테 도 고소 · 기쁨의 언덕",o:"Monte do Gozo",e:"Mount of Joy",w:"es|Monte do Gozo",q:"Monte do Gozo monumento peregrinos",
+  d:"대성당의 첨탑이 처음 눈에 들어오는 언덕으로, 순례자들이 환호했다 하여 '기쁨의 산'이라 불립니다. 요한 바오로 2세 방문 기념 조형물과 산티아고를 가리키는 두 순례자 동상이 서 있습니다. 여기서 대성당까지는 내리막 4.5km입니다."},
+ {k:"산티아고 데 콤포스텔라 대성당",o:"Catedral de Santiago de Compostela",e:"Cathedral of Santiago de Compostela",w:"es|Catedral de Santiago de Compostela",q:"Catedral de Santiago de Compostela Obradoiro",
+  d:"808km 순례의 종착점입니다. 마태오 장인의 걸작 '영광의 문'과 천장을 가로지르는 거대한 향로 보타푸메이로로 유명합니다. 정오 순례자 미사에서는 그날 도착한 순례자들의 출발지와 인원이 호명됩니다."},
+ {k:"오브라도이로 광장",o:"Praza do Obradoiro",e:"Obradoiro Square",w:"es|Plaza del Obradoiro",q:"Praza do Obradoiro Santiago",
+  d:"대성당의 바로크 정면을 마주 보는 광장으로, 모든 순례자의 도착 지점입니다. 배낭과 자전거를 내려놓고 바닥에 누워 첨탑을 올려다보는 사람들, 서로 얼싸안는 순례자들을 언제나 볼 수 있습니다. 광장 한가운데 0km 표시가 새겨져 있습니다."},
+ {k:"성 야고보 사도 무덤",o:"Sepulcro del Apóstol Santiago",e:"Tomb of Saint James the Apostle",w:"|",q:"cripta sepulcro apostol Santiago catedral",
+  d:"대성당 중앙 제단 아래 지하 묘실에 은제 유골함으로 모셔진 사도 야고보의 무덤입니다. 제단 뒤 계단을 올라 성인상을 뒤에서 안는 '아브라소' 의식과 함께, 순례자가 마지막으로 치르는 순서입니다. 이어서 순례자 사무소에서 콤포스텔라 증서를 받으면 여정이 완성됩니다."}
+]
+};
+
+window.CAMINO_SPOTS=CAMINO_SPOTS;
+/* ══════════════════════════════════════════════════════════════════════
+   ① DAY별 경로 지도 (탭 → 확대 뷰어)
+   ② DAY별 명소 프리뷰 캐러셀 (좌우 스와이프 / 화살표)
+   ③ 공용 확대 뷰어 (핀치·휠·더블탭 줌 + 드래그 이동 + 좌우 이동)
+   사진은 위키백과 / 위키미디어 커먼즈에서 자동으로 가져옵니다.
+   ══════════════════════════════════════════════════════════════════════ */
+(function(){
+  "use strict";
+  if(!window.CAMINO_SPOTS) return;
+  var SPOTS = window.CAMINO_SPOTS;
+
+  /* 지도 파일 후보 경로 — 첫 번째가 실패하면 차례로 시도 */
+  function mapCands(d){
+    return ["images/day"+d+"-map.png","images/maps/day"+d+"-map.png",
+            "day"+d+"-map.png","maps/day"+d+"-map.png","images/day"+d+"-map.jpg"];
+  }
+  var THUMB_W = 900, BIG_W = 1600;
+
+  function ph(txt){
+    var t=(txt||"").slice(0,22);
+    var svg='<svg xmlns="http://www.w3.org/2000/svg" width="600" height="450">'
+      +'<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">'
+      +'<stop offset="0" stop-color="#E7E3D6"/><stop offset="1" stop-color="#CFC8B4"/></linearGradient></defs>'
+      +'<rect width="600" height="450" fill="url(#g)"/>'
+      +'<text x="300" y="215" font-size="34" text-anchor="middle" fill="#A79E86">&#9873;</text>'
+      +'<text x="300" y="262" font-size="19" text-anchor="middle" fill="#8E8672" font-family="sans-serif">'+t+'</text>'
+      +'</svg>';
+    return "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg);
+  }
+  function bigger(u){
+    if(!u) return u;
+    return u.replace(/\/(\d{2,4})px-/, "/"+BIG_W+"px-");
+  }
+
+  /* ───────── 위키 이미지 수집 ───────── */
+  var listAll=[];
+  Object.keys(SPOTS).forEach(function(d){
+    SPOTS[d].forEach(function(s,i){ s._d=d; s._i=i; s._el=[]; listAll.push(s); });
+  });
+
+  function jget(url){
+    return fetch(url,{mode:"cors",credentials:"omit"}).then(function(r){
+      if(!r.ok) throw 0; return r.json();
+    });
+  }
+  function chunk(a,n){ var o=[],i; for(i=0;i<a.length;i+=n)o.push(a.slice(i,i+n)); return o; }
+
+  function applyImg(s,url,page){
+    s.img=url; s.page=page||s.page||null;
+    s._el.forEach(function(im){ setThumb(im,url); });
+    s._el=[];
+  }
+  function setThumb(im,url){
+    if(!im) return;
+    im.onload=function(){ im.classList.add("on"); var l=im.parentNode.querySelector(".sload"); if(l)l.remove(); };
+    im.onerror=function(){ im.onerror=null; im.src=ph(im.getAttribute("data-kr")||""); };
+    im.src=url;
+  }
+
+  /* 1단계 — 언어별로 문서 제목을 묶어서 한 번에 요청 */
+  function stepTitles(){
+    var byLang={};
+    listAll.forEach(function(s){
+      if(!s.w || s.w.indexOf("|")<0) return;
+      var p=s.w.split("|"), lang=p[0], title=p[1];
+      if(!lang || !title) return;
+      s._lang=lang; s._title=title;
+      (byLang[lang]=byLang[lang]||[]).push(s);
+    });
+    var jobs=[];
+    Object.keys(byLang).forEach(function(lang){
+      chunk(byLang[lang],20).forEach(function(grp){
+        var titles=grp.map(function(s){return s._title;}).join("|");
+        var url="https://"+lang+".wikipedia.org/w/api.php?action=query&format=json&origin=*"
+          +"&prop=pageimages&piprop=thumbnail&pithumbsize="+THUMB_W+"&pilimit=50&redirects=1"
+          +"&titles="+encodeURIComponent(titles);
+        jobs.push(jget(url).then(function(j){
+          var q=j&&j.query; if(!q) return;
+          var chain={};
+          (q.normalized||[]).forEach(function(n){ chain[n.from]=n.to; });
+          (q.redirects||[]).forEach(function(r){ chain[r.from]=r.to; });
+          function res(t){ var n=0; while(chain[t]&&n++<6) t=chain[t]; return t; }
+          var byTitle={};
+          Object.keys(q.pages||{}).forEach(function(k){
+            var p=q.pages[k];
+            byTitle[p.title]={thumb:p.thumbnail?p.thumbnail.source:null,title:p.title};
+          });
+          grp.forEach(function(s){
+            var hit=byTitle[res(s._title)];
+            if(hit&&hit.thumb) applyImg(s,hit.thumb,"https://"+lang+".wikipedia.org/wiki/"+encodeURIComponent(hit.title.replace(/ /g,"_")));
+          });
+        }).catch(function(){}));
+      });
+    });
+    return Promise.all(jobs);
+  }
+
+  /* 2단계 — 못 찾은 항목은 스페인어 위키 검색으로 재시도 */
+  function stepWikiSearch(){
+    var miss=listAll.filter(function(s){return !s.img;});
+    return seq(miss,function(s){
+      var qy=s.q||s.o||s.e;
+      var url="https://es.wikipedia.org/w/api.php?action=query&format=json&origin=*"
+        +"&generator=search&gsrsearch="+encodeURIComponent(qy)+"&gsrlimit=1"
+        +"&prop=pageimages&piprop=thumbnail&pithumbsize="+THUMB_W;
+      return jget(url).then(function(j){
+        var pg=j&&j.query&&j.query.pages; if(!pg) return;
+        var k=Object.keys(pg)[0]; if(!k) return;
+        var p=pg[k];
+        if(p.thumbnail&&p.thumbnail.source)
+          applyImg(s,p.thumbnail.source,"https://es.wikipedia.org/wiki/"+encodeURIComponent((p.title||"").replace(/ /g,"_")));
+      }).catch(function(){});
+    });
+  }
+
+  /* 3단계 — 그래도 없으면 위키미디어 커먼즈 사진 검색 */
+  function stepCommons(){
+    var miss=listAll.filter(function(s){return !s.img;});
+    return seq(miss,function(s){
+      var qy=(s.q||s.o||s.e)+" filetype:bitmap";
+      var url="https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*"
+        +"&generator=search&gsrnamespace=6&gsrlimit=1&gsrsearch="+encodeURIComponent(qy)
+        +"&prop=imageinfo&iiprop=url&iiurlwidth="+THUMB_W;
+      return jget(url).then(function(j){
+        var pg=j&&j.query&&j.query.pages; if(!pg) return;
+        var k=Object.keys(pg)[0]; if(!k) return;
+        var ii=pg[k].imageinfo&&pg[k].imageinfo[0];
+        if(ii&&(ii.thumburl||ii.url))
+          applyImg(s,ii.thumburl||ii.url,"https://commons.wikimedia.org/wiki/"+encodeURIComponent((pg[k].title||"").replace(/ /g,"_")));
+      }).catch(function(){});
+    });
+  }
+
+  /* 요청을 조금씩 나눠 보내 서버에 부담을 주지 않도록 */
+  function seq(arr,fn){
+    var i=0;
+    function next(){
+      if(i>=arr.length) return Promise.resolve();
+      var batch=arr.slice(i,i+4); i+=4;
+      return Promise.all(batch.map(fn)).then(function(){
+        return new Promise(function(r){ setTimeout(r,120); }).then(next);
+      });
+    }
+    return next();
+  }
+
+  function finish(){
+    listAll.forEach(function(s){
+      if(!s.img){ s._el.forEach(function(im){ setThumb(im,ph(s.k)); }); s._el=[]; }
+    });
+  }
+
+  /* ───────── DOM 만들기 ───────── */
+  function esc(t){ return String(t==null?"":t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+
+  function buildMap(box,d){
+    var wrap=document.createElement("div"); wrap.className="dmapbox";
+    var title=dayTitle(d);
+    wrap.innerHTML='<h4>🗺 DAY '+d+' 경로 지도 <small>· 탭하면 크게 볼 수 있습니다</small></h4>'
+      +'<button class="dmap" type="button" aria-label="DAY '+d+' 경로 지도 크게 보기">'
+      +'<span class="dtag">DAY '+d+'</span>'
+      +'<img alt="DAY '+d+' '+esc(title)+' 경로 지도" loading="lazy">'
+      +'<span class="zhint">⤢ 탭하면 확대</span></button>'
+      +'<p class="dmap-cap">DAY '+d+' · '+esc(title)+'</p>';
+    var btn=wrap.querySelector(".dmap"), img=wrap.querySelector("img");
+    var cands=mapCands(d), ci=0;
+    img.onerror=function(){
+      ci++;
+      if(ci<cands.length){ img.src=cands[ci]; return; }
+      img.onerror=null;
+      btn.classList.add("err");
+      btn.innerHTML='지도 이미지를 찾지 못했습니다<br><small style="opacity:.8">'
+        +'images/ 폴더에 <b>day'+d+'-map.png</b> 파일을 넣어 주세요</small>';
+    };
+    img.src=cands[0];
+    btn.addEventListener("click",function(){
+      if(btn.classList.contains("err")) return;
+      openViewer([{img:img.src,big:img.src,k:"DAY "+d+" 경로 지도",o:title,d:"두 손가락으로 확대하거나 +/− 버튼을 눌러 확대할 수 있습니다. 확대한 뒤에는 끌어서 이동하세요.",badge:"DAY "+d}],0);
+    });
+    box.appendChild(wrap);
+  }
+
+  function dayTitle(d){
+    var card=document.getElementById("day"+d);
+    var t=card&&card.querySelector(".dtitle b");
+    return t?t.textContent.trim():"";
+  }
+
+  function buildSpots(box,d){
+    var arr=SPOTS[d]; if(!arr||!arr.length) return;
+    var wrap=document.createElement("div"); wrap.className="dspots";
+    var h='<h4>📍 DAY '+d+' 명소 <small>· 총 '+arr.length+'곳 · 좌우로 넘겨 보세요</small></h4>'
+      +'<div class="spotwrap">'
+      +'<button class="sarrow prev" type="button" aria-label="이전 명소">‹</button>'
+      +'<div class="strack">';
+    arr.forEach(function(s,i){
+      h+='<button class="scard" type="button" data-i="'+i+'">'
+        +'<span class="sthumb">'
+        +'<span class="sload">사진 불러오는 중…</span>'
+        +'<img alt="'+esc(s.k)+'" data-kr="'+esc(s.k)+'" loading="lazy">'
+        +'<span class="sidx">'+("0"+(i+1)).slice(-2)+' / '+("0"+arr.length).slice(-2)+'</span>'
+        +'<span class="szoom">⤢ 크게</span>'
+        +'</span>'
+        +'<span class="sbody">'
+        +'<b>'+esc(s.k)+'</b>'
+        +'<span class="sorig">'+esc(s.o)+'</span>'
+        +'<span class="sdesc">'+esc(s.d)+'</span>'
+        +'<span class="smore">탭하면 사진 확대 + 설명 전체보기 →</span>'
+        +'</span></button>';
+    });
+    h+='</div><button class="sarrow next" type="button" aria-label="다음 명소">›</button></div>'
+      +'<div class="sdots"></div>';
+    wrap.innerHTML=h;
+
+    var track=wrap.querySelector(".strack"),
+        prev=wrap.querySelector(".sarrow.prev"),
+        next=wrap.querySelector(".sarrow.next"),
+        dots=wrap.querySelector(".sdots");
+
+    /* 이미지 연결 */
+    wrap.querySelectorAll(".scard").forEach(function(c,i){
+      var im=c.querySelector("img"), s=arr[i];
+      if(s.img) setThumb(im,s.img); else s._el.push(im);
+      c.addEventListener("click",function(){ openViewer(arr.map(toItem),i); });
+    });
+
+    /* 점 표시 */
+    var dh=""; arr.forEach(function(_,i){ dh+='<i data-i="'+i+'"></i>'; });
+    dh+='<span class="scount"><b>1</b> / '+arr.length+'</span>';
+    dots.innerHTML=dh;
+    var dotEls=dots.querySelectorAll("i"), cnt=dots.querySelector(".scount b");
+
+    function step(){ var c=track.querySelector(".scard"); return c?c.offsetWidth+12:300; }
+    function cur(){ return Math.round(track.scrollLeft/step()); }
+    function sync(){
+      var i=Math.max(0,Math.min(arr.length-1,cur()));
+      dotEls.forEach(function(el,k){ el.classList.toggle("on",k===i); });
+      cnt.textContent=i+1;
+      prev.disabled=track.scrollLeft<4;
+      next.disabled=track.scrollLeft>=track.scrollWidth-track.clientWidth-4;
+    }
+    prev.addEventListener("click",function(){ track.scrollLeft-=step(); });
+    next.addEventListener("click",function(){ track.scrollLeft+=step(); });
+    dotEls.forEach(function(el){ el.addEventListener("click",function(){ track.scrollLeft=step()*(+el.dataset.i); }); });
+    track.addEventListener("scroll",function(){
+      clearTimeout(track._t); track._t=setTimeout(sync,60);
+    });
+    setTimeout(sync,80);
+    window.addEventListener("resize",function(){ clearTimeout(track._r); track._r=setTimeout(sync,150); });
+
+    box.appendChild(wrap);
+  }
+
+  function toItem(s){
+    return {img:s.img||ph(s.k),big:bigger(s.img)||ph(s.k),k:s.k,o:s.o+(s.e?" · "+s.e:""),d:s.d,page:s.page,badge:"DAY "+s._d};
+  }
+
+  /* ───────── 확대 뷰어 ───────── */
+  var vw=document.createElement("div");
+  vw.className="cvw"; vw.id="caminoViewer";
+  vw.innerHTML=
+     '<div class="cv-top"><span class="cv-badge"></span><span class="cv-ttl"></span>'
+    +'<button class="cv-x" type="button" aria-label="닫기">✕</button></div>'
+    +'<div class="cv-stage"><span class="cv-spin">불러오는 중…</span><img alt=""></div>'
+    +'<button class="cv-nav prev" type="button" aria-label="이전">‹</button>'
+    +'<button class="cv-nav next" type="button" aria-label="다음">›</button>'
+    +'<div class="cv-cap"><b></b><span class="cv-orig"></span><p></p><a class="cv-src" target="_blank" rel="noopener">사진 출처 보기 ↗</a></div>'
+    +'<div class="cv-bar">'
+    +'<button data-z="out" type="button">−</button><span class="cv-zl">100%</span>'
+    +'<button data-z="in" type="button">+</button>'
+    +'<button data-z="reset" type="button">원래대로</button>'
+    +'<button data-z="close" type="button">닫기</button>'
+    +'<span class="cv-cnt"></span></div>';
+  document.body.appendChild(vw);
+
+  var vStage=vw.querySelector(".cv-stage"), vImg=vStage.querySelector("img"),
+      vSpin=vStage.querySelector(".cv-spin"), vTtl=vw.querySelector(".cv-ttl"),
+      vBadge=vw.querySelector(".cv-badge"), vCap=vw.querySelector(".cv-cap"),
+      vPrev=vw.querySelector(".cv-nav.prev"), vNext=vw.querySelector(".cv-nav.next"),
+      vZl=vw.querySelector(".cv-zl"), vCnt=vw.querySelector(".cv-cnt"),
+      vSrc=vw.querySelector(".cv-src");
+
+  var items=[], idx=0, sc=1, tx=0, ty=0, MIN=1, MAX=6;
+
+  function apply(){
+    vImg.style.transform="translate("+tx+"px,"+ty+"px) scale("+sc+")";
+    vZl.textContent=Math.round(sc*100)+"%";
+    vStage.style.cursor = sc>1 ? "grab" : "zoom-in";
+  }
+  function reset(){ sc=1; tx=0; ty=0; apply(); }
+  function clamp(){
+    var r=vStage.getBoundingClientRect(), w=vImg.clientWidth*sc, h=vImg.clientHeight*sc;
+    var mx=Math.max(0,(w-r.width)/2), my=Math.max(0,(h-r.height)/2);
+    tx=Math.max(-mx,Math.min(mx,tx)); ty=Math.max(-my,Math.min(my,ty));
+  }
+  function zoom(f,cx,cy){
+    var ns=Math.max(MIN,Math.min(MAX,sc*f));
+    if(ns===sc) return;
+    if(cx!=null){
+      var r=vStage.getBoundingClientRect();
+      var ox=cx-r.left-r.width/2, oy=cy-r.top-r.height/2;
+      tx=ox-(ox-tx)*(ns/sc); ty=oy-(oy-ty)*(ns/sc);
+    }
+    sc=ns; clamp(); apply();
+  }
+
+  function render(){
+    var it=items[idx]; if(!it) return;
+    vSpin.style.display="";
+    vImg.style.visibility="hidden";
+    vImg.onload=function(){ vSpin.style.display="none"; vImg.style.visibility="visible"; reset(); };
+    vImg.onerror=function(){
+      if(it.big&&vImg.src===it.big&&it.img&&it.img!==it.big){ vImg.src=it.img; return; }
+      vImg.onerror=null; vSpin.style.display="none"; vImg.style.visibility="visible"; vImg.src=ph(it.k);
+    };
+    vImg.src=it.big||it.img;
+    vBadge.textContent=it.badge||"";
+    vBadge.style.display=it.badge?"":"none";
+    vTtl.textContent=it.k||"";
+    vCap.querySelector("b").textContent=it.k||"";
+    vCap.querySelector(".cv-orig").textContent=it.o||"";
+    vCap.querySelector("p").textContent=it.d||"";
+    if(it.page){ vSrc.href=it.page; vSrc.style.display=""; } else vSrc.style.display="none";
+    var many=items.length>1;
+    vPrev.hidden=!many; vNext.hidden=!many;
+    vCnt.textContent=many?(idx+1)+" / "+items.length:"";
+    reset();
+  }
+  function go(n){
+    if(!items.length) return;
+    idx=(n+items.length)%items.length; render();
+  }
+  function openViewer(list,i){
+    items=list||[]; idx=i||0;
+    vw.classList.add("show");
+    document.body.style.overflow="hidden";
+    render();
+  }
+  function closeViewer(){
+    vw.classList.remove("show");
+    document.body.style.overflow="";
+    vImg.removeAttribute("src");
+  }
+
+  vw.querySelector(".cv-x").addEventListener("click",closeViewer);
+  vPrev.addEventListener("click",function(e){ e.stopPropagation(); go(idx-1); });
+  vNext.addEventListener("click",function(e){ e.stopPropagation(); go(idx+1); });
+  vw.querySelector(".cv-bar").addEventListener("click",function(e){
+    var b=e.target.closest("button[data-z]"); if(!b) return;
+    var z=b.dataset.z;
+    if(z==="in") zoom(1.4); else if(z==="out") zoom(1/1.4);
+    else if(z==="reset") reset(); else if(z==="close") closeViewer();
+  });
+  document.addEventListener("keydown",function(e){
+    if(!vw.classList.contains("show")) return;
+    if(e.key==="Escape") closeViewer();
+    else if(e.key==="ArrowLeft") go(idx-1);
+    else if(e.key==="ArrowRight") go(idx+1);
+    else if(e.key==="+"||e.key==="=") zoom(1.4);
+    else if(e.key==="-") zoom(1/1.4);
+    else if(e.key==="0") reset();
+  });
+
+  /* 휠 줌 */
+  vStage.addEventListener("wheel",function(e){
+    e.preventDefault();
+    zoom(e.deltaY<0?1.15:1/1.15,e.clientX,e.clientY);
+  },{passive:false});
+
+  /* 더블탭 / 더블클릭 줌 */
+  var lastTap=0;
+  vStage.addEventListener("dblclick",function(e){
+    if(sc>1) reset(); else zoom(2.5,e.clientX,e.clientY);
+  });
+
+  /* 포인터: 드래그 이동 · 핀치 줌 · 스와이프 전환 */
+  var pts={}, startD=0, startSc=1, sx=0, sy=0, stx=0, sty=0, moved=false, downT=0;
+  vStage.addEventListener("pointerdown",function(e){
+    vStage.setPointerCapture(e.pointerId);
+    pts[e.pointerId]={x:e.clientX,y:e.clientY};
+    var ks=Object.keys(pts);
+    if(ks.length===1){
+      sx=e.clientX; sy=e.clientY; stx=tx; sty=ty; moved=false; downT=Date.now();
+      vStage.classList.add("grabbing");
+    }else if(ks.length===2){
+      var a=pts[ks[0]],b=pts[ks[1]];
+      startD=Math.hypot(a.x-b.x,a.y-b.y); startSc=sc;
+    }
+  });
+  vStage.addEventListener("pointermove",function(e){
+    if(!pts[e.pointerId]) return;
+    pts[e.pointerId]={x:e.clientX,y:e.clientY};
+    var ks=Object.keys(pts);
+    if(ks.length>=2){
+      var a=pts[ks[0]],b=pts[ks[1]];
+      var d=Math.hypot(a.x-b.x,a.y-b.y);
+      if(startD>0){
+        var ns=Math.max(MIN,Math.min(MAX,startSc*(d/startD)));
+        sc=ns; clamp(); apply(); moved=true;
+      }
+      return;
+    }
+    var dx=e.clientX-sx, dy=e.clientY-sy;
+    if(Math.abs(dx)>6||Math.abs(dy)>6) moved=true;
+    if(sc>1){ tx=stx+dx; ty=sty+dy; clamp(); apply(); }
+  });
+  function up(e){
+    var was=pts[e.pointerId];
+    delete pts[e.pointerId];
+    vStage.classList.remove("grabbing");
+    if(!was) return;
+    if(Object.keys(pts).length) return;
+    var dx=e.clientX-sx, dy=e.clientY-sy;
+    /* 확대하지 않은 상태에서 좌우로 크게 밀면 이전/다음 */
+    if(sc<=1.02 && Math.abs(dx)>55 && Math.abs(dx)>Math.abs(dy)*1.4 && items.length>1){
+      go(dx<0?idx+1:idx-1); return;
+    }
+    /* 탭(짧게 누름) → 확대 토글 */
+    if(!moved && Date.now()-downT<300){
+      var now=Date.now();
+      if(now-lastTap<320){ if(sc>1) reset(); else zoom(2.5,e.clientX,e.clientY); lastTap=0; }
+      else lastTap=now;
+    }
+  }
+  vStage.addEventListener("pointerup",up);
+  vStage.addEventListener("pointercancel",up);
+
+  /* ───────── 시작 ───────── */
+  function build(){
+    document.querySelectorAll(".dextra").forEach(function(box){
+      var d=+box.dataset.day;
+      buildMap(box,d);
+      buildSpots(box,d);
+    });
+    stepTitles().then(stepWikiSearch).then(stepCommons).then(finish).catch(finish);
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",build);
+  else build();
+})();
+
 </script>
 </body>
 
