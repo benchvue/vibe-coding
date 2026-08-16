@@ -476,6 +476,8 @@
     border-radius:20px;padding:2px 9px;font-size:.64rem;cursor:pointer;font-family:inherit;white-space:nowrap}
   .wxreset:hover{background:var(--camino-blue);color:#fff;border-color:var(--camino-blue)}
 
+  .wxride i{font-style:normal;font-weight:400;opacity:.75;font-size:.66rem}
+
 </style>
 </head>
 <body id="top">
@@ -3012,7 +3014,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
      WX-       일반 캐시(만료 있음)
      WXLOCK-   지나간 날의 확정 날씨 — 만료 없음, 다시 받지 않음
      RIDELOCK- 그날의 라이딩 시간대 — 주행기록 파일이 바뀌면 갱신             */
-  var K_CACHE = "caminoWx-v3", K_LOCK = "caminoWxLock-v1", K_RIDE = "caminoRideLock-v1";
+  var K_CACHE = "caminoWx-v3", K_LOCK = "caminoWxLock-v1", K_RIDE = "caminoRideLock-v2";
   function ls(k){ try{ return JSON.parse(localStorage.getItem(k)||"null"); }catch(e){ return null; } }
   function lsSet(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true; }catch(e){ return false; } }
   function cacheGet(k,ttl){ var o=ls(K_CACHE+"-"+k); return (o && Date.now()-o.t<ttl) ? o.v : null; }
@@ -3211,7 +3213,8 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       s+='<line x1="'+(xs+10)+'" y1="'+RIDE_Y+'" x2="'+Math.max(xs+12,xe-5)+'" y2="'+RIDE_Y+'" stroke="'+G+'" stroke-width="1.6"/>';
       s+='<polygon points="'+xe+','+RIDE_Y+' '+(xe-6.5)+','+(RIDE_Y-3.6)+' '+(xe-6.5)+','+(RIDE_Y+3.6)+'" fill="'+G+'"/>';
       s+='<text x="'+(xs+0.5)+'" y="'+(RIDE_Y+3.8)+'" font-size="10" text-anchor="middle">🚴</text>';
-      var lbl='🚴 '+hToStr(ride.sh)+' → '+hToStr(ride.eh)+(ride.dur?'  ('+ride.dur+')':'');
+      var lbl='🚴 '+hToStr(ride.sh)+' → '+hToStr(ride.eh)+(ride.dur?'  ('+ride.dur+')':'')
+              +(ride.tzn?'  ※기록지 시각':'');
       var cxm=Math.min(X1-40, Math.max(X0+40, (xs+xe)/2));
       s+='<text x="'+cxm+'" y="'+RIDE_TXT+'" font-size="7.6" font-weight="700" text-anchor="middle" '
         +'fill="'+G+'" stroke="#fff" stroke-width="2.4" paint-order="stroke" stroke-linejoin="round">'+lbl+'</text>';
@@ -3243,7 +3246,8 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     if(ride && ride.sh!=null && ride.eh!=null){
       rideLine = '<span class="wxride">🚴 '+hToStr(ride.sh)+'–'+hToStr(ride.eh)
         + (ride.dur?' · '+ride.dur:'')
-        + (ride.km!=null?' · '+(+ride.km).toFixed(1)+'km':'') + '</span>';
+        + (ride.km!=null?' · '+(+ride.km).toFixed(1)+'km':'')
+        + (ride.tzn?' <i>('+esc(ride.tzn)+')</i>':'') + '</span>';
     }
     return '<div class="wxcard'+(day.src==="locked"?" lk":"")+'">'
       + '<div class="wxhead">'+badge
@@ -3286,7 +3290,9 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       var extra = "";
       if(d!==REST_DAY){
         extra = ride
-          ? ' · 🚴 주행기록 <b>'+esc(ride.name||"track_1.gpx")+'</b>에서 읽은 출발·도착 시각'
+          ? ' · 🚴 주행기록 <b>'+esc(ride.name||"track_1.gpx")+'</b>의 출발·도착 시각'
+            + (ride.tzn ? ' — 트랙 좌표가 스페인 밖(테스트 주행)이라 <b>기록한 곳의 현지시각</b>으로 표시했습니다'
+                        : ' (스페인 현지시각)')
           : ' · 🚴 주행기록(GPX)을 올리면 라이딩 시간대가 자동으로 표시됩니다';
       }
       note.innerHTML = INFO + extra
@@ -3456,6 +3462,11 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     var pair=DAY[day], o = WX && pair && WX[pair[0]];
     return (o && o.off!=null) ? o.off : 7200;
   }
+  function trackPos(pts){
+    if(!pts || !pts.length) return null;
+    var m = pts[Math.floor(pts.length/2)] || pts[0];
+    return {la:m.la, lo:m.lo};
+  }
   function durStr(sec){
     var h=Math.floor(sec/3600), m=Math.round((sec%3600)/60);
     if(m===60){ h++; m=0; }
@@ -3485,10 +3496,24 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     if(!window.CAMINO_GPX) return;
     window.CAMINO_GPX(first.id).then(function(g){
       if(!g || g.t0ms==null || g.t1ms==null || g.t1ms<=g.t0ms) return;
-      var off=offOf(day);
+
+      /* ── 어느 시간대로 표시할지 ──
+         GPX의 <time>은 항상 UTC(Z)라 절대 시각만 들어 있고 "탄 곳의 시각"은 없습니다.
+         ① 트랙 좌표가 카미노(이베리아 반도) 안 → 스페인 현지시각(API의 utc_offset)
+         ② 그 밖(예: 뉴욕에서 탄 테스트 주행) → 기록을 재생하는 기기의 시간대
+            = 그곳에서 실제로 시계에 찍혔던 시각. DST도 자동 반영됩니다.          */
+      var p = trackPos(g.pts);
+      var inCamino = p && p.lo>=-9.8 && p.lo<=1.2 && p.la>=40.5 && p.la<=44.4;
+      var off, tzn=null;
+      if(inCamino){
+        off = offOf(day);
+      }else{
+        off = -new Date(g.t0ms).getTimezoneOffset()*60;
+        tzn = "기록지 현지시각";
+      }
       var sh=localHour(g.t0ms,off), eh=localHour(g.t1ms,off);
       if(eh<=sh) eh=24;                               /* 자정을 넘긴 기록은 24시에서 끊음 */
-      var rec={ tid:first.id, name:first.name, sh:sh, eh:eh,
+      var rec={ tid:first.id, name:first.name, sh:sh, eh:eh, tzn:tzn,
                 km:g.km, gain:g.gain, dur:durStr((g.t1ms-g.t0ms)/1000) };
       RIDE[day]=rec;
       lsSet(K_RIDE+"-"+day, rec);
