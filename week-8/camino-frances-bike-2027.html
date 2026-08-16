@@ -475,6 +475,10 @@
   .wxreset{margin-left:6px;background:transparent;border:1px solid var(--line);color:var(--ink-soft);
     border-radius:20px;padding:2px 9px;font-size:.64rem;cursor:pointer;font-family:inherit;white-space:nowrap}
   .wxreset:hover{background:var(--camino-blue);color:#fff;border-color:var(--camino-blue)}
+  .wxmeas{flex-basis:100%;color:#C2410C;font-weight:700;font-size:.72rem;
+    background:#FDF0E6;border:1px solid #F2CDB2;border-radius:20px;padding:3px 10px;
+    display:inline-block;width:fit-content;margin-top:2px}
+  .wxmeas i{font-style:normal;font-weight:400;opacity:.75;font-size:.66rem;margin-left:4px}
 
   .wxride i{font-style:normal;font-weight:400;opacity:.75;font-size:.66rem}
 
@@ -1762,6 +1766,25 @@ const PHOTOS = {
         var doc=new DOMParser().parseFromString(txt,"application/xml");
         var nodes=doc.querySelectorAll("trkpt");
         var pts=[],R=6371000,rad=Math.PI/180,dist=0,prev=null,gain=0,lastEl=null,t0=null,lastMs=null;
+        /* 주행 중 실측 기온 — Garmin gpxtpx:atemp, gpxdata:temp, ns3:atemp 등 접두사가 제각각이라
+           네임스페이스를 무시하고 지역명(localName)으로 찾습니다. wtemp(수온)는 제외. */
+        var TEMP_TAGS=["atemp","temp","temperature","airtemp","air_temp"],tempTag=null,nTemp=0;
+        var findTemp=function(n){
+          var e,i,v;
+          if(tempTag){
+            e=n.getElementsByTagNameNS?n.getElementsByTagNameNS("*",tempTag):null;
+            if(e&&e.length){v=parseFloat(e[0].textContent);
+              if(!isNaN(v)&&v>-60&&v<70)return v;}
+            return null;
+          }
+          if(!n.getElementsByTagNameNS)return null;
+          for(i=0;i<TEMP_TAGS.length;i++){
+            e=n.getElementsByTagNameNS("*",TEMP_TAGS[i]);
+            if(e&&e.length){v=parseFloat(e[0].textContent);
+              if(!isNaN(v)&&v>-60&&v<70){tempTag=TEMP_TAGS[i];return v;}}
+          }
+          return null;
+        };
         nodes.forEach(function(n){
           var la=parseFloat(n.getAttribute("lat")),lo=parseFloat(n.getAttribute("lon"));
           if(isNaN(la)||isNaN(lo))return;
@@ -1777,7 +1800,9 @@ const PHOTOS = {
           var tt=null;
           if(tN){var ms=Date.parse(tN.textContent);
             if(!isNaN(ms)){if(t0==null)t0=ms;lastMs=ms;tt=(ms-t0)/1000;}}
-          pts.push({la:la,lo:lo,el:el,d:dist,tt:tt});
+          var tp=findTemp(n);
+          if(tp!=null)nTemp++;
+          pts.push({la:la,lo:lo,el:el,d:dist,tt:tt,tp:tp});
           prev={la:la,lo:lo};
         });
         /* 재생 축 = 실제 기록 시간(기본). 시간이 없으면 누적 거리로 대체 */
@@ -1799,7 +1824,7 @@ const PHOTOS = {
           var gap=pts[i].tt-pts[i-1].tt;
           if(gap>=REST_MIN_SEC)rests.push({la:pts[i-1].la,lo:pts[i-1].lo,min:Math.round(gap/60)});
         }
-        var data={pts:pts,km:dist/1000,gain:Math.round(gain),T:T,hasTime:hasTime,rests:rests,t0ms:t0,t1ms:lastMs};
+        var data={pts:pts,km:dist/1000,gain:Math.round(gain),T:T,hasTime:hasTime,rests:rests,t0ms:t0,t1ms:lastMs,hasTemp:nTemp>1,nTemp:nTemp};
         gpxCache[id]=data;return data;
       });
   }
@@ -2941,7 +2966,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
 
 </script>
 
-<!-- ══════ DAY별 날씨 (출발지/도착지 · 확정 잠금 · 라이딩 시간대) ══════ -->
+<!-- ══════ DAY별 날씨 (확정 잠금 · 라이딩 시간대 · 실측 기온) ══════ -->
 <script>
 /* ══════════════════════════════════════════════════════════════════════
    DAY별 날씨 카드 (출발지 / 도착지)  ·  Open-Meteo
@@ -3014,7 +3039,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
      WX-       일반 캐시(만료 있음)
      WXLOCK-   지나간 날의 확정 날씨 — 만료 없음, 다시 받지 않음
      RIDELOCK- 그날의 라이딩 시간대 — 주행기록 파일이 바뀌면 갱신             */
-  var K_CACHE = "caminoWx-v3", K_LOCK = "caminoWxLock-v1", K_RIDE = "caminoRideLock-v2";
+  var K_CACHE = "caminoWx-v3", K_LOCK = "caminoWxLock-v1", K_RIDE = "caminoRideLock-v3";
   function ls(k){ try{ return JSON.parse(localStorage.getItem(k)||"null"); }catch(e){ return null; } }
   function lsSet(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true; }catch(e){ return false; } }
   function cacheGet(k,ttl){ var o=ls(K_CACHE+"-"+k); return (o && Date.now()-o.t<ttl) ? o.v : null; }
@@ -3142,6 +3167,11 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     if(!vals.length) return '<p class="wxerr">기온 데이터가 없습니다</p>';
     var mn=Math.min.apply(null,vals), mx=Math.max.apply(null,vals);
     var lo=Math.floor(mn-1.5), hi=Math.ceil(mx+1.5);
+    var meas = (ride && ride.temp && ride.temp.pts && ride.temp.pts.length>1) ? ride.temp : null;
+    if(meas){                                   /* 실측 기온도 다 들어가도록 축을 넓힘 */
+      lo = Math.min(lo, Math.floor(meas.mn-1.5));
+      hi = Math.max(hi, Math.ceil(meas.mx+1.5));
+    }
     if(hi-lo<6) hi=lo+6;
     function Y(t){ return Y1-((t-lo)/(hi-lo))*(Y1-Y0); }
 
@@ -3204,6 +3234,20 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       s+='<text x="'+X(h+0.5)+'" y="'+CODE_Y+'" font-size="6.6" text-anchor="middle" fill="#5B6270">'+c+'</text>';
     });
 
+    /* 🌡 주행 중 실측 기온 (GPX에 온도 센서 값이 있을 때만) */
+    if(meas){
+      var M="#C2410C";
+      var mp = meas.pts.map(function(x){ return X(x[0])+","+Y(x[1]); });
+      s+='<polyline points="'+mp.join(" ")+'" fill="none" stroke="'+M+'" stroke-width="1.9" '
+        +'stroke-dasharray="4 2.6" stroke-linejoin="round" stroke-linecap="round" opacity=".95"/>';
+      var f0=meas.pts[0], fN=meas.pts[meas.pts.length-1];
+      s+='<circle cx="'+X(f0[0])+'" cy="'+Y(f0[1])+'" r="2.2" fill="'+M+'"/>';
+      s+='<circle cx="'+X(fN[0])+'" cy="'+Y(fN[1])+'" r="2.2" fill="'+M+'"/>';
+      var lx=Math.min(X1-24, X(fN[0])+3);
+      s+='<text x="'+lx+'" y="'+(Y(fN[1])-5)+'" font-size="7.4" font-weight="700" text-anchor="start" '
+        +'fill="'+M+'" stroke="#fff" stroke-width="2.2" paint-order="stroke" stroke-linejoin="round">🌡 실측</text>';
+    }
+
     /* 🚴 라이딩 시간대 — 출발·도착 수직선 + 좌→우 화살표 */
     if(ride && ride.sh!=null && ride.eh!=null && ride.eh>ride.sh){
       var xs=X(ride.sh), xe=X(ride.eh), G="#146B3C";
@@ -3260,6 +3304,10 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       + '<span class="wxsun">🌅 '+hhmm(day.sr)+'</span>'
       + '<span class="wxsun">🌇 '+hhmm(day.ss)+'</span>'
       + rideLine
+      + (ride && ride.temp
+          ? '<span class="wxmeas">🌡 실측 최고 <b>'+ride.temp.mx.toFixed(1)+'°</b> · 최저 <b>'
+            +ride.temp.mn.toFixed(1)+'°</b><i>(자전거 센서)</i></span>'
+          : '')
       + '</div></div>';
   }
 
@@ -3293,6 +3341,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
           ? ' · 🚴 주행기록 <b>'+esc(ride.name||"track_1.gpx")+'</b>의 출발·도착 시각'
             + (ride.tzn ? ' — 트랙 좌표가 스페인 밖(테스트 주행)이라 <b>기록한 곳의 현지시각</b>으로 표시했습니다'
                         : ' (스페인 현지시각)')
+            + (ride.temp ? ' · 🌡 <b>주황 점선</b>은 주행 중 자전거 센서가 실제로 잰 기온입니다(햇빛·노면 복사열 때문에 기상 관측값보다 높게 나올 수 있습니다)' : '')
           : ' · 🚴 주행기록(GPX)을 올리면 라이딩 시간대가 자동으로 표시됩니다';
       }
       note.innerHTML = INFO + extra
@@ -3467,6 +3516,25 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     var m = pts[Math.floor(pts.length/2)] || pts[0];
     return {la:m.la, lo:m.lo};
   }
+  /* 주행기록의 실측 기온 → 5분 간격 평균 시계열 */
+  function tempSeries(g, off, sh){
+    if(!g || !g.hasTemp || !g.pts || g.t0ms==null) return null;
+    var bins={}, keys=[];
+    g.pts.forEach(function(p){
+      if(p.tp==null || p.tt==null) return;
+      var hh = localHour(g.t0ms + p.tt*1000, off);
+      if(sh!=null && hh < sh-0.5) hh += 24;          /* 자정을 넘긴 구간 보정 */
+      if(hh > 24) hh = 24;
+      var k = Math.round(hh*12)/12;                  /* 5분 버킷 */
+      if(!bins[k]){ bins[k]=[0,0]; keys.push(k); }
+      bins[k][0]+=p.tp; bins[k][1]++;
+    });
+    if(keys.length < 2) return null;
+    keys.sort(function(a,b){ return a-b; });
+    var pts = keys.map(function(k){ return [+k, Math.round(bins[k][0]/bins[k][1]*10)/10]; });
+    var vs  = pts.map(function(x){ return x[1]; });
+    return {pts:pts, mn:Math.min.apply(null,vs), mx:Math.max.apply(null,vs), n:g.nTemp};
+  }
   function durStr(sec){
     var h=Math.floor(sec/3600), m=Math.round((sec%3600)/60);
     if(m===60){ h++; m=0; }
@@ -3514,7 +3582,8 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       var sh=localHour(g.t0ms,off), eh=localHour(g.t1ms,off);
       if(eh<=sh) eh=24;                               /* 자정을 넘긴 기록은 24시에서 끊음 */
       var rec={ tid:first.id, name:first.name, sh:sh, eh:eh, tzn:tzn,
-                km:g.km, gain:g.gain, dur:durStr((g.t1ms-g.t0ms)/1000) };
+                km:g.km, gain:g.gain, dur:durStr((g.t1ms-g.t0ms)/1000),
+                temp: tempSeries(g, off, sh) };
       RIDE[day]=rec;
       lsSet(K_RIDE+"-"+day, rec);
       renderDay(day);
