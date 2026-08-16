@@ -3039,7 +3039,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
      WX-       일반 캐시(만료 있음)
      WXLOCK-   지나간 날의 확정 날씨 — 만료 없음, 다시 받지 않음
      RIDELOCK- 그날의 라이딩 시간대 — 주행기록 파일이 바뀌면 갱신             */
-  var K_CACHE = "caminoWx-v3", K_LOCK = "caminoWxLock-v1", K_RIDE = "caminoRideLock-v3";
+  var K_CACHE = "caminoWx-v3", K_LOCK = "caminoWxLock-v1", K_RIDE = "caminoRideLock-v4";
   function ls(k){ try{ return JSON.parse(localStorage.getItem(k)||"null"); }catch(e){ return null; } }
   function lsSet(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true; }catch(e){ return false; } }
   function cacheGet(k,ttl){ var o=ls(K_CACHE+"-"+k); return (o && Date.now()-o.t<ttl) ? o.v : null; }
@@ -3167,13 +3167,23 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     if(!vals.length) return '<p class="wxerr">기온 데이터가 없습니다</p>';
     var mn=Math.min.apply(null,vals), mx=Math.max.apply(null,vals);
     var lo=Math.floor(mn-1.5), hi=Math.ceil(mx+1.5);
-    var meas = (ride && ride.temp && ride.temp.pts && ride.temp.pts.length>1) ? ride.temp : null;
-    if(meas){                                   /* 실측 기온도 다 들어가도록 축을 넓힘 */
-      lo = Math.min(lo, Math.floor(meas.mn-1.5));
-      hi = Math.max(hi, Math.ceil(meas.mx+1.5));
-    }
     if(hi-lo<6) hi=lo+6;
-    function Y(t){ return Y1-((t-lo)/(hi-lo))*(Y1-Y0); }
+
+    /* 실측 기온이 기상값과 크게 벌어지면(자전거 센서는 복사열로 훨씬 높게 나옴)
+       한 축에 같이 그리면 기상 곡선이 납작해집니다 → 오른쪽에 별도 축을 세웁니다. */
+    var meas = (ride && ride.temp && ride.temp.pts && ride.temp.pts.length>1) ? ride.temp : null;
+    var dual=false, mlo=lo, mhi=hi;
+    if(meas){
+      mlo=Math.floor(meas.mn-1.5); mhi=Math.ceil(meas.mx+1.5);
+      if(mhi-mlo<6) mhi=mlo+6;
+      var uLo=Math.min(lo,mlo), uHi=Math.max(hi,mhi);
+      dual = (uHi-uLo) > (hi-lo)*1.7;
+      if(!dual){ lo=uLo; hi=uHi; mlo=lo; mhi=hi; }
+    }
+    var XR = dual ? 320 : X1;
+    function Xp(h){ return X0 + (Math.max(0,Math.min(24,h))/24)*(XR-X0); }
+    function Y(t){  return Y1-((t-lo)/(hi-lo))*(Y1-Y0); }
+    function Ym(t){ return dual ? Y1-((t-mlo)/(mhi-mlo))*(Y1-Y0) : Y(t); }
 
     var sr=hourOf(day.sr), ss=hourOf(day.ss);
     if(sr==null) sr=7;
@@ -3185,35 +3195,43 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       +'<linearGradient id="wxf'+uid+'" x1="0" y1="0" x2="0" y2="1">'
       +'<stop offset="0" stop-color="#8E2C3A" stop-opacity=".30"/>'
       +'<stop offset="1" stop-color="#8E2C3A" stop-opacity="0"/></linearGradient>'
-      +'<clipPath id="wxc'+uid+'"><rect x="'+X0+'" y="'+BG_TOP+'" width="'+(X1-X0)+'" height="'+(Y1-BG_TOP)+'"/></clipPath>'
+      +'<clipPath id="wxc'+uid+'"><rect x="'+X0+'" y="'+BG_TOP+'" width="'+(XR-X0)+'" height="'+(Y1-BG_TOP)+'"/></clipPath>'
       +'</defs>';
 
     /* 밤(어둡게) / 낮(밝게) 배경 */
     s+='<g clip-path="url(#wxc'+uid+')">';
-    s+='<rect x="'+X0+'" y="'+BG_TOP+'" width="'+(X1-X0)+'" height="'+(Y1-BG_TOP)+'" fill="#28344F" opacity=".16"/>';
-    s+='<rect x="'+X(sr)+'" y="'+BG_TOP+'" width="'+(X(ss)-X(sr))+'" height="'+(Y1-BG_TOP)+'" fill="#FFE9A8" opacity=".62"/>';
-    s+='<rect x="'+X(Math.max(0,sr-0.9))+'" y="'+BG_TOP+'" width="'+(X(sr)-X(Math.max(0,sr-0.9)))+'" height="'+(Y1-BG_TOP)+'" fill="#F5B917" opacity=".18"/>';
-    s+='<rect x="'+X(ss)+'" y="'+BG_TOP+'" width="'+(X(Math.min(24,ss+0.9))-X(ss))+'" height="'+(Y1-BG_TOP)+'" fill="#F5B917" opacity=".18"/>';
+    s+='<rect x="'+X0+'" y="'+BG_TOP+'" width="'+(XR-X0)+'" height="'+(Y1-BG_TOP)+'" fill="#28344F" opacity=".16"/>';
+    s+='<rect x="'+Xp(sr)+'" y="'+BG_TOP+'" width="'+(Xp(ss)-Xp(sr))+'" height="'+(Y1-BG_TOP)+'" fill="#FFE9A8" opacity=".62"/>';
+    s+='<rect x="'+Xp(Math.max(0,sr-0.9))+'" y="'+BG_TOP+'" width="'+(Xp(sr)-Xp(Math.max(0,sr-0.9)))+'" height="'+(Y1-BG_TOP)+'" fill="#F5B917" opacity=".18"/>';
+    s+='<rect x="'+Xp(ss)+'" y="'+BG_TOP+'" width="'+(Xp(Math.min(24,ss+0.9))-Xp(ss))+'" height="'+(Y1-BG_TOP)+'" fill="#F5B917" opacity=".18"/>';
     if(ride && ride.sh!=null && ride.eh!=null && ride.eh>ride.sh){
-      s+='<rect x="'+X(ride.sh)+'" y="'+BG_TOP+'" width="'+(X(ride.eh)-X(ride.sh))+'" height="'+(Y1-BG_TOP)+'" fill="#1E7A46" opacity=".13"/>';
+      s+='<rect x="'+Xp(ride.sh)+'" y="'+BG_TOP+'" width="'+(Xp(ride.eh)-Xp(ride.sh))+'" height="'+(Y1-BG_TOP)+'" fill="#1E7A46" opacity=".13"/>';
     }
     s+='</g>';
 
     /* 일출·일몰 선 */
-    s+='<line x1="'+X(sr)+'" y1="'+BG_TOP+'" x2="'+X(sr)+'" y2="'+Y1+'" stroke="#C79A17" stroke-width="1" stroke-dasharray="3 3"/>';
-    s+='<line x1="'+X(ss)+'" y1="'+BG_TOP+'" x2="'+X(ss)+'" y2="'+Y1+'" stroke="#5B6270" stroke-width="1" stroke-dasharray="3 3"/>';
+    s+='<line x1="'+Xp(sr)+'" y1="'+BG_TOP+'" x2="'+Xp(sr)+'" y2="'+Y1+'" stroke="#C79A17" stroke-width="1" stroke-dasharray="3 3"/>';
+    s+='<line x1="'+Xp(ss)+'" y1="'+BG_TOP+'" x2="'+Xp(ss)+'" y2="'+Y1+'" stroke="#5B6270" stroke-width="1" stroke-dasharray="3 3"/>';
 
-    /* 격자 + 온도 눈금 */
+    /* 왼쪽 축(기상 기온) 격자 + 눈금 */
     [lo, Math.round((lo+hi)/2), hi].forEach(function(v){
-      s+='<line x1="'+X0+'" y1="'+Y(v)+'" x2="'+X1+'" y2="'+Y(v)+'" stroke="#000" stroke-opacity=".08"/>';
+      s+='<line x1="'+X0+'" y1="'+Y(v)+'" x2="'+XR+'" y2="'+Y(v)+'" stroke="#000" stroke-opacity=".08"/>';
       s+='<text x="'+(X0-5)+'" y="'+(Y(v)+3.5)+'" font-size="9" text-anchor="end" fill="#5B6270">'+v+'°</text>';
     });
+    /* 오른쪽 축(실측 기온) */
+    if(dual){
+      s+='<line x1="'+XR+'" y1="'+BG_TOP+'" x2="'+XR+'" y2="'+Y1+'" stroke="#E2B99B"/>';
+      [mlo, Math.round((mlo+mhi)/2), mhi].forEach(function(v){
+        s+='<text x="'+(XR+4)+'" y="'+(Ym(v)+3.5)+'" font-size="8.4" text-anchor="start" fill="#C2410C">'+v+'°</text>';
+      });
+      s+='<text x="'+(XR+4)+'" y="'+(BG_TOP-5)+'" font-size="6.6" text-anchor="start" fill="#C2410C">실측</text>';
+    }
 
-    /* 기온 면적 + 선 */
+    /* 기상 기온 면적 + 선 */
     var pts=[], first=null, last=null;
-    for(i=0;i<24;i++){ if(T[i]!=null){ pts.push(X(i+0.5)+","+Y(T[i])); if(first===null)first=i; last=i; } }
+    for(i=0;i<24;i++){ if(T[i]!=null){ pts.push(Xp(i+0.5)+","+Y(T[i])); if(first===null)first=i; last=i; } }
     if(pts.length>1){
-      s+='<polygon points="'+X(first+0.5)+','+Y1+' '+pts.join(" ")+' '+X(last+0.5)+','+Y1+'" fill="url(#wxf'+uid+')"/>';
+      s+='<polygon points="'+Xp(first+0.5)+','+Y1+' '+pts.join(" ")+' '+Xp(last+0.5)+','+Y1+'" fill="url(#wxf'+uid+')"/>';
       s+='<polyline points="'+pts.join(" ")+'" fill="none" stroke="#8E2C3A" stroke-width="2.1" stroke-linejoin="round" stroke-linecap="round"/>';
     }
     var iMax=-1, iMin=-1;
@@ -3222,56 +3240,59 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       if(iMin<0||T[i]<T[iMin])iMin=i; }
     [[iMax,"#8E2C3A"],[iMin,"#1E3A6E"]].forEach(function(p){
       if(p[0]<0) return;
-      s+='<circle cx="'+X(p[0]+0.5)+'" cy="'+Y(T[p[0]])+'" r="3" fill="#fff" stroke="'+p[1]+'" stroke-width="2"/>';
-      s+='<text x="'+X(p[0]+0.5)+'" y="'+(Y(T[p[0]])-7)+'" font-size="9" font-weight="700" text-anchor="middle" fill="'+p[1]+'">'+T[p[0]].toFixed(1)+'°</text>';
+      s+='<circle cx="'+Xp(p[0]+0.5)+'" cy="'+Y(T[p[0]])+'" r="3" fill="#fff" stroke="'+p[1]+'" stroke-width="2"/>';
+      s+='<text x="'+Xp(p[0]+0.5)+'" y="'+(Y(T[p[0]])-7)+'" font-size="9" font-weight="700" text-anchor="middle" fill="'+p[1]+'">'+T[p[0]].toFixed(1)+'°</text>';
     });
 
     /* 날씨 코드 아이콘 (3시간 간격) */
     [2,5,8,11,14,17,20,23].forEach(function(h){
       var c=day.c[h]; if(c==null) return;
       var w=wmo(c);
-      s+='<text x="'+X(h+0.5)+'" y="'+ICON_Y+'" font-size="11" text-anchor="middle">'+w[0]+'</text>';
-      s+='<text x="'+X(h+0.5)+'" y="'+CODE_Y+'" font-size="6.6" text-anchor="middle" fill="#5B6270">'+c+'</text>';
+      s+='<text x="'+Xp(h+0.5)+'" y="'+ICON_Y+'" font-size="11" text-anchor="middle">'+w[0]+'</text>';
+      s+='<text x="'+Xp(h+0.5)+'" y="'+CODE_Y+'" font-size="6.6" text-anchor="middle" fill="#5B6270">'+c+'</text>';
     });
 
-    /* 🌡 주행 중 실측 기온 (GPX에 온도 센서 값이 있을 때만) */
+    /* 🌡 주행 중 실측 기온 */
     if(meas){
       var M="#C2410C";
-      var mp = meas.pts.map(function(x){ return X(x[0])+","+Y(x[1]); });
+      var mp = meas.pts.map(function(x){ return Xp(x[0])+","+Ym(x[1]); });
       s+='<polyline points="'+mp.join(" ")+'" fill="none" stroke="'+M+'" stroke-width="1.9" '
         +'stroke-dasharray="4 2.6" stroke-linejoin="round" stroke-linecap="round" opacity=".95"/>';
       var f0=meas.pts[0], fN=meas.pts[meas.pts.length-1];
-      s+='<circle cx="'+X(f0[0])+'" cy="'+Y(f0[1])+'" r="2.2" fill="'+M+'"/>';
-      s+='<circle cx="'+X(fN[0])+'" cy="'+Y(fN[1])+'" r="2.2" fill="'+M+'"/>';
-      var lx=Math.min(X1-24, X(fN[0])+3);
-      s+='<text x="'+lx+'" y="'+(Y(fN[1])-5)+'" font-size="7.4" font-weight="700" text-anchor="start" '
+      s+='<circle cx="'+Xp(f0[0])+'" cy="'+Ym(f0[1])+'" r="2.2" fill="'+M+'"/>';
+      s+='<circle cx="'+Xp(fN[0])+'" cy="'+Ym(fN[1])+'" r="2.2" fill="'+M+'"/>';
+      var mid = meas.pts[Math.floor(meas.pts.length/2)];
+      var lx  = Math.min(XR-16, Math.max(X0+18, Xp(mid[0])));
+      s+='<text x="'+lx+'" y="'+(Ym(meas.mx)-6)+'" font-size="7.4" font-weight="700" text-anchor="middle" '
         +'fill="'+M+'" stroke="#fff" stroke-width="2.2" paint-order="stroke" stroke-linejoin="round">🌡 실측</text>';
     }
 
     /* 🚴 라이딩 시간대 — 출발·도착 수직선 + 좌→우 화살표 */
     if(ride && ride.sh!=null && ride.eh!=null && ride.eh>ride.sh){
-      var xs=X(ride.sh), xe=X(ride.eh), G="#146B3C";
+      var xs=Xp(ride.sh), xe=Xp(ride.eh), G="#146B3C";
       s+='<line x1="'+xs+'" y1="'+BG_TOP+'" x2="'+xs+'" y2="'+Y1+'" stroke="'+G+'" stroke-width="1.4"/>';
-      s+='<line x1="'+xe+'" y1="'+BG_TOP+'" x2="'+xe+'" y2="'+Y1+'" stroke="'+G+'" stroke-width="1.4"/>';
+      if(!ride.next)
+        s+='<line x1="'+xe+'" y1="'+BG_TOP+'" x2="'+xe+'" y2="'+Y1+'" stroke="'+G+'" stroke-width="1.4"/>';
       s+='<circle cx="'+xs+'" cy="'+RIDE_Y+'" r="2.4" fill="'+G+'"/>';
-      s+='<line x1="'+(xs+10)+'" y1="'+RIDE_Y+'" x2="'+Math.max(xs+12,xe-5)+'" y2="'+RIDE_Y+'" stroke="'+G+'" stroke-width="1.6"/>';
+      s+='<line x1="'+(xs+10)+'" y1="'+RIDE_Y+'" x2="'+Math.max(xs+12,xe-5)+'" y2="'+RIDE_Y+'" stroke="'+G+'" stroke-width="1.6"'
+        +(ride.next?' stroke-dasharray="3 2"':'')+'/>';
       s+='<polygon points="'+xe+','+RIDE_Y+' '+(xe-6.5)+','+(RIDE_Y-3.6)+' '+(xe-6.5)+','+(RIDE_Y+3.6)+'" fill="'+G+'"/>';
       s+='<text x="'+(xs+0.5)+'" y="'+(RIDE_Y+3.8)+'" font-size="10" text-anchor="middle">🚴</text>';
-      var lbl='🚴 '+hToStr(ride.sh)+' → '+hToStr(ride.eh)+(ride.dur?'  ('+ride.dur+')':'')
-              +(ride.tzn?'  ※기록지 시각':'');
-      var cxm=Math.min(X1-40, Math.max(X0+40, (xs+xe)/2));
+      var lbl='🚴 '+hToStr(ride.sh)+' → '+hToStr(ride.ehReal!=null?ride.ehReal:ride.eh)
+              +(ride.next?'(＋1일)':'')+(ride.dur?'  '+ride.dur:'');
+      var cxm=Math.min(XR-42, Math.max(X0+42, (xs+xe)/2));
       s+='<text x="'+cxm+'" y="'+RIDE_TXT+'" font-size="7.6" font-weight="700" text-anchor="middle" '
         +'fill="'+G+'" stroke="#fff" stroke-width="2.4" paint-order="stroke" stroke-linejoin="round">'+lbl+'</text>';
     }
 
     /* 시간축 */
-    s+='<line x1="'+X0+'" y1="'+Y1+'" x2="'+X1+'" y2="'+Y1+'" stroke="#D8D3C4"/>';
+    s+='<line x1="'+X0+'" y1="'+Y1+'" x2="'+XR+'" y2="'+Y1+'" stroke="#D8D3C4"/>';
     [0,3,6,9,12,15,18,21,24].forEach(function(h){
-      s+='<line x1="'+X(h)+'" y1="'+Y1+'" x2="'+X(h)+'" y2="'+(Y1+3)+'" stroke="#D8D3C4"/>';
-      if(h%6===0) s+='<text x="'+X(h)+'" y="'+AXIS_Y+'" font-size="8.5" text-anchor="middle" fill="#5B6270">'+h+'시</text>';
+      s+='<line x1="'+Xp(h)+'" y1="'+Y1+'" x2="'+Xp(h)+'" y2="'+(Y1+3)+'" stroke="#D8D3C4"/>';
+      if(h%6===0) s+='<text x="'+Xp(h)+'" y="'+AXIS_Y+'" font-size="8.5" text-anchor="middle" fill="#5B6270">'+h+'시</text>';
     });
-    s+='<text x="'+X(sr)+'" y="'+SUN_Y+'" font-size="8.5" text-anchor="middle" fill="#B08400">🌅 '+hhmm(day.sr)+'</text>';
-    s+='<text x="'+X(ss)+'" y="'+SUN_Y+'" font-size="8.5" text-anchor="middle" fill="#41506E">🌇 '+hhmm(day.ss)+'</text>';
+    s+='<text x="'+Xp(sr)+'" y="'+SUN_Y+'" font-size="8.5" text-anchor="middle" fill="#B08400">🌅 '+hhmm(day.sr)+'</text>';
+    s+='<text x="'+Xp(ss)+'" y="'+SUN_Y+'" font-size="8.5" text-anchor="middle" fill="#41506E">🌇 '+hhmm(day.ss)+'</text>';
     s+='</svg>';
     return s;
   }
@@ -3288,7 +3309,8 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
             : day.src==="forecast" ? '<span class="wxfc">실제 예보</span>' : '';
     var rideLine = "";
     if(ride && ride.sh!=null && ride.eh!=null){
-      rideLine = '<span class="wxride">🚴 '+hToStr(ride.sh)+'–'+hToStr(ride.eh)
+      rideLine = '<span class="wxride">🚴 '+hToStr(ride.sh)+'–'
+        +hToStr(ride.ehReal!=null?ride.ehReal:ride.eh)+(ride.next?'(＋1일)':'')
         + (ride.dur?' · '+ride.dur:'')
         + (ride.km!=null?' · '+(+ride.km).toFixed(1)+'km':'')
         + (ride.tzn?' <i>('+esc(ride.tzn)+')</i>':'') + '</span>';
@@ -3341,7 +3363,8 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
           ? ' · 🚴 주행기록 <b>'+esc(ride.name||"track_1.gpx")+'</b>의 출발·도착 시각'
             + (ride.tzn ? ' — 트랙 좌표가 스페인 밖(테스트 주행)이라 <b>기록한 곳의 현지시각</b>으로 표시했습니다'
                         : ' (스페인 현지시각)')
-            + (ride.temp ? ' · 🌡 <b>주황 점선</b>은 주행 중 자전거 센서가 실제로 잰 기온입니다(햇빛·노면 복사열 때문에 기상 관측값보다 높게 나올 수 있습니다)' : '')
+            + (ride.temp ? ' · 🌡 <b>주황 점선</b>은 주행 중 자전거 센서가 실제로 잰 기온입니다. 값이 기상 기온과 크게 다르면 <b>오른쪽에 별도 눈금</b>이 생깁니다(햇빛·실내·복사열 영향)' : '')
+            + (ride.next ? ' · ⚠ 이 기록은 <b>자정을 넘어</b>서, 그래프에는 24시까지만 그렸습니다' : '')
           : ' · 🚴 주행기록(GPX)을 올리면 라이딩 시간대가 자동으로 표시됩니다';
       }
       note.innerHTML = INFO + extra
@@ -3511,6 +3534,40 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     var pair=DAY[day], o = WX && pair && WX[pair[0]];
     return (o && o.off!=null) ? o.off : 7200;
   }
+  /* ── 주행기록을 "탄 곳의 시각"으로 보여주기 위한 시간대 판별 ──
+     GPX의 <time>은 UTC라 장소 정보가 없습니다. 트랙 좌표를 Open-Meteo에 물어
+     IANA 시간대 이름(예: Asia/Seoul)을 받고, Intl로 그 날짜의 정확한 오프셋을 계산합니다.
+     (기기 시간대를 쓰면 한국에서 탄 기록을 뉴욕 시각으로 보게 되므로 쓰지 않습니다) */
+  var K_TZ = "caminoTz-v1";
+  function lookupTz(la, lo){
+    var key = (Math.round(la*10)/10)+","+(Math.round(lo*10)/10);
+    var c = ls(K_TZ+"-"+key);
+    if(c) return Promise.resolve(c);
+    var url = "https://api.open-meteo.com/v1/forecast?latitude="+la+"&longitude="+lo
+            + "&forecast_days=1&daily=sunrise&timezone=auto";
+    return fetch(url).then(function(r){ if(!r.ok) throw 0; return r.json(); })
+      .then(function(j){
+        if(!j || !j.timezone) throw 0;
+        var v = {tz:j.timezone, off:(j.utc_offset_seconds!=null?j.utc_offset_seconds:0)};
+        lsSet(K_TZ+"-"+key, v);
+        return v;
+      })
+      .catch(function(){                       /* 조회 실패 → 경도로 대략 추정 */
+        return {tz:null, off:Math.round(lo/15)*3600, approx:true};
+      });
+  }
+  /* 그 시간대의 해당 시각 오프셋(초) — 서머타임까지 정확히 반영 */
+  function tzOffsetAt(tzName, ms){
+    try{
+      var f = new Intl.DateTimeFormat("en-US", {timeZone:tzName, hour12:false,
+        year:"numeric", month:"2-digit", day:"2-digit",
+        hour:"2-digit", minute:"2-digit", second:"2-digit"});
+      var p={};
+      f.formatToParts(new Date(ms)).forEach(function(x){ p[x.type]=x.value; });
+      var asUTC = Date.UTC(+p.year, (+p.month)-1, +p.day, (+p.hour)%24, +p.minute, +p.second);
+      return Math.round((asUTC-ms)/1000);
+    }catch(e){ return null; }
+  }
   function trackPos(pts){
     if(!pts || !pts.length) return null;
     var m = pts[Math.floor(pts.length/2)] || pts[0];
@@ -3523,8 +3580,9 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     g.pts.forEach(function(p){
       if(p.tp==null || p.tt==null) return;
       var hh = localHour(g.t0ms + p.tt*1000, off);
-      if(sh!=null && hh < sh-0.5) hh += 24;          /* 자정을 넘긴 구간 보정 */
-      if(hh > 24) hh = 24;
+      if(sh!=null && hh < sh-0.5) hh += 24;          /* 자정을 넘긴 뒤의 점 */
+      if(hh > 24) return;                            /* 다음 날 구간은 이 차트에 그리지 않음
+                                                        (24시에 몰아넣으면 그래프가 뾰족하게 왜곡됨) */
       var k = Math.round(hh*12)/12;                  /* 5분 버킷 */
       if(!bins[k]){ bins[k]=[0,0]; keys.push(k); }
       bins[k][0]+=p.tp; bins[k][1]++;
@@ -3566,28 +3624,33 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       if(!g || g.t0ms==null || g.t1ms==null || g.t1ms<=g.t0ms) return;
 
       /* ── 어느 시간대로 표시할지 ──
-         GPX의 <time>은 항상 UTC(Z)라 절대 시각만 들어 있고 "탄 곳의 시각"은 없습니다.
-         ① 트랙 좌표가 카미노(이베리아 반도) 안 → 스페인 현지시각(API의 utc_offset)
-         ② 그 밖(예: 뉴욕에서 탄 테스트 주행) → 기록을 재생하는 기기의 시간대
-            = 그곳에서 실제로 시계에 찍혔던 시각. DST도 자동 반영됩니다.          */
+         ① 트랙 좌표가 카미노(이베리아 반도) 안 → 스페인 현지시각
+         ② 그 밖(테스트 주행) → 트랙 좌표가 있는 곳의 시간대 = 실제로 시계에 찍혔던 시각 */
       var p = trackPos(g.pts);
       var inCamino = p && p.lo>=-9.8 && p.lo<=1.2 && p.la>=40.5 && p.la<=44.4;
-      var off, tzn=null;
-      if(inCamino){
-        off = offOf(day);
-      }else{
-        off = -new Date(g.t0ms).getTimezoneOffset()*60;
-        tzn = "기록지 현지시각";
-      }
-      var sh=localHour(g.t0ms,off), eh=localHour(g.t1ms,off);
-      if(eh<=sh) eh=24;                               /* 자정을 넘긴 기록은 24시에서 끊음 */
-      var rec={ tid:first.id, name:first.name, sh:sh, eh:eh, tzn:tzn,
+      if(inCamino){ saveRide(day, first, g, offOf(day), null); return; }
+      if(!p){ saveRide(day, first, g, offOf(day), null); return; }
+      return lookupTz(p.la, p.lo).then(function(z){
+        var off = z.tz ? tzOffsetAt(z.tz, g.t0ms) : null;
+        if(off==null) off = z.off;
+        var label = z.tz ? ("기록지 현지시각 · "+z.tz)
+                         : ("기록지 추정 시각 · UTC"+(off>=0?"+":"−")+Math.abs(off/3600));
+        saveRide(day, first, g, off, label);
+      });
+    }).catch(function(){});
+  }
+
+  function saveRide(day, file, g, off, tzn){
+    var sh = localHour(g.t0ms, off), eh = localHour(g.t1ms, off);
+    var next = false;
+    if(eh <= sh){ eh = 24; next = true; }             /* 자정을 넘긴 기록 */
+    var rec = { tid:file.id, name:file.name, sh:sh, eh:eh, next:next, tzn:tzn,
+                ehReal: next ? localHour(g.t1ms, off) : eh,
                 km:g.km, gain:g.gain, dur:durStr((g.t1ms-g.t0ms)/1000),
                 temp: tempSeries(g, off, sh) };
-      RIDE[day]=rec;
-      lsSet(K_RIDE+"-"+day, rec);
-      renderDay(day);
-    }).catch(function(){});
+    RIDE[day] = rec;
+    lsSet(K_RIDE+"-"+day, rec);
+    renderDay(day);
   }
 
   function pullRides(){
