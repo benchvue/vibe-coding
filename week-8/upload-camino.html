@@ -96,6 +96,66 @@
   .lb.show{display:flex}
   .lb img{max-width:96vw;max-height:92vh;border-radius:10px}
   .lb .x{position:absolute;top:14px;right:18px;background:none;border:none;color:#fff;font-size:30px}
+
+  /* ══════════════ 할 일(To-Do) ══════════════ */
+  .viewtabs{display:flex;gap:8px;margin-bottom:14px}
+  .viewtabs button{flex:0 0 auto;border:1px solid var(--line);background:#fff;color:var(--muted);
+    border-radius:999px;padding:8px 18px;font-size:13px;font-weight:600}
+  .viewtabs button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+  .viewtabs button:hover{border-color:var(--flecha)}
+
+  .tdtop{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px;
+    padding:11px 14px;border:1px solid var(--line);border-radius:var(--radius);background:#fff}
+  .tdtop .me{font-size:13px;color:var(--muted)}
+  .tdtop .me b{color:var(--blue)}
+  .tdtop .st{margin-left:auto;font-size:12px;color:var(--muted)}
+  .tdtop .st.sav{color:var(--ok);font-weight:600}
+  .tdtop .st.err{color:var(--err);font-weight:600}
+  .tdtop .mini2{border:1px solid var(--line);background:#fff;color:var(--muted);
+    border-radius:999px;padding:5px 12px;font-size:12px}
+  .tdtop .mini2:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
+
+  .tdphase{margin-bottom:20px}
+  .tdphase > h2{font-family:'Gowun Batang',serif;font-size:18px;color:var(--blue);
+    display:flex;align-items:center;gap:8px;margin-bottom:10px}
+  .tdphase > h2 small{font-family:'IBM Plex Sans KR',sans-serif;font-size:12px;
+    font-weight:400;color:var(--muted)}
+  .tdcols{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  @media(max-width:900px){ .tdcols{grid-template-columns:1fr} }
+
+  .tdlist{border:1px solid var(--line);border-radius:var(--radius);background:#fff;
+    display:flex;flex-direction:column;overflow:hidden}
+  .tdlist.mine{border-color:#9FB6DC;box-shadow:0 3px 12px rgba(21,42,85,.10)}
+  .tdlist.ro{background:#FBFAF7}
+  .tdhead{display:flex;align-items:center;gap:7px;padding:9px 12px;border-bottom:1px solid var(--line);
+    background:#F4F2EA;font-size:13px;font-weight:700;color:var(--blue)}
+  .tdlist.mine .tdhead{background:#EDF2FA}
+  .tdhead .cnt{margin-left:auto;font-size:11px;font-weight:600;color:var(--muted);
+    background:#fff;border:1px solid var(--line);border-radius:999px;padding:2px 8px}
+  .tdhead .ro{font-size:10px;font-weight:600;color:#8A7F63;background:#F1E7C9;
+    border-radius:999px;padding:2px 7px}
+
+  .tdlist ul{list-style:none;padding:6px 6px 2px;margin:0;flex:1;min-height:34px}
+  .tdlist li{display:flex;align-items:flex-start;gap:8px;padding:6px 6px;border-radius:8px;font-size:13.5px}
+  .tdlist li:hover{background:#F7F5EE}
+  .tdlist.ro li:hover{background:transparent}
+  .tdlist li input[type=checkbox]{margin-top:3px;width:16px;height:16px;flex:0 0 auto;accent-color:var(--ok)}
+  .tdlist li .tx{flex:1;min-width:0;line-height:1.55;outline:none;word-break:break-word;
+    border-radius:5px;padding:1px 3px}
+  .tdlist li .tx:focus{background:#FFF9E4;box-shadow:0 0 0 2px var(--flecha)}
+  .tdlist li.done .tx{text-decoration:line-through;color:#9AA0AA}
+  .tdlist li .by{flex:0 0 auto;font-size:10px;color:var(--muted);background:#EDEAE1;
+    border-radius:999px;padding:1px 6px;margin-top:3px;white-space:nowrap}
+  .tdlist li .del{flex:0 0 auto;border:none;background:transparent;color:#C3BCA6;
+    font-size:15px;line-height:1;padding:2px 4px;border-radius:6px}
+  .tdlist li .del:hover{background:#F7DADA;color:var(--err)}
+  .tdlist .add{margin:2px 8px 10px;border:1px dashed var(--line);background:transparent;color:var(--muted);
+    border-radius:9px;padding:7px;font-size:12.5px;font-weight:600}
+  .tdlist .add:hover{border-color:var(--flecha);color:#7A5E00;background:#FFFBEE}
+  .tdlist .empty{padding:12px 10px;font-size:12px;color:#A7A296;text-align:center}
+  .tdhint{font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:14px;
+    padding:11px 14px;border:1px dashed var(--line);border-radius:var(--radius);background:#FBFAF5}
+  .tdhint b{color:var(--blue)}
 </style>
 </head>
 <body>
@@ -122,10 +182,17 @@
     </div>
     <div class="actions">
       <a class="mini" href="camino-frances-bike-2027.html" target="_blank">사이트 보기 ↗</a>
+      <button class="mini" id="tdSaveBtn" style="display:none">저장</button>
       <button class="mini" id="refreshBtn">새로고침</button>
       <button class="mini" id="signOutBtn">로그아웃</button>
     </div>
   </div>
+  <div class="viewtabs">
+    <button id="viewPhotoBtn" class="on">📸 사진 · 영상 · 주행기록</button>
+    <button id="viewTodoBtn">✅ 할 일 (To-Do)</button>
+  </div>
+
+  <div id="photoView">
   <div class="daynav" id="dayNav"></div>
   <p class="empty-note">사진은 아무 형식(jpg·png·webp)이나 올려도 <b>자동으로 WebP로 변환·압축</b>되어 Drive의 해당 day 폴더에 저장됩니다.
   아이폰 HEIC이 안 올라가면 설정→카메라→포맷을 "높은 호환성"으로 바꾸세요. 한 번에 여러 장 선택 가능합니다.</p>
@@ -142,6 +209,24 @@
     🗺 <b>가민 주행 기록(GPX)</b>도 날짜별로 올릴 수 있습니다 — Garmin Connect에서 활동 열기 → ⚙ →
     <b>"GPX로 내보내기(Export to GPX)"</b>로 받은 파일을 올리면, 사이트에서 지도+고도 동시 재생으로 그날 주행을 볼 수 있습니다.</p>
   <div id="daysRoot"></div>
+  </div><!-- /photoView -->
+
+  <!-- ── 할 일 ── -->
+  <div id="todoView" style="display:none">
+    <div class="tdtop">
+      <span class="me" id="tdMe"></span>
+      <button class="mini2" id="tdReloadBtn">다시 불러오기</button>
+      <span class="st" id="tdStatus"></span>
+    </div>
+    <p class="tdhint">
+      <b>주행 전 · 주행 중 · 주행 후</b> 각각에 <b>공통 / Jin / Bin</b> 목록이 있습니다.
+      로그인한 사람은 <b>공통</b>과 <b>자기 목록</b>만 고칠 수 있고, 상대방 목록은 보기만 됩니다.
+      항목 글씨를 눌러 바로 고치고 Enter 로 확정하세요. 체크·수정·추가·삭제는 <b>자동 저장</b>됩니다.
+      저장 위치는 Drive 의 <b>db</b> 폴더 (todo-common.json · todo-jin.json · todo-bin.json)이며,
+      둘이 같이 고쳐도 항목 단위로 병합되어 서로 덮어쓰지 않습니다.
+    </p>
+    <div id="todoRoot"></div>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -197,6 +282,8 @@ const initAuth=()=>{
         if(!ok){accessToken=null;$("deniedMsg").style.display="block";return;}
         $("lockScreen").style.display="none";$("panel").style.display="block";
         $("whoAmI").innerHTML="로그인: <b>"+myEmail+"</b>";
+        $("tdSaveBtn").style.display="";
+        tdOnSignedIn();
         loadAll();
       }).catch(()=>toast("계정 정보를 가져오지 못했습니다"));
     }
@@ -746,6 +833,335 @@ const onAction=(ev)=>{
 const openLb=(id)=>{
   const img=$("lbImg");setDriveImg(img,id,1600);$("lb").classList.add("show");};
 $("lb").addEventListener("click",()=>$("lb").classList.remove("show"));
+
+/* ══════════════════════════════════════════════════════════════════════
+   할 일(To-Do) — Google Drive 의 db 폴더에 JSON 으로 저장
+   · 주행 전 / 주행 중 / 주행 후  ×  공통 / Jin / Bin
+   · 로그인한 사람은 "공통"과 "자기 것"만 고칠 수 있고, 상대방 것은 보기만 합니다
+   · 파일을 사람별로 나눠 두어 동시에 고쳐도 서로 덮어쓰지 않습니다
+     (공통 파일은 저장 직전에 서버본과 항목 단위로 병합합니다)
+   저장 위치:  <카미노 폴더>/db/todo-common.json · todo-jin.json · todo-bin.json
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* 계정 → 담당 (Google 로그인 이메일 기준, 소문자) */
+CONFIG.owners = {
+  "benchvue101@gmail.com" : "bin",
+  "jinookpaul@naver.com"  : "jin"
+};
+
+const TD = {
+  dbFolderName : "db",
+  files : { common:"todo-common.json", jin:"todo-jin.json", bin:"todo-bin.json" },
+  phases: [ {k:"pre",   icon:"🎒", label:"주행 전", desc:"출발 전에 끝내야 할 준비"},
+            {k:"during",icon:"🚴", label:"주행 중", desc:"매일·구간마다 챙길 것"},
+            {k:"post",  icon:"🏁", label:"주행 후", desc:"완주 후 마무리"} ],
+  owners: [ {k:"common", icon:"👥", label:"공통"},
+            {k:"jin",    icon:"🟦", label:"Jin"},
+            {k:"bin",    icon:"🟩", label:"Bin"} ]
+};
+
+let dbFolderId = null;
+let tdData = {};      /* {common:{pre:[],during:[],post:[]}, jin:{...}, bin:{...}} */
+let tdMeta = {};      /* {common:{id,modifiedTime}, ...} */
+let myRole = null;    /* "jin" | "bin" | null(공통만 편집) */
+const tdTimers = {};
+
+const tdNow = () => Date.now();
+const tdId  = () => "t"+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const canEdit = (owner) => owner==="common" || owner===myRole;
+
+/* ── 기본 목록 (파일이 없을 때 한 번만 만들어짐 — 이후 자유롭게 수정) ── */
+const TD_SEED = {
+  common:{
+    pre:["항공권·좌석 확정 (자전거 수하물 규정 확인)","자전거 케이스/박스 준비, 항공사 사전 신고",
+         "여행자 보험 가입 (자전거 사고 보장 포함)","순례자 여권(크레덴시알) 준비",
+         "파리 → 생장 TGV+TER 예약 (5/8)","첫날 론세스바예스 알베르게 예약",
+         "유심/eSIM 준비 (스페인 데이터)","자전거 정비 — 체인·타이어·브레이크 패드 점검",
+         "예비 튜브 2개·패치·미싱링크·공구·펌프","전조등·후미등·보조배터리·거치대",
+         "GPX 트랙 13일치 기기에 넣기","현금 환전 + 해외결제 카드 확인"],
+    during:["매일 아침 체인·타이어 공기압 점검","물 2L 이상 확보 후 출발 (메세타 구간 필수)",
+            "그날 알베르게 예약 확인","성당·알베르게에서 세요(도장) 받기",
+            "저녁에 사진·영상 업로드 (upload 페이지)","GPX 주행기록 업로드",
+            "선크림·전해질 보충","빨래 & 다음날 구간 고도표 확인"],
+    post:["산티아고 순례자 사무소에서 콤포스텔라 증서 받기","정오 순례자 미사 참석",
+          "대성당 사도 무덤·아브라소","자전거 포장 & 귀국편 수하물 접수",
+          "사진·GPX 백업 (Drive 정리)","여행기 정리"]
+  },
+  jin:{ pre:["여권 만료일 확인 (6개월 이상)","개인 상비약 준비","클릿 슈즈·클릿 여분",
+             "사이클링 저지·패드바지 3벌","방수 재킷·윈드브레이커"],
+        during:["무릎 상태 체크","일일 사진 정리"],
+        post:["개인 짐 정리","피니스테레 일정 확인"] },
+  bin:{ pre:["여권 만료일 확인 (6개월 이상)","개인 상비약 준비","헬멧·장갑·고글",
+             "카메라·짐벌·메모리카드","보조배터리·충전기·멀티어댑터"],
+        during:["카메라 배터리 충전","숙소 도착 후 영상 백업"],
+        post:["영상 편집 소스 정리","귀국편 온라인 체크인"] }
+};
+
+const tdSeedFor = (owner) => {
+  const src = TD_SEED[owner] || {pre:[],during:[],post:[]};
+  const out = {};
+  TD.phases.forEach(p=>{
+    out[p.k] = (src[p.k]||[]).map(t=>({id:tdId(), text:t, done:false, ts:tdNow(), by:""}));
+  });
+  return out;
+};
+const tdEmpty = () => ({pre:[],during:[],post:[]});
+
+/* ══════════════ Drive 입출력 ══════════════ */
+const driveGetMeta = (id) =>
+  fetch("https://www.googleapis.com/drive/v3/files/"+id+"?fields=id,name,modifiedTime",
+        {headers:authHeaders()})
+  .then(r=>{ if(!r.ok) throw new Error("파일 정보 읽기 실패 ("+r.status+")"); return r.json(); });
+
+const driveDownload = (id) =>
+  fetch("https://www.googleapis.com/drive/v3/files/"+id+"?alt=media",{headers:authHeaders()})
+  .then(r=>{ if(!r.ok) throw new Error("파일 내용 읽기 실패 ("+r.status+")"); return r.text(); });
+
+const driveCreateJson = (name, obj, parentId) => {
+  const boundary="td"+Date.now();
+  const body="--"+boundary+"\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n"
+    +JSON.stringify({name:name, parents:[parentId], mimeType:"application/json"})
+    +"\r\n--"+boundary+"\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n"
+    +JSON.stringify(obj,null,1)+"\r\n--"+boundary+"--";
+  return fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,modifiedTime",{
+    method:"POST",
+    headers:Object.assign({"Content-Type":"multipart/related; boundary="+boundary},authHeaders()),
+    body:body})
+  .then(r=>{ if(!r.ok) throw new Error("파일 생성 실패 ("+r.status+")"); return r.json(); });
+};
+
+const driveUpdateJson = (id, obj) =>
+  fetch("https://www.googleapis.com/upload/drive/v3/files/"+id+"?uploadType=media&fields=id,modifiedTime",{
+    method:"PATCH",
+    headers:Object.assign({"Content-Type":"application/json; charset=UTF-8"},authHeaders()),
+    body:JSON.stringify(obj,null,1)})
+  .then(r=>{ if(!r.ok) throw new Error("저장 실패 ("+r.status+")"); return r.json(); });
+
+/* ══════════════ 불러오기 ══════════════ */
+const tdEnsureFolder = () =>
+  listFolder(CONFIG.parentFolder).then(items=>{
+    const f = items.find(x=>x.mimeType==="application/vnd.google-apps.folder"
+                         && x.name.toLowerCase()===TD.dbFolderName);
+    if(f) return f.id;
+    return createFolder(TD.dbFolderName, CONFIG.parentFolder).then(x=>x.id);
+  });
+
+const tdNormalize = (raw, owner) => {
+  const d = tdEmpty();
+  TD.phases.forEach(p=>{
+    const arr = (raw && raw.items && Array.isArray(raw.items[p.k])) ? raw.items[p.k] : [];
+    d[p.k] = arr.filter(x=>x&&x.id).map(x=>({
+      id:String(x.id), text:String(x.text||""), done:!!x.done,
+      ts:+x.ts||0, by:String(x.by||""), del:!!x.del }));
+  });
+  return d;
+};
+const tdPack = (owner) => ({
+  ver:1, owner:owner, updatedAt:new Date().toISOString(), updatedBy:myEmail,
+  items:tdData[owner]||tdEmpty()
+});
+
+const tdLoad = () => {
+  tdSetStatus("불러오는 중…");
+  return tdEnsureFolder().then(fid=>{
+    dbFolderId = fid;
+    return listFolder(fid);
+  }).then(files=>{
+    const jobs = TD.owners.map(o=>{
+      const key=o.k, name=TD.files[key];
+      const f=files.find(x=>x.name===name);
+      if(!f){                                     /* 없으면 기본 목록으로 새로 만듦 */
+        tdData[key]=tdSeedFor(key);
+        return driveCreateJson(name, tdPack(key), dbFolderId)
+          .then(res=>{ tdMeta[key]={id:res.id, modifiedTime:res.modifiedTime}; });
+      }
+      return driveDownload(f.id).then(txt=>{
+        let raw=null; try{ raw=JSON.parse(txt); }catch(e){}
+        tdData[key]=tdNormalize(raw,key);
+        return driveGetMeta(f.id).then(m=>{ tdMeta[key]={id:f.id, modifiedTime:m.modifiedTime}; });
+      });
+    });
+    return Promise.all(jobs);
+  }).then(()=>{
+    tdRender();
+    tdSetStatus("불러오기 완료", "sav");
+  }).catch(e=>{
+    tdSetStatus(e.message,"err");
+    $("todoRoot").innerHTML='<div class="tdhint" style="color:var(--err)">⚠ '+e.message+'</div>';
+  });
+};
+
+/* ══════════════ 저장 (충돌 병합) ══════════════ */
+const tdMerge = (remote, local) => {
+  const out = tdEmpty();
+  TD.phases.forEach(p=>{
+    const map = new Map();
+    (remote[p.k]||[]).forEach(x=>map.set(x.id,x));
+    (local [p.k]||[]).forEach(x=>{
+      const r=map.get(x.id);
+      if(!r || (x.ts||0) >= (r.ts||0)) map.set(x.id,x);      /* 항목별로 최신 것 채택 */
+    });
+    /* 로컬 순서를 우선하고, 서버에만 있는 항목은 뒤에 붙임 */
+    const seen=new Set(), arr=[];
+    (local[p.k]||[]).forEach(x=>{ const v=map.get(x.id); if(v){arr.push(v);seen.add(x.id);} });
+    (remote[p.k]||[]).forEach(x=>{ if(!seen.has(x.id)) arr.push(map.get(x.id)); });
+    out[p.k]=arr;
+  });
+  return out;
+};
+
+const tdSave = (owner) => {
+  if(!canEdit(owner) || !tdMeta[owner]) return Promise.resolve();
+  tdSetStatus("저장 중…");
+  const id = tdMeta[owner].id;
+  return driveGetMeta(id).then(m=>{
+    if(m.modifiedTime !== tdMeta[owner].modifiedTime){      /* 그 사이 상대가 고침 → 병합 */
+      return driveDownload(id).then(txt=>{
+        let raw=null; try{ raw=JSON.parse(txt); }catch(e){}
+        tdData[owner] = tdMerge(tdNormalize(raw,owner), tdData[owner]);
+        tdRender();
+      });
+    }
+  }).then(()=>driveUpdateJson(id, tdPack(owner)))
+    .then(res=>{
+      tdMeta[owner].modifiedTime = res.modifiedTime;
+      tdSetStatus("저장됨 · "+new Date().toLocaleTimeString("ko-KR",{hour:"2-digit",minute:"2-digit"}),"sav");
+    })
+    .catch(e=>{ tdSetStatus("⚠ "+e.message,"err"); toast("⚠ "+e.message); });
+};
+
+const tdQueueSave = (owner) => {
+  tdSetStatus("변경됨 — 곧 저장합니다…");
+  clearTimeout(tdTimers[owner]);
+  tdTimers[owner] = setTimeout(()=>tdSave(owner), 1200);
+};
+
+const tdSetStatus = (msg, cls) => {
+  const el=$("tdStatus"); if(!el) return;
+  el.textContent=msg; el.className="st"+(cls?" "+cls:"");
+};
+
+/* ══════════════ 화면 ══════════════ */
+const tdEsc = t => String(t==null?"":t)
+  .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+const tdRender = () => {
+  const root=$("todoRoot"); if(!root) return;
+  let h="";
+  TD.phases.forEach(p=>{
+    h+='<section class="tdphase"><h2>'+p.icon+' '+p.label+' <small>'+p.desc+'</small></h2><div class="tdcols">';
+    TD.owners.forEach(o=>{
+      const items=((tdData[o.k]||{})[p.k]||[]).filter(x=>!x.del);
+      const mine=canEdit(o.k), done=items.filter(x=>x.done).length;
+      h+='<div class="tdlist'+(mine?" mine":" ro")+'" data-owner="'+o.k+'" data-phase="'+p.k+'">'
+        +'<div class="tdhead">'+o.icon+' '+o.label
+        +(mine?'':'<span class="ro">읽기 전용</span>')
+        +'<span class="cnt">'+done+' / '+items.length+'</span></div><ul>';
+      if(!items.length) h+='<li class="empty">항목이 없습니다</li>';
+      items.forEach(it=>{
+        h+='<li class="'+(it.done?"done":"")+'" data-id="'+it.id+'">'
+          +'<input type="checkbox"'+(it.done?" checked":"")+(mine?"":" disabled")+'>'
+          +'<span class="tx"'+(mine?' contenteditable="true"':'')+'>'+tdEsc(it.text)+'</span>'
+          +(it.done&&it.by?'<span class="by">'+tdEsc(it.by)+'</span>':'')
+          +(mine?'<button class="del" title="삭제">×</button>':'')
+          +'</li>';
+      });
+      h+='</ul>';
+      if(mine) h+='<button class="add">＋ 항목 추가</button>';
+      h+='</div>';
+    });
+    h+='</div></section>';
+  });
+  root.innerHTML=h;
+  tdBind();
+};
+
+const tdFind = (owner, phase, id) =>
+  ((tdData[owner]||{})[phase]||[]).find(x=>x.id===id);
+
+const tdBind = () => {
+  document.querySelectorAll(".tdlist").forEach(box=>{
+    const owner=box.dataset.owner, phase=box.dataset.phase;
+    if(!canEdit(owner)) return;
+
+    box.querySelectorAll("li[data-id]").forEach(li=>{
+      const id=li.dataset.id;
+      const cb=li.querySelector("input"), tx=li.querySelector(".tx"), del=li.querySelector(".del");
+
+      cb.addEventListener("change",()=>{
+        const it=tdFind(owner,phase,id); if(!it)return;
+        it.done=cb.checked; it.ts=tdNow();
+        it.by=cb.checked ? (myRole?myRole.toUpperCase():(myEmail||"").split("@")[0]) : "";
+        li.classList.toggle("done",cb.checked);
+        tdCount(box); tdQueueSave(owner);
+      });
+
+      tx.addEventListener("blur",()=>{
+        const it=tdFind(owner,phase,id); if(!it)return;
+        const v=tx.textContent.trim();
+        if(v===it.text) return;
+        if(!v){ tx.textContent=it.text; return; }
+        it.text=v; it.ts=tdNow(); tdQueueSave(owner);
+      });
+      tx.addEventListener("keydown",e=>{
+        if(e.key==="Enter"){ e.preventDefault(); tx.blur(); }
+        if(e.key==="Escape"){ const it=tdFind(owner,phase,id); if(it)tx.textContent=it.text; tx.blur(); }
+      });
+
+      del.addEventListener("click",()=>{
+        const it=tdFind(owner,phase,id); if(!it)return;
+        if(!confirm("이 항목을 지울까요?\n\n"+it.text)) return;
+        it.del=true; it.ts=tdNow();          /* 표시만 지움 — 상대방 쪽에도 삭제가 전달됩니다 */
+        tdQueueSave(owner); tdRender();
+      });
+    });
+
+    const add=box.querySelector(".add");
+    if(add) add.addEventListener("click",()=>{
+      const it={id:tdId(), text:"새 항목", done:false, ts:tdNow(), by:""};
+      (tdData[owner][phase]=tdData[owner][phase]||[]).push(it);
+      tdQueueSave(owner); tdRender();
+      const li=document.querySelector('.tdlist[data-owner="'+owner+'"][data-phase="'+phase+'"] li[data-id="'+it.id+'"]');
+      if(li){ const tx=li.querySelector(".tx"); tx.focus();
+        const r=document.createRange(); r.selectNodeContents(tx);
+        const s=getSelection(); s.removeAllRanges(); s.addRange(r); }
+    });
+  });
+};
+
+const tdCount = (box) => {
+  const items=box.querySelectorAll("li[data-id]");
+  const done=box.querySelectorAll("li[data-id].done").length;
+  const c=box.querySelector(".cnt"); if(c) c.textContent=done+" / "+items.length;
+};
+
+/* ══════════════ 화면 전환 ══════════════ */
+const showView = (which) => {
+  $("photoView").style.display = which==="photo" ? "" : "none";
+  $("todoView") .style.display = which==="todo"  ? "" : "none";
+  $("viewPhotoBtn").classList.toggle("on", which==="photo");
+  $("viewTodoBtn") .classList.toggle("on", which==="todo");
+  if(which==="todo" && !dbFolderId) tdLoad();
+};
+$("viewPhotoBtn").addEventListener("click",()=>showView("photo"));
+$("viewTodoBtn") .addEventListener("click",()=>showView("todo"));
+$("tdReloadBtn") .addEventListener("click",()=>{ dbFolderId=null; tdLoad(); });
+$("tdSaveBtn")   .addEventListener("click",()=>{
+  const jobs=[tdSave("common")];
+  if(myRole) jobs.push(tdSave(myRole));
+  Promise.all(jobs).then(()=>toast("저장했습니다"));
+});
+
+/* 로그인 후 호출됨 */
+const tdOnSignedIn = () => {
+  myRole = CONFIG.owners[myEmail] || null;
+  const me=$("tdMe");
+  if(me) me.innerHTML = myRole
+    ? '로그인: <b>'+myRole.toUpperCase()+'</b> — <b>공통</b>과 <b>'+myRole.toUpperCase()
+      +'</b> 목록을 고칠 수 있고, 상대방 목록은 보기만 됩니다.'
+    : '로그인: <b>'+tdEsc(myEmail)+'</b> — 담당이 지정되지 않아 <b>공통</b> 목록만 고칠 수 있습니다.';
+};
+
 </script>
 </body>
 </html>
