@@ -1,15 +1,28 @@
-<!-- ══════════════════════════════════════════════════════════════════════
-     camino-days.html  ·  DAY 1~13 내용 (분리 파일)
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<!-- ======================================================================
+     camino-days.html   ·   DAY 1~13 내용 (분리 파일)
 
-     · 이 파일만 고치면 camino-frances-bike-2027.html 은 건드리지 않아도 됩니다.
-     · camino-frances-bike-2027.html 이 이 파일을 읽어 제자리에 끼워 넣습니다.
-     · 아래 두 표시(마커)는 지우지 마세요. 그 사이의 내용만 고치면 됩니다.
-         <!--#NAV#-->   … 상단 D1~D13 바로가기 막대
-         <!--#CARDS#--> … 날짜별 상세 카드 13개
-     · 각 카드 안의 <div class="dextra" data-day="N"></div> 는
-       경로 지도 · 날씨 · 명소가 자동으로 채워지는 자리입니다. 지우지 마세요.
-     · 이 파일은 반드시 camino-frances-bike-2027.html 과 같은 폴더에 두세요.
-     ══════════════════════════════════════════════════════════════════════ -->
+     이 파일만 고치면 camino-frances-bike-2027.html 은 건드릴 필요가 없습니다.
+     메인 페이지가 이 파일을 읽어 제자리에 끼워 넣습니다.
+
+     [ 규칙 ]
+     1. 아래 두 개의 마커 줄은 지우거나 옮기지 마세요.
+          #NAV#    줄  ...  그 아래는 상단 D1~D13 바로가기 막대
+          #CARDS#  줄  ...  그 아래는 날짜별 상세 카드 13개
+        (마커는 각각 자기 줄 맨 앞에 혼자 있어야 합니다)
+     2. 각 카드 안에 있는, class 가 dextra 인 빈 div 는
+        경로 지도 · 날씨 · 명소가 자동으로 채워지는 자리입니다. 지우지 마세요.
+     3. 이 설명 안에는 꺾쇠괄호를 쓰지 않습니다. 쓰면 주석이 일찍 끝나
+        설명문이 화면에 그대로 찍히고 페이지가 깨집니다. 편집하실 때도 주의하세요.
+     4. 이 파일은 camino-frances-bike-2027.html 과 같은 폴더에 두세요.
+
+     [ 자주 고치는 곳 ]
+       dnum   ... DAY 번호        dtitle ... 구간 이름과 날짜
+       dkm    ... 거리 / 획득고도  droute ... 구간 표 (거리 · 고도 · 노면)
+       dorder ... 경로 순서        dfoot  ... 누적 / 남은 거리
+       dqr    ... 구글지도 링크와 QR 코드
+     ====================================================================== -->
 
 <!--#NAV#-->
 <div class="in wrap" style="max-width:1040px"><a href="#day1" class="">D1<small>5/9</small></a><a href="#day2" class="">D2<small>5/10</small></a><a href="#day3" class="">D3<small>5/11</small></a><a href="#day4" class="">D4<small>5/12</small></a><a href="#day5" class="">D5<small>5/13</small></a><a href="#day6" class="">D6<small>5/14</small></a><a href="#day7" class="">D7<small>5/15</small></a><a href="#day8" class="rest">D8<small>5/16</small></a><a href="#day9" class="">D9<small>5/17</small></a><a href="#day10" class="">D10<small>5/18</small></a><a href="#day11" class="">D11<small>5/19</small></a><a href="#day12" class="">D12<small>5/20</small></a><a href="#day13" class="">D13<small>5/21</small></a></div>

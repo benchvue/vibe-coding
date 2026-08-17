@@ -140,15 +140,33 @@
   .tdlist li:hover{background:#F7F5EE}
   .tdlist.ro li:hover{background:transparent}
   .tdlist li input[type=checkbox]{margin-top:3px;width:16px;height:16px;flex:0 0 auto;accent-color:var(--ok)}
-  .tdlist li .tx{flex:1;min-width:0;line-height:1.55;outline:none;word-break:break-word;
-    border-radius:5px;padding:1px 3px}
-  .tdlist li .tx:focus{background:#FFF9E4;box-shadow:0 0 0 2px var(--flecha)}
+  .tdlist li .tx{flex:1;min-width:0;line-height:1.55;word-break:break-word;
+    border-radius:5px;padding:1px 3px;cursor:text}
+  .tdlist.ro li .tx{cursor:default}
   .tdlist li.done .tx{text-decoration:line-through;color:#9AA0AA}
   .tdlist li .by{flex:0 0 auto;font-size:10px;color:var(--muted);background:#EDEAE1;
     border-radius:999px;padding:1px 6px;margin-top:3px;white-space:nowrap}
-  .tdlist li .del{flex:0 0 auto;border:none;background:transparent;color:#C3BCA6;
-    font-size:15px;line-height:1;padding:2px 4px;border-radius:6px}
-  .tdlist li .del:hover{background:#F7DADA;color:var(--err)}
+  .tdlist li .ops{flex:0 0 auto;display:flex;align-items:center;gap:1px;margin-top:1px;
+    opacity:.45;transition:opacity .15s}
+  .tdlist li:hover .ops,.tdlist li.editing .ops{opacity:1}
+  @media(hover:none){ .tdlist li .ops{opacity:.9} }
+  .tdlist li .ops button{border:none;background:transparent;color:#8A8578;
+    font-size:11px;line-height:1;padding:4px 4px;border-radius:6px}
+  .tdlist li .ops .del{font-size:15px;color:#C3BCA6}
+  .tdlist li .ops button:hover{background:#EDEAE1;color:var(--blue)}
+  .tdlist li .ops .del:hover{background:#F7DADA;color:var(--err)}
+  .tdlist li .ops button[disabled]{opacity:.25;cursor:default}
+  .tdlist li .ops button[disabled]:hover{background:transparent;color:#8A8578}
+
+  /* 수정 모드 */
+  .tdlist li.editing{background:#FFFBEE;align-items:center}
+  .tdlist li .edin{flex:1;min-width:0;border:1px solid var(--flecha);border-radius:7px;
+    padding:5px 8px;font-family:inherit;font-size:13.5px;background:#fff;outline:none}
+  .tdlist li .ops.edit{gap:4px}
+  .tdlist li .ops.edit button{font-size:11.5px;font-weight:700;padding:5px 9px;border-radius:999px}
+  .tdlist li .ops.edit .ok{background:var(--blue);color:#fff}
+  .tdlist li .ops.edit .ok:hover{background:var(--ok)}
+  .tdlist li .ops.edit .no{background:#EDEAE1;color:var(--muted)}
   .tdlist .add{margin:2px 8px 10px;border:1px dashed var(--line);background:transparent;color:var(--muted);
     border-radius:9px;padding:7px;font-size:12.5px;font-weight:600}
   .tdlist .add:hover{border-color:var(--flecha);color:#7A5E00;background:#FFFBEE}
@@ -220,8 +238,9 @@
     </div>
     <p class="tdhint">
       <b>주행 전 · 주행 중 · 주행 후</b> 각각에 <b>공통 / Jin / Bin</b> 목록이 있습니다.
-      로그인한 사람은 <b>공통</b>과 <b>자기 목록</b>만 고칠 수 있고, 상대방 목록은 보기만 됩니다.
-      항목 글씨를 눌러 바로 고치고 Enter 로 확정하세요. 체크·수정·추가·삭제는 <b>자동 저장</b>됩니다.
+      로그인한 사람은 <b>공통</b>과 <b>자기 목록</b>만 고칠 수 있고, 상대방 목록은 보기만 됩니다.<br>
+      항목 오른쪽 버튼 — <b>▲ ▼</b> 순서 바꾸기 · <b>✎</b> 내용 수정(글씨를 더블클릭해도 됩니다) · <b>×</b> 삭제.
+      수정 중에는 Enter 로 저장, Esc 로 취소합니다. 모든 변경은 <b>자동 저장</b>됩니다.
       저장 위치는 Drive 의 <b>db</b> 폴더 (todo-common.json · todo-jin.json · todo-bin.json)이며,
       둘이 같이 고쳐도 항목 단위로 병합되어 서로 덮어쓰지 않습니다.
     </p>
@@ -1058,12 +1077,19 @@ const tdRender = () => {
         +(mine?'':'<span class="ro">읽기 전용</span>')
         +'<span class="cnt">'+done+' / '+items.length+'</span></div><ul>';
       if(!items.length) h+='<li class="empty">항목이 없습니다</li>';
-      items.forEach(it=>{
+      items.forEach((it,ix)=>{
         h+='<li class="'+(it.done?"done":"")+'" data-id="'+it.id+'">'
           +'<input type="checkbox"'+(it.done?" checked":"")+(mine?"":" disabled")+'>'
-          +'<span class="tx"'+(mine?' contenteditable="true"':'')+'>'+tdEsc(it.text)+'</span>'
+          +'<span class="tx" title="'+(mine?"두 번 누르면 수정":"")+'">'+tdEsc(it.text)+'</span>'
           +(it.done&&it.by?'<span class="by">'+tdEsc(it.by)+'</span>':'')
-          +(mine?'<button class="del" title="삭제">×</button>':'')
+          +(mine
+            ?'<span class="ops">'
+              +'<button class="up" title="위로"'+(ix===0?" disabled":"")+'>▲</button>'
+              +'<button class="dn" title="아래로"'+(ix===items.length-1?" disabled":"")+'>▼</button>'
+              +'<button class="ed" title="수정">✎</button>'
+              +'<button class="del" title="삭제">×</button>'
+            +'</span>'
+            :'')
           +'</li>';
       });
       h+='</ul>';
@@ -1086,7 +1112,7 @@ const tdBind = () => {
 
     box.querySelectorAll("li[data-id]").forEach(li=>{
       const id=li.dataset.id;
-      const cb=li.querySelector("input"), tx=li.querySelector(".tx"), del=li.querySelector(".del");
+      const cb=li.querySelector("input"), tx=li.querySelector(".tx");
 
       cb.addEventListener("change",()=>{
         const it=tdFind(owner,phase,id); if(!it)return;
@@ -1096,19 +1122,16 @@ const tdBind = () => {
         tdCount(box); tdQueueSave(owner);
       });
 
-      tx.addEventListener("blur",()=>{
-        const it=tdFind(owner,phase,id); if(!it)return;
-        const v=tx.textContent.trim();
-        if(v===it.text) return;
-        if(!v){ tx.textContent=it.text; return; }
-        it.text=v; it.ts=tdNow(); tdQueueSave(owner);
-      });
-      tx.addEventListener("keydown",e=>{
-        if(e.key==="Enter"){ e.preventDefault(); tx.blur(); }
-        if(e.key==="Escape"){ const it=tdFind(owner,phase,id); if(it)tx.textContent=it.text; tx.blur(); }
-      });
+      /* 수정: ✎ 버튼 또는 글씨 더블클릭 */
+      const startEdit=()=>tdEdit(li, owner, phase, id);
+      li.querySelector(".ed").addEventListener("click",startEdit);
+      tx.addEventListener("dblclick",startEdit);
 
-      del.addEventListener("click",()=>{
+      /* 순서 이동 */
+      li.querySelector(".up").addEventListener("click",()=>tdMove(owner,phase,id,-1));
+      li.querySelector(".dn").addEventListener("click",()=>tdMove(owner,phase,id,+1));
+
+      li.querySelector(".del").addEventListener("click",()=>{
         const it=tdFind(owner,phase,id); if(!it)return;
         if(!confirm("이 항목을 지울까요?\n\n"+it.text)) return;
         it.del=true; it.ts=tdNow();          /* 표시만 지움 — 상대방 쪽에도 삭제가 전달됩니다 */
@@ -1127,6 +1150,47 @@ const tdBind = () => {
         const s=getSelection(); s.removeAllRanges(); s.addRange(r); }
     });
   });
+};
+
+/* 항목 수정 — 인라인 입력창으로 바꿔 저장/취소 */
+const tdEdit = (li, owner, phase, id) => {
+  if(li.classList.contains("editing")) return;
+  const it=tdFind(owner,phase,id); if(!it) return;
+  li.classList.add("editing");
+  const tx=li.querySelector(".tx"), ops=li.querySelector(".ops");
+  const before=it.text;
+  tx.outerHTML='<input class="edin" type="text">';
+  const inp=li.querySelector(".edin"); inp.value=before;
+  ops.outerHTML='<span class="ops edit">'
+    +'<button class="ok" title="저장">저장</button>'
+    +'<button class="no" title="취소">취소</button></span>';
+  const done=(save)=>{
+    const v=inp.value.trim();
+    if(save && v && v!==before){ it.text=v; it.ts=tdNow(); tdQueueSave(owner); }
+    li.classList.remove("editing");
+    tdRender();
+  };
+  li.querySelector(".ok").addEventListener("click",()=>done(true));
+  li.querySelector(".no").addEventListener("click",()=>done(false));
+  inp.addEventListener("keydown",e=>{
+    if(e.key==="Enter"){ e.preventDefault(); done(true); }
+    if(e.key==="Escape"){ e.preventDefault(); done(false); }
+  });
+  inp.focus(); inp.select();
+};
+
+/* 순서 바꾸기 (▲ ▼) — 화면에 보이는 순서 기준으로 이웃과 자리 교환 */
+const tdMove = (owner, phase, id, dir) => {
+  const arr=(tdData[owner]||{})[phase]; if(!arr) return;
+  const live=arr.map((x,i)=>({x,i})).filter(o=>!o.x.del);   /* 지워진 항목은 건너뜀 */
+  const at=live.findIndex(o=>o.x.id===id);
+  if(at<0) return;
+  const to=at+dir;
+  if(to<0 || to>=live.length) return;
+  const a=live[at].i, b=live[to].i;
+  const t=arr[a]; arr[a]=arr[b]; arr[b]=t;
+  arr[a].ts=tdNow(); arr[b].ts=tdNow();
+  tdQueueSave(owner); tdRender();
 };
 
 const tdCount = (box) => {

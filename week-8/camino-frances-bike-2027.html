@@ -509,10 +509,17 @@
       else res();
     });
   }
+  /* 마커는 "줄 맨 앞에 혼자 있는" 것만 인정합니다.
+     (설명문 안에 같은 글자가 있어도 잘못 잡지 않도록) */
+  function markAt(txt, name){
+    var re = new RegExp("^[ \\t]*<!--#"+name+"#-->[ \\t]*$", "m");
+    var m = re.exec(txt);
+    return m ? {i:m.index, len:m[0].length} : null;
+  }
   function pick(txt, a, b){
-    var i = txt.indexOf(a); if(i<0) return "";
-    var j = b ? txt.indexOf(b, i+a.length) : -1;
-    return txt.slice(i+a.length, j<0 ? txt.length : j);
+    var A = markAt(txt, a); if(!A) return "";
+    var B = b ? markAt(txt, b) : null;
+    return txt.slice(A.i+A.len, (B && B.i>A.i) ? B.i : txt.length);
   }
   function showError(msg, detail){
     var host=document.getElementById("daysHost");
@@ -536,13 +543,18 @@
 
   window.CAMINO_DAYS_READY = Promise.all([fetching, domReady()]).then(function(a){
     var txt = a[0];
-    var nav   = pick(txt, "<!--#NAV#-->",   "<!--#CARDS#-->").trim();
-    var cards = pick(txt, "<!--#CARDS#-->", null).trim();
-    if(!cards) throw new Error("<!--#CARDS#--> 표시를 찾지 못했습니다");
+    var nav   = pick(txt, "NAV",   "CARDS").trim();
+    var cards = pick(txt, "CARDS", null).trim();
+    if(!cards) throw new Error("#CARDS# 마커를 찾지 못했습니다 (줄 맨 앞에 혼자 있어야 합니다)");
     var host = document.getElementById("daysHost");
     if(host) host.innerHTML = cards;
     var navHost = document.getElementById("dayNavHost");
     if(navHost && nav) navHost.innerHTML = nav;
+    /* 안전장치: data-day 가 숫자가 아닌 자리는 잘못 들어온 것이므로 제거 */
+    (host||document).querySelectorAll(".dextra").forEach(function(el){
+      var d = parseInt(el.getAttribute("data-day"),10);
+      if(!(d>=1 && d<=13)) el.parentNode.removeChild(el);
+    });
     document.dispatchEvent(new CustomEvent("camino:days-ready"));
     return true;
   }).catch(function(e){
