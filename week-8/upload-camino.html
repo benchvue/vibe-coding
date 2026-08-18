@@ -262,12 +262,26 @@
     border-radius:999px;padding:3px 10px;font-size:11px;font-family:inherit}
   .pgdel:hover{background:var(--err);color:#fff;border-color:var(--err)}
   .pgfrm label{display:block;font-size:11px;color:var(--muted);margin-bottom:7px}
+  .pgfrm label em{font-style:normal;opacity:.7;margin-left:4px;font-size:10px}
   .pgfrm input,.pgfrm select{display:block;width:100%;margin-top:3px;border:1px solid var(--line);
     border-radius:7px;padding:6px 8px;font-size:13px;font-family:inherit;background:#fff;color:var(--ink)}
   .pgfrm input:focus,.pgfrm select:focus{outline:none;border-color:var(--flecha);
     box-shadow:0 0 0 2px rgba(245,185,23,.3)}
   .pgrow{display:grid;grid-template-columns:1fr 108px;gap:8px}
-  .pggps{font-size:11px;color:var(--muted);margin-bottom:7px}
+  .pggps{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:11px;color:var(--muted);
+    margin-bottom:8px;background:#F4F2EA;border-radius:8px;padding:6px 9px}
+  .pggps-t{flex:1;min-width:0}
+  .pggps-e{border:1px solid var(--line);background:#fff;color:var(--blue);border-radius:6px;
+    padding:2px 7px;font-size:11px;font-family:inherit}
+  .pggps-e:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
+  .pggps-i{flex-basis:100%;border:1px solid var(--line);border-radius:7px;padding:5px 8px;
+    font-size:12px;font-family:inherit;background:#fff}
+  .pggps-i[hidden]{display:none}
+
+  /* 장소 이름 콤보 — 목록에서 고르거나 직접 입력 */
+  .pgcombo{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%236B6B66' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 9px center;padding-right:26px!important}
+  .pgcombo::-webkit-calendar-picker-indicator{opacity:0;position:absolute;right:0;width:26px;height:100%;cursor:pointer}
 </style>
 </head>
 <body>
@@ -353,8 +367,8 @@
       네모는 <b>가운데를 끌어 옮기고</b>, <b>모서리·변의 손잡이 8개</b>로 크기를 맞춥니다.
       사진은 그대로 두고 <b>좌표(%)만 저장</b>하므로 원본이 손상되지 않고 나중에 다시 조정할 수 있습니다.
       <b>🔍 자동 찾기</b>는 종이 위의 잉크 덩어리를 찾아 후보를 제안합니다 — 틀린 것은 지우면 됩니다.<br>
-      각 도장에 <b>장소 이름 · 마을 · DAY · 시각</b>을 넣으면 마을 좌표로 <b>GPS 위치가 자동</b>으로 채워지고,
-      사이트의 <b>📕 디지털 순례자 여권</b> 섹션과 <b>날짜별 카드</b >에 함께 표시됩니다.
+      각 도장에는 <b>DAY · 시각 · 위치 · 장소 이름 · 메모</b>를 넣습니다.
+      장소 이름은 <b>목록에서 고르거나 직접 입력</b>할 수 있고, 아는 마을이면 <b>위치가 자동</b>으로 채워집니다.
       페이지 사진은 Drive 의 <b>passport</b> 폴더, 정보는 <b>db/passport-{bin,jin}.json</b> 에 저장됩니다.
     </p>
     <div id="pgRoot"></div>
@@ -1387,7 +1401,8 @@ const pgId=()=>"s"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)
 const pgCanEdit=(k)=>k===pgWho;
 const pgDayDate=(d)=>{const x=new Date(PG.startDate);x.setDate(x.getDate()+(d-1));
   return x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0");};
-const pgTownLL=(name)=>{const t=CAMINO_TOWNS.find(x=>x[0]===name);return t?{lat:t[1],lon:t[2]}:null;};
+const pgTownLL=(name)=>{const t=CAMINO_TOWNS.find(x=>x[0]===name);
+  return t?{name:t[0],lat:t[1],lon:t[2]}:null;};
 const pgEsc=t=>String(t==null?"":t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 const pgImgUrl=(id,w)=>"https://lh3.googleusercontent.com/d/"+id+"=w"+(w||1600);
 
@@ -1745,26 +1760,57 @@ const pgSelect=(id)=>{
 };
 
 const pgFrmHTML=(s,i,page,ro)=>{
-  const towns=PG_DAY_TOWNS[s.day]||[];
+  const day=PG_DAY_TOWNS[s.day]||[];
+  /* 그날 지나는 마을을 앞에, 나머지 카미노 마을을 뒤에 — 목록에 없으면 직접 써도 됩니다 */
+  const rest=CAMINO_TOWNS.map(t=>t[0]).filter(n=>day.indexOf(n)<0);
+  const listId="pgT-"+s.id;
+  const gps = s.lat!=null
+    ? '📍 '+(+s.lat).toFixed(4)+', '+(+s.lon).toFixed(4)
+    : '📍 위치 없음 — 아래에서 마을을 고르면 자동으로 채워집니다';
   return '<div class="pgfrm-h"><span class="pgs-img sm" style="'+pgCropStyle(page,s.rect,400)+'"></span>'
     +'<b>#'+(i+1)+'</b>'+(ro?'':'<button type="button" class="pgdel">삭제</button>')+'</div>'
-    +'<label>장소 이름<input type="text" data-f="place" value="'+pgEsc(s.place)+'" '
-      +'placeholder="예: Parroquia San Juan"'+(ro?" disabled":"")+'></label>'
-    +'<label>마을<select data-f="town"'+(ro?" disabled":"")+'>'
-      +'<option value="">— 선택 —</option>'
-      +towns.map(t=>'<option value="'+pgEsc(t)+'"'+(t===s.town?" selected":"")+'>'+pgEsc(t)+'</option>').join("")
-      +(s.town&&towns.indexOf(s.town)<0
-         ?'<option value="'+pgEsc(s.town)+'" selected>'+pgEsc(s.town)+' (다른 날 마을)</option>':'')
-      +'</select></label>'
+
+    /* ① DAY · 시각 */
     +'<div class="pgrow"><label>DAY<select data-f="day"'+(ro?" disabled":"")+'>'
       +Array.from({length:PG.dayCount},(_,n)=>'<option value="'+(n+1)+'"'+((n+1)===s.day?" selected":"")
         +'>DAY '+(n+1)+' · '+pgDayDate(n+1).slice(5)+'</option>').join("")
       +'</select></label>'
     +'<label>시각<input type="time" data-f="time" step="60" value="'+pgEsc(s.time)+'"'+(ro?" disabled":"")+'></label></div>'
-    +'<div class="pggps">'+(s.lat!=null?'📍 '+(+s.lat).toFixed(4)+', '+(+s.lon).toFixed(4)
-        :'📍 마을을 고르면 위치가 자동으로 채워집니다')+'</div>'
+
+    /* ② 위치 */
+    +'<div class="pggps"><span class="pggps-t">'+gps+'</span>'
+      +(ro?'':'<button type="button" class="pggps-e" title="좌표 직접 입력">✎</button>'
+            +'<input type="text" class="pggps-i" placeholder="위도, 경도  (예: 42.6714, -2.0299)" '
+            +'value="'+(s.lat!=null?(+s.lat).toFixed(5)+", "+(+s.lon).toFixed(5):"")+'" hidden>')
+    +'</div>'
+
+    /* ③ 장소 이름 — 마을 목록이 들어간 콤보, 없으면 직접 입력 */
+    +'<label>장소 이름 <em>목록에서 고르거나 직접 입력</em>'
+      +'<input type="text" class="pgcombo" data-f="place" list="'+listId+'" '
+      +'value="'+pgEsc(s.place||s.town)+'" placeholder="예: Portomarín · Parroquia San Juan"'
+      +(ro?" disabled":"")+'>'
+      +'<datalist id="'+listId+'">'
+        +day.map(t=>'<option value="'+pgEsc(t)+'">DAY '+s.day+' 경로</option>').join("")
+        +rest.map(t=>'<option value="'+pgEsc(t)+'"></option>').join("")
+      +'</datalist></label>'
+
+    /* ④ 메모 */
     +'<label>메모<input type="text" data-f="note" value="'+pgEsc(s.note)+'" '
       +'placeholder="선택 사항"'+(ro?" disabled":"")+'></label>';
+};
+
+/* 입력한 장소 이름이 아는 마을이면 좌표를 채워 줍니다 */
+const pgResolvePlace=(s)=>{
+  const name=(s.place||"").trim();
+  if(!name) return false;
+  let hit=pgTownLL(name);
+  if(!hit){                                  /* "Portomarín · 산 니콜라스" 처럼 앞부분만 마을일 때 */
+    const head=name.split(/[·,\-–(]/)[0].trim();
+    if(head&&head!==name) hit=pgTownLL(head);
+  }
+  if(!hit) return false;
+  s.town=hit.name||s.town; s.lat=hit.lat; s.lon=hit.lon;
+  return true;
 };
 
 const pgBindFrm=(frm)=>{
@@ -1774,23 +1820,36 @@ const pgBindFrm=(frm)=>{
   const hd=frm.querySelector(".pgfrm-h");
   if(hd) hd.addEventListener("click",e=>{ if(!e.target.closest("button")) pgSelect(id); });
   if(ro) return;
-  frm.querySelectorAll("input,select").forEach(inp=>{
+
+  const gpsT=frm.querySelector(".pggps-t"), gpsI=frm.querySelector(".pggps-i"),
+        gpsE=frm.querySelector(".pggps-e");
+  const showGps=()=>{ gpsT.textContent = s.lat!=null
+      ? '📍 '+(+s.lat).toFixed(4)+', '+(+s.lon).toFixed(4)
+      : '📍 위치 없음 — 아래에서 마을을 고르면 자동으로 채워집니다'; };
+  if(gpsE) gpsE.addEventListener("click",e=>{
+    e.stopPropagation();
+    gpsI.hidden=!gpsI.hidden;
+    if(!gpsI.hidden){ gpsI.focus(); gpsI.select(); }
+  });
+  if(gpsI) gpsI.addEventListener("change",()=>{
+    const m=gpsI.value.split(/[,\s]+/).map(parseFloat).filter(v=>!isNaN(v));
+    if(m.length>=2){ s.lat=m[0]; s.lon=m[1]; }
+    else if(!gpsI.value.trim()){ s.lat=null; s.lon=null; }
+    s.ts=Date.now(); pgQueueSave(k); showGps();
+  });
+
+  frm.querySelectorAll("input[data-f],select[data-f]").forEach(inp=>{
     inp.addEventListener("focus",()=>pgSelect(id));
     const commit=()=>{
       const f=inp.dataset.f;
       if(f==="day"){
         s.day=+inp.value; s.date=pgDayDate(s.day); s.ts=Date.now(); pgQueueSave(k);
-        pgRefreshFrm(id);                 /* 마을 목록이 바뀌므로 이 칸만 다시 그림 */
+        pgRefreshFrm(id);                 /* 그날 마을 목록이 바뀌므로 이 칸만 다시 그림 */
         return;
       }
-      if(f==="town"){
-        s.town=inp.value;
-        const ll=pgTownLL(s.town);
-        if(ll){ s.lat=ll.lat; s.lon=ll.lon; }
-        const g=frm.querySelector(".pggps");
-        if(g) g.textContent = s.lat!=null
-          ? '📍 '+(+s.lat).toFixed(4)+', '+(+s.lon).toFixed(4)
-          : '📍 마을을 고르면 위치가 자동으로 채워집니다';
+      if(f==="place"){
+        s.place=inp.value.trim();
+        if(pgResolvePlace(s)){ showGps(); if(gpsI) gpsI.value=(+s.lat).toFixed(5)+", "+(+s.lon).toFixed(5); }
       } else s[f]=inp.value;
       s.ts=Date.now(); pgQueueSave(k);
     };

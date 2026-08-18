@@ -2348,7 +2348,6 @@ const PHOTOS = {
 })();
 </script>
 
-<!-- ══════ DAY별 경로 지도 + 명소 ══════ -->
 <script>
 /* ══════════════════════════════════════════════════════════════════════
    DAY별 명소 데이터
@@ -3039,7 +3038,6 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
 
 </script>
 
-<!-- ══════ DAY별 날씨 ══════ -->
 <script>
 /* ══════════════════════════════════════════════════════════════════════
    DAY별 날씨 카드 (출발지 / 도착지)  ·  Open-Meteo
@@ -3768,7 +3766,6 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
 
 </script>
 
-<!-- ══════ 📕 디지털 순례자 여권 ══════ -->
 <script>
 /* ══════════════════════════════════════════════════════════════════════
    📕 디지털 순례자 여권 (Credencial del Peregrino)
@@ -3937,7 +3934,9 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     lb.querySelector(".pplb-stamp").setAttribute("style", cropStyle(pg, s.rect, 1600));
     lb.querySelector(".pplb-no").textContent="📕 Sello #"+s.no;
     lb.querySelector(".pplb-place").textContent=s.place||"(장소 이름 없음)";
-    lb.querySelector(".pplb-town").textContent=s.town||"";
+    var tw=lb.querySelector(".pplb-town");
+    tw.textContent=(s.town&&s.town!==s.place)?s.town:"";
+    tw.style.display=tw.textContent?"":"none";
     var dt=s.date||(s.day?dayDate(s.day).toISOString().slice(0,10):"");
     lb.querySelector(".pplb-when").textContent=
       (s.day?"DAY "+s.day+" · ":"")+dt+(s.time?"  "+s.time:"");
@@ -3966,7 +3965,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     var b=document.createElement("button");
     b.type="button"; b.className="sello"+(size?" "+size:"");
     b.innerHTML='<span class="sello-img" style="'+cropStyle(pg,s.rect,800)+'"></span>'
-      +'<span class="sello-cap"><b>'+esc(s.town||s.place||"세요")+'</b>'
+      +'<span class="sello-cap"><b>'+esc(s.place||s.town||"세요")+'</b>'
       +'<small>'+esc(s.time||dayLabel(s.day))+'</small></span>'
       +'<span class="sello-no">#'+s.no+'</span>';
     b.addEventListener("click",function(){ openLb(items(k,list), i); });
