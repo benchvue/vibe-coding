@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="robots" content="noindex, nofollow">
 <title>Camino 사진 업로드 — Bin &amp; Jin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -358,6 +361,8 @@
   /* 증서 입력칸은 한 줄에 하나씩 */
   .pgcert-f label{display:block;width:100%;margin-bottom:9px}
   .pgcert-f input{width:100%}
+  .buildver{font-size:11px;color:var(--muted);background:#F4F2EA;border:1px solid var(--line);
+    border-radius:999px;padding:4px 10px;font-variant-numeric:tabular-nums;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -385,6 +390,8 @@
     <div class="actions">
       <a class="mini" href="camino-frances-bike-2027.html" target="_blank">사이트 보기 ↗</a>
       <button class="mini" id="tdSaveBtn" style="display:none">저장</button>
+      <span class="buildver" title="지금 열려 있는 파일의 판 번호"></span>
+      <button class="mini buildreload" title="캐시를 무시하고 최신 파일을 다시 받습니다">↻ 최신본</button>
       <button class="mini" id="refreshBtn">새로고침</button>
       <button class="mini" id="signOutBtn">로그아웃</button>
     </div>
@@ -2261,6 +2268,26 @@ const pgOnSignedIn=()=>{
     : '담당이 지정되지 않은 계정이라 <b>보기만</b> 가능합니다.';
 };
 
+</script>
+
+<script>
+/* ══════ 판(build) 표시 · 캐시 무시하고 다시 받기 ══════
+   아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
+   아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
+(function(){
+  var BUILD="20260818-1043";
+  function paint(){
+    document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
+    document.querySelectorAll(".buildreload").forEach(function(b){
+      b.addEventListener("click",function(){
+        var u=location.pathname+"?v="+Date.now()+location.hash;
+        location.replace(u);
+      });
+    });
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",paint);
+  else paint();
+})();
 </script>
 </body>
 </html>
