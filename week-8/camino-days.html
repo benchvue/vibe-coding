@@ -13,6 +13,10 @@
         (마커는 각각 자기 줄 맨 앞에 혼자 있어야 합니다)
      2. 각 카드 안에 있는, class 가 dextra 인 빈 div 는
         경로 지도 · 날씨 · 명소가 자동으로 채워지는 자리입니다. 지우지 마세요.
+        그 안의 data-map  은 경로 지도 그림(PNG) 파일 경로,
+                data-svg  는 그 아래에 함께 보여줄 글자 선명본(SVG) 파일 경로입니다.
+        파일 이름을 바꾸고 싶으면 이 두 값만 고치면 됩니다.
+        data-svg 를 지우거나 파일이 없으면 SVG 칸은 그냥 나오지 않습니다.
      3. 이 설명 안에는 꺾쇠괄호를 쓰지 않습니다. 쓰면 주석이 일찍 끝나
         설명문이 화면에 그대로 찍히고 페이지가 깨집니다. 편집하실 때도 주의하세요.
      4. 이 파일은 camino-frances-bike-2027.html 과 같은 폴더에 두세요.
@@ -44,7 +48,9 @@
     </aside>
   </div>
   <div class="dorder"><b>경로 순서</b> 생장 (Saint-Jean-Pied-de-Port) → 오리손 (Orisson) → 론세스바예스 (Roncesvalles) → 수비리 (Zubiri)</div>
-  <div class="dextra" data-day="1"></div>
+  <div class="dextra" data-day="1"
+       data-map="images/day1-map.png"
+       data-svg="images/day1-map.svg"></div>
   <footer class="dfoot">누적 48.0 km · 남은 760.5 km</footer>
 </article>
 
@@ -64,7 +70,9 @@
     </aside>
   </div>
   <div class="dorder"><b>경로 순서</b> 수비리 (Zubiri) → 팜풀로나 (Pamplona) → 푸엔테 라 레이나 (Puente la Reina) → 에스떼야 (Estella)</div>
-  <div class="dextra" data-day="2"></div>
+  <div class="dextra" data-day="2"
+       data-map="images/day2-map.png"
+       data-svg="images/day2-map.svg"></div>
   <footer class="dfoot">누적 113.9 km · 남은 694.6 km</footer>
 </article>
 
@@ -84,7 +92,9 @@
     </aside>
   </div>
   <div class="dorder"><b>경로 순서</b> 에스떼야 (Estella) → 로스 아르꼬스 (Los Arcos) → 로그로뇨 (Logroño) → 나베레테 (Navarrete)</div>
-  <div class="dextra" data-day="3"></div>
+  <div class="dextra" data-day="3"
+       data-map="images/day3-map.png"
+       data-svg="images/day3-map.svg"></div>
   <footer class="dfoot">누적 175.2 km · 남은 633.3 km</footer>
 </article>
 
@@ -104,7 +114,9 @@
     </aside>
   </div>
   <div class="dorder"><b>경로 순서</b> 나베레테 (Navarrete) → 나헤라 (Nájera) → 산토 도밍고 데 라 깔사다 (Santo Domingo de la Calzada) → 벨로라도 (Belorado)</div>
-  <div class="dextra" data-day="4"></div>
+  <div class="dextra" data-day="4"
+       data-map="images/day4-map.png"
+       data-svg="images/day4-map.svg"></div>
   <footer class="dfoot">누적 234.5 km · 남은 574.0 km</footer>
 </article>
 
@@ -124,7 +136,9 @@
     </aside>
   </div>
   <div class="dorder"><b>경로 순서</b> 벨로라도 (Belorado) → 산 후안 데 오르떼가 (San Juan de Ortega) → 부르고스 (Burgos) → 오르니요스 델 까미노 (Hornillos del Camino) → 키스트로헤리스 (Castrojeriz)</div>
-  <div class="dextra" data-day="5"></div>
+  <div class="dextra" data-day="5"
+       data-map="images/day5-map.png"
+       data-svg="images/day5-map.svg"></div>
   <footer class="dfoot">누적 331.0 km · 남은 477.5 km</footer>
 </article>
 
@@ -144,7 +158,9 @@
     </aside>
   </div>
   <div class="dorder"><b>경로 순서</b> 키스트로헤리스 (Castrojeriz) → 프로미스따 (Frómista) → 까리온 데 로스 꼰데스 (Carrión de los Condes) → 깔사디야 데 라 쿠에사 (Calzadilla de la Cueza) → 사아군 (Sahagún)</div>
-  <div class="dextra" data-day="6"></div>
+  <div class="dextra" data-day="6"
+       data-map="images/day6-map.png"
+       data-svg="images/day6-map.svg"></div>
   <footer class="dfoot">누적 414.5 km · 남은 394.0 km</footer>
 </article>
 
@@ -164,7 +180,9 @@
     </aside>
   </div>
   <div class="dorder"><b>경로 순서</b> 사아군 (Sahagún) → 엘 부르고 라네로 (El Burgo Ranero) → 만시야 데 라스 물라스 (Mansilla de las Mulas) → 레온 (León)</div>
-  <div class="dextra" data-day="7"></div>
+  <div class="dextra" data-day="7"
+       data-map="images/day7-map.png"
+       data-svg="images/day7-map.svg"></div>
   <footer class="dfoot">누적 482.5 km · 남은 326.0 km</footer>
 </article>
 
@@ -186,7 +204,9 @@
       </ul>
     </div>
   </div>
-  <div class="dextra" data-day="8"></div>
+  <div class="dextra" data-day="8"
+       data-map="images/day8-map.png"
+       data-svg="images/day8-map.svg"></div>
   <footer class="dfoot">누적 482.5 km · 남은 326.0 km — 여기서 절반 이상을 이미 왔습니다</footer>
 </article>
 
@@ -206,7 +226,9 @@
     </aside>
   </div>
   <div class="dorder"><b>경로 순서</b> 레온 (León) → 산 마르틴 델 까미노 (San Martín del Camino) → 아스토르가 (Astorga) → 라바날 델 까미노 (Rabanal del Camino)</div>
-  <div class="dextra" data-day="9"></div>
+  <div class="dextra" data-day="9"
+       data-map="images/day9-map.png"
+       data-svg="images/day9-map.svg"></div>
   <footer class="dfoot">누적 556.5 km · 남은 252.0 km</footer>
 </article>
 
@@ -226,7 +248,9 @@
     </aside>
   </div>
   <div class="dorder"><b>경로 순서</b> 라바날 델 까미노 (Rabanal del Camino) → 몰리나세까 (Molinaseca) → 폰페라다 (Ponferrada) → 까까벨로스 (Cacabelos) → 베가 데 발까르세 (Vega de Valcarce)</div>
-  <div class="dextra" data-day="10"></div>
+  <div class="dextra" data-day="10"
+       data-map="images/day10-map.png"
+       data-svg="images/day10-map.svg"></div>
   <footer class="dfoot">누적 632.0 km · 남은 176.5 km</footer>
 </article>
 
@@ -246,7 +270,9 @@
     </aside>
   </div>
   <div class="dorder"><b>경로 순서</b> 베가 데 발까르세 (Vega de Valcarce) → 오 세브레이로 (O Cebreiro) → 뜨리아까스떼야 (Triacastela) → 사리아 (Sarria)</div>
-  <div class="dextra" data-day="11"></div>
+  <div class="dextra" data-day="11"
+       data-map="images/day11-map.png"
+       data-svg="images/day11-map.svg"></div>
   <footer class="dfoot">누적 692.0 km · 남은 116.5 km</footer>
 </article>
 
@@ -266,7 +292,9 @@
     </aside>
   </div>
   <div class="dorder"><b>경로 순서</b> 사리아 (Sarria) → 뽀르또마린 (Portomarín) → 빨라스 데 레이 (Palas de Rei) → 메리데 (Melide) → 아르수아 (Arzúa)</div>
-  <div class="dextra" data-day="12"></div>
+  <div class="dextra" data-day="12"
+       data-map="images/day12-map.png"
+       data-svg="images/day12-map.svg"></div>
   <footer class="dfoot">누적 768.5 km · 남은 40.0 km</footer>
 </article>
 
@@ -286,6 +314,8 @@
     </aside>
   </div>
   <div class="dorder"><b>경로 순서</b> 아르수아 (Arzúa) → 뻬드로우소 (O Pedrouzo) → 산티아고 대성당 (Santiago de Compostela)</div>
-  <div class="dextra" data-day="13"></div>
+  <div class="dextra" data-day="13"
+       data-map="images/day13-map.png"
+       data-svg="images/day13-map.svg"></div>
   <footer class="dfoot">누적 808.5 km · ⛿ 완주!</footer>
 </article>

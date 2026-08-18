@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+<defs>
+<style><![CDATA[
+.bg{fill:#f7f9fc}.card{fill:#fff;stroke:#d9e1ea;stroke-width:2}
+.tb{fill:#1348a8;font:700 29px Arial,"Noto Sans KR",sans-serif}
+.tg{fill:#198038;font:700 29px Arial,"Noto Sans KR",sans-serif}
+.to{fill:#e04d00;font:700 29px Arial,"Noto Sans KR",sans-serif}
+.tr{fill:#c40016;font:700 29px Arial,"Noto Sans KR",sans-serif}
+.sub{fill:#294b87;font:600 18px Arial,"Noto Sans KR",sans-serif}
+.h{fill:#1f2733;font:700 22px Arial,"Noto Sans KR",sans-serif}
+.body{fill:#26313f;font:19px Arial,"Noto Sans KR",sans-serif}
+.small{fill:#52606d;font:17px Arial,"Noto Sans KR",sans-serif}
+.link{fill:#1f5fe0;font:700 19px Arial,"Noto Sans KR",sans-serif}
+.num{fill:#fff;font:700 22px Arial,sans-serif;text-anchor:middle;dominant-baseline:middle}
+.check{fill:#111827;font:700 23px Arial,"Noto Sans KR",sans-serif}
+]]></style>
+</defs>
+
+<rect class="bg" width="1600" height="1000"/>
+
+<!-- COLUMN 1 -->
+<rect class="card" x="20" y="20" width="380" height="960" rx="20"/>
+<path d="M48 57C62 30 92 28 103 58C87 52 72 48 48 57Z" fill="#1348a8"/>
+<path d="M75 35V64M63 38L70 64M87 39L80 64M53 45L66 67M97 45L84 67" stroke="#fff" stroke-width="3"/>
+<text x="118" y="58" class="tb">Sello (도장) 장소 &amp; 순서</text>
+<text x="118" y="88" class="sub">카미노 여권에 찍어야 할 도장 3곳</text>
+
+<line x1="58" y1="145" x2="58" y2="790" stroke="#80a8ea" stroke-width="3" stroke-dasharray="6 10"/>
+
+<circle cx="58" cy="150" r="24" fill="#1546a0"/><text x="58" y="150" class="num">1</text>
+<text x="102" y="145" class="h">Nájera 수도원</text>
+<text x="102" y="179" class="sub">(중간 도장)</text>
+<text x="102" y="213" class="body">Santa María la Real 수도원</text>
+<text x="102" y="241" class="body">(11세기) 방문 후 도장 받기.</text>
+
+<circle cx="58" cy="380" r="24" fill="#1546a0"/><text x="58" y="380" class="num">2</text>
+<text x="102" y="375" class="h">Santo Domingo 대성당</text>
+<text x="102" y="409" class="sub">(중간 도장)</text>
+<text x="102" y="443" class="body">Pilgrim Office에서 도장 가능.</text>
+<text x="102" y="471" class="body">유명한 닭(암탉과 수탉) 전설의 도시!</text>
+
+<circle cx="58" cy="610" r="24" fill="#1546a0"/><text x="58" y="610" class="num">3</text>
+<text x="102" y="605" class="h">Belorado 알베르게/숙소</text>
+<text x="102" y="639" class="sub">(도착 도장)</text>
+<text x="102" y="673" class="body">숙소 도착 후 마지막 도장을</text>
+<text x="102" y="701" class="body">받으세요.</text>
+
+<rect x="44" y="790" width="332" height="150" rx="16" fill="#edf4ff" stroke="#c9daf7"/>
+<text x="64" y="825" class="h" fill="#1348a8">Day 4 Sello 핵심</text>
+<text x="64" y="860" class="body">Nájera → Santo Domingo → Belorado</text>
+<text x="64" y="892" class="small">중간 2곳 + 도착 1곳, 총 3곳.</text>
+
+<!-- COLUMN 2 -->
+<rect class="card" x="420" y="20" width="380" height="960" rx="20"/>
+<circle cx="456" cy="57" r="13" fill="none" stroke="#198038" stroke-width="6"/>
+<circle cx="482" cy="57" r="13" fill="none" stroke="#198038" stroke-width="6"/>
+<rect x="465" y="41" width="9" height="16" rx="3" fill="#198038"/>
+<text x="505" y="58" class="tg">오늘의 명소 (Must See)</text>
+
+<rect x="444" y="110" width="332" height="210" rx="16" fill="#f4fbf5" stroke="#cfe8d4"/>
+<text x="466" y="150" class="h">Nájera 수도원</text>
+<text x="466" y="188" class="body">11세기에 지어진 아름다운</text>
+<text x="466" y="218" class="body">수도원. 로마네스크 양식의</text>
+<text x="466" y="248" class="body">회랑이 인상적입니다.</text>
+
+<rect x="444" y="345" width="332" height="210" rx="16" fill="#f4fbf5" stroke="#cfe8d4"/>
+<text x="466" y="385" class="h">Santo Domingo 대성당</text>
+<text x="466" y="423" class="body">11세기 건축으로 순례자들을</text>
+<text x="466" y="453" class="body">위한 Pilgrim Office가 있어</text>
+<text x="466" y="483" class="body">도장 받기 좋은 장소.</text>
+
+<rect x="444" y="580" width="332" height="210" rx="16" fill="#f4fbf5" stroke="#cfe8d4"/>
+<text x="466" y="620" class="h">Rioja 포도밭 풍경</text>
+<text x="466" y="658" class="body">Navarrete에서 Santo Domingo</text>
+<text x="466" y="688" class="body">사이의 Rioja 포도밭 풍경이</text>
+<text x="466" y="718" class="body">아름답습니다.</text>
+
+<rect x="444" y="815" width="332" height="125" rx="16" fill="#edf8ef" stroke="#cfe8d4"/>
+<text x="466" y="853" class="h" fill="#198038">Must See 순서</text>
+<text x="466" y="890" class="body">Nájera → Santo Domingo → Rioja 풍경</text>
+
+<!-- COLUMN 3 -->
+<rect class="card" x="820" y="20" width="380" height="960" rx="20"/>
+<path d="M853 34V60M846 34V47M860 34V47M846 47H860M853 60V77" stroke="#e04d00" stroke-width="5"/>
+<path d="M878 34C890 46 890 59 878 69V77" fill="none" stroke="#e04d00" stroke-width="5"/>
+<text x="905" y="58" class="to">점심 맛집 추천</text>
+
+<rect x="844" y="110" width="332" height="510" rx="18" fill="#fff9f1" stroke="#f1c994" stroke-width="2"/>
+<text x="1010" y="160" text-anchor="middle" class="h">Restaurante Los Caballeros</text>
+<text x="1010" y="190" text-anchor="middle" class="h">(Santo Domingo de la Calzada)</text>
+<line x1="872" y1="220" x2="1148" y2="220" stroke="#ead3b4" stroke-width="2"/>
+
+<text x="874" y="275" class="check">✓</text><text x="908" y="275" class="body">순례자 메뉴 (Pilgrim Menu) 인기</text>
+<text x="874" y="325" class="check">✓</text><text x="908" y="325" class="body">구운 고기, 스튜, 생선 요리 맛집</text>
+<text x="874" y="375" class="check">✓</text><text x="908" y="375" class="body">대성당 근처, 테라스 좌석 있음</text>
+<text x="874" y="445" font-size="30">●</text>
+<text x="916" y="445" class="link">Google Maps</text>
+
+<text x="874" y="515" class="small">추천 시점</text>
+<text x="874" y="548" class="body">대성당과 Pilgrim Office 방문 후</text>
+<text x="874" y="578" class="body">점심과 함께 충분히 휴식.</text>
+
+<rect x="844" y="650" width="332" height="290" rx="16" fill="#fffdf9" stroke="#f1d8b7"/>
+<text x="868" y="690" class="h" fill="#d85a00">점심 팁</text>
+<text x="868" y="730" class="body">• Belorado까지 주행이 남으므로</text>
+<text x="868" y="760" class="body">  과식은 피하는 것이 좋습니다.</text>
+<text x="868" y="810" class="body">• 순례자 메뉴로 탄수화물과</text>
+<text x="868" y="840" class="body">  단백질을 균형 있게 보충하세요.</text>
+
+<!-- COLUMN 4 -->
+<rect class="card" x="1220" y="20" width="360" height="960" rx="20"/>
+<path d="M1253 34V60M1246 34V47M1260 34V47M1246 47H1260M1253 60V77" stroke="#c40016" stroke-width="5"/>
+<path d="M1278 34C1290 46 1290 59 1278 69V77" fill="none" stroke="#c40016" stroke-width="5"/>
+<text x="1303" y="58" class="tr">저녁 맛집 추천</text>
+
+<rect x="1244" y="110" width="312" height="510" rx="18" fill="#fff4f5" stroke="#f0b7be" stroke-width="2"/>
+<text x="1400" y="160" text-anchor="middle" class="h">Restaurante Etoile</text>
+<text x="1400" y="190" text-anchor="middle" class="h">(Belorado)</text>
+<line x1="1270" y1="220" x2="1530" y2="220" stroke="#efc8cd" stroke-width="2"/>
+
+<text x="1272" y="275" class="check">✓</text><text x="1306" y="275" class="body">현지 특산 요리와 와인 제공</text>
+<text x="1272" y="325" class="check">✓</text><text x="1306" y="325" class="body">친절한 서비스와 아늑한 분위기</text>
+<text x="1272" y="375" class="check">✓</text><text x="1306" y="375" class="body">알베르게와 가까워 편리</text>
+<text x="1272" y="445" font-size="30">●</text>
+<text x="1314" y="445" class="link">Google Maps</text>
+
+<text x="1272" y="515" class="small">추천 시점</text>
+<text x="1272" y="548" class="body">Belorado 도착 후 숙소 체크인과</text>
+<text x="1272" y="578" class="body">휴식을 마친 뒤 저녁 식사.</text>
+
+<rect x="1244" y="650" width="312" height="290" rx="16" fill="#fffafb" stroke="#efcbd0"/>
+<text x="1268" y="690" class="h" fill="#c40016">저녁 팁</text>
+<text x="1268" y="730" class="body">• 하루 주행 후 수분과 전해질을</text>
+<text x="1268" y="760" class="body">  충분히 보충하세요.</text>
+<text x="1268" y="810" class="body">• 다음 날을 위해 너무 늦지 않게</text>
+<text x="1268" y="840" class="body">  식사를 마치고 휴식하세요.</text>
+</svg>

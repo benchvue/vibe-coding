@@ -435,6 +435,14 @@
     .cv-nav{width:38px;height:38px}
   }
   @media print{ .cvw{display:none!important} .sarrow{display:none} }
+  /* 글자 선명본(SVG) 보조 지도 */
+  .dsvgbox{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+  .dsvgbox[hidden]{display:none}
+  .dmap.dsvg{background:#FFFDF6;cursor:zoom-in}
+  .dmap.dsvg img{background:#FFFDF6}
+  .dmap .dtag.alt{background:var(--camino-blue);color:#fff}
+  .dsvgbox .dmap-cap{text-align:left;line-height:1.6}
+  .dsvgbox .dmap-cap b{color:var(--camino-blue)}
 
   /* ── DAY별 날씨 카드 ───────────────────────────── */
   .dwx{padding:2px 14px 14px}
@@ -2196,7 +2204,7 @@ const PHOTOS = {
 })();
 </script>
 
-<!-- ══════ DAY별 경로 지도 + 명소 프리뷰 캐러셀 ══════ -->
+<!-- ══════ DAY별 경로 지도(PNG + SVG) + 명소 프리뷰 캐러셀 ══════ -->
 <script>
 /* ══════════════════════════════════════════════════════════════════════
    DAY별 명소 데이터
@@ -2368,10 +2376,18 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
   if(!window.CAMINO_SPOTS) return;
   var SPOTS = window.CAMINO_SPOTS;
 
-  /* 지도 파일 후보 경로 — 첫 번째가 실패하면 차례로 시도 */
-  function mapCands(d){
-    return ["images/day"+d+"-map.png","images/maps/day"+d+"-map.png",
-            "day"+d+"-map.png","maps/day"+d+"-map.png","images/day"+d+"-map.jpg"];
+  /* 지도 파일 경로
+     1순위: camino-days.html 의 data-map / data-svg 값
+     그 뒤로는 흔한 위치를 차례로 시도합니다. */
+  function pngCands(d, given){
+    var a = given ? [given] : [];
+    return a.concat(["images/day"+d+"-map.png","images/maps/day"+d+"-map.png",
+                     "day"+d+"-map.png","maps/day"+d+"-map.png","images/day"+d+"-map.jpg"]);
+  }
+  function svgCands(d, given){
+    var a = given ? [given] : [];
+    return a.concat(["images/day"+d+"-map.svg","images/maps/day"+d+"-map.svg",
+                     "day"+d+"-map.svg"]);
   }
   var THUMB_W = 900, BIG_W = 1600;
 
@@ -2515,27 +2531,71 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
   function buildMap(box,d){
     var wrap=document.createElement("div"); wrap.className="dmapbox";
     var title=dayTitle(d);
-    wrap.innerHTML='<h4>🗺 DAY '+d+' 경로 지도 <small>· 탭하면 크게 볼 수 있습니다</small></h4>'
-      +'<button class="dmap" type="button" aria-label="DAY '+d+' 경로 지도 크게 보기">'
+    wrap.innerHTML=
+       '<h4>🗺 DAY '+d+' 경로 지도 <small>· 탭하면 크게 볼 수 있습니다</small></h4>'
+      +'<button class="dmap" type="button" data-kind="png" aria-label="DAY '+d+' 경로 지도 크게 보기">'
       +'<span class="dtag">DAY '+d+'</span>'
       +'<img alt="DAY '+d+' '+esc(title)+' 경로 지도" loading="lazy">'
       +'<span class="zhint">⤢ 탭하면 확대</span></button>'
-      +'<p class="dmap-cap">DAY '+d+' · '+esc(title)+'</p>';
-    var btn=wrap.querySelector(".dmap"), img=wrap.querySelector("img");
-    var cands=mapCands(d), ci=0;
-    img.onerror=function(){
-      ci++;
-      if(ci<cands.length){ img.src=cands[ci]; return; }
-      img.onerror=null;
-      btn.classList.add("err");
-      btn.innerHTML='지도 이미지를 찾지 못했습니다<br><small style="opacity:.8">'
+      +'<p class="dmap-cap">DAY '+d+' · '+esc(title)+'</p>'
+      +'<div class="dsvgbox" hidden>'
+      +'<button class="dmap dsvg" type="button" data-kind="svg" aria-label="DAY '+d+' 지명 선명본 크게 보기">'
+      +'<span class="dtag alt">🔠 글자 선명본 · SVG</span>'
+      +'<img alt="DAY '+d+' 경로 지도 지명 (벡터)" loading="lazy">'
+      +'<span class="zhint">⤢ 몇 배로 키워도 또렷</span></button>'
+      +'<p class="dmap-cap">위 지도의 <b>글자만 벡터(SVG)</b>로 다시 그린 것입니다 — '
+      +'300% 이상 확대해도 지명이 깨지지 않습니다</p>'
+      +'</div>';
+
+    var btnP=wrap.querySelector('.dmap[data-kind="png"]'), imgP=btnP.querySelector("img");
+    var svgBox=wrap.querySelector(".dsvgbox");
+    var btnS=wrap.querySelector('.dmap[data-kind="svg"]'), imgS=btnS.querySelector("img");
+
+    /* 후보 경로를 차례로 시도 */
+    function chain(img, list, onFail){
+      var i=0;
+      img.onerror=function(){
+        i++;
+        if(i<list.length){ img.src=list[i]; return; }
+        img.onerror=null; onFail();
+      };
+      img.src=list[0];
+    }
+
+    var okS=false;
+    chain(imgP, pngCands(d, box.dataset.map), function(){
+      btnP.classList.add("err");
+      btnP.innerHTML='지도 이미지를 찾지 못했습니다<br><small style="opacity:.8">'
         +'images/ 폴더에 <b>day'+d+'-map.png</b> 파일을 넣어 주세요</small>';
-    };
-    img.src=cands[0];
-    btn.addEventListener("click",function(){
-      if(btn.classList.contains("err")) return;
-      openViewer([{img:img.src,big:img.src,k:"DAY "+d+" 경로 지도",o:title,d:"두 손가락으로 확대하거나 +/− 버튼을 눌러 확대할 수 있습니다. 확대한 뒤에는 끌어서 이동하세요.",badge:"DAY "+d}],0);
     });
+    chain(imgS, svgCands(d, box.dataset.svg), function(){
+      svgBox.hidden=true;            /* SVG 는 보조 자료라 없으면 조용히 감춤 */
+    });
+    imgS.addEventListener("load",function(){ okS=true; svgBox.hidden=false; });
+
+    /* 확대 뷰어 — 두 장을 좌우로 넘겨 볼 수 있게 함께 넘김 */
+    function items(){
+      var a=[];
+      if(!btnP.classList.contains("err"))
+        a.push({img:imgP.src, big:imgP.src, k:"DAY "+d+" 경로 지도", o:title,
+                d:"두 손가락으로 벌리거나 +/− 로 확대하고, 확대한 뒤에는 끌어서 이동하세요."
+                  +(okS?" 글자가 흐리면 좌우로 넘겨 '글자 선명본(SVG)'을 보세요.":""),
+                badge:"DAY "+d});
+      if(okS)
+        a.push({img:imgS.src, big:imgS.src, k:"DAY "+d+" 지명 (글자 선명본)", o:title,
+                d:"벡터(SVG)라 몇 배로 확대해도 지명이 또렷합니다. 위 지도의 글자 부분에 해당합니다.",
+                badge:"DAY "+d+" · SVG"});
+      return a;
+    }
+    btnP.addEventListener("click",function(){
+      if(btnP.classList.contains("err")) return;
+      openViewer(items(), 0);
+    });
+    btnS.addEventListener("click",function(){
+      var a=items();
+      openViewer(a, a.length>1 ? 1 : 0);
+    });
+
     box.appendChild(wrap);
   }
 

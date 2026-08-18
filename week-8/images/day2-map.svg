@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+  <defs>
+    <style><![CDATA[
+      .bg { fill:#f7f9fc; }
+      .card { fill:#ffffff; stroke:#d9e1ea; stroke-width:2; }
+      .titleBlue { fill:#1348a8; font-size:29px; font-weight:700; font-family:"Arial","Noto Sans KR",sans-serif; }
+      .titleGreen { fill:#198038; font-size:29px; font-weight:700; font-family:"Arial","Noto Sans KR",sans-serif; }
+      .titleOrange { fill:#d85a00; font-size:29px; font-weight:700; font-family:"Arial","Noto Sans KR",sans-serif; }
+      .titleRed { fill:#c40016; font-size:29px; font-weight:700; font-family:"Arial","Noto Sans KR",sans-serif; }
+      .sub { fill:#294b87; font-size:18px; font-weight:600; font-family:"Arial","Noto Sans KR",sans-serif; }
+      .h { fill:#1f2733; font-size:22px; font-weight:700; font-family:"Arial","Noto Sans KR",sans-serif; }
+      .body { fill:#26313f; font-size:19px; font-family:"Arial","Noto Sans KR",sans-serif; }
+      .small { fill:#52606d; font-size:17px; font-family:"Arial","Noto Sans KR",sans-serif; }
+      .link { fill:#1f5fe0; font-size:19px; font-weight:700; font-family:"Arial","Noto Sans KR",sans-serif; }
+      .num { fill:#ffffff; font-size:22px; font-weight:700; text-anchor:middle; dominant-baseline:middle; font-family:"Arial",sans-serif; }
+      .check { fill:#111827; font-size:23px; font-weight:700; font-family:"Arial","Noto Sans KR",sans-serif; }
+    ]]></style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1600" height="1000"/>
+
+  <!-- COLUMN 1 : SELLO -->
+  <rect class="card" x="20" y="20" width="380" height="960" rx="20" ry="20"/>
+  <path d="M48 57 C62 30,92 28,103 58 C87 52,72 48,48 57 Z" fill="#1348a8"/>
+  <path d="M75 35 L75 64 M63 38 L70 64 M87 39 L80 64 M53 45 L66 67 M97 45 L84 67"
+        stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+  <text x="118" y="58" class="titleBlue">Sello (도장) 장소 &amp; 순서</text>
+  <text x="118" y="88" class="sub">카미노 여권에 찍어야 할 도장 3곳</text>
+
+  <line x1="58" y1="145" x2="58" y2="790" stroke="#80a8ea" stroke-width="3" stroke-dasharray="6,10"/>
+
+  <circle cx="58" cy="150" r="24" fill="#1546a0"/><text x="58" y="150" class="num">1</text>
+  <text x="102" y="145" class="h">Zubiri 알베르게/숙소</text>
+  <text x="102" y="179" class="sub">(출발 도장)</text>
+  <text x="102" y="213" class="body">출발 전 또는 아침식사 후</text>
+  <text x="102" y="241" class="body">도장을 받으세요.</text>
+
+  <circle cx="58" cy="380" r="24" fill="#1546a0"/><text x="58" y="380" class="num">2</text>
+  <text x="102" y="375" class="h">Pamplona 대성당</text>
+  <text x="102" y="409" class="sub">(중간 도장)</text>
+  <text x="102" y="443" class="body">Catedral de Santa María</text>
+  <text x="102" y="471" class="body">la Real에서 도장 받기.</text>
+
+  <circle cx="58" cy="610" r="24" fill="#1546a0"/><text x="58" y="610" class="num">3</text>
+  <text x="102" y="605" class="h">Estella 알베르게/숙소</text>
+  <text x="102" y="639" class="sub">(도착 도장)</text>
+  <text x="102" y="673" class="body">도착 후 숙소 또는</text>
+  <text x="102" y="701" class="body">관광안내소에서 도장.</text>
+
+  <rect x="44" y="790" width="332" height="150" rx="16" fill="#edf4ff" stroke="#c9daf7" stroke-width="1.5"/>
+  <text x="64" y="825" class="h" fill="#1348a8">Day 2 Sello 핵심</text>
+  <text x="64" y="860" class="body">Zubiri → Pamplona → Estella</text>
+  <text x="64" y="892" class="small">출발·중간·도착 순서로 총 3곳.</text>
+
+  <!-- COLUMN 2 : MUST SEE -->
+  <rect class="card" x="420" y="20" width="380" height="960" rx="20" ry="20"/>
+  <circle cx="456" cy="57" r="13" fill="none" stroke="#198038" stroke-width="6"/>
+  <circle cx="482" cy="57" r="13" fill="none" stroke="#198038" stroke-width="6"/>
+  <rect x="465" y="41" width="9" height="16" rx="3" fill="#198038"/>
+  <text x="505" y="58" class="titleGreen">오늘의 명소 (Must See)</text>
+
+  <rect x="444" y="110" width="332" height="210" rx="16" fill="#f4fbf5" stroke="#cfe8d4" stroke-width="1.5"/>
+  <text x="466" y="150" class="h">Pamplona 구시가지</text>
+  <text x="466" y="188" class="body">중세 성벽과 아름다운 광장,</text>
+  <text x="466" y="218" class="body">산 페르민 축제로 유명한</text>
+  <text x="466" y="248" class="body">역사 도시.</text>
+
+  <rect x="444" y="345" width="332" height="210" rx="16" fill="#f4fbf5" stroke="#cfe8d4" stroke-width="1.5"/>
+  <text x="466" y="385" class="h">Puente la Reina 다리</text>
+  <text x="466" y="423" class="body">11세기에 지어진 로마네스크</text>
+  <text x="466" y="453" class="body">양식의 다리, 카미노 순례자의</text>
+  <text x="466" y="483" class="body">상징적인 장소.</text>
+
+  <rect x="444" y="580" width="332" height="210" rx="16" fill="#f4fbf5" stroke="#cfe8d4" stroke-width="1.5"/>
+  <text x="466" y="620" class="h">Estella 구시가지</text>
+  <text x="466" y="658" class="body">중세의 분위기가 남아 있는</text>
+  <text x="466" y="688" class="body">아름다운 골목과 교회,</text>
+  <text x="466" y="718" class="body">Palacio de los Reyes.</text>
+
+  <rect x="444" y="815" width="332" height="125" rx="16" fill="#edf8ef" stroke="#cfe8d4" stroke-width="1.5"/>
+  <text x="466" y="853" class="h" fill="#198038">Must See 순서</text>
+  <text x="466" y="890" class="body">Pamplona → Puente la Reina → Estella</text>
+
+  <!-- COLUMN 3 : LUNCH -->
+  <rect class="card" x="820" y="20" width="380" height="960" rx="20" ry="20"/>
+  <path d="M853 34 v26 M846 34 v13 M860 34 v13 M846 47 h14 M853 60 v17"
+        stroke="#d85a00" stroke-width="5" stroke-linecap="round"/>
+  <path d="M878 34 c12 12 12 25 0 35 v8" fill="none" stroke="#d85a00" stroke-width="5" stroke-linecap="round"/>
+  <text x="905" y="58" class="titleOrange">점심 맛집 추천</text>
+
+  <rect x="844" y="110" width="332" height="510" rx="18" fill="#fff9f1" stroke="#f1c994" stroke-width="1.8"/>
+  <text x="1010" y="160" text-anchor="middle" class="h">La Cocina de Alex Múgica</text>
+  <text x="1010" y="190" text-anchor="middle" class="h">(Pamplona)</text>
+  <line x1="872" y1="220" x2="1148" y2="220" stroke="#ead3b4" stroke-width="2"/>
+
+  <text x="874" y="275" class="check">✓</text><text x="908" y="275" class="body">현지 식재료로 만든 모던 바스크 요리</text>
+  <text x="874" y="325" class="check">✓</text><text x="908" y="325" class="body">메뉴 델 디아 (Menu del Día) 인기</text>
+  <text x="874" y="375" class="check">✓</text><text x="908" y="375" class="body">테라스 좌석에서 휴식하기 좋아요</text>
+
+  <text x="874" y="445" font-size="30">📍</text>
+  <text x="916" y="445" class="link">Google Maps</text>
+
+  <text x="874" y="515" class="small">추천 시점</text>
+  <text x="874" y="548" class="body">Pamplona 도심을 둘러본 뒤</text>
+  <text x="874" y="578" class="body">중간 휴식 겸 점심 식사.</text>
+
+  <rect x="844" y="650" width="332" height="290" rx="16" fill="#fffdf9" stroke="#f1d8b7" stroke-width="1.5"/>
+  <text x="868" y="690" class="h" fill="#d85a00">점심 팁</text>
+  <text x="868" y="730" class="body">• 이후 Puente la Reina와</text>
+  <text x="868" y="760" class="body">  Estella까지 주행이 남습니다.</text>
+  <text x="868" y="810" class="body">• 수분을 충분히 보충하고</text>
+  <text x="868" y="840" class="body">  너무 무겁게 먹지 마세요.</text>
+
+  <!-- COLUMN 4 : DINNER -->
+  <rect class="card" x="1220" y="20" width="360" height="960" rx="20" ry="20"/>
+  <path d="M1253 34 v26 M1246 34 v13 M1260 34 v13 M1246 47 h14 M1253 60 v17"
+        stroke="#c40016" stroke-width="5" stroke-linecap="round"/>
+  <path d="M1278 34 c12 12 12 25 0 35 v8" fill="none" stroke="#c40016" stroke-width="5" stroke-linecap="round"/>
+  <text x="1303" y="58" class="titleRed">저녁 맛집 추천</text>
+
+  <rect x="1244" y="110" width="312" height="510" rx="18" fill="#fff4f5" stroke="#f0b7be" stroke-width="1.8"/>
+  <text x="1400" y="160" text-anchor="middle" class="h">Restaurante Xanti</text>
+  <text x="1400" y="190" text-anchor="middle" class="h">(Estella)</text>
+  <line x1="1270" y1="220" x2="1530" y2="220" stroke="#efc8cd" stroke-width="2"/>
+
+  <text x="1272" y="275" class="check">✓</text><text x="1306" y="275" class="body">나바라 전통 요리 전문</text>
+  <text x="1272" y="325" class="check">✓</text><text x="1306" y="325" class="body">야채 요리, 아스파라거스 유명</text>
+  <text x="1272" y="375" class="check">✓</text><text x="1306" y="375" class="body">순례자에게 친절한 분위기</text>
+
+  <text x="1272" y="445" font-size="30">📍</text>
+  <text x="1314" y="445" class="link">Google Maps</text>
+
+  <text x="1272" y="515" class="small">추천 시점</text>
+  <text x="1272" y="548" class="body">Estella 도착 후 숙소 체크인과</text>
+  <text x="1272" y="578" class="body">샤워를 마친 뒤 저녁 식사.</text>
+
+  <rect x="1244" y="650" width="312" height="290" rx="16" fill="#fffafb" stroke="#efcbd0" stroke-width="1.5"/>
+  <text x="1268" y="690" class="h" fill="#c40016">저녁 팁</text>
+  <text x="1268" y="730" class="body">• Day 2는 주행거리가 길어</text>
+  <text x="1268" y="760" class="body">  탄수화물과 단백질을 보충하세요.</text>
+  <text x="1268" y="810" class="body">• 다음 날을 위해 일찍 쉬고</text>
+  <text x="1268" y="840" class="body">  수분도 충분히 섭취하세요.</text>
+</svg>
