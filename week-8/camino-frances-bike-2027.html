@@ -516,6 +516,117 @@
 
   .wxride i{font-style:normal;font-weight:400;opacity:.75;font-size:.66rem}
 
+  /* ══════════════ 📕 디지털 순례자 여권 ══════════════ */
+  .ppwhobar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+  .ppwhobar .ppwho{border:1px solid var(--line);background:#fff;color:var(--ink-soft);
+    border-radius:999px;padding:8px 18px;font-size:.82rem;font-weight:600;cursor:pointer;font-family:inherit}
+  .ppwhobar .ppwho.on{background:var(--camino-blue);border-color:var(--camino-blue);color:#fff}
+  .ppwhobar .ppwho:hover{border-color:var(--flecha)}
+
+  .ppbook{border:1px solid var(--line);border-radius:16px;background:#FFFDF7;overflow:hidden;
+    box-shadow:0 6px 20px rgba(21,42,85,.08)}
+  .ppcover{background:var(--camino-blue);color:#fff;padding:24px 22px;position:relative}
+  .ppcover::after{content:"";position:absolute;right:18px;top:18px;width:44px;height:44px;
+    border:2px solid var(--flecha);border-radius:50%;opacity:.55}
+  .ppc-t{font-size:.66rem;letter-spacing:.22em;color:var(--flecha);font-weight:700}
+  .ppc-n{font-family:'Gowun Batang',serif;font-size:2rem;font-weight:700;line-height:1.15;margin-top:6px}
+  .ppc-s{font-size:.88rem;color:#C6D0E4;margin-top:2px}
+  .ppc-d{font-size:.7rem;color:#8FA3C8;margin-top:8px}
+
+  .ppstat{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line)}
+  .ppstat > div{background:#fff;padding:13px 10px;text-align:center}
+  .ppstat b{display:block;font-family:'Gowun Batang',serif;font-size:1.32rem;color:var(--camino-blue)}
+  .ppstat small{display:block;font-size:.66rem;color:var(--ink-soft);margin-top:2px}
+  @media(max-width:600px){ .ppstat{grid-template-columns:repeat(2,1fr)} }
+
+  .pprule{padding:11px 16px;font-size:.74rem;color:var(--ink-soft);line-height:1.7;
+    background:#FBF7E9;border-bottom:1px solid var(--line)}
+  .pprule b{color:var(--rioja)}
+  .ppempty{padding:26px 20px;text-align:center;font-size:.82rem;color:var(--ink-soft);line-height:1.9}
+
+  .ppdays{padding:6px 14px 4px}
+  .ppday{padding:10px 0;border-bottom:1px dashed var(--line)}
+  .ppday:last-child{border-bottom:none}
+  .ppday.none{opacity:.5}
+  .ppday-h{display:flex;align-items:center;gap:8px;font-size:.78rem;margin-bottom:7px}
+  .ppday-h b{font-family:'Gowun Batang',serif;font-size:.9rem;color:var(--camino-blue)}
+  .ppday-h span{color:var(--ink-soft)}
+  .ppday-h i{font-style:normal;margin-left:auto;font-size:.66rem;font-weight:700;
+    border-radius:999px;padding:2px 9px}
+  .ppday-h i.ok{background:#E6F3EA;color:var(--ok)}
+  .ppday-h i.warn{background:#F6EEDC;color:#8A6A12}
+
+  .ppgal{padding:14px 16px 20px;border-top:1px solid var(--line);background:#FBFAF5}
+  .ppgal h3{font-family:'Gowun Batang',serif;font-size:.95rem;color:var(--camino-blue);margin-bottom:10px}
+  .ppgal h3 small{font-weight:400;color:var(--ink-soft);font-size:.72rem;margin-left:6px}
+  .ppgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:10px}
+
+  /* ── 세요 칩 ── */
+  .sellorow{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-start}
+  .sello{display:flex;flex-direction:column;width:132px;padding:0;border:1px solid var(--line);
+    border-radius:11px;overflow:hidden;background:#fff;cursor:pointer;font-family:inherit;
+    text-align:left;position:relative;transition:transform .2s,box-shadow .2s,border-color .2s;
+    -webkit-tap-highlight-color:transparent}
+  .sello.sm{width:112px}
+  .ppgrid .sello{width:100%}
+  .sello:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(21,42,85,.14);border-color:#C3BCA6}
+  .sello-img{display:block;width:100%;aspect-ratio:1/1;background-color:#F3F1E9}
+  @supports not (aspect-ratio:1/1){ .sello-img{height:0;padding-bottom:100%} }
+  .sello-cap{display:block;padding:6px 8px 8px;border-top:1px solid var(--line)}
+  .sello-cap b{display:block;font-size:.72rem;line-height:1.3;overflow:hidden;
+    text-overflow:ellipsis;white-space:nowrap}
+  .sello-cap small{display:block;font-size:.63rem;color:var(--ink-soft);margin-top:1px}
+  .sello-no{position:absolute;left:6px;top:6px;background:rgba(21,42,85,.85);color:#fff;
+    font-size:.58rem;font-weight:700;border-radius:999px;padding:2px 7px}
+  .sello.empty{cursor:default;border-style:dashed;background:#FBFAF5}
+  .sello.empty:hover{transform:none;box-shadow:none;border-color:var(--line)}
+  .sello.empty .sello-img{background:repeating-linear-gradient(45deg,#F3F1E9,#F3F1E9 6px,#EDEAE1 6px,#EDEAE1 12px)}
+  .sello.empty .sello-cap{font-size:.66rem;color:#A79E86;text-align:center}
+
+  /* ── 날짜 카드 안의 세요 줄 ── */
+  .dsello{padding:12px 14px 14px;border-top:1px dashed var(--line)}
+  .dsello h4{font-size:.8rem;color:var(--camino-blue);font-weight:700;margin-bottom:9px;
+    display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .dsello h4 small{color:var(--ink-soft);font-weight:400;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .dsello .ppwho{border:1px solid var(--line);background:#fff;color:var(--ink-soft);border-radius:999px;
+    padding:2px 10px;font-size:.66rem;font-weight:700;cursor:pointer;font-family:inherit}
+  .dsello .ppwho.on{background:var(--camino-blue);border-color:var(--camino-blue);color:#fff}
+  .dsello .ok{color:var(--ok);font-weight:700;font-size:.7rem}
+  .dsello .warn{color:#8A6A12;font-weight:700;font-size:.7rem}
+  .sellohint{font-size:.7rem;color:var(--ink-soft);line-height:1.6;max-width:280px;align-self:center}
+  .sellohint.alt{color:#A79E86;font-size:.66rem}
+
+  /* ── 세요 상세 ── */
+  .pplb{position:fixed;inset:0;z-index:130;background:rgba(11,16,30,.94);display:none;
+    align-items:center;justify-content:center;padding:16px}
+  .pplb.show{display:flex}
+  .pplb-in{position:relative;max-width:520px;width:100%;max-height:92vh;overflow-y:auto;
+    background:#FFFDF7;border-radius:16px;overflow-x:hidden}
+  .pplb-x{position:absolute;right:10px;top:10px;z-index:3;width:32px;height:32px;border-radius:50%;
+    border:1px solid rgba(255,255,255,.4);background:rgba(11,16,30,.5);color:#fff;cursor:pointer;
+    font-size:.9rem;line-height:1;font-family:inherit}
+  .pplb-x:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
+  .pplb-nav{position:absolute;top:34%;width:38px;height:38px;border-radius:50%;z-index:3;
+    border:1px solid rgba(255,255,255,.35);background:rgba(11,16,30,.5);color:#fff;cursor:pointer;
+    font-size:1.15rem;line-height:1;font-family:inherit;padding:0}
+  .pplb-nav.prev{left:10px} .pplb-nav.next{right:10px}
+  .pplb-nav[hidden]{display:none}
+  .pplb-nav:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
+  .pplb-stamp{width:100%;aspect-ratio:1/1;background-color:#fff;background-repeat:no-repeat}
+  @supports not (aspect-ratio:1/1){ .pplb-stamp{height:0;padding-bottom:100%} }
+  .pplb-info{padding:16px 18px 20px;border-top:1px solid var(--line)}
+  .pplb-no{font-size:.7rem;font-weight:700;color:var(--rioja);letter-spacing:.06em}
+  .pplb-place{font-family:'Gowun Batang',serif;font-size:1.25rem;font-weight:700;margin-top:3px}
+  .pplb-town{font-size:.82rem;color:var(--ink-soft)}
+  .pplb-when{margin-top:9px;font-size:.8rem;color:var(--ink);font-variant-numeric:tabular-nums}
+  .pplb-gps{display:block;margin-top:7px;font-size:.74rem;color:var(--camino-blue);text-decoration:none;
+    border-bottom:1px dotted var(--camino-blue);width:fit-content}
+  .pplb-note{margin-top:10px;font-size:.78rem;color:var(--ink-soft);line-height:1.7}
+  .pplb-page{display:inline-block;margin-top:14px;font-size:.72rem;color:var(--ink-soft);
+    text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:6px 13px}
+  .pplb-page:hover{background:var(--flecha);border-color:var(--flecha);color:#3B2E00}
+  @media print{ .pplb{display:none!important} }
+
 </style>
 
 <!-- ══════════════════════════════════════════════════════════════════════
@@ -685,6 +796,22 @@
 <div id="daysHost" data-src="camino-days.html">
   <p class="loadnote" id="daysLoadNote">날짜별 카드를 불러오는 중… <small>camino-days.html</small></p>
 </div>
+  </div>
+</section>
+
+<!-- ───────── 📕 디지털 순례자 여권 ───────── -->
+<section id="secP" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="no">Credencial</div>
+      <h2>디지털 순례자 여권</h2>
+      <p>종이 크레덴시알에 받은 도장(<b>세요 · sello</b>)을 사진으로 남겨 두는 곳입니다.
+      여권 페이지를 통째로 찍어 올리면 도장 하나하나를 잘라 보여줍니다 —
+      원본 사진은 그대로 두고 <b>화면에서만</b> 잘라 쓰므로 사진 편집이 필요 없습니다.
+      각 세요를 누르면 장소 · 날짜 · 시각 · GPS 위치를 볼 수 있고,
+      같은 내용이 위의 날짜별 카드에도 그날의 세요로 함께 표시됩니다.</p>
+    </div>
+    <div id="ppRoot"></div>
   </div>
 </section>
 
@@ -1286,6 +1413,7 @@
     <a href="#sec1">Ⅰ · 고도 프로필</a>
     <a href="#sec2">Ⅱ · 일정 한눈에</a>
     <a href="#sec3">Ⅲ · 날짜별 카드 (D1~D13)</a>
+    <a href="#secP">📕 디지털 순례자 여권</a>
     <a href="#sec4">Ⅳ · 파리 → 생장 기차</a>
     <a href="#sec5">Ⅴ · 항공 · 환승</a>
     <a href="#sec6">Ⅵ · 숙소</a>
@@ -1580,7 +1708,7 @@ const PHOTOS = {
       gpxThumb(box);   /* 경로 모양 미리보기 그리기 */
       box.addEventListener("click",function(){openGpx(box.dataset.id,"DAY "+d+" 주행 기록");});
     });
-    var foot=card.querySelector(".dfoot");
+    var foot=card.querySelector(".dsello")||card.querySelector(".dfoot");
     card.insertBefore(sec,foot||null);
     /* 날씨 차트에 "라이딩 시간대"를 그리도록 첫 번째 주행기록을 알려줌 */
     try{ if(window.CAMINO_RIDE) window.CAMINO_RIDE.tracks(d, trks, media!=null); }catch(err){}
@@ -2911,7 +3039,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
 
 </script>
 
-<!-- ══════ DAY별 날씨 (확정 잠금 · 라이딩 시간대 · 실측 기온) ══════ -->
+<!-- ══════ DAY별 날씨 ══════ -->
 <script>
 /* ══════════════════════════════════════════════════════════════════════
    DAY별 날씨 카드 (출발지 / 도착지)  ·  Open-Meteo
@@ -3636,6 +3764,335 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
   if(window.onCaminoDays) window.onCaminoDays(mount);
   else if(document.readyState==="loading") document.addEventListener("DOMContentLoaded", mount);
   else mount();
+})();
+
+</script>
+
+<!-- ══════ 📕 디지털 순례자 여권 ══════ -->
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   📕 디지털 순례자 여권 (Credencial del Peregrino)
+   · 여권 페이지 사진 1장에 여러 도장이 찍히므로, 사진을 자르지 않고
+     "도장 위치(사각형 좌표 %)"만 저장해 화면에서 잘라 보여줍니다.
+   · 같은 자료를 두 곳에 표시합니다
+       ① 날짜별 카드 안 — 그날 받은 세요 (여행 중 확인용)
+       ② 별도 여권 섹션 — 전체 여권 · 갤러리 (여행 후 기념용)
+   · 자료: Drive db/passport-bin.json · passport-jin.json
+     (upload-camino.html 의 "📕 여권" 탭에서 등록)
+   ══════════════════════════════════════════════════════════════════════ */
+(function(){
+  "use strict";
+  if(typeof PHOTOS==="undefined") return;
+
+  var PP = {
+    dbFolder : "db",
+    files    : { bin:"passport-bin.json", jin:"passport-jin.json" },
+    people   : [ {k:"bin", n:"BIN"}, {k:"jin", n:"JIN"} ],
+    dayCount : 13,
+    /* 자전거 순례는 마지막 200km 구간에서 하루 2개의 세요가 필요합니다.
+       이 일정에서는 DAY 10 시작 무렵 남은 거리가 200km 아래로 내려갑니다. */
+    doubleFromDay : 10,
+    startDate : new Date(2027,4,9)
+  };
+
+  var DATA = {bin:null, jin:null}, who="bin", loaded=false;
+
+  /* ── 날짜 · 도우미 ── */
+  function pad(n){ return (n<10?"0":"")+n; }
+  function dayDate(d){ var x=new Date(PP.startDate); x.setDate(x.getDate()+(d-1)); return x; }
+  function dayLabel(d){ var x=dayDate(d); return (x.getMonth()+1)+"/"+x.getDate(); }
+  function esc(t){ return String(t==null?"":t)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  function imgUrl(id,w){ return "https://lh3.googleusercontent.com/d/"+id+"=w"+(w||1600); }
+  function altUrl(id,w){ return "https://drive.google.com/thumbnail?id="+id+"&sz=w"+(w||1600); }
+
+  /* 사진을 자르지 않고 화면에서만 잘라 보여주기 (스프라이트 방식) */
+  function cropStyle(page, r, w){
+    if(!page || !r) return "";
+    var x=+r[0], y=+r[1], cw=Math.max(1,Math.min(100,+r[2])), ch=Math.max(1,Math.min(100,+r[3]));
+    var px = (cw>=100) ? 50 : (x/(100-cw))*100;
+    var py = (ch>=100) ? 50 : (y/(100-ch))*100;
+    return "background-image:url('"+imgUrl(page.fileId,w||1200)+"');"
+      + "background-size:"+(10000/cw)+"% "+(10000/ch)+"%;"
+      + "background-position:"+px+"% "+py+"%;background-repeat:no-repeat;";
+  }
+
+  /* ── Drive 읽기 (텍스트는 CORS 때문에 프록시 우선) ── */
+  function driveList(q){
+    return fetch("https://www.googleapis.com/drive/v3/files?q="+encodeURIComponent(q)
+      +"&fields="+encodeURIComponent("files(id,name,mimeType)")+"&pageSize=1000&key="+PHOTOS.apiKey)
+      .then(function(r){ if(!r.ok) throw new Error("drive "+r.status); return r.json(); })
+      .then(function(d){ return d.files||[]; });
+  }
+  function driveText(id){
+    var uc="https://drive.google.com/uc?export=download&id="+id, c=[];
+    if(PHOTOS.gpxProxy) c.push(PHOTOS.gpxProxy+(PHOTOS.gpxProxy.indexOf("?")<0?"?":"&")+"id="+id);
+    c.push("https://www.googleapis.com/drive/v3/files/"+id+"?alt=media&key="+PHOTOS.apiKey);
+    c.push("https://api.allorigins.win/raw?url="+encodeURIComponent(uc));
+    c.push("https://corsproxy.io/?url="+encodeURIComponent(uc));
+    function tryK(k){
+      if(k>=c.length) return Promise.reject(new Error("여권 자료를 받을 수 없습니다"));
+      var ac=("AbortController" in window)?new AbortController():null;
+      var to=ac?setTimeout(function(){ac.abort();},8000):null;
+      return fetch(c[k], ac?{signal:ac.signal}:{}).then(function(r){
+        if(to)clearTimeout(to);
+        if(!r.ok) throw 0; return r.text();
+      }).catch(function(){ if(to)clearTimeout(to); return tryK(k+1); });
+    }
+    return tryK(0);
+  }
+
+  function load(){
+    if(loaded) return Promise.resolve();
+    loaded=true;
+    return driveList("'"+PHOTOS.parentId+"' in parents and trashed=false")
+      .then(function(items){
+        var db=items.filter(function(f){
+          return f.mimeType==="application/vnd.google-apps.folder"
+              && f.name.toLowerCase()===PP.dbFolder; })[0];
+        if(!db) throw new Error("db 폴더가 없습니다");
+        return driveList("'"+db.id+"' in parents and trashed=false");
+      })
+      .then(function(files){
+        return Promise.all(PP.people.map(function(p){
+          var f=files.filter(function(x){ return x.name===PP.files[p.k]; })[0];
+          if(!f) return null;
+          return driveText(f.id).then(function(t){
+            var j=null; try{ j=JSON.parse(t); }catch(e){}
+            DATA[p.k]=normalize(j);
+          }).catch(function(){});
+        }));
+      });
+  }
+
+  function normalize(j){
+    var out={pages:{}, sellos:[]};
+    if(!j) return out;
+    (j.pages||[]).forEach(function(p){ if(p&&p.id&&p.fileId) out.pages[p.id]=p; });
+    (j.sellos||[]).forEach(function(s){
+      if(!s||!s.id||s.del) return;
+      out.sellos.push({
+        id:s.id, pageId:s.pageId, rect:s.rect||[0,0,100,100],
+        day:+s.day||0, date:s.date||"", time:s.time||"",
+        place:s.place||"", town:s.town||"",
+        lat:(s.lat!=null?+s.lat:null), lon:(s.lon!=null?+s.lon:null), note:s.note||""
+      });
+    });
+    /* 날짜·시각 순으로 번호를 매깁니다 (#1, #2 …) */
+    out.sellos.sort(function(a,b){
+      if(a.day!==b.day) return a.day-b.day;
+      return String(a.time).localeCompare(String(b.time));
+    });
+    out.sellos.forEach(function(s,i){ s.no=i+1; });
+    return out;
+  }
+  function byDay(k,d){
+    var o=DATA[k]; if(!o) return [];
+    return o.sellos.filter(function(s){ return s.day===d; });
+  }
+
+  /* ══════════════ 상세 보기 ══════════════ */
+  var lb=null, lbList=[], lbIdx=0;
+  function makeLb(){
+    if(lb) return;
+    lb=document.createElement("div"); lb.className="pplb"; lb.id="ppLb";
+    lb.innerHTML=
+       '<div class="pplb-in">'
+      +'<button class="pplb-x" type="button" aria-label="닫기">✕</button>'
+      +'<button class="pplb-nav prev" type="button" aria-label="이전">‹</button>'
+      +'<button class="pplb-nav next" type="button" aria-label="다음">›</button>'
+      +'<div class="pplb-stamp"></div>'
+      +'<div class="pplb-info">'
+        +'<div class="pplb-no"></div>'
+        +'<div class="pplb-place"></div>'
+        +'<div class="pplb-town"></div>'
+        +'<div class="pplb-when"></div>'
+        +'<a class="pplb-gps" target="_blank" rel="noopener"></a>'
+        +'<p class="pplb-note"></p>'
+        +'<a class="pplb-page" target="_blank" rel="noopener">🖼 여권 페이지 원본 보기 ↗</a>'
+      +'</div></div>';
+    document.body.appendChild(lb);
+    lb.querySelector(".pplb-x").addEventListener("click",closeLb);
+    lb.addEventListener("click",function(e){ if(e.target===lb) closeLb(); });
+    lb.querySelector(".prev").addEventListener("click",function(e){ e.stopPropagation(); showLb(lbIdx-1); });
+    lb.querySelector(".next").addEventListener("click",function(e){ e.stopPropagation(); showLb(lbIdx+1); });
+    document.addEventListener("keydown",function(e){
+      if(!lb.classList.contains("show")) return;
+      if(e.key==="Escape") closeLb();
+      else if(e.key==="ArrowLeft") showLb(lbIdx-1);
+      else if(e.key==="ArrowRight") showLb(lbIdx+1);
+    });
+  }
+  function openLb(list,i){ makeLb(); lbList=list; lb.classList.add("show");
+    document.body.style.overflow="hidden"; showLb(i); }
+  function closeLb(){ if(lb){ lb.classList.remove("show"); document.body.style.overflow=""; } }
+  function showLb(i){
+    if(!lbList.length) return;
+    lbIdx=(i+lbList.length)%lbList.length;
+    var it=lbList[lbIdx], s=it.s, pg=it.page;
+    lb.querySelector(".pplb-stamp").setAttribute("style", cropStyle(pg, s.rect, 1600));
+    lb.querySelector(".pplb-no").textContent="📕 Sello #"+s.no;
+    lb.querySelector(".pplb-place").textContent=s.place||"(장소 이름 없음)";
+    lb.querySelector(".pplb-town").textContent=s.town||"";
+    var dt=s.date||(s.day?dayDate(s.day).toISOString().slice(0,10):"");
+    lb.querySelector(".pplb-when").textContent=
+      (s.day?"DAY "+s.day+" · ":"")+dt+(s.time?"  "+s.time:"");
+    var g=lb.querySelector(".pplb-gps");
+    if(s.lat!=null&&s.lon!=null){
+      g.textContent="📍 "+s.lat.toFixed(5)+", "+s.lon.toFixed(5)+"  — 지도에서 보기 ↗";
+      g.href="https://www.google.com/maps/search/?api=1&query="+s.lat+","+s.lon;
+      g.style.display="";
+    } else g.style.display="none";
+    var n=lb.querySelector(".pplb-note");
+    n.textContent=s.note||""; n.style.display=s.note?"":"none";
+    var pl=lb.querySelector(".pplb-page");
+    if(pg){ pl.href=imgUrl(pg.fileId,2400); pl.style.display=""; } else pl.style.display="none";
+    var many=lbList.length>1;
+    lb.querySelector(".prev").hidden=!many;
+    lb.querySelector(".next").hidden=!many;
+  }
+  function items(k, list){
+    var o=DATA[k]||{pages:{}};
+    return list.map(function(s){ return {s:s, page:o.pages[s.pageId]}; });
+  }
+
+  /* ══════════════ 세요 칩 ══════════════ */
+  function chip(k,s,i,list,size){
+    var o=DATA[k]||{pages:{}}, pg=o.pages[s.pageId];
+    var b=document.createElement("button");
+    b.type="button"; b.className="sello"+(size?" "+size:"");
+    b.innerHTML='<span class="sello-img" style="'+cropStyle(pg,s.rect,800)+'"></span>'
+      +'<span class="sello-cap"><b>'+esc(s.town||s.place||"세요")+'</b>'
+      +'<small>'+esc(s.time||dayLabel(s.day))+'</small></span>'
+      +'<span class="sello-no">#'+s.no+'</span>';
+    b.addEventListener("click",function(){ openLb(items(k,list), i); });
+    return b;
+  }
+  function emptySlot(txt){
+    var d=document.createElement("span");
+    d.className="sello empty"; d.innerHTML='<span class="sello-img"></span>'
+      +'<span class="sello-cap">'+esc(txt||"아직 없음")+'</span>';
+    return d;
+  }
+
+  /* ══════════════ ① 날짜별 카드 안의 세요 줄 ══════════════ */
+  function mountDays(){
+    for(var d=1;d<=PP.dayCount;d++) mountDay(d);
+  }
+  function mountDay(d){
+    var card=document.getElementById("day"+d); if(!card) return;
+    var foot=card.querySelector(".dfoot");
+    var box=card.querySelector(".dsello");
+    if(!box){
+      box=document.createElement("div"); box.className="dsello"; box.dataset.day=d;
+      card.insertBefore(box, foot||null);
+    }
+    var need=(d>=PP.doubleFromDay)?2:1;
+    var mine=byDay(who,d), other=byDay(who==="bin"?"jin":"bin",d);
+    var okTxt = mine.length>=need
+      ? '<span class="ok">✓ 하루 기준 충족</span>'
+      : '<span class="warn">하루 '+need+'개 필요 · '+mine.length+'개</span>';
+    box.innerHTML='<h4>📕 DAY '+d+' 세요 <small>· '+dayLabel(d)+' · '
+      +PP.people.map(function(p){
+        return '<button type="button" class="ppwho'+(p.k===who?" on":"")+'" data-k="'+p.k+'">'+p.n+'</button>';
+      }).join("")+' '+okTxt+'</small></h4><div class="sellorow"></div>';
+    var row=box.querySelector(".sellorow");
+    if(mine.length) mine.forEach(function(s,i){ row.appendChild(chip(who,s,i,mine,"sm")); });
+    else{
+      for(var i=0;i<need;i++) row.appendChild(emptySlot("세요 자리"));
+      var t=document.createElement("span"); t.className="sellohint";
+      t.textContent="여권 페이지를 촬영해 업로드 페이지의 📕 여권 탭에서 등록하면 여기에 나타납니다";
+      row.appendChild(t);
+    }
+    if(other.length){
+      var o=document.createElement("span"); o.className="sellohint alt";
+      o.textContent=(who==="bin"?"JIN":"BIN")+"은 이 날 "+other.length+"개";
+      row.appendChild(o);
+    }
+    box.querySelectorAll(".ppwho").forEach(function(b){
+      b.addEventListener("click",function(){ who=b.dataset.k; render(); });
+    });
+  }
+
+  /* ══════════════ ② 여권 섹션 ══════════════ */
+  function mountSection(){
+    var root=document.getElementById("ppRoot"); if(!root) return;
+    var o=DATA[who];
+    if(!o || !o.sellos.length){
+      root.innerHTML=whoTabs()
+        +'<div class="ppbook"><div class="ppcover">'+coverHTML()+'</div>'
+        +'<p class="ppempty">아직 등록된 세요가 없습니다.<br>'
+        +'여권 페이지를 사진으로 찍어 <b>upload-camino.html → 📕 여권</b> 탭에서 등록하면 '
+        +'여기와 날짜별 카드에 자동으로 나타납니다.</p></div>';
+      bindWho(root); return;
+    }
+    var days=0, okDays=0;
+    for(var d=1;d<=PP.dayCount;d++){
+      var n=byDay(who,d).length, need=(d>=PP.doubleFromDay)?2:1;
+      if(n) days++;
+      if(n>=need) okDays++;
+    }
+    var h=whoTabs()
+      +'<div class="ppbook">'
+      +'<div class="ppcover">'+coverHTML()+'</div>'
+      +'<div class="ppstat">'
+        +'<div><b>'+o.sellos.length+'</b><small>전체 세요</small></div>'
+        +'<div><b>'+days+' / '+PP.dayCount+'</b><small>세요 받은 날</small></div>'
+        +'<div><b>'+okDays+' / '+PP.dayCount+'</b><small>기준 충족일</small></div>'
+        +'<div><b>'+Object.keys(o.pages).length+'</b><small>여권 페이지</small></div>'
+      +'</div>'
+      +'<p class="pprule">🚲 자전거 순례는 <b>마지막 200km</b> 구간(이 일정에서는 <b>DAY '
+      +PP.doubleFromDay+'부터</b>)에서 <b>하루 2개</b>의 세요가 필요합니다. 그 전에는 하루 1개면 됩니다.</p>'
+      +'<div class="ppdays"></div>'
+      +'<div class="ppgal"><h3>전체 세요 갤러리 <small>'+o.sellos.length+'개</small></h3>'
+      +'<div class="ppgrid"></div></div>'
+      +'</div>';
+    root.innerHTML=h;
+    bindWho(root);
+
+    var dw=root.querySelector(".ppdays");
+    for(var d2=1;d2<=PP.dayCount;d2++){
+      var list=byDay(who,d2), need2=(d2>=PP.doubleFromDay)?2:1;
+      var sec=document.createElement("div"); sec.className="ppday"+(list.length?"":" none");
+      sec.innerHTML='<div class="ppday-h"><b>DAY '+d2+'</b><span>'+dayLabel(d2)+'</span>'
+        +(list.length>=need2?'<i class="ok">✓</i>':'<i class="warn">'+list.length+'/'+need2+'</i>')+'</div>'
+        +'<div class="sellorow"></div>';
+      var row=sec.querySelector(".sellorow");
+      if(list.length) list.forEach(function(s,i){ row.appendChild(chip(who,s,i,list)); });
+      else{ for(var q=0;q<need2;q++) row.appendChild(emptySlot("")); }
+      dw.appendChild(sec);
+    }
+    var g=root.querySelector(".ppgrid");
+    o.sellos.forEach(function(s,i){ g.appendChild(chip(who,s,i,o.sellos,"sm")); });
+  }
+  function coverHTML(){
+    var p=PP.people.filter(function(x){return x.k===who;})[0]||PP.people[0];
+    return '<div class="ppc-t">CREDENCIAL DEL PEREGRINO</div>'
+      +'<div class="ppc-n">'+p.n+'</div>'
+      +'<div class="ppc-s">Camino Francés · 2027</div>'
+      +'<div class="ppc-d">Saint-Jean-Pied-de-Port → Santiago de Compostela · 808.5 km</div>';
+  }
+  function whoTabs(){
+    return '<div class="ppwhobar">'+PP.people.map(function(p){
+      return '<button type="button" class="ppwho'+(p.k===who?" on":"")+'" data-k="'+p.k+'">📕 '+p.n+' 여권</button>';
+    }).join("")+'</div>';
+  }
+  function bindWho(root){
+    root.querySelectorAll(".ppwho").forEach(function(b){
+      b.addEventListener("click",function(){ who=b.dataset.k; render(); });
+    });
+  }
+
+  function render(){ mountSection(); mountDays(); }
+
+  /* ══════════════ 시작 ══════════════ */
+  function boot(){
+    render();                       /* 자료가 오기 전에도 빈 틀을 먼저 */
+    load().then(render).catch(function(){ render(); });
+  }
+  if(window.onCaminoDays) window.onCaminoDays(boot);
+  else if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",boot);
+  else boot();
 })();
 
 </script>

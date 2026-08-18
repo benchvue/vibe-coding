@@ -174,6 +174,85 @@
   .tdhint{font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:14px;
     padding:11px 14px;border:1px dashed var(--line);border-radius:var(--radius);background:#FBFAF5}
   .tdhint b{color:var(--blue)}
+
+  /* ══════════════ 📕 여권(Credencial) ══════════════ */
+  .pgbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+  .pgwho{border:1px solid var(--line);background:#fff;color:var(--muted);border-radius:999px;
+    padding:7px 16px;font-size:13px;font-weight:600;font-family:inherit}
+  .pgwho.on{background:var(--blue);border-color:var(--blue);color:#fff}
+  .pgcnt{font-size:12px;color:var(--muted)}
+  .pgadd{margin-left:auto;background:var(--blue);color:#fff;border-radius:999px;padding:8px 18px;
+    font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+  .pgadd:hover{background:var(--flecha);color:#3B2E00}
+  .pgro{margin-left:auto;font-size:11px;font-weight:600;color:#8A7F63;background:#F1E7C9;
+    border-radius:999px;padding:4px 11px}
+
+  .pgpages{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:18px}
+  .pgpage{border:1px solid var(--line);border-radius:var(--radius);background:#fff;overflow:hidden;
+    display:flex;flex-direction:column}
+  .pgthumb{height:190px;background-size:cover;background-position:center;background-color:var(--stone)}
+  .pgpi{padding:8px 10px;display:flex;align-items:baseline;gap:6px;border-top:1px solid var(--line)}
+  .pgpi b{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .pgpi small{margin-left:auto;font-size:11px;color:var(--muted);white-space:nowrap}
+  .pgopen{border:none;border-top:1px solid var(--line);background:#F4F2EA;color:var(--blue);
+    padding:9px;font-size:12.5px;font-weight:600;font-family:inherit}
+  .pgopen:hover{background:var(--flecha);color:#3B2E00}
+
+  .pgh3{font-family:'Gowun Batang',serif;font-size:16px;color:var(--blue);margin:16px 0 10px}
+  .pgsellos{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:10px}
+  .pgs{border:1px solid var(--line);border-radius:11px;background:#fff;overflow:hidden}
+  .pgs-img{display:block;width:100%;aspect-ratio:1/1;background-color:#F3F1E9;background-repeat:no-repeat}
+  .pgs-img.sm{width:44px;height:44px;flex:0 0 auto;border-radius:7px;border:1px solid var(--line);aspect-ratio:auto}
+  .pgs-c{display:block;padding:6px 8px;border-top:1px solid var(--line)}
+  .pgs-c b{display:block;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .pgs-c small{display:block;font-size:11px;color:var(--muted)}
+
+  /* 편집기 */
+  .pged{position:fixed;inset:0;z-index:140;background:rgba(11,16,30,.94);display:none;padding:14px}
+  .pged.show{display:block}
+  .pged-in{max-width:1180px;height:100%;margin:0 auto;background:var(--paper);border-radius:var(--radius);
+    display:flex;flex-direction:column;overflow:hidden}
+  .pged-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:11px 14px;
+    background:var(--blue);color:#fff}
+  .pged-top b{font-family:'Gowun Batang',serif;font-size:15px}
+  .pged-hint{font-size:12px;color:#9FB0CE}
+  .pged-hint b{font-family:inherit;font-size:12px;color:var(--flecha)}
+  .pged-auto,.pged-x{margin-left:0;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.1);
+    color:#fff;border-radius:999px;padding:6px 14px;font-size:12.5px;font-family:inherit}
+  .pged-auto{margin-left:auto}
+  .pged-auto:hover,.pged-x:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
+  .pged-body{flex:1;min-height:0;display:grid;grid-template-columns:1fr 330px}
+  @media(max-width:860px){ .pged-body{grid-template-columns:1fr;grid-template-rows:1fr auto} }
+  .pged-canvas{position:relative;overflow:auto;background:#2C2C2A;display:block;touch-action:none}
+  .pged-canvas img{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none}
+  .pged-boxes{position:absolute;inset:0}
+  .pgbox{position:absolute;border:2px solid var(--flecha);background:rgba(245,185,23,.16);
+    border-radius:4px;cursor:pointer}
+  .pgbox.on{border-color:var(--ok);background:rgba(30,122,70,.20);box-shadow:0 0 0 2px rgba(30,122,70,.35)}
+  .pgbox.ghost{border-style:dashed;pointer-events:none}
+  .pgbox.ro{cursor:default}
+  .pgbn{position:absolute;left:-1px;top:-1px;background:var(--flecha);color:#3B2E00;font-size:10px;
+    font-weight:700;border-radius:4px 0 4px 0;padding:1px 6px}
+  .pgbox.on .pgbn{background:var(--ok);color:#fff}
+  .pgbh{position:absolute;right:-7px;bottom:-7px;width:14px;height:14px;border-radius:50%;
+    background:#fff;border:2px solid var(--blue);cursor:nwse-resize}
+  .pged-side{overflow-y:auto;background:#fff;border-left:1px solid var(--line);padding:12px}
+  @media(max-width:860px){ .pged-side{border-left:none;border-top:1px solid var(--line);max-height:44vh} }
+  .pgnone{font-size:12.5px;color:var(--muted);line-height:1.8;padding:14px 8px;text-align:center}
+  .pgfrm{border:1px solid var(--line);border-radius:11px;padding:10px;margin-bottom:10px;background:#FBFAF5}
+  .pgfrm.on{border-color:var(--ok);background:#F2FAF5}
+  .pgfrm-h{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .pgfrm-h b{font-size:13px;color:var(--blue)}
+  .pgdel{margin-left:auto;border:1px solid var(--line);background:#fff;color:var(--err);
+    border-radius:999px;padding:3px 10px;font-size:11px;font-family:inherit}
+  .pgdel:hover{background:var(--err);color:#fff;border-color:var(--err)}
+  .pgfrm label{display:block;font-size:11px;color:var(--muted);margin-bottom:7px}
+  .pgfrm input,.pgfrm select{display:block;width:100%;margin-top:3px;border:1px solid var(--line);
+    border-radius:7px;padding:6px 8px;font-size:13px;font-family:inherit;background:#fff;color:var(--ink)}
+  .pgfrm input:focus,.pgfrm select:focus{outline:none;border-color:var(--flecha);
+    box-shadow:0 0 0 2px rgba(245,185,23,.3)}
+  .pgrow{display:grid;grid-template-columns:1fr 108px;gap:8px}
+  .pggps{font-size:11px;color:var(--muted);margin-bottom:7px}
 </style>
 </head>
 <body>
@@ -208,6 +287,7 @@
   <div class="viewtabs">
     <button id="viewPhotoBtn" class="on">📸 사진 · 영상 · 주행기록</button>
     <button id="viewTodoBtn">✅ 할 일 (To-Do)</button>
+    <button id="viewPassBtn">📕 여권 (Credencial)</button>
   </div>
 
   <div id="photoView">
@@ -246,7 +326,28 @@
     </p>
     <div id="todoRoot"></div>
   </div>
+
+  <!-- ── 여권 ── -->
+  <div id="passView" style="display:none">
+    <div class="tdtop">
+      <span class="me" id="pgMe"></span>
+      <button class="mini2" id="pgReloadBtn">다시 불러오기</button>
+      <span class="st" id="pgStatus"></span>
+    </div>
+    <p class="tdhint">
+      도장을 한 장씩 잘라 찍을 필요 없습니다. <b>여권 페이지 전체를 한 장으로</b> 찍어 올린 뒤,
+      사진 위에서 도장 자리를 <b>드래그해 네모로 감싸면</b> 됩니다.
+      사진은 그대로 두고 <b>좌표(%)만 저장</b>하므로 원본이 손상되지 않고, 나중에 범위를 다시 조정할 수도 있습니다.
+      <b>🔍 자동 찾기</b>를 누르면 종이 위의 잉크 덩어리를 찾아 후보를 제안합니다 — 틀린 것은 지우면 됩니다.<br>
+      각 도장에 <b>장소 이름 · 마을 · DAY · 시각</b>을 넣으면 마을 좌표로 <b>GPS 위치가 자동</b>으로 채워지고,
+      사이트의 <b>📕 디지털 순례자 여권</b> 섹션과 <b>날짜별 카드</b>에 함께 표시됩니다.
+      페이지 사진은 Drive 의 <b>passport</b> 폴더, 정보는 <b>db/passport-{bin,jin}.json</b> 에 저장됩니다.
+    </p>
+    <div id="pgRoot"></div>
+  </div>
 </div>
+
+<div class="pged" id="pgEditor"></div>
 
 <div class="toast" id="toast"></div>
 <div class="lb" id="lb"><button class="x">×</button><img id="lbImg" alt=""></div>
@@ -302,7 +403,7 @@ const initAuth=()=>{
         $("lockScreen").style.display="none";$("panel").style.display="block";
         $("whoAmI").innerHTML="로그인: <b>"+myEmail+"</b>";
         $("tdSaveBtn").style.display="";
-        tdOnSignedIn();
+        tdOnSignedIn(); pgOnSignedIn();
         loadAll();
       }).catch(()=>toast("계정 정보를 가져오지 못했습니다"));
     }
@@ -1203,9 +1304,12 @@ const tdCount = (box) => {
 const showView = (which) => {
   $("photoView").style.display = which==="photo" ? "" : "none";
   $("todoView") .style.display = which==="todo"  ? "" : "none";
+  $("passView") .style.display = which==="pass"  ? "" : "none";
   $("viewPhotoBtn").classList.toggle("on", which==="photo");
   $("viewTodoBtn") .classList.toggle("on", which==="todo");
+  $("viewPassBtn") .classList.toggle("on", which==="pass");
   if(which==="todo" && !dbFolderId) tdLoad();
+  if(which==="pass" && !pgFolderId) pgLoad();
 };
 $("viewPhotoBtn").addEventListener("click",()=>showView("photo"));
 $("viewTodoBtn") .addEventListener("click",()=>showView("todo"));
@@ -1224,6 +1328,525 @@ const tdOnSignedIn = () => {
     ? '로그인: <b>'+myRole.toUpperCase()+'</b> — <b>공통</b>과 <b>'+myRole.toUpperCase()
       +'</b> 목록을 고칠 수 있고, 상대방 목록은 보기만 됩니다.'
     : '로그인: <b>'+tdEsc(myEmail)+'</b> — 담당이 지정되지 않아 <b>공통</b> 목록만 고칠 수 있습니다.';
+};
+
+
+/* ══════════════════════════════════════════════════════════════════════
+   📕 여권(Credencial) — 세요 등록
+   방식: 여권 페이지를 통째로 한 장 찍어 올린 뒤,
+         그 사진 위에서 도장 자리를 사각형으로 표시합니다.
+         사진은 자르지 않고 "좌표(%)"만 저장하므로 사진 편집이 필요 없고,
+         나중에 표시 범위를 다시 조정할 수도 있습니다.
+   저장: Drive  passport/ (페이지 사진)  ·  db/passport-{bin,jin}.json (좌표·정보)
+   ══════════════════════════════════════════════════════════════════════ */
+
+const PG = {
+  imgFolder : "passport",
+  files     : { bin:"passport-bin.json", jin:"passport-jin.json" },
+  people    : [ {k:"bin", n:"BIN"}, {k:"jin", n:"JIN"} ],
+  dayCount  : 13,
+  maxDim    : 2400,          /* 도장을 크게 확대해도 보이도록 사진 페이지는 크게 */
+  quality   : 0.86,
+  startDate : new Date(2027,4,9)
+};
+
+/* 각 DAY 의 대표 마을 — 세요 등록 시 GPS 자동 입력에 씁니다 */
+const PG_DAY_TOWNS = {
+  1:["Saint-Jean-Pied-de-Port","Orisson","Roncesvalles","Zubiri"],
+  2:["Zubiri","Pamplona","Puente la Reina","Estella"],
+  3:["Estella","Los Arcos","Viana","Logroño","Navarrete"],
+  4:["Navarrete","Nájera","Santo Domingo de la Calzada","Belorado"],
+  5:["Belorado","San Juan de Ortega","Burgos","Hornillos del Camino","Castrojeriz"],
+  6:["Castrojeriz","Frómista","Carrión de los Condes","Sahagún"],
+  7:["Sahagún","El Burgo Ranero","Mansilla de las Mulas","León"],
+  8:["León"],
+  9:["León","Hospital de Órbigo","Astorga","Rabanal del Camino"],
+  10:["Rabanal del Camino","Molinaseca","Ponferrada","Cacabelos","Villafranca del Bierzo","Vega de Valcarce"],
+  11:["Vega de Valcarce","O Cebreiro","Triacastela","Sarria"],
+  12:["Sarria","Portomarín","Palas de Rei","Melide","Arzúa"],
+  13:["Arzúa","O Pedrouzo","Monte do Gozo","Santiago de Compostela"]
+};
+
+let pgFolderId=null, pgData={}, pgMeta={}, pgWho=null, pgEditing=null;
+const pgTimers={};
+const pgId=()=>"s"+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const pgCanEdit=(k)=>k===pgWho;
+const pgDayDate=(d)=>{const x=new Date(PG.startDate);x.setDate(x.getDate()+(d-1));
+  return x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0");};
+const pgTownLL=(name)=>{const t=CAMINO_TOWNS.find(x=>x[0]===name);return t?{lat:t[1],lon:t[2]}:null;};
+const pgEsc=t=>String(t==null?"":t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+const pgImgUrl=(id,w)=>"https://lh3.googleusercontent.com/d/"+id+"=w"+(w||1600);
+
+const pgCropStyle=(page,r,w)=>{
+  if(!page||!r) return "";
+  const cw=Math.max(1,Math.min(100,+r[2])), ch=Math.max(1,Math.min(100,+r[3]));
+  const px=(cw>=100)?50:(+r[0]/(100-cw))*100, py=(ch>=100)?50:(+r[1]/(100-ch))*100;
+  return "background-image:url('"+pgImgUrl(page.fileId,w||800)+"');background-size:"
+    +(10000/cw)+"% "+(10000/ch)+"%;background-position:"+px+"% "+py+"%;background-repeat:no-repeat;";
+};
+
+/* ══════════════ 저장소 ══════════════ */
+const pgEmpty=()=>({pages:[],sellos:[]});
+const pgNorm=(raw)=>{
+  const d=pgEmpty(); if(!raw) return d;
+  d.pages=(raw.pages||[]).filter(p=>p&&p.id&&p.fileId);
+  d.sellos=(raw.sellos||[]).filter(s=>s&&s.id).map(s=>({
+    id:String(s.id), pageId:s.pageId, rect:s.rect||[0,0,30,30],
+    day:+s.day||1, date:s.date||"", time:s.time||"", place:s.place||"", town:s.town||"",
+    lat:(s.lat!=null?+s.lat:null), lon:(s.lon!=null?+s.lon:null),
+    note:s.note||"", del:!!s.del, ts:+s.ts||0 }));
+  return d;
+};
+const pgPack=(k)=>({ver:1,owner:k,updatedAt:new Date().toISOString(),updatedBy:myEmail,
+  pages:pgData[k].pages, sellos:pgData[k].sellos});
+
+const pgEnsureImgFolder=()=>
+  listFolder(CONFIG.parentFolder).then(items=>{
+    const f=items.find(x=>x.mimeType==="application/vnd.google-apps.folder"
+                       && x.name.toLowerCase()===PG.imgFolder);
+    return f ? f.id : createFolder(PG.imgFolder,CONFIG.parentFolder).then(x=>x.id);
+  });
+
+const pgLoad=()=>{
+  pgStatus("불러오는 중…");
+  return tdEnsureFolder().then(fid=>{ dbFolderId=fid; return listFolder(fid); })
+    .then(files=>Promise.all(PG.people.map(p=>{
+      const key=p.k,name=PG.files[key];
+      const f=files.find(x=>x.name===name);
+      if(!f){
+        pgData[key]=pgEmpty();
+        return driveCreateJson(name,pgPack(key),dbFolderId)
+          .then(res=>{pgMeta[key]={id:res.id,modifiedTime:res.modifiedTime};});
+      }
+      return driveDownload(f.id).then(txt=>{
+        let raw=null; try{raw=JSON.parse(txt);}catch(e){}
+        pgData[key]=pgNorm(raw);
+        return driveGetMeta(f.id).then(m=>{pgMeta[key]={id:f.id,modifiedTime:m.modifiedTime};});
+      });
+    })))
+    .then(()=>pgEnsureImgFolder()).then(id=>{pgFolderId=id;})
+    .then(()=>{pgRender();pgStatus("불러오기 완료","sav");})
+    .catch(e=>{pgStatus(e.message,"err");
+      $("pgRoot").innerHTML='<div class="tdhint" style="color:var(--err)">⚠ '+pgEsc(e.message)+'</div>';});
+};
+
+const pgMerge=(remote,local)=>{
+  const out=pgEmpty();
+  const pm=new Map(); (remote.pages||[]).forEach(p=>pm.set(p.id,p));
+  (local.pages||[]).forEach(p=>pm.set(p.id,p));
+  out.pages=[...pm.values()];
+  const sm=new Map(); (remote.sellos||[]).forEach(s=>sm.set(s.id,s));
+  (local.sellos||[]).forEach(s=>{const r=sm.get(s.id); if(!r||(s.ts||0)>=(r.ts||0)) sm.set(s.id,s);});
+  out.sellos=[...sm.values()];
+  return out;
+};
+
+const pgSave=(k)=>{
+  if(!pgCanEdit(k)||!pgMeta[k]) return Promise.resolve();
+  pgStatus("저장 중…");
+  const id=pgMeta[k].id;
+  return driveGetMeta(id).then(m=>{
+    if(m.modifiedTime!==pgMeta[k].modifiedTime)
+      return driveDownload(id).then(t=>{
+        let raw=null; try{raw=JSON.parse(t);}catch(e){}
+        pgData[k]=pgMerge(pgNorm(raw),pgData[k]);
+      });
+  }).then(()=>driveUpdateJson(id,pgPack(k)))
+    .then(res=>{pgMeta[k].modifiedTime=res.modifiedTime;
+      pgStatus("저장됨 · "+new Date().toLocaleTimeString("ko-KR",{hour:"2-digit",minute:"2-digit"}),"sav");})
+    .catch(e=>{pgStatus("⚠ "+e.message,"err");toast("⚠ "+e.message);});
+};
+const pgQueueSave=(k)=>{pgStatus("변경됨 — 곧 저장합니다…");
+  clearTimeout(pgTimers[k]); pgTimers[k]=setTimeout(()=>pgSave(k),1200);};
+const pgStatus=(m,c)=>{const el=$("pgStatus"); if(el){el.textContent=m;el.className="st"+(c?" "+c:"");}};
+
+/* ══════════════ 페이지 업로드 ══════════════ */
+const pgUpload=async(files)=>{
+  if(!files||!files.length) return;
+  const k=pgWho; if(!k){toast("담당이 지정된 계정으로 로그인해야 등록할 수 있습니다");return;}
+  const oldD=CONFIG.webpMaxDim, oldQ=CONFIG.webpQuality;
+  CONFIG.webpMaxDim=PG.maxDim; CONFIG.webpQuality=PG.quality;
+  try{
+    for(let i=0;i<files.length;i++){
+      toast("여권 페이지 "+(i+1)+"/"+files.length+" 변환 중…");
+      const gps=await readGps(files[i]).catch(()=>null);
+      const blob=await toWebp(files[i],null);
+      const dim=await pgDims(blob);
+      const n=pgData[k].pages.length+1;
+      const name=k+"-page-"+String(n).padStart(3,"0")+"-"+Date.now().toString(36)+".webp";
+      toast("여권 페이지 "+(i+1)+"/"+files.length+" 업로드 중…");
+      const res=await uploadFile(name,"image/webp",blob,pgFolderId,
+        p=>toast("업로드 "+Math.round(p*100)+"%"));
+      pgData[k].pages.push({id:"p"+Date.now().toString(36)+i, fileId:res.id, name:name,
+        w:dim.w, h:dim.h, lat:gps?gps.lat:null, lon:gps?gps.lon:null,
+        addedAt:new Date().toISOString()});
+    }
+    await pgSave(k);
+    pgRender();
+    toast("여권 페이지 "+files.length+"장 추가 — 이제 도장 자리를 표시하세요");
+  }catch(e){ toast("⚠ "+e.message); }
+  finally{ CONFIG.webpMaxDim=oldD; CONFIG.webpQuality=oldQ; }
+};
+const pgDims=(blob)=>new Promise(res=>{
+  const u=URL.createObjectURL(blob), im=new Image();
+  im.onload=()=>{res({w:im.naturalWidth,h:im.naturalHeight});URL.revokeObjectURL(u);};
+  im.onerror=()=>{res({w:0,h:0});URL.revokeObjectURL(u);};
+  im.src=u;});
+
+/* ══════════════ 도장 자동 찾기 ══════════════
+   흰 종이 위의 진한 잉크 덩어리를 찾습니다.
+   완벽하지 않으므로 "후보 제안"으로 쓰고, 틀린 것은 지우면 됩니다. */
+const pgAutoDetect=(imgEl)=>{
+  const W=Math.min(560,imgEl.naturalWidth||560);
+  const H=Math.round((imgEl.naturalHeight/imgEl.naturalWidth)*W);
+  const c=document.createElement("canvas"); c.width=W; c.height=H;
+  const g=c.getContext("2d",{willReadFrequently:true});
+  g.drawImage(imgEl,0,0,W,H);
+  let d;
+  try{ d=g.getImageData(0,0,W,H).data; }catch(e){ return []; }
+
+  const lum=new Float32Array(W*H);
+  let sum=0;
+  for(let i=0,p=0;i<W*H;i++,p+=4){
+    const v=0.299*d[p]+0.587*d[p+1]+0.114*d[p+2];
+    lum[i]=v; sum+=v;
+  }
+  const mean=sum/(W*H);
+  let sd=0; for(let i=0;i<W*H;i++){const t=lum[i]-mean;sd+=t*t;}
+  sd=Math.sqrt(sd/(W*H));
+  const thr=mean-0.62*sd;                       /* 종이보다 확실히 어두운 화소 = 잉크 */
+
+  const bin=new Uint8Array(W*H);
+  for(let i=0;i<W*H;i++) bin[i]=lum[i]<thr?1:0;
+
+  /* 획을 덩어리로 뭉치기 (가로·세로 각각 반경 R 팽창) */
+  const R=Math.max(3,Math.round(W*0.012));
+  const tmp=new Uint8Array(W*H), dil=new Uint8Array(W*H);
+  for(let y=0;y<H;y++){ let run=0;
+    for(let x=0;x<W;x++){ if(bin[y*W+x])run=R; else if(run>0)run--;
+      tmp[y*W+x]=(bin[y*W+x]||run>0)?1:0; }
+    run=0;
+    for(let x=W-1;x>=0;x--){ if(bin[y*W+x])run=R; else if(run>0)run--;
+      if(run>0)tmp[y*W+x]=1; }
+  }
+  for(let x=0;x<W;x++){ let run=0;
+    for(let y=0;y<H;y++){ if(tmp[y*W+x])run=R; else if(run>0)run--;
+      dil[y*W+x]=(tmp[y*W+x]||run>0)?1:0; }
+    run=0;
+    for(let y=H-1;y>=0;y--){ if(tmp[y*W+x])run=R; else if(run>0)run--;
+      if(run>0)dil[y*W+x]=1; }
+  }
+
+  /* 연결 요소 */
+  const seen=new Uint8Array(W*H), boxes=[], stack=new Int32Array(W*H);
+  for(let i=0;i<W*H;i++){
+    if(!dil[i]||seen[i]) continue;
+    let sp=0; stack[sp++]=i; seen[i]=1;
+    let x0=i%W,x1=x0,y0=(i/W)|0,y1=y0,area=0;
+    while(sp>0){
+      const p=stack[--sp], px=p%W, py=(p/W)|0;
+      area++;
+      if(px<x0)x0=px; if(px>x1)x1=px; if(py<y0)y0=py; if(py>y1)y1=py;
+      if(px>0   && dil[p-1] && !seen[p-1]){seen[p-1]=1;stack[sp++]=p-1;}
+      if(px<W-1 && dil[p+1] && !seen[p+1]){seen[p+1]=1;stack[sp++]=p+1;}
+      if(py>0   && dil[p-W] && !seen[p-W]){seen[p-W]=1;stack[sp++]=p-W;}
+      if(py<H-1 && dil[p+W] && !seen[p+W]){seen[p+W]=1;stack[sp++]=p+W;}
+    }
+    const bw=x1-x0+1, bh=y1-y0+1, ar=bw/bh;
+    if(bw < W*0.09 || bh < H*0.035) continue;     /* 너무 작음 = 글씨 조각 */
+    if(bw > W*0.80 && bh > H*0.80) continue;      /* 페이지 전체 */
+    if(ar<0.30 || ar>3.2) continue;               /* 길쭉한 줄글 */
+    if(area < bw*bh*0.22) continue;               /* 속이 텅 빈 덩어리 */
+    boxes.push({x0,y0,x1,y1});
+  }
+  /* 겹치는 것 합치기 */
+  let merged=true;
+  while(merged && boxes.length){
+    merged=false;
+    outer:
+    for(let a=0;a<boxes.length;a++)
+      for(let b=a+1;b<boxes.length;b++){
+        const A=boxes[a],B=boxes[b];
+        if(A.x0<=B.x1&&B.x0<=A.x1&&A.y0<=B.y1&&B.y0<=A.y1){
+          A.x0=Math.min(A.x0,B.x0);A.y0=Math.min(A.y0,B.y0);
+          A.x1=Math.max(A.x1,B.x1);A.y1=Math.max(A.y1,B.y1);
+          boxes.splice(b,1); merged=true; break outer;
+        }
+      }
+  }
+  const pad=0.012;
+  return boxes.map(b=>{
+    let x=b.x0/W-pad, y=b.y0/H-pad;
+    let w=(b.x1-b.x0+1)/W+pad*2, h=(b.y1-b.y0+1)/H+pad*2;
+    x=Math.max(0,x); y=Math.max(0,y);
+    w=Math.min(1-x,w); h=Math.min(1-y,h);
+    return [ +(x*100).toFixed(2), +(y*100).toFixed(2), +(w*100).toFixed(2), +(h*100).toFixed(2) ];
+  }).sort((p,q)=> (p[1]-q[1]) || (p[0]-q[0]) );
+};
+
+/* ══════════════ 화면 ══════════════ */
+const pgRender=()=>{
+  const root=$("pgRoot"); if(!root) return;
+  const k=pgViewK();
+  const d=pgData[k]||pgEmpty();
+  const live=d.sellos.filter(s=>!s.del);
+  let h='<div class="pgbar">'
+    +PG.people.map(p=>'<button type="button" class="pgwho'+(p.k===k?" on":"")
+      +'" data-k="'+p.k+'">📕 '+p.n+(p.k===pgWho?" (내 여권)":"")+'</button>').join("")
+    +'<span class="pgcnt">세요 '+live.length+'개 · 페이지 '+d.pages.length+'장</span>'
+    +(pgCanEdit(k)
+      ? '<label class="pgadd">＋ 여권 페이지 사진 올리기'
+        +'<input type="file" accept="image/*" multiple id="pgFile" hidden></label>'
+      : '<span class="pgro">읽기 전용</span>')
+    +'</div>';
+
+  if(!d.pages.length){
+    h+='<p class="tdhint">아직 올린 여권 페이지가 없습니다. 도장이 여러 개 찍힌 '
+      +'<b>페이지 전체를 한 장</b>으로 찍어 올리세요 — 도장을 따로 잘라낼 필요 없습니다.</p>';
+  }
+  h+='<div class="pgpages">';
+  d.pages.forEach(p=>{
+    const n=live.filter(s=>s.pageId===p.id).length;
+    h+='<div class="pgpage" data-p="'+p.id+'">'
+      +'<div class="pgthumb" style="background-image:url(\''+pgImgUrl(p.fileId,600)+'\')"></div>'
+      +'<div class="pgpi"><b>'+pgEsc(p.name.replace(/^[a-z]+-/,"").replace(/-[a-z0-9]+\.webp$/,""))+'</b>'
+      +'<small>세요 '+n+'개</small></div>'
+      +'<button type="button" class="pgopen" data-p="'+p.id+'">'
+      +(pgCanEdit(k)?'도장 표시하기':'보기')+'</button></div>';
+  });
+  h+='</div>';
+
+  if(live.length){
+    h+='<h3 class="pgh3">등록된 세요</h3><div class="pgsellos">';
+    live.slice().sort((a,b)=>(a.day-b.day)||String(a.time).localeCompare(String(b.time)))
+      .forEach((s,i)=>{
+        const pg=d.pages.find(p=>p.id===s.pageId);
+        h+='<div class="pgs"><span class="pgs-img" style="'+pgCropStyle(pg,s.rect,600)+'"></span>'
+          +'<span class="pgs-c"><b>'+pgEsc(s.place||s.town||"이름 없음")+'</b>'
+          +'<small>DAY '+s.day+' · '+pgEsc(s.time||"")+'</small></span></div>';
+      });
+    h+='</div>';
+  }
+  root.innerHTML=h;
+
+  const fi=$("pgFile");
+  if(fi){
+    fi.addEventListener("change",e=>{const f=[...e.target.files];e.target.value="";pgUpload(f);});
+  }
+  root.querySelectorAll(".pgwho").forEach(b=>b.addEventListener("click",()=>{
+    pgViewK(b.dataset.k); pgRender();}));
+  root.querySelectorAll(".pgopen").forEach(b=>b.addEventListener("click",()=>pgOpen(k,b.dataset.p)));
+};
+let _pgView=null;
+const pgViewK=(set)=>{ if(set!==undefined)_pgView=set;
+  return _pgView||pgWho||PG.people[0].k; };
+
+/* ══════════════ 페이지 편집기 ══════════════ */
+const pgOpen=(k,pageId)=>{
+  const d=pgData[k], page=d.pages.find(p=>p.id===pageId); if(!page) return;
+  pgEditing={k,pageId};
+  const ed=$("pgEditor");
+  ed.classList.add("show"); document.body.style.overflow="hidden";
+  ed.innerHTML=
+     '<div class="pged-in">'
+    +'<div class="pged-top"><b>도장 자리 표시</b>'
+      +'<span class="pged-hint">사진 위를 <b>드래그</b>해 도장을 네모로 감싸세요</span>'
+      +(pgCanEdit(k)?'<button class="pged-auto" type="button">🔍 자동 찾기</button>':'')
+      +'<button class="pged-x" type="button">닫기 ✕</button></div>'
+    +'<div class="pged-body">'
+      +'<div class="pged-canvas"><img id="pgImg" alt="여권 페이지"><div class="pged-boxes"></div></div>'
+      +'<div class="pged-side" id="pgSide"></div>'
+    +'</div></div>';
+  const img=$("pgImg");
+  img.crossOrigin="anonymous";
+  img.src=pgImgUrl(page.fileId,1600);
+  ed.querySelector(".pged-x").addEventListener("click",pgClose);
+  const auto=ed.querySelector(".pged-auto");
+  if(auto) auto.addEventListener("click",()=>{
+    toast("도장을 찾는 중…");
+    setTimeout(()=>{
+      let found=[];
+      try{ found=pgAutoDetect(img); }catch(e){ found=[]; }
+      if(!found.length){ toast("자동으로 찾지 못했습니다 — 드래그해서 직접 표시해 주세요"); return; }
+      const now=Date.now();
+      found.forEach((r,i)=>{
+        pgData[k].sellos.push(pgNewSello(pageId,r,now+i));
+      });
+      pgQueueSave(k); pgDraw();
+      toast(found.length+"개를 찾았습니다 — 틀린 것은 지우고 정보를 채워 주세요");
+    },30);
+  });
+  img.addEventListener("load",pgDraw);
+  pgBindDrag();
+};
+const pgClose=()=>{ $("pgEditor").classList.remove("show");
+  document.body.style.overflow=""; pgEditing=null; pgRender(); };
+
+const pgNewSello=(pageId,rect,ts)=>{
+  const dNow=1;
+  return {id:pgId(),pageId:pageId,rect:rect,day:dNow,date:pgDayDate(dNow),
+    time:"",place:"",town:"",lat:null,lon:null,note:"",del:false,ts:ts||Date.now()};
+};
+
+const pgList=()=>{
+  if(!pgEditing) return [];
+  return pgData[pgEditing.k].sellos.filter(s=>!s.del&&s.pageId===pgEditing.pageId);
+};
+
+const pgDraw=()=>{
+  if(!pgEditing) return;
+  const wrap=document.querySelector(".pged-boxes"); if(!wrap) return;
+  const list=pgList(), k=pgEditing.k, ro=!pgCanEdit(k);
+  wrap.innerHTML=list.map((s,i)=>
+    '<div class="pgbox'+(ro?" ro":"")+'" data-id="'+s.id+'" style="left:'+s.rect[0]+'%;top:'+s.rect[1]
+    +'%;width:'+s.rect[2]+'%;height:'+s.rect[3]+'%"><span class="pgbn">'+(i+1)+'</span>'
+    +(ro?"":'<span class="pgbh" data-h="1"></span>')+'</div>').join("");
+  wrap.querySelectorAll(".pgbox").forEach(b=>{
+    b.addEventListener("click",e=>{e.stopPropagation();pgSelect(b.dataset.id);});
+  });
+  if(!ro) pgBindResize();
+  pgSide();
+};
+
+let pgSel=null;
+const pgSelect=(id)=>{ pgSel=id; pgSide();
+  document.querySelectorAll(".pgbox").forEach(b=>b.classList.toggle("on",b.dataset.id===id));
+  const el=document.querySelector('.pgfrm[data-id="'+id+'"]');
+  if(el) el.scrollIntoView({block:"nearest",behavior:"smooth"});
+};
+
+const pgSide=()=>{
+  const side=$("pgSide"); if(!side||!pgEditing) return;
+  const k=pgEditing.k, ro=!pgCanEdit(k), list=pgList();
+  const page=pgData[k].pages.find(p=>p.id===pgEditing.pageId);
+  if(!list.length){
+    side.innerHTML='<p class="pgnone">아직 표시한 도장이 없습니다.<br>'
+      +'왼쪽 사진에서 도장을 <b>드래그</b>해 네모로 감싸거나, 위의 <b>🔍 자동 찾기</b>를 눌러 보세요.</p>';
+    return;
+  }
+  side.innerHTML=list.map((s,i)=>{
+    const towns=PG_DAY_TOWNS[s.day]||[];
+    return '<div class="pgfrm'+(s.id===pgSel?" on":"")+'" data-id="'+s.id+'">'
+      +'<div class="pgfrm-h"><span class="pgs-img sm" style="'+pgCropStyle(page,s.rect,400)+'"></span>'
+      +'<b>#'+(i+1)+'</b>'+(ro?'':'<button type="button" class="pgdel" data-id="'+s.id+'">삭제</button>')+'</div>'
+      +'<label>장소 이름<input type="text" data-f="place" value="'+pgEsc(s.place)+'" '
+        +'placeholder="예: Parroquia San Juan"'+(ro?" disabled":"")+'></label>'
+      +'<label>마을<select data-f="town"'+(ro?" disabled":"")+'>'
+        +'<option value="">— 선택 —</option>'
+        +towns.map(t=>'<option value="'+pgEsc(t)+'"'+(t===s.town?" selected":"")+'>'+pgEsc(t)+'</option>').join("")
+        +(s.town&&towns.indexOf(s.town)<0?'<option value="'+pgEsc(s.town)+'" selected>'+pgEsc(s.town)+'</option>':'')
+        +'</select></label>'
+      +'<div class="pgrow"><label>DAY<select data-f="day"'+(ro?" disabled":"")+'>'
+        +Array.from({length:PG.dayCount},(_,n)=>'<option value="'+(n+1)+'"'+((n+1)===s.day?" selected":"")
+          +'>DAY '+(n+1)+' · '+pgDayDate(n+1).slice(5)+'</option>').join("")
+        +'</select></label>'
+      +'<label>시각<input type="time" data-f="time" value="'+pgEsc(s.time)+'"'+(ro?" disabled":"")+'></label></div>'
+      +'<div class="pggps">'+(s.lat!=null?'📍 '+s.lat.toFixed(4)+', '+s.lon.toFixed(4)
+          :'📍 마을을 고르면 위치가 자동으로 채워집니다')+'</div>'
+      +'<label>메모<input type="text" data-f="note" value="'+pgEsc(s.note)+'" '
+        +'placeholder="선택 사항"'+(ro?" disabled":"")+'></label>'
+      +'</div>';
+  }).join("");
+
+  if(ro) return;
+  side.querySelectorAll(".pgfrm").forEach(frm=>{
+    const id=frm.dataset.id;
+    const s=pgData[k].sellos.find(x=>x.id===id); if(!s) return;
+    frm.addEventListener("click",()=>pgSelect(id));
+    frm.querySelectorAll("[data-f]").forEach(inp=>{
+      inp.addEventListener("change",()=>{
+        const f=inp.dataset.f;
+        if(f==="day"){ s.day=+inp.value; s.date=pgDayDate(s.day); }
+        else s[f]=inp.value;
+        if(f==="town"){ const ll=pgTownLL(s.value||inp.value); if(ll){s.lat=ll.lat;s.lon=ll.lon;} }
+        s.ts=Date.now();
+        pgQueueSave(k);
+        if(f==="day"||f==="town") pgSide();
+      });
+    });
+    const del=frm.querySelector(".pgdel");
+    if(del) del.addEventListener("click",e=>{
+      e.stopPropagation();
+      if(!confirm("이 도장 표시를 지울까요?")) return;
+      s.del=true; s.ts=Date.now(); pgQueueSave(k); pgDraw();
+    });
+  });
+};
+
+/* 드래그해서 새 사각형 만들기 */
+const pgBindDrag=()=>{
+  const canvas=document.querySelector(".pged-canvas"); if(!canvas) return;
+  let sx=0,sy=0,ghost=null,active=false;
+  canvas.addEventListener("pointerdown",e=>{
+    if(!pgEditing||!pgCanEdit(pgEditing.k)) return;
+    if(e.target.closest(".pgbox")) return;
+    const r=canvas.getBoundingClientRect();
+    sx=(e.clientX-r.left)/r.width*100; sy=(e.clientY-r.top)/r.height*100;
+    active=true; canvas.setPointerCapture(e.pointerId);
+    ghost=document.createElement("div"); ghost.className="pgbox ghost";
+    canvas.querySelector(".pged-boxes").appendChild(ghost);
+  });
+  canvas.addEventListener("pointermove",e=>{
+    if(!active||!ghost) return;
+    const r=canvas.getBoundingClientRect();
+    const cx=(e.clientX-r.left)/r.width*100, cy=(e.clientY-r.top)/r.height*100;
+    const x=Math.max(0,Math.min(sx,cx)), y=Math.max(0,Math.min(sy,cy));
+    const w=Math.min(100-x,Math.abs(cx-sx)), h=Math.min(100-y,Math.abs(cy-sy));
+    ghost.style.cssText="left:"+x+"%;top:"+y+"%;width:"+w+"%;height:"+h+"%";
+  });
+  const end=(e)=>{
+    if(!active) return; active=false;
+    if(!ghost) return;
+    const g=ghost; ghost=null;
+    const x=parseFloat(g.style.left), y=parseFloat(g.style.top),
+          w=parseFloat(g.style.width), h=parseFloat(g.style.height);
+    g.remove();
+    if(!(w>3&&h>3)) return;                     /* 실수로 클릭한 경우 무시 */
+    const k=pgEditing.k;
+    const s=pgNewSello(pgEditing.pageId,[+x.toFixed(2),+y.toFixed(2),+w.toFixed(2),+h.toFixed(2)]);
+    pgData[k].sellos.push(s);
+    pgQueueSave(k); pgDraw(); pgSelect(s.id);
+  };
+  canvas.addEventListener("pointerup",end);
+  canvas.addEventListener("pointercancel",end);
+};
+
+/* 오른쪽 아래 손잡이로 크기 조절 */
+const pgBindResize=()=>{
+  const canvas=document.querySelector(".pged-canvas"); if(!canvas) return;
+  canvas.querySelectorAll(".pgbh").forEach(hd=>{
+    hd.addEventListener("pointerdown",e=>{
+      e.stopPropagation(); e.preventDefault();
+      const box=hd.parentNode, id=box.dataset.id, k=pgEditing.k;
+      const s=pgData[k].sellos.find(x=>x.id===id); if(!s) return;
+      hd.setPointerCapture(e.pointerId);
+      const move=(ev)=>{
+        const r=canvas.getBoundingClientRect();
+        const cx=(ev.clientX-r.left)/r.width*100, cy=(ev.clientY-r.top)/r.height*100;
+        const w=Math.max(3,Math.min(100-s.rect[0],cx-s.rect[0]));
+        const h=Math.max(3,Math.min(100-s.rect[1],cy-s.rect[1]));
+        s.rect[2]=+w.toFixed(2); s.rect[3]=+h.toFixed(2);
+        box.style.width=w+"%"; box.style.height=h+"%";
+      };
+      const up=()=>{ hd.removeEventListener("pointermove",move);
+        hd.removeEventListener("pointerup",up);
+        s.ts=Date.now(); pgQueueSave(k); pgSide(); };
+      hd.addEventListener("pointermove",move);
+      hd.addEventListener("pointerup",up);
+    });
+  });
+};
+
+/* ══════════════ 진입점 ══════════════ */
+$("viewPassBtn").addEventListener("click",()=>showView("pass"));
+$("pgReloadBtn").addEventListener("click",()=>pgLoad());
+const pgOnSignedIn=()=>{
+  pgWho=CONFIG.owners[myEmail]||null;
+  _pgView=pgWho;
+  const me=$("pgMe");
+  if(me) me.innerHTML=pgWho
+    ? '로그인: <b>'+pgWho.toUpperCase()+'</b> — 내 여권만 등록·수정할 수 있고, 상대 여권은 보기만 됩니다.'
+    : '담당이 지정되지 않은 계정이라 <b>보기만</b> 가능합니다.';
 };
 
 </script>
