@@ -403,6 +403,17 @@
     .actions{width:100%;justify-content:flex-start}
     .mini{font-size:12px;padding:7px 12px}
   }
+  /* 판 번호 배지 — 서로 같은 판을 쓰는지 한눈에 */
+  .verbadge{display:inline-block;vertical-align:middle;margin-left:8px;font-family:'IBM Plex Sans KR',sans-serif;
+    font-size:11px;font-weight:600;letter-spacing:.02em;color:var(--flecha);
+    background:rgba(245,185,23,.15);border:1px solid rgba(245,185,23,.45);
+    border-radius:999px;padding:3px 10px;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .lockver{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+  .lockver .buildver{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .lockver .buildreload{border:1px solid var(--line);background:#fff;color:var(--muted);
+    border-radius:999px;padding:4px 11px;font-size:11px;font-family:inherit;cursor:pointer}
+  .lockver .buildreload:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
 </style>
 </head>
 <body>
@@ -417,6 +428,7 @@
       동의 화면에서 <b>Google Drive 체크박스</b>를 꼭 선택하세요.</div>
     <button class="gsign" id="signInBtn">G · Google 계정으로 로그인</button>
     <div class="denied" id="deniedMsg">이 계정은 관리자 권한이 없습니다.</div>
+    <div class="lockver"><span class="buildver"></span><button type="button" class="buildreload">↻ 최신본 받기</button></div>
   </div>
 </div>
 
@@ -424,9 +436,9 @@
 <div class="panel" id="panel">
   <div class="topbar">
     <div>
-      <h1>Camino Francés <em>사진 관리</em></h1>
+      <h1>Camino Francés <em>사진 관리</em> <span class="verbadge buildver"></span></h1>
       <div class="who" id="whoAmI"></div>
-      <div class="verline"><span class="buildver" title="지금 열려 있는 파일의 판 번호"></span><button type="button" class="buildreload" title="캐시를 무시하고 최신 파일을 다시 받습니다">↻ 최신본 받기</button></div>
+      <div class="verline">둘이 같은 판을 쓰는지 위의 번호를 맞춰 보세요<button type="button" class="buildreload" title="캐시를 무시하고 최신 파일을 다시 받습니다">↻ 최신본 받기</button></div>
     </div>
     <div class="actions">
       <a class="mini" href="camino-frances-bike-2027.html" target="_blank">사이트 보기 ↗</a>
@@ -1202,6 +1214,14 @@ const driveCreateJson = (name, obj, parentId) => {
   .then(r=>{ if(!r.ok) throw new Error("파일 생성 실패 ("+r.status+")"); return r.json(); });
 };
 
+/* 파일을 Drive 휴지통으로 (영구 삭제가 아니라 복구 가능) */
+const driveTrash = (id) =>
+  fetch("https://www.googleapis.com/drive/v3/files/"+id+"?fields=id",{
+    method:"PATCH",
+    headers:Object.assign({"Content-Type":"application/json"},authHeaders()),
+    body:JSON.stringify({trashed:true})})
+  .then(r=>{ if(!r.ok) throw new Error("Drive 파일 삭제 실패 ("+r.status+")"); return r.json(); });
+
 const driveUpdateJson = (id, obj) =>
   fetch("https://www.googleapis.com/upload/drive/v3/files/"+id+"?uploadType=media&fields=id,modifiedTime",{
     method:"PATCH",
@@ -1836,15 +1856,30 @@ const pgRender=()=>{
   root.querySelectorAll(".pgwho").forEach(b=>b.addEventListener("click",()=>{
     pgViewK(b.dataset.k); pgRender();}));
   root.querySelectorAll(".pgopen").forEach(b=>b.addEventListener("click",()=>pgOpen(k,b.dataset.p)));
-  root.querySelectorAll(".pgpdel").forEach(b=>b.addEventListener("click",()=>{
+  root.querySelectorAll(".pgpdel").forEach(b=>b.addEventListener("click",async()=>{
     const pid=b.dataset.p;
-    const n=pgData[k].sellos.filter(s=>!s.del&&s.pageId===pid).length;
-    if(!confirm("이 여권 페이지를 목록에서 지울까요?"
-      +(n?"\n\n여기에 표시한 도장 "+n+"개도 함께 사라집니다.":"")
-      +"\n(Drive 의 사진 파일 자체는 남습니다)")) return;
-    pgData[k].pages=pgData[k].pages.filter(p=>p.id!==pid);
-    pgData[k].sellos.forEach(s=>{ if(s.pageId===pid){ s.del=true; s.ts=Date.now(); } });
-    pgSave(k).then(pgRender);
+    const page=pgData[k].pages.find(p=>p.id===pid); if(!page) return;
+    const kill=pgData[k].sellos.filter(s=>!s.del&&s.pageId===pid);
+    const names=kill.map(s=>s.place||s.town||"이름 없음");
+    if(!confirm("이 여권 페이지 사진을 지울까요?\n\n"
+      +"· 사진 파일이 Drive 휴지통으로 들어갑니다\n"
+      +"· 이 사진에 표시한 도장 "+kill.length+"개도 함께 지워집니다"
+      +(kill.length?"\n   ("+names.slice(0,4).join(", ")
+        +(kill.length>4?" 외 "+(kill.length-4)+"개":"")+")":"")
+      +"\n\n되돌리려면 Drive 휴지통에서 복구한 뒤 다시 등록해야 합니다.")) return;
+    b.disabled=true; b.textContent="지우는 중…";
+    try{
+      if(page.fileId)
+        await driveTrash(page.fileId).catch(()=>toast("⚠ 사진 파일 삭제 실패 — 기록만 지웁니다"));
+      pgData[k].pages=pgData[k].pages.filter(p=>p.id!==pid);
+      pgData[k].sellos.forEach(s=>{ if(s.pageId===pid){ s.del=true; s.ts=Date.now(); } });
+      await pgSave(k);
+      pgRender();
+      toast("페이지 사진과 도장 "+kill.length+"개를 지웠습니다");
+    }catch(e){
+      toast("⚠ "+e.message);
+      b.disabled=false; b.textContent="삭제";
+    }
   }));
 };
 const pgCertHTML=(k,d)=>{
@@ -1891,10 +1926,15 @@ const pgBindCerts=(k)=>{
       if(f) pgUploadCert(ck,f);
     });
     const del=box.querySelector(".pgcert-del");
-    if(del) del.addEventListener("click",()=>{
-      if(!confirm("이 증서 등록을 지울까요? (Drive 의 사진 파일은 남습니다)")) return;
-      delete pgData[k].certs[ck];
-      pgSave(k).then(pgRender);
+    if(del) del.addEventListener("click",async()=>{
+      const v=(pgData[k].certs||{})[ck]||{};
+      if(!confirm("이 증서를 지울까요?\n\n사진 파일도 Drive 휴지통으로 들어갑니다.")) return;
+      del.disabled=true; del.textContent="지우는 중…";
+      try{
+        if(v.fileId) await driveTrash(v.fileId).catch(()=>toast("⚠ 사진 파일 삭제 실패 — 기록만 지웁니다"));
+        delete pgData[k].certs[ck];
+        await pgSave(k); pgRender(); toast("증서를 지웠습니다");
+      }catch(e){ toast("⚠ "+e.message); del.disabled=false; del.textContent="삭제"; }
     });
     box.querySelectorAll("[data-cf]").forEach(inp=>{
       const commit=()=>{
