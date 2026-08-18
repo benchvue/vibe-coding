@@ -443,6 +443,16 @@
   .dmap .dtag.alt{background:var(--camino-blue);color:#fff}
   .dsvgbox .dmap-cap{text-align:left;line-height:1.6}
   .dsvgbox .dmap-cap b{color:var(--camino-blue)}
+  /* 뷰어 상단 보기 전환 (지도 ↔ 글자) */
+  .cv-tabs{flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:6px;
+    padding:9px 14px 4px;background:rgba(11,16,30,.9)}
+  .cv-tabs[hidden]{display:none}
+  .cv-tabs .cv-tl{color:#8FA3C8;font-size:.68rem;margin-right:4px;letter-spacing:.02em}
+  .cv-tabs button{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.3);color:#DCE4F2;
+    border-radius:999px;padding:6px 15px;font-size:.78rem;font-weight:600;cursor:pointer;
+    font-family:inherit;white-space:nowrap;transition:all .15s}
+  .cv-tabs button:hover{border-color:var(--flecha);color:var(--flecha)}
+  .cv-tabs button.on{background:var(--flecha);border-color:var(--flecha);color:#3B2E00}
 
   /* ── DAY별 날씨 카드 ───────────────────────────── */
   .dwx{padding:2px 14px 14px}
@@ -2578,12 +2588,14 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       var a=[];
       if(!btnP.classList.contains("err"))
         a.push({img:imgP.src, big:imgP.src, k:"DAY "+d+" 경로 지도", o:title,
+                tab:"🗺 지도", pair:true,
                 d:"두 손가락으로 벌리거나 +/− 로 확대하고, 확대한 뒤에는 끌어서 이동하세요."
-                  +(okS?" 글자가 흐리면 좌우로 넘겨 '글자 선명본(SVG)'을 보세요.":""),
+                  +(okS?" 글자가 흐려지면 위의 [🔠 글자] 버튼을 누르세요 — 확대한 배율 그대로 선명한 지명으로 바뀝니다.":""),
                 badge:"DAY "+d});
       if(okS)
         a.push({img:imgS.src, big:imgS.src, k:"DAY "+d+" 지명 (글자 선명본)", o:title,
-                d:"벡터(SVG)라 몇 배로 확대해도 지명이 또렷합니다. 위 지도의 글자 부분에 해당합니다.",
+                tab:"🔠 글자", pair:true,
+                d:"벡터(SVG)라 몇 배로 확대해도 지명이 또렷합니다. [🗺 지도] 를 누르면 같은 배율로 되돌아갑니다.",
                 badge:"DAY "+d+" · SVG"});
       return a;
     }
@@ -2684,6 +2696,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     +'<button class="cv-nav prev" type="button" aria-label="이전">‹</button>'
     +'<button class="cv-nav next" type="button" aria-label="다음">›</button>'
     +'<div class="cv-cap"><b></b><span class="cv-orig"></span><p></p><a class="cv-src" target="_blank" rel="noopener">사진 출처 보기 ↗</a></div>'
+    +'<div class="cv-tabs" hidden></div>'
     +'<div class="cv-bar">'
     +'<button data-z="out" type="button">−</button><span class="cv-zl">100%</span>'
     +'<button data-z="in" type="button">+</button>'
@@ -2697,7 +2710,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       vBadge=vw.querySelector(".cv-badge"), vCap=vw.querySelector(".cv-cap"),
       vPrev=vw.querySelector(".cv-nav.prev"), vNext=vw.querySelector(".cv-nav.next"),
       vZl=vw.querySelector(".cv-zl"), vCnt=vw.querySelector(".cv-cnt"),
-      vSrc=vw.querySelector(".cv-src");
+      vSrc=vw.querySelector(".cv-src"), vTabs=vw.querySelector(".cv-tabs");
 
   var items=[], idx=0, sc=1, tx=0, ty=0, MIN=1, MAX=6;
 
@@ -2723,11 +2736,17 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     sc=ns; clamp(); apply();
   }
 
+  var keepNext=false;
   function render(){
     var it=items[idx]; if(!it) return;
+    /* 짝지어진 그림(지도 PNG ↔ 글자 SVG)끼리 옮길 때는 확대 배율·위치를 그대로 유지 */
+    var keep=keepNext, ks=sc, kx=tx, ky=ty; keepNext=false;
     vSpin.style.display="";
     vImg.style.visibility="hidden";
-    vImg.onload=function(){ vSpin.style.display="none"; vImg.style.visibility="visible"; reset(); };
+    vImg.onload=function(){
+      vSpin.style.display="none"; vImg.style.visibility="visible";
+      if(keep){ sc=ks; tx=kx; ty=ky; clamp(); apply(); } else reset();
+    };
     vImg.onerror=function(){
       if(it.big&&vImg.src===it.big&&it.img&&it.img!==it.big){ vImg.src=it.img; return; }
       vImg.onerror=null; vSpin.style.display="none"; vImg.style.visibility="visible"; vImg.src=ph(it.k);
@@ -2743,11 +2762,21 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     var many=items.length>1;
     vPrev.hidden=!many; vNext.hidden=!many;
     vCnt.textContent=many?(idx+1)+" / "+items.length:"";
-    reset();
+    /* 이름표가 있는 묶음(지도/글자)이면 위쪽에 전환 버튼을 띄움 */
+    if(many && items.some(function(x){return x.tab;})){
+      vTabs.hidden=false;
+      vTabs.innerHTML='<span class="cv-tl">보기 전환</span>'+items.map(function(x,i){
+        return '<button type="button" data-i="'+i+'" class="'+(i===idx?"on":"")+'">'
+             +(x.tab||("① ②③④⑤".charAt(i)||(i+1)))+'</button>';
+      }).join("");
+    }else vTabs.hidden=true;
+    if(!keep) reset();
   }
-  function go(n){
+  function go(n, keep){
     if(!items.length) return;
-    idx=(n+items.length)%items.length; render();
+    var ni=(n+items.length)%items.length;
+    if(keep && items[idx] && items[ni] && items[idx].pair && items[ni].pair) keepNext=true;
+    idx=ni; render();
   }
   function openViewer(list,i){
     items=list||[]; idx=i||0;
@@ -2762,8 +2791,12 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
   }
 
   vw.querySelector(".cv-x").addEventListener("click",closeViewer);
-  vPrev.addEventListener("click",function(e){ e.stopPropagation(); go(idx-1); });
-  vNext.addEventListener("click",function(e){ e.stopPropagation(); go(idx+1); });
+  vPrev.addEventListener("click",function(e){ e.stopPropagation(); go(idx-1,true); });
+  vNext.addEventListener("click",function(e){ e.stopPropagation(); go(idx+1,true); });
+  vTabs.addEventListener("click",function(e){
+    var b=e.target.closest("button[data-i]"); if(!b) return;
+    e.stopPropagation(); go(+b.dataset.i, true);
+  });
   vw.querySelector(".cv-bar").addEventListener("click",function(e){
     var b=e.target.closest("button[data-z]"); if(!b) return;
     var z=b.dataset.z;
@@ -2773,8 +2806,8 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
   document.addEventListener("keydown",function(e){
     if(!vw.classList.contains("show")) return;
     if(e.key==="Escape") closeViewer();
-    else if(e.key==="ArrowLeft") go(idx-1);
-    else if(e.key==="ArrowRight") go(idx+1);
+    else if(e.key==="ArrowLeft") go(idx-1,true);
+    else if(e.key==="ArrowRight") go(idx+1,true);
     else if(e.key==="+"||e.key==="=") zoom(1.4);
     else if(e.key==="-") zoom(1/1.4);
     else if(e.key==="0") reset();
@@ -2793,13 +2826,16 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
   });
 
   /* 포인터: 드래그 이동 · 핀치 줌 · 스와이프 전환 */
-  var pts={}, startD=0, startSc=1, sx=0, sy=0, stx=0, sty=0, moved=false, downT=0;
+  var pts={}, startD=0, startSc=1, sx=0, sy=0, stx=0, sty=0, moved=false, downT=0, atEdgeX=false;
   vStage.addEventListener("pointerdown",function(e){
     vStage.setPointerCapture(e.pointerId);
     pts[e.pointerId]={x:e.clientX,y:e.clientY};
     var ks=Object.keys(pts);
     if(ks.length===1){
       sx=e.clientX; sy=e.clientY; stx=tx; sty=ty; moved=false; downT=Date.now();
+      var r0=vStage.getBoundingClientRect();
+      var mx0=Math.max(0,(vImg.clientWidth*sc-r0.width)/2);
+      atEdgeX = mx0<1 || Math.abs(Math.abs(tx)-mx0)<2;   /* 이미 좌우 끝에 닿아 있나 */
       vStage.classList.add("grabbing");
     }else if(ks.length===2){
       var a=pts[ks[0]],b=pts[ks[1]];
@@ -2830,9 +2866,14 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     if(!was) return;
     if(Object.keys(pts).length) return;
     var dx=e.clientX-sx, dy=e.clientY-sy;
-    /* 확대하지 않은 상태에서 좌우로 크게 밀면 이전/다음 */
-    if(sc<=1.02 && Math.abs(dx)>55 && Math.abs(dx)>Math.abs(dy)*1.4 && items.length>1){
-      go(dx<0?idx+1:idx-1); return;
+    var horiz = Math.abs(dx)>Math.abs(dy)*1.4;
+    /* 확대하지 않았으면 좌우로 크게 밀어 이전/다음 */
+    if(sc<=1.02 && Math.abs(dx)>55 && horiz && items.length>1){
+      go(dx<0?idx+1:idx-1,true); return;
+    }
+    /* 확대한 상태에서도, 좌우 끝까지 민 뒤 더 밀면 전환 (배율 유지) */
+    if(sc>1.02 && horiz && Math.abs(dx)>70 && items.length>1 && atEdgeX && Math.abs(tx-stx)<3){
+      go(dx<0?idx+1:idx-1,true); return;
     }
     /* 탭(짧게 누름) → 확대 토글 */
     if(!moved && Date.now()-downT<300){
