@@ -1776,7 +1776,8 @@ const pgRender=()=>{
         const pg=d.pages.find(p=>p.id===s.pageId);
         h+='<div class="pgs"><span class="pgs-img" style="'+pgCropStyle(pg,s.rect,600)+'"></span>'
           +'<span class="pgs-c"><b>'+pgEsc(s.place||s.town||"이름 없음")+'</b>'
-          +'<small>DAY '+s.day+' · '+pgEsc(s.time||"")+'</small></span></div>';
+          +'<small>DAY '+s.day+' · '+pgDayDate(s.day).slice(5).replace("-","/")
+          +(s.time?' '+pgEsc(s.time):'')+'</small></span></div>';
       });
     h+='</div>';
   }

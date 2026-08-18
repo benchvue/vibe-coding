@@ -579,7 +579,8 @@
   .sello-cap{display:block;padding:6px 8px 8px;border-top:1px solid var(--line)}
   .sello-cap b{display:block;font-size:.72rem;line-height:1.3;overflow:hidden;
     text-overflow:ellipsis;white-space:nowrap}
-  .sello-cap small{display:block;font-size:.63rem;color:var(--ink-soft);margin-top:1px}
+  .sello-cap small{display:block;font-size:.63rem;color:var(--ink-soft);margin-top:1px;
+    font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .sello-no{position:absolute;left:6px;top:6px;background:rgba(21,42,85,.85);color:#fff;
     font-size:.58rem;font-weight:700;border-radius:999px;padding:2px 7px}
   .sello.empty{cursor:default;border-style:dashed;background:#FBFAF5}
@@ -3942,6 +3943,15 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     out.sellos.forEach(function(s,i){ s.no=i+1; });
     return out;
   }
+  /* "DAY 1 · 5/9 07:31" — 날짜별 카드 안에서도 어느 날 몇 시인지 바로 보이도록 */
+  function whenLabel(s){
+    var a=[];
+    if(s.day) a.push("DAY "+s.day);
+    var dt = s.day ? dayLabel(s.day) : (s.date||"").slice(5).replace("-","/");
+    var tail = (dt?dt:"") + (s.time?(dt?" ":"")+s.time:"");
+    if(tail) a.push(tail);
+    return a.join(" · ");
+  }
   function byDay(k,d){
     var o=DATA[k]; if(!o) return [];
     return o.sellos.filter(function(s){ return s.day===d; });
@@ -4021,7 +4031,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     b.type="button"; b.className="sello"+(size?" "+size:"");
     b.innerHTML='<span class="sello-img" style="'+cropStyle(pg,s.rect,800)+'"></span>'
       +'<span class="sello-cap"><b>'+esc(s.place||s.town||"세요")+'</b>'
-      +'<small>'+esc(s.time||dayLabel(s.day))+'</small></span>'
+      +'<small>'+esc(whenLabel(s))+'</small></span>'
       +'<span class="sello-no">#'+s.no+'</span>';
     b.addEventListener("click",function(){ openLb(items(k,list), i); });
     return b;
