@@ -230,12 +230,34 @@
     color:#fff;border-radius:999px;padding:6px 14px;font-size:12.5px;font-family:inherit}
   .pged-auto{margin-left:auto}
   .pged-auto:hover,.pged-x:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
+  /* 도구 줄 (모드 · 안내 · 확대) */
+  .pged-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 12px;
+    background:#EFECE2;border-bottom:1px solid var(--line)}
+  .pgseg{display:flex;gap:0;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:#fff}
+  .pgseg button{border:none;background:none;color:var(--muted);padding:6px 14px;font-size:12.5px;
+    font-weight:600;font-family:inherit;white-space:nowrap}
+  .pgseg button.on{background:var(--blue);color:#fff}
+  .pged-tip{flex:1;min-width:150px;font-size:12px;color:var(--muted);line-height:1.5}
+  .pged-tip b{color:var(--blue)}
+  .pgzoom{display:flex;align-items:center;gap:4px;background:#fff;border:1px solid var(--line);
+    border-radius:999px;padding:2px 4px}
+  .pgzoom button{border:none;background:none;color:var(--blue);font-size:14px;font-family:inherit;
+    padding:4px 9px;border-radius:999px;line-height:1}
+  .pgzoom button[data-z="fit"]{font-size:11.5px;font-weight:600;color:var(--muted)}
+  .pgzoom button:hover{background:var(--flecha);color:#3B2E00}
+  .pgzl{font-size:11.5px;color:var(--muted);min-width:38px;text-align:center;
+    font-variant-numeric:tabular-nums}
+
   .pged-body{flex:1;min-height:0;display:grid;grid-template-columns:1fr 330px}
   @media(max-width:860px){ .pged-body{grid-template-columns:1fr;grid-template-rows:1fr auto} }
   .pged-canvas{overflow:auto;background:#2C2C2A;display:block}
   /* 사진과 네모를 같은 좌표계에 두는 무대 — 예전엔 스크롤 영역을 기준으로 계산해
      사진 아래쪽에서 드래그가 시작되지 않고 네모 위치도 어긋났습니다 */
-  .pged-stage{position:relative;width:100%;touch-action:none}
+  .pged-stage{position:relative;width:100%;touch-action:none;transition:width .15s ease}
+  .pged-stage.panmode{cursor:grab}
+  .pged-stage.grabbing{cursor:grabbing}
+  .pged-stage.panmode .pgbox{cursor:pointer}
+  .pged-stage.panmode .pgh{display:none}
   .pged-stage img{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none}
   .pged-boxes{position:absolute;left:0;top:0;right:0;bottom:0}
   .pgbox{position:absolute;border:2px solid var(--flecha);background:rgba(245,185,23,.16);
@@ -1883,9 +1905,20 @@ const pgOpen=(k,pageId)=>{
   ed.innerHTML=
      '<div class="pged-in">'
     +'<div class="pged-top"><b>도장 자리 표시</b>'
-      +'<span class="pged-hint">사진 위를 <b>드래그</b>해 도장을 네모로 감싸세요</span>'
       +(pgCanEdit(k)?'<button class="pged-auto" type="button">🔍 자동 찾기</button>':'')
       +'<button class="pged-x" type="button">닫기 ✕</button></div>'
+    +'<div class="pged-tools">'
+      +(pgCanEdit(k)
+        ?'<div class="pgseg">'
+          +'<button type="button" data-m="draw">⬚ 도장 표시</button>'
+          +'<button type="button" data-m="pan">✋ 이동</button>'
+        +'</div>':'')
+      +'<span class="pged-tip"></span>'
+      +'<div class="pgzoom"><button type="button" data-z="out">−</button>'
+        +'<span class="pgzl">100%</span>'
+        +'<button type="button" data-z="in">＋</button>'
+        +'<button type="button" data-z="fit">맞춤</button></div>'
+    +'</div>'
     +'<div class="pged-body">'
       +'<div class="pged-canvas"><div class="pged-stage">'
         +'<img id="pgImg" alt="여권 페이지"><div class="pged-boxes"></div></div></div>'
@@ -1895,6 +1928,21 @@ const pgOpen=(k,pageId)=>{
   img.crossOrigin="anonymous";
   img.src=pgImgUrl(page.fileId,1600);
   ed.querySelector(".pged-x").addEventListener("click",pgClose);
+
+  /* 손가락으로 쓰는 기기는 "이동"으로 시작해야 사진을 훑어볼 수 있습니다 */
+  pgMode = ("ontouchstart" in window) ? "pan" : "draw";
+  pgZoom = 1;
+  pgApplyMode(); pgApplyZoom();
+  ed.querySelectorAll(".pgseg button").forEach(b=>b.addEventListener("click",()=>{
+    pgMode=b.dataset.m; pgApplyMode();
+  }));
+  ed.querySelectorAll(".pgzoom button").forEach(b=>b.addEventListener("click",()=>{
+    const z=b.dataset.z;
+    if(z==="in") pgZoom=Math.min(5,pgZoom*1.4);
+    else if(z==="out") pgZoom=Math.max(1,pgZoom/1.4);
+    else pgZoom=1;
+    pgApplyZoom();
+  }));
   const auto=ed.querySelector(".pged-auto");
   if(auto) auto.addEventListener("click",()=>{
     toast("도장을 찾는 중…");
@@ -2229,37 +2277,94 @@ const pgBindBoxes=()=>{
   });
 };
 
-/* ── 빈 곳을 드래그해 새 네모 만들기 ── */
+let pgMode="draw", pgZoom=1;
+
+const pgApplyMode=()=>{
+  const ed=$("pgEditor"); if(!ed) return;
+  ed.querySelectorAll(".pgseg button").forEach(b=>b.classList.toggle("on",b.dataset.m===pgMode));
+  const stage=pgStage();
+  if(stage){
+    stage.classList.toggle("panmode",pgMode==="pan");
+    /* 이동 모드에서는 브라우저의 기본 스크롤·핀치를 그대로 쓰게 둡니다 */
+    stage.style.touchAction = (pgMode==="pan") ? "auto" : "none";
+  }
+  const tip=ed.querySelector(".pged-tip");
+  if(tip) tip.innerHTML = (pgMode==="draw")
+    ? '사진 위를 <b>드래그하여 도장 1개씩 네모로 감싸세요</b>'
+    : '사진을 <b>끌어서 이동</b>합니다 · 네모를 고치려면 <b>⬚ 도장 표시</b>로 바꾸세요';
+};
+
+const pgApplyZoom=()=>{
+  const stage=pgStage(), ed=$("pgEditor"); if(!stage) return;
+  stage.style.width=(pgZoom*100)+"%";
+  const zl=ed&&ed.querySelector(".pgzl");
+  if(zl) zl.textContent=Math.round(pgZoom*100)+"%";
+};
+
+/* ── 빈 곳을 드래그: 도장 표시 모드면 네모 만들기, 이동 모드면 사진 끌기 ── */
 const pgBindDrag=()=>{
-  const stage=pgStage(); if(!stage) return;
-  let sx=0,sy=0,ghost=null,active=false;
+  const stage=pgStage(), canvas=document.querySelector(".pged-canvas");
+  if(!stage||!canvas) return;
+  let sx=0,sy=0,spx=0,spy=0,ghost=null,active=false,panning=false;
+
   stage.addEventListener("pointerdown",e=>{
-    if(!pgEditing||!pgCanEdit(pgEditing.k)) return;
-    if(e.target.closest(".pgbox")) return;
+    if(!pgEditing) return;
+    if(e.target.closest(".pgbox")) return;      /* 네모 위는 네모가 처리 */
+
+    if(pgMode==="pan" || !pgCanEdit(pgEditing.k)){
+      if(e.pointerType==="touch") return;       /* 손가락은 브라우저 기본 스크롤에 맡김 */
+      panning=true; active=true;
+      sx=e.clientX; sy=e.clientY;
+      spx=canvas.scrollLeft; spy=canvas.scrollTop;
+      stage.classList.add("grabbing");
+      try{ stage.setPointerCapture(e.pointerId); }catch(err){}
+      e.preventDefault();
+      return;
+    }
+
     e.preventDefault();
     const r=stage.getBoundingClientRect();
-    sx=(e.clientX-r.left)/r.width*100; sy=(e.clientY-r.top)/r.height*100;
-    active=true;
+    sx=e.clientX; sy=e.clientY;
+    active=true; panning=false;
     try{ stage.setPointerCapture(e.pointerId); }catch(err){}
     ghost=document.createElement("div"); ghost.className="pgbox ghost";
+    ghost._x=(e.clientX-r.left)/r.width*100;
+    ghost._y=(e.clientY-r.top)/r.height*100;
     stage.querySelector(".pged-boxes").appendChild(ghost);
   });
+
   stage.addEventListener("pointermove",e=>{
-    if(!active||!ghost) return;
+    if(!active) return;
+    if(panning){
+      canvas.scrollLeft=spx-(e.clientX-sx);
+      canvas.scrollTop =spy-(e.clientY-sy);
+      return;
+    }
+    if(!ghost) return;
     const r=stage.getBoundingClientRect();
     const cx=(e.clientX-r.left)/r.width*100, cy=(e.clientY-r.top)/r.height*100;
-    const x=Math.max(0,Math.min(sx,cx)), y=Math.max(0,Math.min(sy,cy));
-    const w=Math.min(100-x,Math.abs(cx-sx)), h=Math.min(100-y,Math.abs(cy-sy));
+    const x=Math.max(0,Math.min(ghost._x,cx)), y=Math.max(0,Math.min(ghost._y,cy));
+    const w=Math.min(100-x,Math.abs(cx-ghost._x)), h=Math.min(100-y,Math.abs(cy-ghost._y));
     ghost.style.cssText="left:"+x+"%;top:"+y+"%;width:"+w+"%;height:"+h+"%";
+    ghost._w=w; ghost._h=h; ghost._lx=x; ghost._ly=y;
   });
-  const end=()=>{
-    if(!active) return; active=false;
+
+  const end=(e)=>{
+    if(!active) return;
+    active=false;
+    stage.classList.remove("grabbing");
+    if(panning){ panning=false; return; }
     if(!ghost) return;
     const g=ghost; ghost=null;
-    const x=parseFloat(g.style.left)||0, y=parseFloat(g.style.top)||0,
-          w=parseFloat(g.style.width)||0, h=parseFloat(g.style.height)||0;
+    const x=g._lx||0, y=g._ly||0, w=g._w||0, h=g._h||0;
     g.remove();
-    if(!(w>2.5&&h>2.5)) return;                 /* 그냥 클릭한 경우 무시 */
+    /* 화면에서 실제로 끈 거리가 짧으면 무시 — 잘못 눌러 작은 네모가 생기지 않도록 */
+    const dpx=Math.abs((e&&e.clientX!=null?e.clientX:sx)-sx),
+          dpy=Math.abs((e&&e.clientY!=null?e.clientY:sy)-sy);
+    if(dpx<18 || dpy<18 || w<1 || h<1){
+      if(dpx>3||dpy>3) toast("너무 작습니다 — 도장을 감싸도록 조금 더 크게 끌어 주세요");
+      return;
+    }
     const k=pgEditing.k;
     const s=pgNewSello(pgEditing.pageId,[+x.toFixed(2),+y.toFixed(2),+w.toFixed(2),+h.toFixed(2)]);
     pgData[k].sellos.push(s);
