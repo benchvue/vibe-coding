@@ -355,6 +355,9 @@
   .pgcert-del{border:1px solid var(--line);background:#fff;color:var(--err);border-radius:999px;
     padding:8px 14px;font-size:12.5px;font-family:inherit}
   .pgcert-del:hover{background:var(--err);color:#fff;border-color:var(--err)}
+  /* 증서 입력칸은 한 줄에 하나씩 */
+  .pgcert-f label{display:block;width:100%;margin-bottom:9px}
+  .pgcert-f input{width:100%}
 </style>
 </head>
 <body>
@@ -1797,10 +1800,10 @@ const pgCertHTML=(k,d)=>{
       +'<div class="pgcert-f">'
         +'<label>발급일<input type="date" data-cf="date" value="'+pgEsc(v.date||"")+'"'+(ro?" disabled":"")+'></label>'
         +(c.k==="distancia"
-          ? '<div class="pgrow"><label>거리 (km)<input type="number" step="0.1" data-cf="km" '
+          ? '<label>거리 (km)<input type="number" step="0.1" data-cf="km" '
             +'value="'+pgEsc(v.km!=null?v.km:"")+'" placeholder="808.5"'+(ro?" disabled":"")+'></label>'
             +'<label>출발지<input type="text" data-cf="from" value="'+pgEsc(v.from||"")+'" '
-            +'placeholder="Saint-Jean-Pied-de-Port"'+(ro?" disabled":"")+'></label></div>'
+            +'placeholder="Saint-Jean-Pied-de-Port"'+(ro?" disabled":"")+'></label>'
           : '<label>증서에 적힌 이름 (라틴어)<input type="text" data-cf="latin" '
             +'value="'+pgEsc(v.latin||"")+'" placeholder="예: Dominicum"'+(ro?" disabled":"")+'></label>')
         +'<label>메모<input type="text" data-cf="note" value="'+pgEsc(v.note||"")+'" '
