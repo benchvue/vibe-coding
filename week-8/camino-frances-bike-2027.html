@@ -563,6 +563,7 @@
 
   /* ── 세요 칩 ── */
   .sellorow{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-start}
+  .ppgrid{align-items:start}
   .sello{display:flex;flex-direction:column;width:132px;padding:0;border:1px solid var(--line);
     border-radius:11px;overflow:hidden;background:#fff;cursor:pointer;font-family:inherit;
     text-align:left;position:relative;transition:transform .2s,box-shadow .2s,border-color .2s;
@@ -570,8 +571,8 @@
   .sello.sm{width:112px}
   .ppgrid .sello{width:100%}
   .sello:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(21,42,85,.14);border-color:#C3BCA6}
-  .sello-img{display:block;width:100%;aspect-ratio:1/1;background-color:#F3F1E9}
-  @supports not (aspect-ratio:1/1){ .sello-img{height:0;padding-bottom:100%} }
+  .sello-img{display:block;width:100%;background-color:#F3F1E9;min-height:40px}
+  .sello.empty .sello-img{aspect-ratio:1/1}
   .sello-cap{display:block;padding:6px 8px 8px;border-top:1px solid var(--line)}
   .sello-cap b{display:block;font-size:.72rem;line-height:1.3;overflow:hidden;
     text-overflow:ellipsis;white-space:nowrap}
@@ -612,8 +613,7 @@
   .pplb-nav.prev{left:10px} .pplb-nav.next{right:10px}
   .pplb-nav[hidden]{display:none}
   .pplb-nav:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
-  .pplb-stamp{width:100%;aspect-ratio:1/1;background-color:#fff;background-repeat:no-repeat}
-  @supports not (aspect-ratio:1/1){ .pplb-stamp{height:0;padding-bottom:100%} }
+  .pplb-stamp{width:100%;background-color:#fff;background-repeat:no-repeat;min-height:120px}
   .pplb-info{padding:16px 18px 20px;border-top:1px solid var(--line)}
   .pplb-no{font-size:.7rem;font-weight:700;color:var(--rioja);letter-spacing:.06em}
   .pplb-place{font-family:'Gowun Batang',serif;font-size:1.25rem;font-weight:700;margin-top:3px}
@@ -2348,7 +2348,7 @@ const PHOTOS = {
 })();
 </script>
 
-<!-- ══════ DAY별 경로 지도(PNG + SVG) + 명소 프리뷰 캐러셀 ══════ -->
+<!-- ══════ DAY별 경로 지도 + 명소 ══════ -->
 <script>
 /* ══════════════════════════════════════════════════════════════════════
    DAY별 명소 데이터
@@ -3812,9 +3812,13 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     var x=+r[0], y=+r[1], cw=Math.max(1,Math.min(100,+r[2])), ch=Math.max(1,Math.min(100,+r[3]));
     var px = (cw>=100) ? 50 : (x/(100-cw))*100;
     var py = (ch>=100) ? 50 : (y/(100-ch))*100;
+    /* 틀의 가로세로 비율을 실제 잘린 영역과 똑같이 맞춥니다 */
+    var iw=page.w||1000, ih=page.h||1400;
+    var ratio=((cw*iw)/(ch*ih))||1;
     return "background-image:url('"+imgUrl(page.fileId,w||1200)+"');"
       + "background-size:"+(10000/cw)+"% "+(10000/ch)+"%;"
-      + "background-position:"+px+"% "+py+"%;background-repeat:no-repeat;";
+      + "background-position:"+px+"% "+py+"%;background-repeat:no-repeat;"
+      + "aspect-ratio:"+ratio.toFixed(4)+";";
   }
 
   /* ── Drive 읽기 (텍스트는 CORS 때문에 프록시 우선) ── */
