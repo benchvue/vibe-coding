@@ -627,6 +627,43 @@
   .pplb-page:hover{background:var(--flecha);border-color:var(--flecha);color:#3B2E00}
   @media print{ .pplb{display:none!important} }
 
+  /* ── 증서 (Compostela · Certificado de Distancia) ── */
+  .ppcerts{padding:16px 16px 22px;border-top:1px solid var(--line);background:#fff}
+  .ppcerts h3{font-family:'Gowun Batang',serif;font-size:.95rem;color:var(--camino-blue);margin-bottom:4px}
+  .ppcerts h3 small{font-weight:400;color:var(--ink-soft);font-size:.72rem;margin-left:6px}
+  .ppcert-hint{font-size:.74rem;color:var(--ink-soft);line-height:1.7;margin-bottom:10px}
+  .ppcertrow{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px;align-items:start}
+  @media(max-width:700px){ .ppcertrow{grid-template-columns:1fr} }
+  .ppcert{border:1px solid var(--line);border-radius:13px;overflow:hidden;background:#FFFDF7;
+    display:flex;flex-direction:column}
+  .ppcert.none{opacity:.72;border-style:dashed}
+  .ppcert-t{padding:10px 13px;background:#F4F2EA;border-bottom:1px solid var(--line);
+    display:flex;align-items:baseline;gap:7px;flex-wrap:wrap}
+  .ppcert-t b{font-family:'Gowun Batang',serif;font-size:.95rem;color:var(--camino-blue)}
+  .ppcert-t span{font-size:.7rem;color:var(--ink-soft)}
+  .ppcert-i{display:block;width:100%;padding:0;border:none;background:#fff;cursor:zoom-in;position:relative;
+    font-family:inherit;-webkit-tap-highlight-color:transparent}
+  .ppcert-i img{display:block;width:100%;height:auto;transition:transform .3s}
+  .ppcert-i:hover img{transform:scale(1.02)}
+  .ppcert-z{position:absolute;right:8px;bottom:8px;background:rgba(21,42,85,.85);color:#fff;
+    font-size:.66rem;font-weight:600;border-radius:20px;padding:3px 10px}
+  .ppcert-e{margin:14px;padding:34px 10px;text-align:center;font-size:.76rem;color:#A79E86;
+    border:1px dashed var(--line);border-radius:11px;
+    background:repeating-linear-gradient(45deg,#FBFAF5,#FBFAF5 8px,#F3F1E9 8px,#F3F1E9 16px)}
+  .ppcert-d{padding:10px 13px 0;font-size:.74rem;color:var(--ink-soft);line-height:1.7}
+  .ppcert-m{padding:7px 13px 12px;font-size:.72rem;color:var(--rioja);font-weight:600}
+
+  .ppclb{position:fixed;inset:0;z-index:135;background:rgba(11,16,30,.95);display:none;
+    align-items:center;justify-content:center;flex-direction:column;padding:20px;gap:12px}
+  .ppclb.show{display:flex}
+  .ppclb img{max-width:100%;max-height:82vh;display:block;border-radius:8px;background:#fff}
+  .ppclb-c{color:#C6D0E4;font-size:.78rem;text-align:center}
+  .ppclb-x{position:absolute;right:14px;top:14px;width:36px;height:36px;border-radius:50%;
+    border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:#fff;
+    cursor:pointer;font-size:1rem;font-family:inherit}
+  .ppclb-x:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
+  @media print{ .ppclb{display:none!important} }
+
 </style>
 
 <!-- ══════════════════════════════════════════════════════════════════════
@@ -3789,6 +3826,12 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     /* 자전거 순례는 마지막 200km 구간에서 하루 2개의 세요가 필요합니다.
        이 일정에서는 DAY 10 시작 무렵 남은 거리가 200km 아래로 내려갑니다. */
     doubleFromDay : 10,
+    certs : [
+      {k:"compostela", n:"Compostela",               sub:"순례 완주 증서", icon:"📜",
+       d:"산티아고 대성당 순례자 사무소에서 발급하는 라틴어 완주 증서입니다."},
+      {k:"distancia",  n:"Certificado de Distancia", sub:"거리 인증서",   icon:"📏",
+       d:"출발지와 완주 거리, 도착 날짜가 적힌 증서입니다."}
+    ],
     startDate : new Date(2027,4,9)
   };
 
@@ -3867,8 +3910,9 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
   }
 
   function normalize(j){
-    var out={pages:{}, sellos:[]};
+    var out={pages:{}, sellos:[], certs:{}};
     if(!j) return out;
+    if(j.certs && typeof j.certs==="object") out.certs=j.certs;
     (j.pages||[]).forEach(function(p){ if(p&&p.id&&p.fileId) out.pages[p.id]=p; });
     (j.sellos||[]).forEach(function(s){
       if(!s||!s.id||s.del) return;
@@ -4026,8 +4070,9 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
         +'<div class="ppbook"><div class="ppcover">'+coverHTML()+'</div>'
         +'<p class="ppempty">아직 등록된 세요가 없습니다.<br>'
         +'여권 페이지를 사진으로 찍어 <b>upload-camino.html → 📕 여권</b> 탭에서 등록하면 '
-        +'여기와 날짜별 카드에 자동으로 나타납니다.</p></div>';
-      bindWho(root); return;
+        +'여기와 날짜별 카드에 자동으로 나타납니다.</p>'
+        + certHTML() +'</div>';
+      bindWho(root); bindCerts(root); return;
     }
     var days=0, okDays=0;
     for(var d=1;d<=PP.dayCount;d++){
@@ -4049,9 +4094,10 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       +'<div class="ppdays"></div>'
       +'<div class="ppgal"><h3>전체 세요 갤러리 <small>'+o.sellos.length+'개</small></h3>'
       +'<div class="ppgrid"></div></div>'
+      + certHTML()
       +'</div>';
     root.innerHTML=h;
-    bindWho(root);
+    bindWho(root); bindCerts(root);
 
     var dw=root.querySelector(".ppdays");
     for(var d2=1;d2<=PP.dayCount;d2++){
@@ -4068,6 +4114,68 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     var g=root.querySelector(".ppgrid");
     o.sellos.forEach(function(s,i){ g.appendChild(chip(who,s,i,o.sellos,"sm")); });
   }
+  /* ── 증서: Compostela → Certificado de Distancia 순서 ── */
+  function certHTML(){
+    var o=DATA[who]||{certs:{}}, C=o.certs||{};
+    var any=PP.certs.some(function(c){ return C[c.k] && C[c.k].fileId; });
+    var h='<div class="ppcerts"><h3>증서 <small>Compostela · Certificado de Distancia</small></h3>'
+      +(any?'':'<p class="ppcert-hint">완주 후 받은 증서를 '
+        +'<b>upload-camino.html → 📕 여권</b> 탭에서 올리면 여기에 표시됩니다.</p>')
+      +'<div class="ppcertrow">';
+    PP.certs.forEach(function(c){
+      var v=C[c.k]||{};
+      var meta=[];
+      if(v.date) meta.push(v.date);
+      if(c.k==="distancia"){
+        if(v.km!=null&&v.km!=="") meta.push((+v.km).toFixed(1)+" km");
+        if(v.from) meta.push(v.from+" 출발");
+      }else if(v.latin) meta.push(v.latin);
+      h+='<div class="ppcert'+(v.fileId?"":" none")+'" data-c="'+c.k+'">'
+        +'<div class="ppcert-t">'+c.icon+' <b>'+esc(c.n)+'</b><span>'+esc(c.sub)+'</span></div>'
+        +(v.fileId
+          ? '<button type="button" class="ppcert-i"><img src="'+imgUrl(v.fileId,900)
+            +'" alt="'+esc(c.n)+'" loading="lazy"><span class="ppcert-z">⤢ 크게 보기</span></button>'
+          : '<div class="ppcert-e">아직 등록되지 않았습니다</div>')
+        +'<p class="ppcert-d">'+esc(c.d)+'</p>'
+        +(meta.length?'<div class="ppcert-m">'+meta.map(esc).join(' · ')+'</div>':'')
+        +'</div>';
+    });
+    return h+'</div></div>';
+  }
+  function bindCerts(root){
+    var o=DATA[who]||{certs:{}}, C=o.certs||{};
+    root.querySelectorAll(".ppcert-i").forEach(function(b){
+      b.addEventListener("click",function(){
+        var ck=b.closest(".ppcert").dataset.c, v=C[ck]||{};
+        var c=PP.certs.filter(function(x){return x.k===ck;})[0]||{};
+        openCert(v,c);
+      });
+    });
+  }
+  /* 증서 크게 보기 */
+  var clb=null;
+  function openCert(v,c){
+    if(!clb){
+      clb=document.createElement("div"); clb.className="ppclb";
+      clb.innerHTML='<button class="ppclb-x" type="button">✕</button>'
+        +'<img alt=""><div class="ppclb-c"></div>';
+      document.body.appendChild(clb);
+      clb.querySelector(".ppclb-x").addEventListener("click",closeCert);
+      clb.addEventListener("click",function(e){ if(e.target===clb) closeCert(); });
+      document.addEventListener("keydown",function(e){
+        if(clb.classList.contains("show")&&e.key==="Escape") closeCert(); });
+    }
+    clb.querySelector("img").src=imgUrl(v.fileId,2000);
+    var m=[]; if(v.date)m.push(v.date);
+    if(v.km!=null&&v.km!=="")m.push((+v.km).toFixed(1)+" km");
+    if(v.from)m.push(v.from+" 출발");
+    if(v.latin)m.push(v.latin);
+    if(v.note)m.push(v.note);
+    clb.querySelector(".ppclb-c").textContent=(c.n||"")+(m.length?"  ·  "+m.join("  ·  "):"");
+    clb.classList.add("show"); document.body.style.overflow="hidden";
+  }
+  function closeCert(){ if(clb){ clb.classList.remove("show"); document.body.style.overflow=""; } }
+
   function coverHTML(){
     var p=PP.people.filter(function(x){return x.k===who;})[0]||PP.people[0];
     return '<div class="ppc-t">CREDENCIAL DEL PEREGRINO</div>'

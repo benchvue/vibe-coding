@@ -331,6 +331,30 @@
     border-radius:9px;padding:11px;font-size:13px;font-family:inherit}
   .pgpick-use[hidden]{display:none}
   .pgpick-use:hover{background:var(--flecha);color:#3B2E00}
+
+  /* ── 증서 (Compostela · Certificado de Distancia) ── */
+  .pgh3 small{font-weight:400;font-size:12px;color:var(--muted);margin-left:6px}
+  .pgcerts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:760px){ .pgcerts{grid-template-columns:1fr} }
+  .pgcert{border:1px solid var(--line);border-radius:var(--radius);background:#fff;
+    display:flex;flex-direction:column;overflow:hidden}
+  .pgcert.has{border-color:#9FB6DC}
+  .pgcert-h{padding:10px 12px;background:#F4F2EA;border-bottom:1px solid var(--line);font-size:14px}
+  .pgcert.has .pgcert-h{background:#EDF2FA;color:var(--blue)}
+  .pgcert-h b{font-family:'Gowun Batang',serif}
+  .pgcert-d{padding:8px 12px 0;font-size:11.5px;color:var(--muted);line-height:1.6}
+  .pgcert-img{padding:10px 12px}
+  .pgcert-img img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:8px}
+  .pgcert-none{margin:12px;padding:26px 10px;text-align:center;font-size:12px;color:#A7A296;
+    border:1px dashed var(--line);border-radius:10px;background:#FBFAF5}
+  .pgcert-f{padding:4px 12px 8px}
+  .pgcert-b{margin-top:auto;display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line)}
+  .pgcert-up{flex:1;background:var(--blue);color:#fff;border-radius:999px;padding:8px;text-align:center;
+    font-size:12.5px;font-weight:600;cursor:pointer}
+  .pgcert-up:hover{background:var(--flecha);color:#3B2E00}
+  .pgcert-del{border:1px solid var(--line);background:#fff;color:var(--err);border-radius:999px;
+    padding:8px 14px;font-size:12.5px;font-family:inherit}
+  .pgcert-del:hover{background:var(--err);color:#fff;border-color:var(--err)}
 </style>
 </head>
 <body>
@@ -401,7 +425,9 @@
       <b>🔍 자동 찾기</b>는 종이 위의 잉크 덩어리를 찾아 후보를 제안합니다 — 틀린 것은 지우면 됩니다.<br>
       각 도장에는 <b>DAY · 시각 · 위치 · 장소 이름 · 메모</b>를 넣습니다.
       장소 이름은 <b>목록에서 고르거나 직접 입력</b>할 수 있고, 아는 마을이면 <b>위치가 자동</b>으로 채워집니다.
-      페이지 사진은 Drive 의 <b>passport</b> 폴더, 정보는 <b>db/passport-{bin,jin}.json</b> 에 저장됩니다.
+      페이지 사진은 Drive 의 <b>passport</b> 폴더, 정보는 <b>db/passport-{bin,jin}.json</b> 에 저장됩니다.<br>
+      맨 아래 <b>증서</b> 칸에는 완주 후 받은 <b>Compostela(완주 증서)</b> 와
+      <b>Certificado de Distancia(거리 인증서)</b> 를 각자 올릴 수 있습니다.
     </p>
     <div id="pgRoot"></div>
   </div>
@@ -1424,7 +1450,11 @@ const PG = {
   dayCount  : 13,
   maxDim    : 2400,          /* 도장을 크게 확대해도 보이도록 사진 페이지는 크게 */
   quality   : 0.86,
-  startDate : new Date(2027,4,9)
+  startDate : new Date(2027,4,9),
+  certs     : [
+    {k:"compostela", n:"Compostela",                icon:"📜", d:"순례 완주 증서 — 대성당 순례자 사무소에서 발급"},
+    {k:"distancia",  n:"Certificado de Distancia",  icon:"📏", d:"거리 인증서 — 출발지와 완주 거리가 적힌 유료 증서"}
+  ]
 };
 
 /* 각 DAY 의 대표 마을 — 세요 등록 시 GPS 자동 입력에 씁니다 */
@@ -1469,10 +1499,11 @@ const pgCropStyle=(page,r,w)=>{
 };
 
 /* ══════════════ 저장소 ══════════════ */
-const pgEmpty=()=>({pages:[],sellos:[]});
+const pgEmpty=()=>({pages:[],sellos:[],certs:{}});
 const pgNorm=(raw)=>{
   const d=pgEmpty(); if(!raw) return d;
   d.pages=(raw.pages||[]).filter(p=>p&&p.id&&p.fileId);
+  d.certs=(raw.certs&&typeof raw.certs==="object")?raw.certs:{};
   d.sellos=(raw.sellos||[]).filter(s=>s&&s.id).map(s=>({
     id:String(s.id), pageId:s.pageId, rect:s.rect||[0,0,30,30],
     day:+s.day||1, date:s.date||"", time:s.time||"", place:s.place||"", town:s.town||"",
@@ -1481,7 +1512,7 @@ const pgNorm=(raw)=>{
   return d;
 };
 const pgPack=(k)=>({ver:1,owner:k,updatedAt:new Date().toISOString(),updatedBy:myEmail,
-  pages:pgData[k].pages, sellos:pgData[k].sellos});
+  pages:pgData[k].pages, sellos:pgData[k].sellos, certs:pgData[k].certs||{}});
 
 const pgEnsureImgFolder=()=>
   listFolder(CONFIG.parentFolder).then(items=>{
@@ -1521,6 +1552,11 @@ const pgMerge=(remote,local)=>{
   const sm=new Map(); (remote.sellos||[]).forEach(s=>sm.set(s.id,s));
   (local.sellos||[]).forEach(s=>{const r=sm.get(s.id); if(!r||(s.ts||0)>=(r.ts||0)) sm.set(s.id,s);});
   out.sellos=[...sm.values()];
+  out.certs=Object.assign({},remote.certs||{});
+  Object.keys(local.certs||{}).forEach(ck=>{
+    const r=out.certs[ck], l=local.certs[ck];
+    if(!r||(l&&(l.ts||0)>=(r.ts||0))) out.certs[ck]=l;
+  });
   return out;
 };
 
@@ -1575,6 +1611,30 @@ const pgDims=(blob)=>new Promise(res=>{
   im.onload=()=>{res({w:im.naturalWidth,h:im.naturalHeight});URL.revokeObjectURL(u);};
   im.onerror=()=>{res({w:0,h:0});URL.revokeObjectURL(u);};
   im.src=u;});
+
+/* ══════════════ 증서 업로드 ══════════════ */
+const pgUploadCert=async(certKey,file)=>{
+  const k=pgWho; if(!k){toast("담당이 지정된 계정으로 로그인해야 합니다");return;}
+  const oldD=CONFIG.webpMaxDim, oldQ=CONFIG.webpQuality;
+  CONFIG.webpMaxDim=PG.maxDim; CONFIG.webpQuality=PG.quality;
+  try{
+    toast("증서 변환 중…");
+    const blob=await toWebp(file,null);
+    const dim=await pgDims(blob);
+    const name=k+"-"+certKey+"-"+Date.now().toString(36)+".webp";
+    toast("증서 업로드 중…");
+    const res=await uploadFile(name,"image/webp",blob,pgFolderId,
+      p=>toast("업로드 "+Math.round(p*100)+"%"));
+    const prev=(pgData[k].certs||{})[certKey]||{};
+    pgData[k].certs=pgData[k].certs||{};
+    pgData[k].certs[certKey]=Object.assign({},prev,
+      {fileId:res.id,name:name,w:dim.w,h:dim.h,addedAt:new Date().toISOString(),ts:Date.now()});
+    await pgSave(k);
+    pgRender();
+    toast("증서를 등록했습니다");
+  }catch(e){ toast("⚠ "+e.message); }
+  finally{ CONFIG.webpMaxDim=oldD; CONFIG.webpQuality=oldQ; }
+};
 
 /* ══════════════ 도장 자동 찾기 ══════════════
    흰 종이 위의 진한 잉크 덩어리를 찾습니다.
@@ -1710,7 +1770,9 @@ const pgRender=()=>{
       });
     h+='</div>';
   }
+  h+=pgCertHTML(k,d);
   root.innerHTML=h;
+  pgBindCerts(k);
 
   const fi=$("pgFile");
   if(fi){
@@ -1720,6 +1782,71 @@ const pgRender=()=>{
     pgViewK(b.dataset.k); pgRender();}));
   root.querySelectorAll(".pgopen").forEach(b=>b.addEventListener("click",()=>pgOpen(k,b.dataset.p)));
 };
+const pgCertHTML=(k,d)=>{
+  const ro=!pgCanEdit(k), C=d.certs||{};
+  let h='<h3 class="pgh3">증서 <small>Compostela · Certificado de Distancia</small></h3>'
+    +'<div class="pgcerts">';
+  PG.certs.forEach(c=>{
+    const v=C[c.k]||{};
+    h+='<div class="pgcert'+(v.fileId?" has":"")+'" data-c="'+c.k+'">'
+      +'<div class="pgcert-h">'+c.icon+' <b>'+c.n+'</b></div>'
+      +'<div class="pgcert-d">'+c.d+'</div>'
+      +(v.fileId
+        ? '<div class="pgcert-img"><img src="'+pgImgUrl(v.fileId,700)+'" alt="'+pgEsc(c.n)+'"></div>'
+        : '<div class="pgcert-none">아직 등록하지 않았습니다</div>')
+      +'<div class="pgcert-f">'
+        +'<label>발급일<input type="date" data-cf="date" value="'+pgEsc(v.date||"")+'"'+(ro?" disabled":"")+'></label>'
+        +(c.k==="distancia"
+          ? '<div class="pgrow"><label>거리 (km)<input type="number" step="0.1" data-cf="km" '
+            +'value="'+pgEsc(v.km!=null?v.km:"")+'" placeholder="808.5"'+(ro?" disabled":"")+'></label>'
+            +'<label>출발지<input type="text" data-cf="from" value="'+pgEsc(v.from||"")+'" '
+            +'placeholder="Saint-Jean-Pied-de-Port"'+(ro?" disabled":"")+'></label></div>'
+          : '<label>증서에 적힌 이름 (라틴어)<input type="text" data-cf="latin" '
+            +'value="'+pgEsc(v.latin||"")+'" placeholder="예: Dominicum"'+(ro?" disabled":"")+'></label>')
+        +'<label>메모<input type="text" data-cf="note" value="'+pgEsc(v.note||"")+'" '
+          +'placeholder="선택 사항"'+(ro?" disabled":"")+'></label>'
+      +'</div>'
+      +(ro?'':'<div class="pgcert-b">'
+        +'<label class="pgcert-up">'+(v.fileId?"사진 바꾸기":"＋ 증서 사진 올리기")
+          +'<input type="file" accept="image/*" hidden></label>'
+        +(v.fileId?'<button type="button" class="pgcert-del">삭제</button>':'')
+      +'</div>')
+      +'</div>';
+  });
+  return h+'</div>';
+};
+
+const pgBindCerts=(k)=>{
+  if(!pgCanEdit(k)) return;
+  document.querySelectorAll(".pgcert").forEach(box=>{
+    const ck=box.dataset.c;
+    const up=box.querySelector(".pgcert-up input");
+    if(up) up.addEventListener("change",e=>{
+      const f=e.target.files[0]; e.target.value="";
+      if(f) pgUploadCert(ck,f);
+    });
+    const del=box.querySelector(".pgcert-del");
+    if(del) del.addEventListener("click",()=>{
+      if(!confirm("이 증서 등록을 지울까요? (Drive 의 사진 파일은 남습니다)")) return;
+      delete pgData[k].certs[ck];
+      pgSave(k).then(pgRender);
+    });
+    box.querySelectorAll("[data-cf]").forEach(inp=>{
+      const commit=()=>{
+        pgData[k].certs=pgData[k].certs||{};
+        const v=pgData[k].certs[ck]||{};
+        const f=inp.dataset.cf;
+        v[f]=(f==="km")?(inp.value?+inp.value:null):inp.value;
+        v.ts=Date.now();
+        pgData[k].certs[ck]=v;
+        pgQueueSave(k);
+      };
+      inp.addEventListener("change",commit);
+      inp.addEventListener("blur",commit);
+    });
+  });
+};
+
 let _pgView=null;
 const pgViewK=(set)=>{ if(set!==undefined)_pgView=set;
   return _pgView||pgWho||PG.people[0].k; };
