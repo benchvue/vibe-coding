@@ -574,7 +574,9 @@
   .sello.sm{width:112px}
   .ppgrid .sello{width:100%}
   .sello:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(21,42,85,.14);border-color:#C3BCA6}
-  .sello-img{display:block;width:100%;background-color:#F3F1E9;min-height:40px}
+  .sello-img{display:block;width:100%;background-color:#F3F1E9;min-height:40px;max-height:200px}
+  .sello.sm .sello-img{max-height:170px}
+  .ppgrid .sello-img{max-height:160px}
   .sello.empty .sello-img{aspect-ratio:1/1}
   .sello-cap{display:block;padding:6px 8px 8px;border-top:1px solid var(--line)}
   .sello-cap b{display:block;font-size:.72rem;line-height:1.3;overflow:hidden;
@@ -617,7 +619,7 @@
   .pplb-nav.prev{left:10px} .pplb-nav.next{right:10px}
   .pplb-nav[hidden]{display:none}
   .pplb-nav:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
-  .pplb-stamp{width:100%;background-color:#fff;background-repeat:no-repeat;min-height:120px}
+  .pplb-stamp{width:100%;background-color:#fff;background-repeat:no-repeat;min-height:120px;max-height:56vh}
   .pplb-info{padding:16px 18px 20px;border-top:1px solid var(--line)}
   .pplb-no{font-size:.7rem;font-weight:700;color:var(--rioja);letter-spacing:.06em}
   .pplb-place{font-family:'Gowun Batang',serif;font-size:1.25rem;font-weight:700;margin-top:3px}
@@ -3861,12 +3863,16 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
   /* 사진을 자르지 않고 화면에서만 잘라 보여주기 (스프라이트 방식) */
   function cropStyle(page, r, w){
     if(!page || !r) return "";
-    var x=+r[0], y=+r[1], cw=Math.max(1,Math.min(100,+r[2])), ch=Math.max(1,Math.min(100,+r[3]));
+    var x=+r[0], y=+r[1], cw=Math.max(2,Math.min(100,+r[2])), ch=Math.max(2,Math.min(100,+r[3]));
     var px = (cw>=100) ? 50 : (x/(100-cw))*100;
     var py = (ch>=100) ? 50 : (y/(100-ch))*100;
     /* 틀의 가로세로 비율을 실제 잘린 영역과 똑같이 맞춥니다 */
     var iw=page.w||1000, ih=page.h||1400;
+    /* 가느다랗거나 납작한 네모가 하나라도 있으면 타일이 화면을 뚫고 늘어나므로
+       보이는 틀의 비율은 0.5~2.0 안으로 제한합니다 (약간 늘어나 보일 뿐 잘리지 않습니다) */
     var ratio=((cw*iw)/(ch*ih))||1;
+    if(!isFinite(ratio)||ratio<=0) ratio=1;
+    ratio=Math.max(0.5,Math.min(2.0,ratio));
     return "background-image:url('"+imgUrl(page.fileId,w||1200)+"');"
       + "background-size:"+(10000/cw)+"% "+(10000/ch)+"%;"
       + "background-position:"+px+"% "+py+"%;background-repeat:no-repeat;"

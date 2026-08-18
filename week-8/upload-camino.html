@@ -202,16 +202,21 @@
   .pgpi{padding:8px 10px;display:flex;align-items:baseline;gap:6px;border-top:1px solid var(--line)}
   .pgpi b{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .pgpi small{margin-left:auto;font-size:11px;color:var(--muted);white-space:nowrap}
-  .pgopen{border:none;border-top:1px solid var(--line);background:#F4F2EA;color:var(--blue);
+  .pgpb{display:flex;border-top:1px solid var(--line)}
+  .pgopen{flex:1;border:none;background:#F4F2EA;color:var(--blue);
     padding:9px;font-size:12.5px;font-weight:600;font-family:inherit}
   .pgopen:hover{background:var(--flecha);color:#3B2E00}
+  .pgpdel{flex:0 0 auto;border:none;border-left:1px solid var(--line);background:#F4F2EA;
+    color:var(--err);padding:9px 13px;font-size:12.5px;font-family:inherit}
+  .pgpdel:hover{background:var(--err);color:#fff}
 
   .pgh3{font-family:'Gowun Batang',serif;font-size:16px;color:var(--blue);margin:16px 0 10px}
   .pgsellos{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:10px;align-items:start}
   .pgs{border:1px solid var(--line);border-radius:11px;background:#fff;overflow:hidden}
-  .pgs-img{display:block;width:100%;background-color:#F3F1E9;background-repeat:no-repeat}
-  .pgs-img.sm{width:52px;height:auto;min-height:24px;flex:0 0 auto;border-radius:7px;
-    border:1px solid var(--line)}
+  .pgs-img{display:block;width:100%;background-color:#F3F1E9;background-repeat:no-repeat;
+    min-height:40px;max-height:190px}
+  .pgs-img.sm{width:52px;height:auto;min-height:24px;max-height:72px;flex:0 0 auto;
+    border-radius:7px;border:1px solid var(--line)}
   .pgs-c{display:block;padding:6px 8px;border-top:1px solid var(--line)}
   .pgs-c b{display:block;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .pgs-c small{display:block;font-size:11px;color:var(--muted)}
@@ -1531,12 +1536,14 @@ const pgImgUrl=(id,w)=>"https://lh3.googleusercontent.com/d/"+id+"=w"+(w||1600);
 
 const pgCropStyle=(page,r,w)=>{
   if(!page||!r) return "";
-  const cw=Math.max(1,Math.min(100,+r[2])), ch=Math.max(1,Math.min(100,+r[3]));
+  const cw=Math.max(2,Math.min(100,+r[2])), ch=Math.max(2,Math.min(100,+r[3]));
   const px=(cw>=100)?50:(+r[0]/(100-cw))*100, py=(ch>=100)?50:(+r[1]/(100-ch))*100;
   /* 틀의 가로세로 비율을 실제 잘린 영역과 똑같이 맞춥니다.
      (정사각 틀에 직사각 도장을 넣으면 다른 자리가 보여 어긋난 것처럼 보였습니다) */
   const iw=page.w||1000, ih=page.h||1400;
-  const ratio=((cw*iw)/(ch*ih))||1;
+  let ratio=((cw*iw)/(ch*ih))||1;
+  if(!isFinite(ratio)||ratio<=0) ratio=1;
+  ratio=Math.max(0.5,Math.min(2.0,ratio));   /* 타일이 끝없이 길어지지 않도록 */
   return "background-image:url('"+pgImgUrl(page.fileId,w||800)+"');background-size:"
     +(10000/cw)+"% "+(10000/ch)+"%;background-position:"+px+"% "+py+"%;background-repeat:no-repeat;"
     +"aspect-ratio:"+ratio.toFixed(4)+";";
@@ -1798,8 +1805,11 @@ const pgRender=()=>{
       +'<div class="pgthumb" style="background-image:url(\''+pgImgUrl(p.fileId,600)+'\')"></div>'
       +'<div class="pgpi"><b>'+pgEsc(p.name.replace(/^[a-z]+-/,"").replace(/-[a-z0-9]+\.webp$/,""))+'</b>'
       +'<small>세요 '+n+'개</small></div>'
-      +'<button type="button" class="pgopen" data-p="'+p.id+'">'
-      +(pgCanEdit(k)?'도장 표시하기':'보기')+'</button></div>';
+      +'<div class="pgpb"><button type="button" class="pgopen" data-p="'+p.id+'">'
+      +(pgCanEdit(k)?'도장 표시하기':'보기')+'</button>'
+      +(pgCanEdit(k)?'<button type="button" class="pgpdel" data-p="'+p.id+'" '
+        +'title="이 여권 페이지와 여기에 표시한 도장을 지웁니다">삭제</button>':'')
+      +'</div></div>';
   });
   h+='</div>';
 
@@ -1826,6 +1836,16 @@ const pgRender=()=>{
   root.querySelectorAll(".pgwho").forEach(b=>b.addEventListener("click",()=>{
     pgViewK(b.dataset.k); pgRender();}));
   root.querySelectorAll(".pgopen").forEach(b=>b.addEventListener("click",()=>pgOpen(k,b.dataset.p)));
+  root.querySelectorAll(".pgpdel").forEach(b=>b.addEventListener("click",()=>{
+    const pid=b.dataset.p;
+    const n=pgData[k].sellos.filter(s=>!s.del&&s.pageId===pid).length;
+    if(!confirm("이 여권 페이지를 목록에서 지울까요?"
+      +(n?"\n\n여기에 표시한 도장 "+n+"개도 함께 사라집니다.":"")
+      +"\n(Drive 의 사진 파일 자체는 남습니다)")) return;
+    pgData[k].pages=pgData[k].pages.filter(p=>p.id!==pid);
+    pgData[k].sellos.forEach(s=>{ if(s.pageId===pid){ s.del=true; s.ts=Date.now(); } });
+    pgSave(k).then(pgRender);
+  }));
 };
 const pgCertHTML=(k,d)=>{
   const ro=!pgCanEdit(k), C=d.certs||{};
