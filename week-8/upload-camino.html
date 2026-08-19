@@ -222,12 +222,15 @@
   .pgs-c small{display:block;font-size:11px;color:var(--muted)}
 
   /* 편집기 */
-  .pged{position:fixed;inset:0;z-index:140;background:rgba(11,16,30,.94);display:none;padding:14px}
+  /* 사파리 주소창이 접혔다 펴지면 vh 가 바뀌어 편집기 높이가 출렁였습니다.
+     dvh(실제 보이는 높이)를 쓰고, 지원하지 않는 브라우저는 vh 로 되돌아갑니다. */
+  .pged{position:fixed;inset:0;z-index:140;background:rgba(11,16,30,.94);display:none;padding:14px;
+    height:100vh;height:100dvh;overscroll-behavior:contain}
   .pged.show{display:block}
   .pged-in{max-width:1180px;height:100%;margin:0 auto;background:var(--paper);border-radius:var(--radius);
     display:flex;flex-direction:column;overflow:hidden}
   .pged-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:11px 14px;
-    background:var(--blue);color:#fff}
+    background:var(--blue);color:#fff;flex:0 0 auto}
   .pged-top b{font-family:'Gowun Batang',serif;font-size:15px}
   .pged-hint{font-size:12px;color:#9FB0CE}
   .pged-hint b{font-family:inherit;font-size:12px;color:var(--flecha)}
@@ -237,7 +240,7 @@
   .pged-auto:hover,.pged-x:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
   /* 도구 줄 (모드 · 안내 · 확대) */
   .pged-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 12px;
-    background:#EFECE2;border-bottom:1px solid var(--line)}
+    background:#EFECE2;border-bottom:1px solid var(--line);flex:0 0 auto}
   .pgseg{display:flex;gap:0;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:#fff}
   .pgseg button{border:none;background:none;color:var(--muted);padding:6px 14px;font-size:12.5px;
     font-weight:600;font-family:inherit;white-space:nowrap}
@@ -254,8 +257,7 @@
     font-variant-numeric:tabular-nums}
 
   .pged-body{flex:1;min-height:0;display:grid;grid-template-columns:1fr 330px}
-  @media(max-width:860px){ .pged-body{grid-template-columns:1fr;grid-template-rows:1fr auto} }
-  .pged-canvas{overflow:auto;background:#2C2C2A;display:block}
+  .pged-canvas{overflow:auto;min-height:0;background:#2C2C2A;display:block}
   /* 사진과 네모를 같은 좌표계에 두는 무대 — 예전엔 스크롤 영역을 기준으로 계산해
      사진 아래쪽에서 드래그가 시작되지 않고 네모 위치도 어긋났습니다 */
   .pged-stage{position:relative;width:100%;touch-action:none;transition:width .15s ease}
@@ -286,8 +288,41 @@
   .pgh.s{left:50%;bottom:-7px;margin-left:-6px;cursor:ns-resize}
   .pgh.w{left:-7px;top:50%;margin-top:-6px;cursor:ew-resize}
   .pgh.e{right:-7px;top:50%;margin-top:-6px;cursor:ew-resize}
-  .pged-side{overflow-y:auto;background:#fff;border-left:1px solid var(--line);padding:12px}
-  @media(max-width:860px){ .pged-side{border-left:none;border-top:1px solid var(--line);max-height:44vh} }
+  .pged-side{overflow-y:auto;min-height:0;background:#fff;border-left:1px solid var(--line);padding:12px}
+  /* 정보칸 접기 — 사진을 화면 가득 보고 싶을 때 */
+  .pged-in.sidehide .pged-side{display:none}
+  .pged-in.sidehide .pged-body{grid-template-columns:1fr;grid-template-rows:1fr}
+  .pgside-t{border:1px solid var(--line);background:#fff;color:var(--blue);border-radius:999px;
+    padding:5px 12px;font-size:11.5px;font-family:inherit;white-space:nowrap}
+  .pgside-t:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
+
+  /* ── 좁은 화면(아이폰) — 머리말·도구를 납작하게 눌러 사진 높이를 확보 ── */
+  @media(max-width:860px){
+    .pged{padding:0}
+    .pged-in{height:100%;border-radius:0}
+    .pged-top{padding:7px 10px;gap:6px;flex-wrap:nowrap}
+    .pged-top b{font-size:13.5px;white-space:nowrap;flex:1;min-width:0}
+    .pged-auto,.pged-x{padding:5px 11px;font-size:11.5px;flex:0 0 auto;margin-left:0}
+    .pged-tools{padding:6px 8px;gap:6px}
+    .pgseg button{padding:6px 11px;font-size:11.5px}
+    .pgzoom{padding:1px 3px}
+    .pgzoom button{padding:4px 8px;font-size:13px}
+    .pgzoom button[data-z="fit"]{font-size:11px}
+    .pgzl{font-size:11px;min-width:34px}
+    .pgside-t{padding:5px 10px;font-size:11px}
+    .pged-tip{order:9;flex-basis:100%;min-width:0;font-size:11px;line-height:1.45}
+    /* 사진 영역에 최소 높이를 보장 — 예전엔 도구줄이 늘어나면 사진이 0px 이 됐습니다 */
+    .pged-body{grid-template-columns:1fr;grid-template-rows:minmax(46vh,1fr) auto;
+      grid-template-rows:minmax(46dvh,1fr) auto}
+    .pged-side{border-left:none;border-top:1px solid var(--line);padding:10px;
+      max-height:36vh;max-height:36dvh;overscroll-behavior:contain}
+    .pged-in.sidehide .pged-body{grid-template-rows:1fr}
+  }
+  @media(max-width:860px) and (max-height:620px){
+    .pged-body{grid-template-rows:minmax(40vh,1fr) auto;grid-template-rows:minmax(40dvh,1fr) auto}
+    .pged-side{max-height:34vh;max-height:34dvh}
+    .pged-tip{display:none}
+  }
   .pgnone{font-size:12.5px;color:var(--muted);line-height:1.8;padding:14px 8px;text-align:center}
   .pgfrm{border:1px solid var(--line);border-radius:11px;padding:10px;margin-bottom:10px;background:#FBFAF5}
   .pgfrm.on{border-color:var(--ok);background:#F2FAF5}
@@ -327,10 +362,10 @@
   .pgpick{position:fixed;inset:0;z-index:150;background:rgba(11,16,30,.55);
     display:flex;align-items:flex-end;justify-content:center;padding:0}
   @media(min-width:620px){ .pgpick{align-items:center;padding:20px} }
-  .pgpick-in{width:100%;max-width:440px;max-height:86vh;background:var(--paper);
+  .pgpick-in{width:100%;max-width:440px;max-height:86vh;max-height:86dvh;background:var(--paper);
     border-radius:16px 16px 0 0;display:flex;flex-direction:column;overflow:hidden;
     box-shadow:0 -8px 30px rgba(0,0,0,.3)}
-  @media(min-width:620px){ .pgpick-in{border-radius:16px;max-height:76vh} }
+  @media(min-width:620px){ .pgpick-in{border-radius:16px;max-height:76vh;max-height:76dvh} }
   .pgpick-h{display:flex;align-items:center;gap:8px;padding:13px 14px;background:var(--blue);color:#fff}
   .pgpick-h b{font-family:'Gowun Batang',serif;font-size:15px}
   .pgpick-h span{font-size:11px;color:#9FB0CE}
@@ -1970,7 +2005,7 @@ const pgOpen=(k,pageId)=>{
     +'<div class="pged-tools">'
       +(pgCanEdit(k)
         ?'<div class="pgseg">'
-          +'<button type="button" data-m="draw">⬚ 도장 표시</button>'
+          +'<button type="button" data-m="draw">✏️ 도장 표시</button>'
           +'<button type="button" data-m="pan">✋ 이동</button>'
         +'</div>':'')
       +'<span class="pged-tip"></span>'
@@ -1978,6 +2013,7 @@ const pgOpen=(k,pageId)=>{
         +'<span class="pgzl">100%</span>'
         +'<button type="button" data-z="in">＋</button>'
         +'<button type="button" data-z="fit">맞춤</button></div>'
+      +'<button type="button" class="pgside-t" title="아래 정보칸을 접어 사진을 크게 봅니다">⤢ 사진 크게</button>'
     +'</div>'
     +'<div class="pged-body">'
       +'<div class="pged-canvas"><div class="pged-stage">'
@@ -1996,6 +2032,11 @@ const pgOpen=(k,pageId)=>{
   ed.querySelectorAll(".pgseg button").forEach(b=>b.addEventListener("click",()=>{
     pgMode=b.dataset.m; pgApplyMode();
   }));
+  const st=ed.querySelector(".pgside-t");
+  if(st) st.addEventListener("click",()=>{
+    const on=ed.querySelector(".pged-in").classList.toggle("sidehide");
+    st.textContent = on ? "⤡ 정보 보기" : "⤢ 사진 크게";
+  });
   ed.querySelectorAll(".pgzoom button").forEach(b=>b.addEventListener("click",()=>{
     const z=b.dataset.z;
     if(z==="in") pgZoom=Math.min(5,pgZoom*1.4);
@@ -2058,12 +2099,25 @@ const pgDraw=()=>{
 let pgSel=null;
 /* 선택 표시만 바꿉니다 — 예전엔 여기서 옆 패널을 통째로 다시 그려서
    콤보를 누르면 목록이 사라지고 글자도 입력할 수 없었습니다 */
-const pgSelect=(id)=>{
+const pgSelect=(id,noScroll)=>{
   pgSel=id;
+  const inn=document.querySelector(".pged-in");
+  if(inn&&inn.classList.contains("sidehide")){     /* 정보를 넣어야 하니 자동으로 펼침 */
+    inn.classList.remove("sidehide");
+    const st=document.querySelector(".pgside-t"); if(st) st.textContent="⤢ 사진 크게";
+  }
   document.querySelectorAll(".pgbox").forEach(b=>b.classList.toggle("on",b.dataset.id===id));
   document.querySelectorAll(".pgfrm").forEach(f=>f.classList.toggle("on",f.dataset.id===id));
+  if(noScroll) return;
+  /* scrollIntoView 는 바깥 화면까지 움직여서, 드래그 중에 사파리 주소창이 접혔다 펴지며
+     편집기 높이가 흔들렸습니다. 옆 패널 안에서만 직접 스크롤합니다. */
   const el=document.querySelector('.pgfrm[data-id="'+id+'"]');
-  if(el) el.scrollIntoView({block:"nearest",behavior:"smooth"});
+  const side=$("pgSide");
+  if(el&&side){
+    const t=el.offsetTop, b=t+el.offsetHeight;
+    if(t<side.scrollTop) side.scrollTop=t-8;
+    else if(b>side.scrollTop+side.clientHeight) side.scrollTop=b-side.clientHeight+8;
+  }
 };
 
 const pgFrmHTML=(s,i,page,ro)=>{
@@ -2293,7 +2347,7 @@ const pgBindBoxes=()=>{
     const s=pgData[k].sellos.find(x=>x.id===id); if(!s) return;
     const start=(e,mode)=>{
       e.preventDefault(); e.stopPropagation();
-      pgSelect(id);
+      pgSelect(id,true);                       /* 드래그 중 화면이 흔들리지 않도록 */
       const r=stage.getBoundingClientRect();
       const ox=(e.clientX-r.left)/r.width*100, oy=(e.clientY-r.top)/r.height*100;
       const r0=s.rect.slice();
@@ -2351,7 +2405,7 @@ const pgApplyMode=()=>{
   const tip=ed.querySelector(".pged-tip");
   if(tip) tip.innerHTML = (pgMode==="draw")
     ? '사진 위를 <b>드래그하여 도장 1개씩 네모로 감싸세요</b>'
-    : '사진을 <b>끌어서 이동</b>합니다 · 네모를 고치려면 <b>⬚ 도장 표시</b>로 바꾸세요';
+    : '사진을 <b>끌어서 이동</b>합니다 · 네모를 고치려면 <b>✏️ 도장 표시</b>로 바꾸세요';
 };
 
 const pgApplyZoom=()=>{
@@ -2453,7 +2507,7 @@ const pgOnSignedIn=()=>{
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260818-1043";
+  var BUILD="20260819-1058";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
