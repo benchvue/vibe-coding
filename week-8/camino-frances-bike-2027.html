@@ -676,6 +676,62 @@
     color:#8FA3C8;border-radius:999px;padding:4px 11px;font-size:.68rem;cursor:pointer;font-family:inherit}
   .buildline .buildreload:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
 
+  /* ══════════════ 함께 쓰는 할 일 (Drive) ══════════════ */
+  .tsload{padding:24px 16px;text-align:center;font-size:.82rem;color:var(--ink-soft);
+    border:1px dashed var(--line);border-radius:14px;background:#FBFAF5;line-height:1.8}
+  .tsbar{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+  .tsbar button{border:1px solid var(--line);background:#fff;color:var(--ink-soft);
+    border-radius:999px;padding:8px 16px;font-size:.8rem;font-weight:600;cursor:pointer;
+    font-family:inherit;white-space:nowrap}
+  .tsbar button i{font-style:normal;font-size:.7rem;opacity:.65;margin-left:3px;
+    font-variant-numeric:tabular-nums}
+  .tsbar button.on{background:var(--camino-blue);border-color:var(--camino-blue);color:#fff}
+  .tsbar button.on i{opacity:.85}
+  .tsbar button:hover{border-color:var(--flecha)}
+  .tstot{margin-left:auto;font-size:.74rem;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+
+  .tsphase{margin-bottom:18px}
+  .tsphase > h3{font-family:'Gowun Batang',serif;font-size:1rem;color:var(--camino-blue);
+    margin-bottom:9px;display:flex;align-items:baseline;gap:7px;flex-wrap:wrap}
+  .tsphase > h3 small{font-family:'IBM Plex Sans KR',sans-serif;font-size:.72rem;
+    font-weight:400;color:var(--ink-soft)}
+  .tscols{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-items:start}
+  .tscols.one{grid-template-columns:1fr;max-width:620px}
+  @media(max-width:820px){ .tscols{grid-template-columns:1fr} }
+
+  .tsbox{border:1px solid var(--line);border-radius:13px;background:#fff;overflow:hidden}
+  .tshead{display:flex;align-items:center;gap:7px;padding:9px 12px;background:#F4F2EA;
+    border-bottom:1px solid var(--line);font-size:.8rem;font-weight:700;color:var(--camino-blue)}
+  .tscnt{margin-left:auto;font-size:.68rem;font-weight:600;color:var(--ink-soft);
+    background:#fff;border:1px solid var(--line);border-radius:999px;padding:2px 8px;
+    font-variant-numeric:tabular-nums}
+  .tsbarline{height:3px;background:#EDEAE1}
+  .tsbarline i{display:block;height:100%;background:var(--ok);transition:width .4s ease}
+  .tsbox ul{list-style:none;padding:6px 8px 8px;margin:0}
+  .tsbox li{display:flex;align-items:flex-start;gap:8px;padding:6px 4px;font-size:.82rem;
+    line-height:1.6;border-bottom:1px dashed #F0EDE4}
+  .tsbox li:last-child{border-bottom:none}
+  .tsck{flex:0 0 auto;width:17px;height:17px;margin-top:2px;border:1px solid var(--line);
+    border-radius:5px;display:flex;align-items:center;justify-content:center;
+    font-size:.66rem;color:#fff;background:#fff}
+  .tsbox li.done .tsck{background:var(--ok);border-color:var(--ok)}
+  .tstx{flex:1;min-width:0;word-break:break-word}
+  .tsbox li.done .tstx{text-decoration:line-through;color:#9AA0AA}
+  .tsby{flex:0 0 auto;font-size:.6rem;color:var(--ink-soft);background:#EDEAE1;
+    border-radius:999px;padding:1px 7px;margin-top:3px}
+  .tsnone{color:#A7A296;font-size:.76rem;justify-content:center;padding:14px 4px}
+  .tsfoot{margin-top:6px;font-size:.74rem;color:var(--ink-soft);line-height:1.7}
+
+  .oldtodo{margin-top:26px;border:1px solid var(--line);border-radius:14px;background:#FBFAF5;
+    padding:0 14px}
+  .oldtodo > summary{cursor:pointer;padding:13px 2px;font-size:.86rem;font-weight:700;
+    color:var(--camino-blue);list-style:none}
+  .oldtodo > summary::-webkit-details-marker{display:none}
+  .oldtodo > summary::before{content:"▸ ";color:var(--ink-soft)}
+  .oldtodo[open] > summary::before{content:"▾ "}
+  .oldtodo > summary small{font-weight:400;color:var(--ink-soft);font-size:.72rem}
+  .oldtodo[open]{padding-bottom:14px}
+
 </style>
 
 <!-- ══════════════════════════════════════════════════════════════════════
@@ -1394,8 +1450,15 @@
     <div class="sec-head">
       <div class="no">Ⅹ · Lista</div>
       <h2>To Do List ✅</h2>
-      <p>체크하면 이 기기에 저장됩니다 — 출발 전 하나씩 지워 나가세요.</p>
+      <p><b>함께 쓰는 할 일</b>은 Bin·Jin 이 업로드 페이지에서 고치면 이곳에 바로 반영됩니다.
+      아래의 <b>처음 만든 상세 체크리스트</b>는 이 기기에만 저장되는 개인용입니다.</p>
     </div>
+
+    <!-- Drive 에서 읽어오는 공용 할 일 -->
+    <div id="tdSiteRoot"></div>
+
+    <details class="oldtodo">
+      <summary>📋 처음 만든 상세 체크리스트 <small>· 이 기기에만 저장</small></summary>
 
     <div class="flow" style="margin-bottom:14px">
       <h3>① 여행 가기 전</h3>
@@ -1452,7 +1515,9 @@
       </ul>
     </div>
   </div>
-</section>
+    </details>
+
+  </section>
 
 <button id="tocBtn" aria-label="목차 열기">☰ 목차</button>
 <div id="tocSheet">
@@ -3904,17 +3969,26 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     return tryK(0);
   }
 
-  function load(){
-    if(loaded) return Promise.resolve();
-    loaded=true;
-    return driveList("'"+PHOTOS.parentId+"' in parents and trashed=false")
+  /* db 폴더의 파일 목록 — 할 일 모듈과 함께 씁니다 (한 번만 조회) */
+  var _dbFiles=null;
+  function dbFiles(){
+    if(_dbFiles) return _dbFiles;
+    _dbFiles = driveList("'"+PHOTOS.parentId+"' in parents and trashed=false")
       .then(function(items){
         var db=items.filter(function(f){
           return f.mimeType==="application/vnd.google-apps.folder"
               && f.name.toLowerCase()===PP.dbFolder; })[0];
         if(!db) throw new Error("db 폴더가 없습니다");
         return driveList("'"+db.id+"' in parents and trashed=false");
-      })
+      });
+    return _dbFiles;
+  }
+  window.CAMINO_DRIVE = { files:dbFiles, text:driveText };
+
+  function load(){
+    if(loaded) return Promise.resolve();
+    loaded=true;
+    return dbFiles()
       .then(function(files){
         return Promise.all(PP.people.map(function(p){
           var f=files.filter(function(x){ return x.name===PP.files[p.k]; })[0];
@@ -4236,11 +4310,133 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
 </script>
 
 <script>
+/* ══════════════════════════════════════════════════════════════════════
+   ✅ 함께 쓰는 할 일 — Drive db/todo-{common,jin,bin}.json 을 읽어 보여줍니다
+   · 주행 전 / 주행 중 / 주행 후  ×  공통 / Jin / Bin
+   · 이 페이지에서는 보기만 하고, 고치는 것은 upload-camino.html 의 ✅ 할 일 탭입니다
+   ══════════════════════════════════════════════════════════════════════ */
+(function(){
+  "use strict";
+
+  var TS = {
+    files : { common:"todo-common.json", jin:"todo-jin.json", bin:"todo-bin.json" },
+    owners: [ {k:"common", icon:"👥", label:"공통"},
+              {k:"jin",    icon:"🟦", label:"Jin"},
+              {k:"bin",    icon:"🟩", label:"Bin"} ],
+    phases: [ {k:"pre",    icon:"🎒", label:"주행 전", desc:"출발 전에 끝내야 할 준비"},
+              {k:"during", icon:"🚴", label:"주행 중", desc:"매일·구간마다 챙길 것"},
+              {k:"post",   icon:"🏁", label:"주행 후", desc:"완주 후 마무리"} ]
+  };
+  var DATA={}, view="all", state="load";
+
+  function esc(t){ return String(t==null?"":t)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+  function norm(raw){
+    var d={pre:[],during:[],post:[]};
+    if(!raw) return d;
+    TS.phases.forEach(function(p){
+      var a=(raw.items&&raw.items[p.k])||[];
+      d[p.k]=a.filter(function(x){ return x&&x.id&&!x.del; })
+              .map(function(x){ return {id:x.id, text:String(x.text||""),
+                                        done:!!x.done, by:String(x.by||"")}; });
+    });
+    return d;
+  }
+
+  function load(){
+    if(!window.CAMINO_DRIVE) return Promise.reject(new Error("Drive 설정이 없습니다"));
+    return window.CAMINO_DRIVE.files().then(function(files){
+      return Promise.all(TS.owners.map(function(o){
+        var f=files.filter(function(x){ return x.name===TS.files[o.k]; })[0];
+        if(!f) return null;
+        return window.CAMINO_DRIVE.text(f.id).then(function(t){
+          var j=null; try{ j=JSON.parse(t); }catch(e){}
+          DATA[o.k]=norm(j);
+        }).catch(function(){});
+      }));
+    });
+  }
+
+  function counts(k){
+    var n=0, done=0;
+    TS.phases.forEach(function(p){
+      var a=(DATA[k]||{})[p.k]||[];
+      n+=a.length; done+=a.filter(function(x){return x.done;}).length;
+    });
+    return {n:n, done:done};
+  }
+
+  function render(){
+    var root=document.getElementById("tdSiteRoot"); if(!root) return;
+
+    if(state==="load"){ root.innerHTML='<p class="tsload">함께 쓰는 할 일을 불러오는 중…</p>'; return; }
+    if(state==="err"){
+      root.innerHTML='<p class="tsload">할 일 목록을 불러오지 못했습니다. '
+        +'Drive 의 <b>db</b> 폴더와 공유 설정을 확인해 주세요.</p>';
+      return;
+    }
+
+    var shown=TS.owners.filter(function(o){ return view==="all"||o.k===view; });
+    var tot=0, tdone=0;
+    TS.owners.forEach(function(o){ var c=counts(o.k); tot+=c.n; tdone+=c.done; });
+
+    var h='<div class="tsbar"><button type="button" data-o="all"'
+      +(view==="all"?' class="on"':'')+'>전체</button>'
+      + TS.owners.map(function(o){
+          var c=counts(o.k);
+          return '<button type="button" data-o="'+o.k+'"'+(view===o.k?' class="on"':'')+'>'
+            +o.icon+' '+o.label+' <i>'+c.done+'/'+c.n+'</i></button>';
+        }).join("")
+      +'<span class="tstot">전체 '+tdone+' / '+tot+' 완료</span></div>';
+
+    TS.phases.forEach(function(p){
+      h+='<div class="tsphase"><h3>'+p.icon+' '+p.label+' <small>'+p.desc+'</small></h3>'
+        +'<div class="tscols'+(shown.length===1?" one":"")+'">';
+      shown.forEach(function(o){
+        var items=((DATA[o.k]||{})[p.k]||[]);
+        var done=items.filter(function(x){return x.done;}).length;
+        var pct=items.length?Math.round(done/items.length*100):0;
+        h+='<div class="tsbox" data-o="'+o.k+'">'
+          +'<div class="tshead">'+o.icon+' '+o.label
+          +'<span class="tscnt">'+done+' / '+items.length+'</span></div>'
+          +'<div class="tsbarline"><i style="width:'+pct+'%"></i></div><ul>';
+        if(!items.length) h+='<li class="tsnone">항목이 없습니다</li>';
+        items.forEach(function(it){
+          h+='<li class="'+(it.done?"done":"")+'"><span class="tsck">'
+            +(it.done?"✓":"")+'</span><span class="tstx">'+esc(it.text)+'</span>'
+            +(it.done&&it.by?'<span class="tsby">'+esc(it.by)+'</span>':'')+'</li>';
+        });
+        h+='</ul></div>';
+      });
+      h+='</div></div>';
+    });
+    h+='<p class="tsfoot">고치기는 <b>upload-camino.html → ✅ 할 일</b> 탭에서 합니다. '
+      +'Bin·Jin 이 각자 <b>공통</b>과 <b>자기 목록</b>을 편집하면 여기에 반영됩니다.</p>';
+
+    root.innerHTML=h;
+    root.querySelectorAll(".tsbar button").forEach(function(b){
+      b.addEventListener("click",function(){ view=b.dataset.o; render(); });
+    });
+  }
+
+  function boot(){
+    render();
+    load().then(function(){ state="ok"; render(); })
+          .catch(function(){ state="err"; render(); });
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",boot);
+  else boot();
+})();
+
+</script>
+
+<script>
 /* ══════ 판(build) 표시 · 캐시 무시하고 다시 받기 ══════
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260818-1043";
+  var BUILD="20260820-0147";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
