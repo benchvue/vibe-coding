@@ -311,20 +311,33 @@
   .pgbox.locked .pgbn.holding::after{width:100%;transition:width .7s linear}
   .pgbox.locked .pgbn.holding{color:#3B2E00}
   /* 8방향 손잡이 — 모서리 4개 + 변 4개 */
-  /* 손잡이는 "지금 고른" 네모에만 보입니다 (예전엔 모든 네모에 나와 여러 개가 선택된 듯 보였습니다) */
-  .pgh{display:none;position:absolute;background:#fff;border:2px solid var(--ok);border-radius:3px;
-    width:12px;height:12px;touch-action:none}
+  /* 손잡이는 "지금 고른" 네모에만 보입니다.
+     ::after 로 보이지 않는 여유를 둘러 손가락으로도 쉽게 잡히게 했습니다. */
+  .pgh{display:none;position:absolute;background:#fff;border:2.5px solid var(--ok);border-radius:4px;
+    width:17px;height:17px;touch-action:none;box-shadow:0 1px 4px rgba(0,0,0,.35);z-index:3}
+  .pgh::after{content:"";position:absolute;left:-13px;right:-13px;top:-13px;bottom:-13px}
+  .pgh:active{background:var(--flecha);border-color:var(--flecha);transform:scale(1.15)}
   .pgbox.on .pgh{display:block}
   .pgbox:not(.on){opacity:.72}
   .pgbox.on{opacity:1;z-index:2}
-  .pgh.nw{left:-7px;top:-7px;cursor:nwse-resize}
-  .pgh.ne{right:-7px;top:-7px;cursor:nesw-resize}
-  .pgh.sw{left:-7px;bottom:-7px;cursor:nesw-resize}
-  .pgh.se{right:-7px;bottom:-7px;cursor:nwse-resize}
-  .pgh.n{left:50%;top:-7px;margin-left:-6px;cursor:ns-resize}
-  .pgh.s{left:50%;bottom:-7px;margin-left:-6px;cursor:ns-resize}
-  .pgh.w{left:-7px;top:50%;margin-top:-6px;cursor:ew-resize}
-  .pgh.e{right:-7px;top:50%;margin-top:-6px;cursor:ew-resize}
+  .pgh.nw{left:-10px;top:-10px;cursor:nwse-resize}
+  .pgh.ne{right:-10px;top:-10px;cursor:nesw-resize}
+  .pgh.sw{left:-10px;bottom:-10px;cursor:nesw-resize}
+  .pgh.se{right:-10px;bottom:-10px;cursor:nwse-resize}
+  .pgh.n{left:50%;top:-10px;margin-left:-9px;cursor:ns-resize}
+  .pgh.s{left:50%;bottom:-10px;margin-left:-9px;cursor:ns-resize}
+  .pgh.w{left:-10px;top:50%;margin-top:-9px;cursor:ew-resize}
+  .pgh.e{right:-10px;top:50%;margin-top:-9px;cursor:ew-resize}
+  /* 가운데(이동)와 손잡이가 겹치지 않도록, 아주 작은 네모에서는 모서리만 */
+  .pgbox.tiny .pgh.n,.pgbox.tiny .pgh.s,.pgbox.tiny .pgh.w,.pgbox.tiny .pgh.e{display:none}
+  @media(hover:none){
+    .pgh{width:20px;height:20px}
+    .pgh::after{left:-15px;right:-15px;top:-15px;bottom:-15px}
+    .pgh.nw{left:-12px;top:-12px} .pgh.ne{right:-12px;top:-12px}
+    .pgh.sw{left:-12px;bottom:-12px} .pgh.se{right:-12px;bottom:-12px}
+    .pgh.n{top:-12px;margin-left:-10px} .pgh.s{bottom:-12px;margin-left:-10px}
+    .pgh.w{left:-12px;margin-top:-10px} .pgh.e{right:-12px;margin-top:-10px}
+  }
   .pged-side{overflow-y:auto;min-height:0;background:#fff;border-left:1px solid var(--line);padding:12px}
   /* 정보칸 접기 — 사진을 화면 가득 보고 싶을 때 */
   .pged-in.sidehide .pged-side{display:none}
@@ -1738,7 +1751,9 @@ const pgNorm=(raw)=>{
     id:String(s.id), pageId:s.pageId, rect:s.rect||[0,0,30,30],
     day:+s.day||1, date:s.date||"", time:s.time||"", place:s.place||"", town:s.town||"",
     lat:(s.lat!=null?+s.lat:null), lon:(s.lon!=null?+s.lon:null),
-    note:s.note||"", del:!!s.del, ts:+s.ts||0 }));
+    note:s.note||"", del:!!s.del,
+    /* 예전 자료에는 locked 값이 없습니다 — 이미 만들어 둔 도장이므로 잠긴 것으로 봅니다 */
+    locked:(s.locked===undefined ? true : !!s.locked), ts:+s.ts||0 }));
   return d;
 };
 const pgPack=(k)=>({ver:1,owner:k,updatedAt:new Date().toISOString(),updatedBy:myEmail,
@@ -2094,7 +2109,9 @@ const pgDraw=()=>{
   const HS=["nw","n","ne","e","se","s","sw","w"];
   wrap.innerHTML=list.map((s,i)=>{
     const lock=!!s.locked;
-    return '<div class="pgbox'+(ro?" ro":"")+(lock?" locked":"")+(s.id===pgSel?" on":"")
+    const tiny=(s.rect[2]<7||s.rect[3]<7);
+    return '<div class="pgbox'+(ro?" ro":"")+(lock?" locked":"")+(tiny?" tiny":"")
+      +(s.id===pgSel?" on":"")
       +'" data-id="'+s.id+'" style="left:'+s.rect[0]+'%;top:'+s.rect[1]
       +'%;width:'+s.rect[2]+'%;height:'+s.rect[3]+'%">'
       +'<span class="pgbn'+(lock?" lk":"")+'" data-id="'+s.id+'">'
@@ -2643,7 +2660,7 @@ const pgOnSignedIn=()=>{
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260820-0201";
+  var BUILD="20260820-0217";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
