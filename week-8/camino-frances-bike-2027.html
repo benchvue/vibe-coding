@@ -742,6 +742,22 @@
   .cpg-t2 .yes{color:var(--ok);font-weight:700}
   .cpg-t2 .no{color:#B9B3A4}
 
+  /* 거리 인증서 카드 */
+  .cpg.dist{background:#F7F6F0;border-top:1px dashed var(--line)}
+  .cpg.dist > h3{border-bottom-color:var(--rioja)}
+  .cpg-chk{margin-top:10px;display:inline-flex;align-items:center;gap:9px;
+    border:2px solid var(--flecha);background:#FFFBEE;border-radius:9px;padding:9px 14px;
+    font-size:.8rem;font-weight:700;color:var(--ink)}
+  .cpg-chk::before{content:"";width:15px;height:15px;border:2px solid var(--ok);border-radius:4px;
+    background:var(--ok);box-shadow:inset 0 0 0 2px #fff;flex:0 0 auto}
+  .cpg-chk i{font-style:normal;font-size:.68rem;font-weight:600;color:#8A6A12;
+    background:var(--flecha);border-radius:999px;padding:2px 9px}
+  .cpg-fig.dist{margin-top:12px;max-width:420px}
+  .cpg-link{display:inline-block;margin-top:10px;font-size:.76rem;color:var(--camino-blue);
+    text-decoration:none;border-bottom:1px dotted var(--camino-blue)}
+  .cpg-link:hover{color:var(--rioja);border-bottom-color:var(--rioja)}
+  .cpg-t .sub2{font-size:.68rem;font-weight:400;color:var(--ink-soft);margin-left:6px}
+
   /* ══════════════ 함께 쓰는 할 일 (Drive) ══════════════ */
   .tsload{padding:24px 16px;text-align:center;font-size:.82rem;color:var(--ink-soft);
     border:1px dashed var(--line);border-radius:14px;background:#FBFAF5;line-height:1.8}
@@ -4240,7 +4256,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
         +'<p class="ppempty">아직 등록된 세요가 없습니다.<br>'
         +'여권 페이지를 사진으로 찍어 <b>upload-camino.html → 📕 여권</b> 탭에서 등록하면 '
         +'여기와 날짜별 카드에 자동으로 나타납니다.</p>'
-        + guideHTML() + certHTML() +'</div>';
+        + guideHTML() + distHTML() + certHTML() +'</div>';
       bindWho(root); bindCerts(root); bindGuide(root); return;
     }
     var days=0, okDays=0;
@@ -4263,7 +4279,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       +'<div class="ppdays"></div>'
       +'<div class="ppgal"><h3>전체 세요 갤러리 <small>'+o.sellos.length+'개</small></h3>'
       +'<div class="ppgrid"></div></div>'
-      + guideHTML() + certHTML()
+      + guideHTML() + distHTML() + certHTML()
       +'</div>';
     root.innerHTML=h;
     bindWho(root); bindCerts(root); bindGuide(root);
@@ -4339,17 +4355,67 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
         +'매일 <b>09:00–19:00</b> (12/25, 1/1 휴무)<br>'
         +'대기표의 QR로 현재 순번을 실시간 확인할 수 있고, 성수기에는 당일 수령이 보장되지 않습니다.</p></div>'
 
+      +'</div>';
+  }
+
+  /* ── Certificate of Distance 안내 카드 ── */
+  var DIST_URL="https://oficinadelperegrino.com/en/pilgrimage/certificate-of-distance/";
+  function distHTML(){
+    return '<div class="cpg dist">'
+      +'<h3>Certificate of Distance — 주행거리 증명서</h3>'
+
+      +'<div class="cpg-b"><b>1. 어떤 증서인가</b>'
+        +'<p class="cpg-p">Compostela 가 <b>순례를 마쳤다</b>는 증서라면, 이것은 '
+        +'<b>어디서 출발해 몇 km 를 갔는지</b>를 산티아고 대성당이 공식으로 기록해 주는 증서입니다. '
+        +'양피지 느낌의 종이에 인쇄되며 Compostela 보다 조금 큽니다.</p>'
+        +'<ul class="cpg-c">'
+          +'<li>출발일</li><li>출발지</li><li>인정 거리 (km)</li>'
+          +'<li>Santiago 도착일</li><li>이용한 Camino 경로</li>'
+        +'</ul></div>'
+
+      +'<div class="cpg-b"><b>2. 우리 여행이라면</b>'
+        +'<table class="cpg-t"><tbody>'
+          +'<tr><th>이동 수단</th><td>Bicycle</td></tr>'
+          +'<tr><th>경로</th><td>Camino Francés (French Way)</td></tr>'
+          +'<tr><th>출발</th><td>Saint-Jean-Pied-de-Port, France · 2027년 5월 9일</td></tr>'
+          +'<tr><th>도착</th><td>Santiago de Compostela · 2027년 5월 21일</td></tr>'
+          +'<tr><th>계획 거리</th><td>808.5 km</td></tr>'
+        +'</tbody></table>'
+        +'<p class="cpg-note" style="margin-top:10px">'
+        +'<b>주의</b> 증서에 적히는 거리는 Pilgrim Office 가 크레덴시알과 인정 경로를 확인해 '
+        +'<b>직접 결정</b>합니다. 808.5 km 는 우리 계획 거리일 뿐, 그대로 기재된다고 볼 수 없습니다.</p></div>'
+
+      +'<div class="cpg-b"><b>3. 신청 방법</b>'
+        +'<p class="cpg-p">따로 등록하는 곳은 없습니다. 앞의 <b>온라인 등록</b> 화면에서 '
+        +'맨 아래 <b>Print mileage certificate</b> 를 체크하면 됩니다. '
+        +'사무소에서 Compostela 와 <b>함께 신청</b>하는 것이 가장 간단합니다.</p>'
+        +'<div class="cpg-chk">Print mileage certificate <i>체크</i></div></div>'
+
+      +'<div class="cpg-b"><b>4. 비용과 수령</b>'
+        +'<table class="cpg-t"><tbody>'
+          +'<tr><th>비용</th><td>3 € <span class="sub2">Compostela 는 무료</span></td></tr>'
+          +'<tr><th>수령</th><td>Pilgrim Reception Office · Rúa Carretas 33</td></tr>'
+          +'<tr><th>문의</th><td>certificadodedistancia@catedraldesantiago.es</td></tr>'
+        +'</tbody></table>'
+        +'<figure class="cpg-fig dist"><img src="images/distance-certificate.jpg" '
+          +'alt="Certificate of Distance 예시" loading="lazy">'
+          +'<figcaption>증서 예시</figcaption></figure>'
+        +'<a class="cpg-link" href="'+DIST_URL+'" target="_blank" rel="noopener">'
+        +'공식 안내와 증서 사진 보기 &rarr;</a></div>'
+
       +'<div class="cpg-b"><b>5. 두 증서의 차이</b>'
         +'<div class="cpg-tw"><table class="cpg-t2"><thead><tr>'
           +'<th></th><th>Compostela</th><th>Distance Certificate</th></tr></thead><tbody>'
-          +'<tr><th>의미</th><td>순례 완주 증서</td><td>실제 주행거리 증명</td></tr>'
-          +'<tr><th>거리 표시</th><td class="no">없음</td><td class="yes">있음</td></tr>'
-          +'<tr><th>출발지 표시</th><td class="no">없음</td><td class="yes">있음</td></tr>'
+          +'<tr><th>의미</th><td>순례 완주 인증</td><td>순례 거리 인증</td></tr>'
+          +'<tr><th>출발지</th><td class="no">없음</td><td class="yes">있음</td></tr>'
+          +'<tr><th>출발일</th><td class="no">없음</td><td class="yes">있음</td></tr>'
+          +'<tr><th>경로 이름</th><td class="no">없음</td><td class="yes">있음</td></tr>'
+          +'<tr><th>주행 거리</th><td class="no">없음</td><td class="yes">있음</td></tr>'
           +'<tr><th>도착일</th><td class="yes">있음</td><td class="yes">있음</td></tr>'
           +'<tr><th>가격</th><td>무료</td><td>3 €</td></tr>'
         +'</tbody></table></div>'
         +'<p class="cpg-p">Compostela 에는 808.5 km 가 남지 않습니다. '
-        +'이번 자전거 순례의 기록으로는 <b>거리 인증서를 함께 받는 편</b>을 권합니다.</p></div>'
+        +'이번 자전거 순례의 기록으로는 <b>두 가지를 함께 받는 편</b>을 권합니다.</p></div>'
       +'</div>';
   }
 
@@ -4383,16 +4449,22 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     });
     return h+'</div></div>';
   }
-  function bindGuide(root){
-    var im=root.querySelector(".cpg-fig img"); if(!im) return;
-    var cand=["images/pilgrim-registration.jpg","images/pilgram.jpg",
-              "images/pilgrim-registration.png"], i=0;
+  function fallbackImg(im,cand){
+    var i=0;
     im.onerror=function(){
       i++;
       if(i<cand.length){ im.src=cand[i]; return; }
       im.onerror=null;
-      var f=im.closest(".cpg-fig"); if(f) f.style.display="none";
+      var f=im.closest("figure"); if(f) f.style.display="none";
     };
+  }
+  function bindGuide(root){
+    var a=root.querySelector(".cpg-fig:not(.dist) img");
+    if(a) fallbackImg(a,["images/pilgrim-registration.jpg","images/pilgram.jpg",
+                         "images/pilgrim-registration.png"]);
+    var b=root.querySelector(".cpg-fig.dist img");
+    if(b) fallbackImg(b,["images/distance-certificate.jpg","images/distance-certificate.png",
+                         "images/certificado-distancia.jpg"]);
   }
   function bindCerts(root){
     var o=DATA[who]||{certs:{}}, C=o.certs||{};
@@ -4661,7 +4733,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260820-0247";
+  var BUILD="20260820-0255";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
