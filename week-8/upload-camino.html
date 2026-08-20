@@ -285,7 +285,7 @@
   .pged-canvas{overflow:auto;min-height:0;background:#2C2C2A;display:block}
   /* 사진과 네모를 같은 좌표계에 두는 무대 — 예전엔 스크롤 영역을 기준으로 계산해
      사진 아래쪽에서 드래그가 시작되지 않고 네모 위치도 어긋났습니다 */
-  .pged-stage{position:relative;width:100%;touch-action:none;transition:width .15s ease}
+  .pged-stage{position:relative;width:100%;margin:0 auto;touch-action:none;transition:width .15s ease}
   .pged-stage{cursor:crosshair}
   .pged-stage.grabbing{cursor:grabbing}
   .pged-stage img{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none}
@@ -299,6 +299,17 @@
   .pgbn{position:absolute;left:-1px;top:-1px;background:var(--flecha);color:#3B2E00;font-size:10px;
     font-weight:700;border-radius:4px 0 4px 0;padding:1px 6px;pointer-events:none}
   .pgbox.on .pgbn{background:var(--ok);color:#fff}
+
+  /* 잠긴 도장 — 새 도장 만들기를 방해하지 않도록 클릭이 통과합니다.
+     🔒 배지만 눌리며, 길게 누르면 잠금이 풀립니다. */
+  .pgbox.locked{pointer-events:none;border-style:dashed;border-color:#5C7F6A;
+    background:rgba(30,122,70,.07);opacity:.85}
+  .pgbox.locked .pgbn{pointer-events:auto;cursor:pointer;background:#2F5D45;color:#fff;
+    border-radius:4px 0 6px 0;padding:2px 7px;position:relative;overflow:hidden;touch-action:none}
+  .pgbox.locked .pgbn::after{content:"";position:absolute;left:0;top:0;bottom:0;width:0;
+    background:var(--flecha);opacity:.85;z-index:-1}
+  .pgbox.locked .pgbn.holding::after{width:100%;transition:width .7s linear}
+  .pgbox.locked .pgbn.holding{color:#3B2E00}
   /* 8방향 손잡이 — 모서리 4개 + 변 4개 */
   /* 손잡이는 "지금 고른" 네모에만 보입니다 (예전엔 모든 네모에 나와 여러 개가 선택된 듯 보였습니다) */
   .pgh{display:none;position:absolute;background:#fff;border:2px solid var(--ok);border-radius:3px;
@@ -488,6 +499,7 @@
   .pgnums button{width:28px;height:28px;border:1px solid var(--line);background:#fff;
     color:var(--muted);border-radius:8px;font-size:12px;font-weight:600;font-family:inherit}
   .pgnums button.ok{border-color:#9FCBB1;color:var(--ok)}
+  .pgnums button.lk{border-color:#5C7F6A;color:#2F5D45;background:#EEF6F1;font-size:10px}
   .pgnums button.on{background:var(--blue);border-color:var(--blue);color:#fff}
   .pgnav-h{margin-top:10px;font-size:11px;color:var(--muted);text-align:center;line-height:1.6}
 
@@ -2044,16 +2056,14 @@ const pgOpen=(k,pageId)=>{
   pgZoom=1; pgPending=null;
   pgApplyTip(); pgApplyZoom(); pgUpdatePending();
   const st=ed.querySelector(".pgside-t");
-  if(st) st.addEventListener("click",()=>{
-    const on=ed.querySelector(".pged-in").classList.toggle("sidehide");
-    st.textContent = on ? "⤡ 정보 보기" : "⤢ 사진 크게";
-  });
+  if(st) st.addEventListener("click",()=>
+    pgSideView(!ed.querySelector(".pged-in").classList.contains("sidehide")));
   const dt=ed.querySelector(".pgdone-top");
   if(dt) dt.addEventListener("click",()=>pgFinishPending());
   ed.querySelectorAll(".pgzoom button").forEach(b=>b.addEventListener("click",()=>{
     const z=b.dataset.z;
-    if(z==="in") pgZoom=Math.min(5,pgZoom*1.4);
-    else if(z==="out") pgZoom=Math.max(1,pgZoom/1.4);
+    if(z==="in") pgZoom=Math.min(5,pgZoom*1.25);
+    else if(z==="out") pgZoom=Math.max(0.5,pgZoom/1.25);   /* 100 → 80 → 64 … */
     else pgZoom=1;
     pgApplyZoom();
   }));
@@ -2066,7 +2076,8 @@ const pgClose=()=>{ $("pgEditor").classList.remove("show");
 const pgNewSello=(pageId,rect,ts)=>{
   const dNow=1;
   return {id:pgId(),pageId:pageId,rect:rect,day:dNow,date:pgDayDate(dNow),
-    time:"",place:"",town:"",lat:null,lon:null,note:"",del:false,ts:ts||Date.now()};
+    time:"",place:"",town:"",lat:null,lon:null,note:"",del:false,locked:false,
+    ts:ts||Date.now()};
 };
 
 const pgList=()=>{
@@ -2081,16 +2092,45 @@ const pgDraw=()=>{
   const wrap=document.querySelector(".pged-boxes"); if(!wrap) return;
   const list=pgList(), k=pgEditing.k, ro=!pgCanEdit(k);
   const HS=["nw","n","ne","e","se","s","sw","w"];
-  wrap.innerHTML=list.map((s,i)=>
-    '<div class="pgbox'+(ro?" ro":"")+(s.id===pgSel?" on":"")+'" data-id="'+s.id
-    +'" style="left:'+s.rect[0]+'%;top:'+s.rect[1]+'%;width:'+s.rect[2]+'%;height:'+s.rect[3]+'%">'
-    +'<span class="pgbn">'+(i+1)+'</span>'
-    +(ro?"":HS.map(m=>'<span class="pgh '+m+'" data-m="'+m+'"></span>').join(""))
-    +'</div>').join("");
+  wrap.innerHTML=list.map((s,i)=>{
+    const lock=!!s.locked;
+    return '<div class="pgbox'+(ro?" ro":"")+(lock?" locked":"")+(s.id===pgSel?" on":"")
+      +'" data-id="'+s.id+'" style="left:'+s.rect[0]+'%;top:'+s.rect[1]
+      +'%;width:'+s.rect[2]+'%;height:'+s.rect[3]+'%">'
+      +'<span class="pgbn'+(lock?" lk":"")+'" data-id="'+s.id+'">'
+      +(lock?"🔒":"")+(i+1)+'</span>'
+      +(ro||lock?"":HS.map(m=>'<span class="pgh '+m+'" data-m="'+m+'"></span>').join(""))
+      +'</div>';
+  }).join("");
   pgSide();
   if(!ro) pgBindBoxes();
-  wrap.querySelectorAll(".pgbox").forEach(b=>{
+  wrap.querySelectorAll(".pgbox:not(.locked)").forEach(b=>{
     b.addEventListener("click",e=>{e.stopPropagation();pgSelect(b.dataset.id);});
+    b.addEventListener("dblclick",e=>{        /* 두 번 누르면 정보 보기로 */
+      e.stopPropagation(); e.preventDefault();
+      pgSelect(b.dataset.id); pgSideView(false);
+    });
+  });
+  if(!ro) pgBindLocks(wrap);
+};
+
+/* 잠긴 도장의 🔒 배지 — 길게 누르면 풀림 (짧게 누르면 안내만) */
+const pgBindLocks=(wrap)=>{
+  wrap.querySelectorAll(".pgbox.locked .pgbn").forEach(bn=>{
+    let t=null, fired=false;
+    const clear=()=>{ clearTimeout(t); t=null; bn.classList.remove("holding"); };
+    bn.addEventListener("pointerdown",e=>{
+      e.stopPropagation(); e.preventDefault();
+      fired=false; bn.classList.add("holding");
+      try{ bn.setPointerCapture(e.pointerId); }catch(err){}
+      t=setTimeout(()=>{ fired=true; clear(); pgUnlock(bn.dataset.id); },700);
+    });
+    bn.addEventListener("pointerup",e=>{
+      e.stopPropagation();
+      if(!fired){ clear(); toast("🔒 잠긴 도장입니다 — 배지를 길게 누르면 풀립니다"); }
+    });
+    bn.addEventListener("pointercancel",clear);
+    bn.addEventListener("pointerleave",clear);
   });
 };
 
@@ -2321,15 +2361,17 @@ const pgSide=()=>{
     +'</div>'
     +(list.length>1
       ? '<div class="pgnums">'+list.map((x,n)=>
-          '<button type="button" class="'+(n===i?"on":"")+(x.place||x.town?" ok":"")
-          +'" data-id="'+x.id+'" title="'+pgEsc(x.place||x.town||"이름 없음")+'">'+(n+1)+'</button>').join("")
+          '<button type="button" class="'+(n===i?"on":"")+(x.locked?" lk":(x.place||x.town?" ok":""))
+          +'" data-id="'+x.id+'" title="'+pgEsc(x.place||x.town||"이름 없음")+'">'
+          +(x.locked?"🔒":"")+(n+1)+'</button>').join("")
         +'</div>'
       : '')
     +'<div class="pgfrm on" data-id="'+s.id+'">'+pgFrmHTML(s,i,page,ro)+'</div>'
-    +(!ro && pgPending===s.id
-      ? '<button type="button" class="pgdone">✓ 이 도장 완료</button>'
-        +'<p class="pgnav-h">완료를 누르면 다음 도장을 그릴 수 있습니다</p>'
-      : '<p class="pgnav-h">사진에서 다른 네모를 눌러도 그 도장으로 바뀝니다</p>');
+    +(ro ? ''
+      : s.locked
+        ? '<p class="pgnav-h">🔒 잠긴 도장입니다 — 사진의 <b>🔒 배지를 길게 누르면</b> 풀립니다</p>'
+        : '<button type="button" class="pgdone">✓ 이 도장 완료 🔒</button>'
+          +'<p class="pgnav-h">완료하면 잠기고 사진이 커집니다 — 바로 다음 도장을 그리세요</p>');
 
   const go=(n)=>{ const t=list[(n+list.length)%list.length]; if(t) pgSelect(t.id); };
   side.querySelector(".pgnav-p").addEventListener("click",()=>go(i-1));
@@ -2337,7 +2379,7 @@ const pgSide=()=>{
   side.querySelectorAll(".pgnums button").forEach(b2=>
     b2.addEventListener("click",()=>pgSelect(b2.dataset.id)));
   const done=side.querySelector(".pgdone");
-  if(done) done.addEventListener("click",pgFinishPending);
+  if(done) done.addEventListener("click",()=>pgFinishPending(s.id));
   pgBindFrm(side.querySelector(".pgfrm"));
 };
 
@@ -2355,7 +2397,7 @@ const pgBindBoxes=()=>{
   const stage=pgStage(); if(!stage||!pgEditing) return;
   const k=pgEditing.k; if(!pgCanEdit(k)) return;
   const MIN=2.5;
-  stage.querySelectorAll(".pgbox").forEach(box=>{
+  stage.querySelectorAll(".pgbox:not(.locked)").forEach(box=>{
     const id=box.dataset.id;
     const s=pgData[k].sellos.find(x=>x.id===id); if(!s) return;
     const start=(e,mode)=>{
@@ -2407,6 +2449,14 @@ const pgBindBoxes=()=>{
 let pgZoom=1;
 let pgPending=null;        /* 방금 만든 도장 — 완료를 눌러야 다음 네모를 그릴 수 있음 */
 
+/* 사진 크게(정보칸 접기) 전환 */
+const pgSideView=(hide)=>{
+  const inn=document.querySelector(".pged-in"); if(!inn) return;
+  inn.classList.toggle("sidehide",!!hide);
+  const st=document.querySelector(".pgside-t");
+  if(st) st.textContent = hide ? "⤡ 정보 보기" : "⤢ 사진 크게";
+};
+
 const pgApplyTip=()=>{
   const ed=$("pgEditor"); if(!ed) return;
   const tip=ed.querySelector(".pged-tip");
@@ -2419,22 +2469,42 @@ const pgApplyTip=()=>{
 const pgUpdatePending=()=>{
   const ed=$("pgEditor"); if(!ed) return;
   const b=ed.querySelector(".pgdone-top"); if(!b) return;
-  if(pgPending && pgEditing && pgCanEdit(pgEditing.k)){
-    const list=pgList(), n=list.findIndex(x=>x.id===pgPending);
+  if(!pgEditing || !pgCanEdit(pgEditing.k)){ b.hidden=true; return; }
+  const list=pgList();
+  const cur=list.find(x=>x.id===(pgPending||pgSel));
+  if(cur && !cur.locked){
+    const n=list.findIndex(x=>x.id===cur.id);
     b.hidden=false;
-    b.textContent="✓ "+(n>=0?("도장 "+(n+1)):"도장")+" 완료";
+    b.textContent="✓ 도장 "+(n+1)+" 완료 🔒";
   } else b.hidden=true;
 };
 
-const pgFinishPending=()=>{
-  if(!pgPending||!pgEditing) return;
+/* 완료 = 그 도장을 잠그고(🔒) 사진 크게 모드로 — 다음 도장 그리기에 집중 */
+const pgFinishPending=(id)=>{
+  if(!pgEditing) return;
   const k=pgEditing.k;
-  const s=pgData[k].sellos.find(x=>x.id===pgPending);
-  if(s && !(s.place||"").trim()){
-    if(!confirm("장소 이름이 비어 있습니다. 그대로 완료할까요?")){ pgSelect(pgPending); return; }
+  const target = id || pgPending || pgSel;
+  const s=pgData[k].sellos.find(x=>x.id===target); if(!s) return;
+  if(!(s.place||"").trim()){
+    if(!confirm("장소 이름이 비어 있습니다. 그대로 완료할까요?")){ pgSelect(s.id); return; }
   }
-  pgPending=null; pgUpdatePending(); pgSide();
-  toast("완료 — 이제 다음 도장을 그릴 수 있습니다");
+  s.locked=true; s.ts=Date.now();
+  if(pgPending===s.id) pgPending=null;
+  pgSel=null;
+  pgQueueSave(k);
+  pgDraw(); pgUpdatePending();
+  pgSideView(true);                      /* 사진을 크게 보여 다음 도장을 그리기 좋게 */
+  toast("🔒 도장을 잠갔습니다 — 빈 곳을 드래그해 다음 도장을 만드세요");
+};
+
+/* 잠금 풀기 (배지를 길게 누르면) */
+const pgUnlock=(id)=>{
+  if(!pgEditing) return;
+  const k=pgEditing.k;
+  const s=pgData[k].sellos.find(x=>x.id===id); if(!s) return;
+  s.locked=false; s.ts=Date.now();
+  pgQueueSave(k); pgDraw(); pgSelect(id); pgSideView(false);
+  toast("🔓 잠금을 풀었습니다 — 위치와 내용을 고칠 수 있습니다");
 };
 
 const pgApplyZoom=()=>{
@@ -2507,7 +2577,7 @@ const pgBindDrag=()=>{
     if(pts.size>=2 && mid0){                        /* 두 손가락: 밀어서 이동 · 오므려서 확대 */
       const m=midOf(), d=distOf();
       if(dist0>0){
-        const nz=Math.max(1,Math.min(5, zoom0*(d/dist0)));
+        const nz=Math.max(0.5,Math.min(5, zoom0*(d/dist0)));
         if(Math.abs(nz-pgZoom)>0.01){ pgZoom=nz; pgApplyZoom(); }
       }
       canvas.scrollLeft=spx-(m.x-mid0.x);
@@ -2573,7 +2643,7 @@ const pgOnSignedIn=()=>{
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260820-0144";
+  var BUILD="20260820-0201";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
