@@ -4435,11 +4435,85 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
 </script>
 
 <script>
+/* ══════════════════════════════════════════════════════════════════════
+   목차·바로가기 위치 보정
+   사진·지도·차트가 나중에 불러와지면서 위쪽 높이가 늘어나면,
+   먼저 뛰어간 자리가 아래로 밀려 "이전 섹션"이 보였습니다.
+   이동한 뒤 잠시 따라가며 목표 위치를 다시 맞춥니다.
+   ══════════════════════════════════════════════════════════════════════ */
+(function(){
+  "use strict";
+  var timers=[], watching=null, userMoved=false;
+
+  function marginOf(el){
+    var v=getComputedStyle(el).scrollMarginTop;
+    var n=parseFloat(v);
+    return isNaN(n)?0:n;
+  }
+  function off(el){
+    return el.getBoundingClientRect().top - marginOf(el);
+  }
+  function clearAll(){
+    timers.forEach(clearTimeout); timers=[]; watching=null;
+  }
+  function settle(el){
+    clearAll(); watching=el; userMoved=false;
+    /* 늦게 들어오는 사진·차트 때문에 밀리는지 확인하며 보정 */
+    [180,400,750,1200,1800,2600].forEach(function(ms){
+      timers.push(setTimeout(function(){
+        if(watching!==el || userMoved) return;
+        if(Math.abs(off(el))>14) el.scrollIntoView({block:"start"});
+      },ms));
+    });
+  }
+  function target(hash){
+    if(!hash || hash.length<2) return null;
+    try{ return document.querySelector(hash); }catch(e){ return null; }
+  }
+
+  document.addEventListener("click",function(e){
+    var a=e.target.closest && e.target.closest('a[href^="#"]');
+    if(!a) return;
+    var h=a.getAttribute("href");
+    if(!h || h==="#") return;
+    var el=target(h);
+    if(!el) return;
+    e.preventDefault();
+    try{ history.pushState(null,"",h); }catch(err){}
+    el.scrollIntoView({block:"start", behavior:"smooth"});
+    settle(el);
+  });
+
+  /* 사용자가 직접 스크롤하면 보정을 멈춥니다 */
+  ["wheel","touchstart","keydown","pointerdown"].forEach(function(ev){
+    window.addEventListener(ev,function(){ if(watching) userMoved=true; },{passive:true});
+  });
+
+  /* 주소에 #이 붙은 채로 열렸을 때도 같은 보정 */
+  function onHash(){
+    var el=target(location.hash);
+    if(el){ el.scrollIntoView({block:"start"}); settle(el); }
+  }
+  window.addEventListener("hashchange",onHash);
+  if(location.hash){
+    if(document.readyState==="loading")
+      document.addEventListener("DOMContentLoaded",function(){ setTimeout(onHash,60); });
+    else setTimeout(onHash,60);
+  }
+  /* 날짜 카드가 나중에 들어오므로, 그 시점에도 한 번 더 */
+  document.addEventListener("camino:days-ready",function(){
+    if(location.hash) setTimeout(onHash,80);
+  });
+})();
+
+</script>
+
+<script>
 /* ══════ 판(build) 표시 · 캐시 무시하고 다시 받기 ══════
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260820-0217";
+  var BUILD="20260820-0226";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){

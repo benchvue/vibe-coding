@@ -285,10 +285,14 @@
   .pged-canvas{overflow:auto;min-height:0;background:#2C2C2A;display:block}
   /* 사진과 네모를 같은 좌표계에 두는 무대 — 예전엔 스크롤 영역을 기준으로 계산해
      사진 아래쪽에서 드래그가 시작되지 않고 네모 위치도 어긋났습니다 */
-  .pged-stage{position:relative;width:100%;margin:0 auto;touch-action:none;transition:width .15s ease}
+  /* 길게 누를 때 뜨는 iOS 메뉴(복사·찾아보기·번역)와 이미지 저장 팝업 차단 */
+  .pged-stage{position:relative;width:100%;margin:0 auto;touch-action:none;transition:width .15s ease;
+    -webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+  .pged-stage img,.pgbox,.pgbn,.pgh,.pged-canvas{
+    -webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
   .pged-stage{cursor:crosshair}
   .pged-stage.grabbing{cursor:grabbing}
-  .pged-stage img{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none}
+  .pged-stage img{display:block;width:100%;height:auto;-webkit-user-drag:none;pointer-events:none}
   .pged-boxes{position:absolute;left:0;top:0;right:0;bottom:0}
   .pgbox{position:absolute;border:2px solid var(--flecha);background:rgba(245,185,23,.16);
     border-radius:4px;cursor:move;touch-action:none}
@@ -2065,6 +2069,10 @@ const pgOpen=(k,pageId)=>{
     +'</div></div>';
   const img=$("pgImg");
   img.crossOrigin="anonymous";
+  img.draggable=false;
+  /* 길게 누르기 메뉴가 뜨면 네모를 그리다 끊깁니다 */
+  ["contextmenu","dragstart","selectstart"].forEach(ev=>
+    ed.addEventListener(ev,e=>e.preventDefault()));
   img.src=pgImgUrl(page.fileId,1600);
   ed.querySelector(".pged-x").addEventListener("click",pgClose);
 
@@ -2660,7 +2668,7 @@ const pgOnSignedIn=()=>{
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260820-0217";
+  var BUILD="20260820-0226";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
