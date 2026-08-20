@@ -187,6 +187,22 @@
     padding:11px 14px;border:1px dashed var(--line);border-radius:var(--radius);background:#FBFAF5}
   .tdhint b{color:var(--blue)}
 
+  /* 담당 선택 (전체 / 공통 / Jin / Bin) */
+  .tdown{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;position:sticky;top:0;z-index:5;
+    background:var(--paper);padding:6px 0}
+  .tdown button{border:1px solid var(--line);background:#fff;color:var(--muted);border-radius:999px;
+    padding:8px 15px;font-size:12.5px;font-weight:600;font-family:inherit;white-space:nowrap}
+  .tdown button i{font-style:normal;font-size:11px;opacity:.65;margin-left:3px;
+    font-variant-numeric:tabular-nums}
+  .tdown button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+  .tdown button.on i{opacity:.8}
+  .tdcols.one{grid-template-columns:1fr;max-width:620px}
+
+  /* 순서를 옮긴 항목 표시 */
+  .tdlist li.moved{background:#FFF6D8;box-shadow:0 0 0 2px var(--flecha);animation:tdpop .5s ease}
+  @keyframes tdpop{from{background:var(--flecha)}to{background:#FFF6D8}}
+  .tdlist li .ops button:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
+
   /* ══════════════ 📕 여권(Credencial) ══════════════ */
   .pgbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
   .pgwho{border:1px solid var(--line);background:#fff;color:var(--muted);border-radius:999px;
@@ -281,9 +297,12 @@
     font-weight:700;border-radius:4px 0 4px 0;padding:1px 6px;pointer-events:none}
   .pgbox.on .pgbn{background:var(--ok);color:#fff}
   /* 8방향 손잡이 — 모서리 4개 + 변 4개 */
-  .pgh{position:absolute;background:#fff;border:2px solid var(--blue);border-radius:3px;
+  /* 손잡이는 "지금 고른" 네모에만 보입니다 (예전엔 모든 네모에 나와 여러 개가 선택된 듯 보였습니다) */
+  .pgh{display:none;position:absolute;background:#fff;border:2px solid var(--ok);border-radius:3px;
     width:12px;height:12px;touch-action:none}
-  .pgbox.on .pgh{border-color:var(--ok)}
+  .pgbox.on .pgh{display:block}
+  .pgbox:not(.on){opacity:.72}
+  .pgbox.on{opacity:1;z-index:2}
   .pgh.nw{left:-7px;top:-7px;cursor:nwse-resize}
   .pgh.ne{right:-7px;top:-7px;cursor:nesw-resize}
   .pgh.sw{left:-7px;bottom:-7px;cursor:nesw-resize}
@@ -469,6 +488,11 @@
   .pgnums button.ok{border-color:#9FCBB1;color:var(--ok)}
   .pgnums button.on{background:var(--blue);border-color:var(--blue);color:#fff}
   .pgnav-h{margin-top:10px;font-size:11px;color:var(--muted);text-align:center;line-height:1.6}
+
+  /* 도장 완료 버튼 */
+  .pgdone{display:block;width:100%;margin-top:10px;border:none;background:var(--ok);color:#fff;
+    border-radius:10px;padding:12px;font-size:14px;font-weight:700;font-family:inherit}
+  .pgdone:hover{background:var(--flecha);color:#3B2E00}
 </style>
 </head>
 <body>
@@ -1394,19 +1418,36 @@ const tdSetStatus = (msg, cls) => {
 const tdEsc = t => String(t==null?"":t)
   .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 
+let tdOwnerView = "all";     /* all | common | jin | bin */
+let tdMoved = null;          /* 방금 순서를 옮긴 항목 — 선택 표시가 따라가게 */
+
 const tdRender = () => {
   const root=$("todoRoot"); if(!root) return;
-  let h="";
+  const shown = TD.owners.filter(o=> tdOwnerView==="all" || o.k===tdOwnerView );
+  let h='<div class="tdown"><button type="button" data-o="all"'
+    +(tdOwnerView==="all"?' class="on"':'')+'>전체</button>'
+    + TD.owners.map(o=>{
+        let n=0, done=0;
+        TD.phases.forEach(p=>{
+          const arr=((tdData[o.k]||{})[p.k]||[]).filter(x=>!x.del);
+          n+=arr.length; done+=arr.filter(x=>x.done).length;
+        });
+        return '<button type="button" data-o="'+o.k+'"'+(tdOwnerView===o.k?' class="on"':'')+'>'
+          +o.icon+' '+o.label+' <i>'+done+'/'+n+'</i></button>';
+      }).join("")
+    +'</div>';
   TD.phases.forEach(p=>{
-    h+='<section class="tdphase"><h2>'+p.icon+' '+p.label+' <small>'+p.desc+'</small></h2><div class="tdcols">';
-    TD.owners.forEach(o=>{
+    h+='<section class="tdphase"><h2>'+p.icon+' '+p.label+' <small>'+p.desc+'</small></h2>'
+      +'<div class="tdcols'+(shown.length===1?" one":"")+'">';
+    shown.forEach(o=>{
       const items=((tdData[o.k]||{})[p.k]||[]).filter(x=>!x.del);
       const mine=canEdit(o.k), done=items.filter(x=>x.done).length;
       h+='<div class="tdlist'+(mine?" mine":" ro")+'" data-owner="'+o.k+'" data-phase="'+p.k+'">'
         +'<div class="tdhead">'+o.icon+' '+o.label
         +(mine?'':'<span class="ro">읽기 전용</span>')
         +'<span class="cnt">'+done+' / '+items.length+'</span></div><ul>';
-      if(!items.length) h+='<li class="empty">항목이 없습니다</li>';
+      if(!tdData[o.k]) h+='<li class="empty">불러오지 못했습니다 — 다시 불러오기를 눌러 주세요</li>';
+      else if(!items.length) h+='<li class="empty">항목이 없습니다</li>';
       items.forEach((it,ix)=>{
         h+='<li class="'+(it.done?"done":"")+'" data-id="'+it.id+'">'
           +'<input type="checkbox"'+(it.done?" checked":"")+(mine?"":" disabled")+'>'
@@ -1429,7 +1470,28 @@ const tdRender = () => {
     h+='</div></section>';
   });
   root.innerHTML=h;
+  root.querySelectorAll(".tdown button").forEach(b=>b.addEventListener("click",()=>{
+    tdOwnerView=b.dataset.o; tdMoved=null; tdRender();
+  }));
   tdBind();
+  /* 순서를 옮겼으면 그 항목을 다시 짚어 준다 — 연달아 ▲▼ 를 누를 수 있도록 */
+  if(tdMoved){
+    const li=document.querySelector('.tdlist[data-owner="'+tdMoved.owner+'"][data-phase="'
+      +tdMoved.phase+'"] li[data-id="'+tdMoved.id+'"]');
+    if(li){
+      li.classList.add("moved");
+      const btn=li.querySelector(tdMoved.dir<0?".up":".dn");
+      if(btn && !btn.disabled) btn.focus({preventScroll:true});
+      const box=li.closest(".tdlist ul");
+      if(box){
+        const t2=li.offsetTop, b2=t2+li.offsetHeight;
+        if(t2<box.scrollTop) box.scrollTop=t2-6;
+        else if(b2>box.scrollTop+box.clientHeight) box.scrollTop=b2-box.clientHeight+6;
+      }
+      setTimeout(()=>li.classList.remove("moved"),1200);
+    }
+    tdMoved=null;
+  }
 };
 
 const tdFind = (owner, phase, id) =>
@@ -1520,6 +1582,7 @@ const tdMove = (owner, phase, id, dir) => {
   const a=live[at].i, b=live[to].i;
   const t=arr[a]; arr[a]=arr[b]; arr[b]=t;
   arr[a].ts=tdNow(); arr[b].ts=tdNow();
+  tdMoved={owner:owner, phase:phase, id:id, dir:dir};
   tdQueueSave(owner); tdRender();
 };
 
@@ -2047,8 +2110,8 @@ const pgOpen=(k,pageId)=>{
   img.src=pgImgUrl(page.fileId,1600);
   ed.querySelector(".pged-x").addEventListener("click",pgClose);
 
-  /* 손가락으로 쓰는 기기는 "이동"으로 시작해야 사진을 훑어볼 수 있습니다 */
-  pgMode = ("ontouchstart" in window) ? "pan" : "draw";
+  pgMode = "draw";              /* 도장 표시가 기본 — 사진을 훑을 땐 ✋ 이동으로 */
+  pgPending = null;
   pgZoom = 1;
   pgApplyMode(); pgApplyZoom();
   ed.querySelectorAll(".pgseg button").forEach(b=>b.addEventListener("click",()=>{
@@ -2349,13 +2412,24 @@ const pgSide=()=>{
         +'</div>'
       : '')
     +'<div class="pgfrm on" data-id="'+s.id+'">'+pgFrmHTML(s,i,page,ro)+'</div>'
-    +'<p class="pgnav-h">사진에서 다른 네모를 눌러도 그 도장으로 바뀝니다</p>';
+    +(!ro && pgPending===s.id
+      ? '<button type="button" class="pgdone">✓ 이 도장 완료</button>'
+        +'<p class="pgnav-h">완료를 누르면 다음 도장을 그릴 수 있습니다</p>'
+      : '<p class="pgnav-h">사진에서 다른 네모를 눌러도 그 도장으로 바뀝니다</p>');
 
   const go=(n)=>{ const t=list[(n+list.length)%list.length]; if(t) pgSelect(t.id); };
   side.querySelector(".pgnav-p").addEventListener("click",()=>go(i-1));
   side.querySelector(".pgnav-n").addEventListener("click",()=>go(i+1));
   side.querySelectorAll(".pgnums button").forEach(b2=>
     b2.addEventListener("click",()=>pgSelect(b2.dataset.id)));
+  const done=side.querySelector(".pgdone");
+  if(done) done.addEventListener("click",()=>{
+    if(!s.place || !s.place.trim()){
+      if(!confirm("장소 이름이 비어 있습니다. 그대로 완료할까요?")) return;
+    }
+    pgPending=null; pgSide();
+    toast("완료 — 이제 다음 도장을 그릴 수 있습니다");
+  });
   pgBindFrm(side.querySelector(".pgfrm"));
 };
 
@@ -2423,6 +2497,7 @@ const pgBindBoxes=()=>{
 };
 
 let pgMode="draw", pgZoom=1;
+let pgPending=null;        /* 방금 만든 도장 — 완료를 눌러야 다음 네모를 그릴 수 있음 */
 
 const pgApplyMode=()=>{
   const ed=$("pgEditor"); if(!ed) return;
@@ -2455,6 +2530,11 @@ const pgBindDrag=()=>{
   stage.addEventListener("pointerdown",e=>{
     if(!pgEditing) return;
     if(e.target.closest(".pgbox")) return;      /* 네모 위는 네모가 처리 */
+    if(pgMode==="draw" && pgPending && pgCanEdit(pgEditing.k)){
+      toast("먼저 오른쪽에서 ✓ 이 도장 완료 를 눌러 마무리해 주세요");
+      pgSelect(pgPending);
+      return;
+    }
 
     if(pgMode==="pan" || !pgCanEdit(pgEditing.k)){
       if(e.pointerType==="touch") return;       /* 손가락은 브라우저 기본 스크롤에 맡김 */
@@ -2513,6 +2593,7 @@ const pgBindDrag=()=>{
     const k=pgEditing.k;
     const s=pgNewSello(pgEditing.pageId,[+x.toFixed(2),+y.toFixed(2),+w.toFixed(2),+h.toFixed(2)]);
     pgData[k].sellos.push(s);
+    pgPending=s.id;
     pgQueueSave(k); pgSel=s.id; pgDraw(); pgSelect(s.id);
   };
   stage.addEventListener("pointerup",end);
@@ -2538,7 +2619,7 @@ const pgOnSignedIn=()=>{
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260820-0110";
+  var BUILD="20260820-0126";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
