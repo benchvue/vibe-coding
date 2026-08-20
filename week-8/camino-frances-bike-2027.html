@@ -641,7 +641,8 @@
   .ppcerts h3{font-family:'Gowun Batang',serif;font-size:.95rem;color:var(--camino-blue);margin-bottom:4px}
   .ppcerts h3 small{font-weight:400;color:var(--ink-soft);font-size:.72rem;margin-left:6px}
   .ppcert-hint{font-size:.74rem;color:var(--ink-soft);line-height:1.7;margin-bottom:10px}
-  .ppcertrow{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px;align-items:start}
+  .ppcertrow{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:10px;align-items:start}
+  @media(max-width:900px){ .ppcertrow{grid-template-columns:1fr 1fr} }
   @media(max-width:700px){ .ppcertrow{grid-template-columns:1fr} }
   .ppcert{border:1px solid var(--line);border-radius:13px;overflow:hidden;background:#FFFDF7;
     display:flex;flex-direction:column}
@@ -678,6 +679,68 @@
   .buildline .buildreload{border:1px solid rgba(255,255,255,.28);background:transparent;
     color:#8FA3C8;border-radius:999px;padding:4px 11px;font-size:.68rem;cursor:pointer;font-family:inherit}
   .buildline .buildreload:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
+
+  /* ══════════════ Compostela 안내 카드 ══════════════ */
+  .cpg{padding:16px 16px 20px;border-top:1px solid var(--line);background:#FBFAF5}
+  .cpg > h3{font-family:'Gowun Batang',serif;font-size:1.05rem;color:var(--camino-blue);
+    margin-bottom:12px;padding-bottom:9px;border-bottom:2px solid var(--flecha)}
+  .cpg-b{margin-bottom:16px;background:#fff;border:1px solid var(--line);border-radius:12px;
+    padding:13px 15px 15px}
+  .cpg-b:last-child{margin-bottom:0}
+  .cpg-b > b{display:block;font-size:.88rem;color:var(--camino-blue);margin-bottom:9px}
+  .cpg-b.warn{background:#FFFBEE;border-color:#E7D9A8}
+  .cpg-p{font-size:.78rem;color:var(--ink-soft);line-height:1.75;margin-top:8px}
+
+  .cpg-l{list-style:none;padding:0;margin:0}
+  .cpg-l li{display:flex;gap:10px;align-items:baseline;padding:7px 0;font-size:.8rem;
+    line-height:1.7;border-bottom:1px dashed #F0EDE4}
+  .cpg-l li:last-child{border-bottom:none}
+  .cpg-l em{flex:0 0 46px;font-style:normal;font-size:.68rem;font-weight:700;color:#8A7F63;
+    background:#F4F2EA;border-radius:6px;padding:2px 0;text-align:center}
+  .cpg-l .ok{display:inline-block;font-size:.68rem;font-weight:700;color:var(--ok);
+    background:#E6F3EA;border-radius:999px;padding:1px 9px;margin-left:4px;white-space:nowrap}
+  .cpg-l .sub{display:block;font-size:.7rem;color:#A79E86;line-height:1.6;margin-top:2px}
+
+  .cpg-btn{display:inline-block;background:var(--camino-blue);color:#fff;text-decoration:none;
+    border-radius:999px;padding:11px 20px;font-size:.84rem;font-weight:700;margin-top:4px}
+  .cpg-btn:hover{background:var(--flecha);color:#3B2E00}
+  .cpg-reg{margin-top:14px;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);
+    gap:14px;align-items:start}
+  @media(max-width:700px){ .cpg-reg{grid-template-columns:1fr} }
+  .cpg-fig{margin:0}
+  .cpg-fig img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:9px;
+    background:#fff}
+  .cpg-fig figcaption{font-size:.68rem;color:var(--ink-soft);margin-top:5px;text-align:center}
+  .cpg-t{width:100%;border-collapse:collapse;font-size:.76rem}
+  .cpg-t th{text-align:left;color:var(--ink-soft);font-weight:400;padding:5px 8px 5px 0;
+    white-space:nowrap;vertical-align:top}
+  .cpg-t td{padding:5px 0;font-weight:600;color:var(--ink)}
+  .cpg-t tr + tr th,.cpg-t tr + tr td{border-top:1px dashed #F0EDE4}
+  .cpg-note{grid-column:1/-1;font-size:.74rem;color:var(--ink-soft);line-height:1.75;
+    background:#F4F2EA;border-radius:9px;padding:9px 12px}
+  .cpg-note b{color:var(--rioja)}
+
+  .cpg-c{list-style:none;padding:0;margin:0}
+  .cpg-c li{position:relative;padding:5px 0 5px 22px;font-size:.8rem;line-height:1.7}
+  .cpg-c li::before{content:"";position:absolute;left:2px;top:11px;width:9px;height:5px;
+    border-left:2px solid var(--ok);border-bottom:2px solid var(--ok);transform:rotate(-45deg)}
+
+  .cpg-s{list-style:none;counter-reset:s;padding:0;margin:0}
+  .cpg-s li{counter-increment:s;position:relative;padding:6px 0 6px 30px;font-size:.8rem;
+    line-height:1.7}
+  .cpg-s li::before{content:counter(s);position:absolute;left:0;top:6px;width:20px;height:20px;
+    border-radius:50%;background:var(--camino-blue);color:#fff;font-size:.64rem;font-weight:700;
+    display:flex;align-items:center;justify-content:center}
+  .cpg-s li:not(:last-child)::after{content:"";position:absolute;left:9.5px;top:26px;bottom:0;
+    width:1px;background:var(--line)}
+
+  .cpg-tw{overflow-x:auto}
+  .cpg-t2{width:100%;border-collapse:collapse;font-size:.78rem;min-width:340px}
+  .cpg-t2 th,.cpg-t2 td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left}
+  .cpg-t2 thead th{background:#F4F2EA;color:var(--camino-blue);font-size:.76rem}
+  .cpg-t2 tbody th{color:var(--ink-soft);font-weight:400;white-space:nowrap}
+  .cpg-t2 .yes{color:var(--ok);font-weight:700}
+  .cpg-t2 .no{color:#B9B3A4}
 
   /* ══════════════ 함께 쓰는 할 일 (Drive) ══════════════ */
   .tsload{padding:24px 16px;text-align:center;font-size:.82rem;color:var(--ink-soft);
@@ -3912,7 +3975,9 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       {k:"compostela", n:"Compostela",               sub:"순례 완주 증서", icon:"📜",
        d:"산티아고 대성당 순례자 사무소에서 발급하는 라틴어 완주 증서입니다."},
       {k:"distancia",  n:"Certificado de Distancia", sub:"거리 인증서",   icon:"📏",
-       d:"출발지와 완주 거리, 도착 날짜가 적힌 증서입니다."}
+       d:"출발지와 완주 거리, 도착 날짜가 적힌 증서입니다."},
+      {k:"registration", n:"Online Registration", sub:"온라인 등록 QR", icon:"",
+       d:"도착 전 온라인 등록을 마치면 나오는 QR과 등록번호입니다. 사무소에서 제시합니다."}
     ],
     startDate : new Date(2027,4,9)
   };
@@ -4175,8 +4240,8 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
         +'<p class="ppempty">아직 등록된 세요가 없습니다.<br>'
         +'여권 페이지를 사진으로 찍어 <b>upload-camino.html → 📕 여권</b> 탭에서 등록하면 '
         +'여기와 날짜별 카드에 자동으로 나타납니다.</p>'
-        + certHTML() +'</div>';
-      bindWho(root); bindCerts(root); return;
+        + guideHTML() + certHTML() +'</div>';
+      bindWho(root); bindCerts(root); bindGuide(root); return;
     }
     var days=0, okDays=0;
     for(var d=1;d<=PP.dayCount;d++){
@@ -4198,10 +4263,10 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       +'<div class="ppdays"></div>'
       +'<div class="ppgal"><h3>전체 세요 갤러리 <small>'+o.sellos.length+'개</small></h3>'
       +'<div class="ppgrid"></div></div>'
-      + certHTML()
+      + guideHTML() + certHTML()
       +'</div>';
     root.innerHTML=h;
-    bindWho(root); bindCerts(root);
+    bindWho(root); bindCerts(root); bindGuide(root);
 
     var dw=root.querySelector(".ppdays");
     for(var d2=1;d2<=PP.dayCount;d2++){
@@ -4218,6 +4283,76 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     var g=root.querySelector(".ppgrid");
     o.sellos.forEach(function(s,i){ g.appendChild(chip(who,s,i,o.sellos,"sm")); });
   }
+  /* ── Compostela 안내 카드 (도착 때 필요한 것만) ── */
+  var REG_URL="https://oficinadelperegrino.com/en/sigle-register/";
+  function guideHTML(){
+    return '<div class="cpg">'
+      +'<h3>Compostela — 순례 완주 증서</h3>'
+
+      +'<div class="cpg-b"><b>1. 자전거 순례자의 발급 조건</b>'
+        +'<ul class="cpg-l">'
+        +'<li><em>거리</em>Santiago까지 <b>마지막 200 km 이상</b> 자전거 주행 '
+          +'<span class="ok">이번 일정 808.5 km — 충족</span></li>'
+        +'<li><em>여권</em>Credencial(순례자 여권)에 경로를 따라 세요를 받을 것</li>'
+        +'<li><em>세요</em>마지막 구간은 <b>하루 2개</b>를 받아 두는 것이 안전합니다 '
+          +'<span class="sub">공식 규정문에는 개수가 명시되어 있지 않지만, 사무소 확인 관행입니다. '
+          +'이 사이트는 DAY '+PP.doubleFromDay+'부터 2개 기준으로 표시합니다</span></li>'
+        +'<li><em>도착</em>마지막 구간은 반드시 Santiago 대성당으로 들어오는 구간일 것</li>'
+        +'<li><em>목적</em>종교적·영적 목적 또는 신앙적 탐구의 순례</li>'
+        +'</ul></div>'
+
+      +'<div class="cpg-b"><b>2. 온라인 등록</b>'
+        +'<p class="cpg-p">도착 전에 미리 등록해 두면 사무소에서 훨씬 빠릅니다.</p>'
+        +'<a class="cpg-btn" href="'+REG_URL+'" target="_blank" rel="noopener">'
+        +'Pilgrim Office 온라인 등록 열기 &rarr;</a>'
+        +'<div class="cpg-reg">'
+          +'<figure class="cpg-fig">'
+            +'<img src="images/pilgrim-registration.jpg" alt="Pilgrim registration 화면 예시" loading="lazy">'
+            +'<figcaption>등록 화면 예시</figcaption></figure>'
+          +'<table class="cpg-t"><tbody>'
+            +'<tr><th>Way</th><td>French Way</td></tr>'
+            +'<tr><th>Conveyance</th><td>Bicycle</td></tr>'
+            +'<tr><th>Start of the way</th><td>Resto Europa</td></tr>'
+            +'<tr><th>Start date</th><td>5/9/2027</td></tr>'
+            +'<tr><th>Arrival date</th><td>5/21/2027</td></tr>'
+            +'<tr><th>Print mileage certificate</th><td>체크 (거리 인증서 같이 신청)</td></tr>'
+          +'</tbody></table>'
+          +'<p class="cpg-note"><b>메모</b> Start of the way 목록에 '
+          +'Saint-Jean-Pied-de-Port 가 없어 <b>Resto Europa</b>(스페인 밖 출발)를 골랐습니다. '
+          +'실제 출발지와 거리는 거리 인증서에 기재됩니다.</p>'
+        +'</div></div>'
+
+      +'<div class="cpg-b warn"><b>3. 등록 후 반드시 저장</b>'
+        +'<ul class="cpg-c">'
+          +'<li>Registration Code 적어 두기</li>'
+          +'<li>QR 화면 캡처</li>'
+          +'<li>휴대폰 사진첩에 보관 + 아래 <b>온라인 등록 QR</b> 칸에 올려 두기</li>'
+        +'</ul></div>'
+
+      +'<div class="cpg-b"><b>4. Santiago 도착 후</b>'
+        +'<ol class="cpg-s">'
+          +'<li>마지막 세요 받기</li><li>Pilgrim Reception Office 이동</li>'
+          +'<li>QR 또는 등록번호 제시</li><li>대기번호(QR 티켓) 받기</li>'
+          +'<li>Credencial 확인</li><li>Compostela 수령</li>'
+        +'</ol>'
+        +'<p class="cpg-p"><b>Rúa Carretas 33</b>, 15705 Santiago de Compostela · '
+        +'매일 <b>09:00–19:00</b> (12/25, 1/1 휴무)<br>'
+        +'대기표의 QR로 현재 순번을 실시간 확인할 수 있고, 성수기에는 당일 수령이 보장되지 않습니다.</p></div>'
+
+      +'<div class="cpg-b"><b>5. 두 증서의 차이</b>'
+        +'<div class="cpg-tw"><table class="cpg-t2"><thead><tr>'
+          +'<th></th><th>Compostela</th><th>Distance Certificate</th></tr></thead><tbody>'
+          +'<tr><th>의미</th><td>순례 완주 증서</td><td>실제 주행거리 증명</td></tr>'
+          +'<tr><th>거리 표시</th><td class="no">없음</td><td class="yes">있음</td></tr>'
+          +'<tr><th>출발지 표시</th><td class="no">없음</td><td class="yes">있음</td></tr>'
+          +'<tr><th>도착일</th><td class="yes">있음</td><td class="yes">있음</td></tr>'
+          +'<tr><th>가격</th><td>무료</td><td>3 €</td></tr>'
+        +'</tbody></table></div>'
+        +'<p class="cpg-p">Compostela 에는 808.5 km 가 남지 않습니다. '
+        +'이번 자전거 순례의 기록으로는 <b>거리 인증서를 함께 받는 편</b>을 권합니다.</p></div>'
+      +'</div>';
+  }
+
   /* ── 증서: Compostela → Certificado de Distancia 순서 ── */
   function certHTML(){
     var o=DATA[who]||{certs:{}}, C=o.certs||{};
@@ -4233,6 +4368,8 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       if(c.k==="distancia"){
         if(v.km!=null&&v.km!=="") meta.push((+v.km).toFixed(1)+" km");
         if(v.from) meta.push(v.from+" 출발");
+      }else if(c.k==="registration"){
+        if(v.code) meta.push("Code "+v.code);
       }else if(v.latin) meta.push(v.latin);
       h+='<div class="ppcert'+(v.fileId?"":" none")+'" data-c="'+c.k+'">'
         +'<div class="ppcert-t">'+c.icon+' <b>'+esc(c.n)+'</b><span>'+esc(c.sub)+'</span></div>'
@@ -4245,6 +4382,17 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
         +'</div>';
     });
     return h+'</div></div>';
+  }
+  function bindGuide(root){
+    var im=root.querySelector(".cpg-fig img"); if(!im) return;
+    var cand=["images/pilgrim-registration.jpg","images/pilgram.jpg",
+              "images/pilgrim-registration.png"], i=0;
+    im.onerror=function(){
+      i++;
+      if(i<cand.length){ im.src=cand[i]; return; }
+      im.onerror=null;
+      var f=im.closest(".cpg-fig"); if(f) f.style.display="none";
+    };
   }
   function bindCerts(root){
     var o=DATA[who]||{certs:{}}, C=o.certs||{};
@@ -4513,7 +4661,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260820-0226";
+  var BUILD="20260820-0247";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){

@@ -1698,7 +1698,8 @@ const PG = {
   startDate : new Date(2027,4,9),
   certs     : [
     {k:"compostela", n:"Compostela",                icon:"📜", d:"순례 완주 증서 — 대성당 순례자 사무소에서 발급"},
-    {k:"distancia",  n:"Certificado de Distancia",  icon:"📏", d:"거리 인증서 — 출발지와 완주 거리가 적힌 유료 증서"}
+    {k:"distancia",  n:"Certificado de Distancia",  icon:"📏", d:"거리 인증서 — 출발지와 완주 거리가 적힌 유료 증서 (3 €)"},
+    {k:"registration", n:"Online Registration QR",   icon:"",  d:"도착 전 온라인 등록 후 받은 QR 화면 캡처와 등록번호"}
   ]
 };
 
@@ -1983,7 +1984,10 @@ const pgCertHTML=(k,d)=>{
         : '<div class="pgcert-none">아직 등록하지 않았습니다</div>')
       +'<div class="pgcert-f">'
         +'<label>발급일<input type="date" data-cf="date" value="'+pgEsc(v.date||"")+'"'+(ro?" disabled":"")+'></label>'
-        +(c.k==="distancia"
+        +(c.k==="registration"
+          ? '<label>Registration Code<input type="text" data-cf="code" '
+            +'value="'+pgEsc(v.code||"")+'" placeholder="등록 완료 화면의 코드"'+(ro?" disabled":"")+'></label>'
+          : c.k==="distancia"
           ? '<label>거리 (km)<input type="number" step="0.1" data-cf="km" '
             +'value="'+pgEsc(v.km!=null?v.km:"")+'" placeholder="808.5"'+(ro?" disabled":"")+'></label>'
             +'<label>출발지<input type="text" data-cf="from" value="'+pgEsc(v.from||"")+'" '
@@ -2668,7 +2672,7 @@ const pgOnSignedIn=()=>{
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260820-0226";
+  var BUILD="20260820-0247";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
