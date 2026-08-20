@@ -154,12 +154,16 @@
   .tdlist li.done .tx{text-decoration:line-through;color:#9AA0AA}
   .tdlist li .by{flex:0 0 auto;font-size:10px;color:var(--muted);background:#EDEAE1;
     border-radius:999px;padding:1px 6px;margin-top:3px;white-space:nowrap}
-  .tdlist li .ops{flex:0 0 auto;display:flex;align-items:center;gap:1px;margin-top:1px;
-    opacity:.45;transition:opacity .15s}
+  .tdlist li .ops{flex:0 0 auto;display:flex;align-items:center;gap:2px;margin-top:1px;
+    opacity:.55;transition:opacity .15s}
   .tdlist li:hover .ops,.tdlist li.editing .ops{opacity:1}
-  @media(hover:none){ .tdlist li .ops{opacity:.9} }
+  @media(hover:none){ .tdlist li .ops{opacity:1} }
   .tdlist li .ops button{border:none;background:transparent;color:#8A8578;
     font-size:11px;line-height:1;padding:4px 4px;border-radius:6px}
+  /* 수정 아이콘은 가장 자주 쓰므로 맨 앞에 크게 */
+  .tdlist li .ops .ed{order:-1;font-size:16px;padding:5px 7px;margin-right:2px;
+    background:#F1EEE4;border:1px solid var(--line);opacity:1}
+  .tdlist li .ops .ed:hover{background:var(--flecha);border-color:var(--flecha)}
   .tdlist li .ops .del{font-size:15px;color:#C3BCA6}
   .tdlist li .ops button:hover{background:#EDEAE1;color:var(--blue)}
   .tdlist li .ops .del:hover{background:#F7DADA;color:var(--err)}
@@ -449,6 +453,22 @@
   .lockver .buildreload{border:1px solid var(--line);background:#fff;color:var(--muted);
     border-radius:999px;padding:4px 11px;font-size:11px;font-family:inherit;cursor:pointer}
   .lockver .buildreload:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
+
+  /* ── 도장 하나씩 편집 ── */
+  .pgnav{display:flex;align-items:center;gap:8px;margin-bottom:8px;
+    background:var(--blue);color:#fff;border-radius:999px;padding:5px 6px}
+  .pgnav button{flex:0 0 auto;border:none;background:rgba(255,255,255,.14);color:#fff;
+    width:30px;height:30px;border-radius:50%;font-size:12px;font-family:inherit}
+  .pgnav button:hover:not([disabled]){background:var(--flecha);color:#3B2E00}
+  .pgnav button[disabled]{opacity:.3}
+  .pgnav-c{flex:1;text-align:center;font-size:12.5px;letter-spacing:.02em}
+  .pgnav-c b{font-size:15px;font-family:'Gowun Batang',serif}
+  .pgnums{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+  .pgnums button{width:28px;height:28px;border:1px solid var(--line);background:#fff;
+    color:var(--muted);border-radius:8px;font-size:12px;font-weight:600;font-family:inherit}
+  .pgnums button.ok{border-color:#9FCBB1;color:var(--ok)}
+  .pgnums button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+  .pgnav-h{margin-top:10px;font-size:11px;color:var(--muted);text-align:center;line-height:1.6}
 </style>
 </head>
 <body>
@@ -1180,6 +1200,7 @@ const TD = {
 };
 
 let dbFolderId = null;
+let tdLoaded = false;      /* 여권 탭이 dbFolderId 를 먼저 채우면 할 일이 안 불러와지던 문제 방지 */
 let tdData = {};      /* {common:{pre:[],during:[],post:[]}, jin:{...}, bin:{...}} */
 let tdMeta = {};      /* {common:{id,modifiedTime}, ...} */
 let myRole = null;    /* "jin" | "bin" | null(공통만 편집) */
@@ -1310,6 +1331,7 @@ const tdLoad = () => {
     });
     return Promise.all(jobs);
   }).then(()=>{
+    tdLoaded = true;
     tdRender();
     tdSetStatus("불러오기 완료", "sav");
   }).catch(e=>{
@@ -1392,9 +1414,9 @@ const tdRender = () => {
           +(it.done&&it.by?'<span class="by">'+tdEsc(it.by)+'</span>':'')
           +(mine
             ?'<span class="ops">'
+              +'<button class="ed" title="내용 수정">✏️</button>'
               +'<button class="up" title="위로"'+(ix===0?" disabled":"")+'>▲</button>'
               +'<button class="dn" title="아래로"'+(ix===items.length-1?" disabled":"")+'>▼</button>'
-              +'<button class="ed" title="수정">✎</button>'
               +'<button class="del" title="삭제">×</button>'
             +'</span>'
             :'')
@@ -1515,12 +1537,12 @@ const showView = (which) => {
   $("viewPhotoBtn").classList.toggle("on", which==="photo");
   $("viewTodoBtn") .classList.toggle("on", which==="todo");
   $("viewPassBtn") .classList.toggle("on", which==="pass");
-  if(which==="todo" && !dbFolderId) tdLoad();
-  if(which==="pass" && !pgFolderId) pgLoad();
+  if(which==="todo" && !tdLoaded) tdLoad();
+  if(which==="pass" && !pgLoaded)  pgLoad();
 };
 $("viewPhotoBtn").addEventListener("click",()=>showView("photo"));
 $("viewTodoBtn") .addEventListener("click",()=>showView("todo"));
-$("tdReloadBtn") .addEventListener("click",()=>{ dbFolderId=null; tdLoad(); });
+$("tdReloadBtn") .addEventListener("click",()=>{ tdLoaded=false; tdLoad(); });
 $("tdSaveBtn")   .addEventListener("click",()=>{
   const jobs=[tdSave("common")];
   if(myRole) jobs.push(tdSave(myRole));
@@ -1578,7 +1600,7 @@ const PG_DAY_TOWNS = {
   13:["Arzúa","O Pedrouzo","Monte do Gozo","Santiago de Compostela"]
 };
 
-let pgFolderId=null, pgData={}, pgMeta={}, pgWho=null, pgEditing=null;
+let pgFolderId=null, pgLoaded=false, pgData={}, pgMeta={}, pgWho=null, pgEditing=null;
 const pgTimers={};
 const pgId=()=>"s"+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 const pgCanEdit=(k)=>k===pgWho;
@@ -1645,7 +1667,7 @@ const pgLoad=()=>{
       });
     })))
     .then(()=>pgEnsureImgFolder()).then(id=>{pgFolderId=id;})
-    .then(()=>{pgRender();pgStatus("불러오기 완료","sav");})
+    .then(()=>{pgLoaded=true;pgRender();pgStatus("불러오기 완료","sav");})
     .catch(e=>{pgStatus(e.message,"err");
       $("pgRoot").innerHTML='<div class="tdhint" style="color:var(--err)">⚠ '+pgEsc(e.message)+'</div>';});
 };
@@ -2099,25 +2121,11 @@ const pgDraw=()=>{
 let pgSel=null;
 /* 선택 표시만 바꿉니다 — 예전엔 여기서 옆 패널을 통째로 다시 그려서
    콤보를 누르면 목록이 사라지고 글자도 입력할 수 없었습니다 */
-const pgSelect=(id,noScroll)=>{
+const pgSelect=(id)=>{
   pgSel=id;
-  const inn=document.querySelector(".pged-in");
-  if(inn&&inn.classList.contains("sidehide")){     /* 정보를 넣어야 하니 자동으로 펼침 */
-    inn.classList.remove("sidehide");
-    const st=document.querySelector(".pgside-t"); if(st) st.textContent="⤢ 사진 크게";
-  }
   document.querySelectorAll(".pgbox").forEach(b=>b.classList.toggle("on",b.dataset.id===id));
-  document.querySelectorAll(".pgfrm").forEach(f=>f.classList.toggle("on",f.dataset.id===id));
-  if(noScroll) return;
-  /* scrollIntoView 는 바깥 화면까지 움직여서, 드래그 중에 사파리 주소창이 접혔다 펴지며
-     편집기 높이가 흔들렸습니다. 옆 패널 안에서만 직접 스크롤합니다. */
-  const el=document.querySelector('.pgfrm[data-id="'+id+'"]');
-  const side=$("pgSide");
-  if(el&&side){
-    const t=el.offsetTop, b=t+el.offsetHeight;
-    if(t<side.scrollTop) side.scrollTop=t-8;
-    else if(b>side.scrollTop+side.clientHeight) side.scrollTop=b-side.clientHeight+8;
-  }
+  const cur=document.querySelector(".pged-side .pgfrm");
+  if(!cur || cur.dataset.id!==id) pgSide();   /* 한 번에 하나만 보여 주므로 갈아 끼움 */
 };
 
 const pgFrmHTML=(s,i,page,ro)=>{
@@ -2319,13 +2327,36 @@ const pgSide=()=>{
   const page=pgData[k].pages.find(p=>p.id===pgEditing.pageId);
   if(!list.length){
     side.innerHTML='<p class="pgnone">아직 표시한 도장이 없습니다.<br>'
-      +'왼쪽 사진에서 도장을 <b>드래그</b>해 네모로 감싸거나, 위의 <b>🔍 자동 찾기</b>를 눌러 보세요.</p>';
+      +'사진 위를 <b>드래그하여 도장 1개씩 네모로 감싸세요</b>.<br>'
+      +'위의 <b>🔍 자동 찾기</b>로 후보를 한꺼번에 만들 수도 있습니다.</p>';
     return;
   }
-  side.innerHTML=list.map((s,i)=>
-    '<div class="pgfrm'+(s.id===pgSel?" on":"")+'" data-id="'+s.id+'">'+pgFrmHTML(s,i,page,ro)+'</div>'
-  ).join("");
-  side.querySelectorAll(".pgfrm").forEach(pgBindFrm);
+  /* 여러 개를 한 화면에 두면 헷갈리므로 고른 도장 하나만 보여 줍니다 */
+  let i=list.findIndex(x=>x.id===pgSel);
+  if(i<0){ i=0; pgSel=list[0].id; }
+  const s=list[i];
+
+  side.innerHTML=
+     '<div class="pgnav">'
+      +'<button type="button" class="pgnav-p"'+(list.length<2?" disabled":"")+'>◀</button>'
+      +'<span class="pgnav-c">도장 <b>'+(i+1)+'</b> / '+list.length+'</span>'
+      +'<button type="button" class="pgnav-n"'+(list.length<2?" disabled":"")+'>▶</button>'
+    +'</div>'
+    +(list.length>1
+      ? '<div class="pgnums">'+list.map((x,n)=>
+          '<button type="button" class="'+(n===i?"on":"")+(x.place||x.town?" ok":"")
+          +'" data-id="'+x.id+'" title="'+pgEsc(x.place||x.town||"이름 없음")+'">'+(n+1)+'</button>').join("")
+        +'</div>'
+      : '')
+    +'<div class="pgfrm on" data-id="'+s.id+'">'+pgFrmHTML(s,i,page,ro)+'</div>'
+    +'<p class="pgnav-h">사진에서 다른 네모를 눌러도 그 도장으로 바뀝니다</p>';
+
+  const go=(n)=>{ const t=list[(n+list.length)%list.length]; if(t) pgSelect(t.id); };
+  side.querySelector(".pgnav-p").addEventListener("click",()=>go(i-1));
+  side.querySelector(".pgnav-n").addEventListener("click",()=>go(i+1));
+  side.querySelectorAll(".pgnums button").forEach(b2=>
+    b2.addEventListener("click",()=>pgSelect(b2.dataset.id)));
+  pgBindFrm(side.querySelector(".pgfrm"));
 };
 
 /* 옆 패널의 미리보기만 갱신 (네모를 옮기거나 크기를 바꿨을 때) */
@@ -2347,7 +2378,7 @@ const pgBindBoxes=()=>{
     const s=pgData[k].sellos.find(x=>x.id===id); if(!s) return;
     const start=(e,mode)=>{
       e.preventDefault(); e.stopPropagation();
-      pgSelect(id,true);                       /* 드래그 중 화면이 흔들리지 않도록 */
+      pgSelect(id);
       const r=stage.getBoundingClientRect();
       const ox=(e.clientX-r.left)/r.width*100, oy=(e.clientY-r.top)/r.height*100;
       const r0=s.rect.slice();
@@ -2507,7 +2538,7 @@ const pgOnSignedIn=()=>{
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260819-1058";
+  var BUILD="20260820-0110";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
