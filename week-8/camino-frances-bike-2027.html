@@ -4834,10 +4834,15 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     fetch(a.getAttribute("href"),{cache:"force-cache"})
       .then(function(r){ if(!r.ok) throw 0; return r.text(); })
       .then(function(t){
+        a._text=t;                                   /* 눌렀을 때 바로 쓰려고 보관 */
         var pts=parse(t);
         if(pts.length<2) throw 0;
         draw(box,pts);
-        if(sub) sub.textContent="GPX · "+km(pts).toFixed(1)+" km · "+pts.length.toLocaleString()+"점";
+        if(sub){
+          var share=!!(navigator.canShare && navigator.share);
+          sub.textContent=km(pts).toFixed(1)+" km · "+(share?"저장 · 앱으로 보내기":"GPX 내려받기");
+          a._sub=sub.textContent;
+        }
       })
       .catch(function(){
         box.classList.add("na");
@@ -4845,9 +4850,79 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       });
   }
 
+  /* ── 내려받기 / 공유 ──
+     아이폰 사파리는 download 속성을 무시하고 .gpx 를 글자로 펼쳐 보여 줍니다.
+     휴대폰에서는 공유 시트를 띄워 "파일에 저장" 하거나 내비 앱으로 바로 보내게 합니다. */
+  var MIME="application/gpx+xml";
+
+  function fileOf(a){
+    if(!a._text) return null;
+    var name=a.getAttribute("download")||"route.gpx";
+    try{ return new File([a._text], name, {type:MIME}); }catch(e){ return null; }
+  }
+  function saveBlob(a,txt){
+    var name=a.getAttribute("download")||"route.gpx";
+    var url=URL.createObjectURL(new Blob([txt],{type:"application/octet-stream"}));
+    var t=document.createElement("a");
+    t.href=url; t.download=name; t.rel="noopener";
+    document.body.appendChild(t); t.click();
+    setTimeout(function(){ document.body.removeChild(t); URL.revokeObjectURL(url); },1500);
+  }
+  function note(a,msg,ms){
+    var sub=a.querySelector(".gpxlab small"); if(!sub) return;
+    if(a._note) clearTimeout(a._note);
+    if(!a._sub) a._sub=sub.textContent;
+    sub.textContent=msg;
+    a._note=setTimeout(function(){ sub.textContent=a._sub; },ms||2200);
+  }
+
+  function onClick(e){
+    var a=e.currentTarget;
+    var f=fileOf(a);
+
+    /* ① 파일 공유가 되는 기기(아이폰·안드로이드) — 손짓이 살아 있을 때 곧바로 호출 */
+    if(f && navigator.canShare && navigator.canShare({files:[f]}) && navigator.share){
+      e.preventDefault();
+      navigator.share({files:[f], title:a.getAttribute("download")})
+        .catch(function(err){
+          if(err && err.name==="AbortError") return;   /* 사용자가 닫은 것 */
+          saveBlob(a,a._text);
+        });
+      return;
+    }
+
+    /* ② 내용을 이미 갖고 있으면 Blob 으로 저장 (사파리도 이 방식은 잘 받습니다) */
+    if(a._text){
+      e.preventDefault();
+      saveBlob(a,a._text);
+      return;
+    }
+
+    /* ③ 아직 못 읽었으면 받아서 처리 — 실패하면 원래 링크 동작으로 */
+    e.preventDefault();
+    note(a,"준비 중…",6000);
+    fetch(a.getAttribute("href"),{cache:"force-cache"})
+      .then(function(r){ if(!r.ok) throw 0; return r.text(); })
+      .then(function(t){
+        a._text=t;
+        var f2=fileOf(a);
+        if(f2 && navigator.canShare && navigator.canShare({files:[f2]}) && navigator.share)
+          return navigator.share({files:[f2], title:a.getAttribute("download")})
+            .catch(function(err){ if(!(err&&err.name==="AbortError")) saveBlob(a,t); });
+        saveBlob(a,t);
+      })
+      .catch(function(){ location.href=a.getAttribute("href"); });
+  }
+
   function boot(){
     var list=[].slice.call(document.querySelectorAll(".gpxbtn"));
     if(!list.length) return;
+    var canShare=!!(navigator.canShare && navigator.share);
+    list.forEach(function(a){
+      a.addEventListener("click",onClick);
+      var sub=a.querySelector(".gpxlab small");
+      if(sub && canShare) sub.textContent="GPX 저장 · 앱으로 보내기";
+    });
     if(!("IntersectionObserver" in window)){ list.forEach(load); return; }
     var io=new IntersectionObserver(function(es){
       es.forEach(function(e){
@@ -4868,7 +4943,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260821-0242";
+  var BUILD="20260821-0250";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
