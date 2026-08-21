@@ -490,6 +490,18 @@
   .gpxbtn:hover .gpxdl{background:var(--flecha)}
   @media(max-width:760px){ .gpxbtn{max-width:230px} }
   @media print{ .gpxbtn{display:none} }
+  .gpxlab b i{display:inline-block;font-style:normal;font-size:.56rem;font-weight:700;
+    color:#7A2E12;background:#FBE3D4;border:1px solid #F0C6AC;border-radius:999px;
+    padding:0 6px;margin-left:5px;vertical-align:1px;letter-spacing:.02em}
+  .gpxbtn.bike{border-color:#E3C9B8}
+  .gpxbtn.bike .gpxthumb{background:#FDF6F1;border-color:#F0DDD1}
+  .gpxsrc{margin-top:10px;padding:11px 14px;border:1px dashed var(--line);border-radius:12px;
+    background:#FBFAF5;font-size:.78rem;line-height:1.8;color:var(--ink-soft)}
+  .gpxsrc b{color:var(--camino-blue)}
+  .gpxsrc i{font-style:normal;font-size:.68rem;font-weight:700;color:#7A2E12;background:#FBE3D4;
+    border-radius:999px;padding:1px 7px}
+  .gpxsrc small{display:block;margin-top:6px;font-size:.71rem;color:#A79E86;line-height:1.75}
+  .gpxsrc small b{color:var(--rioja)}
 
   /* ── DAY별 날씨 카드 ───────────────────────────── */
   .dwx{padding:2px 14px 14px}
@@ -1003,6 +1015,7 @@
       <p>각 카드의 QR 코드를 휴대폰 카메라로 스캔하거나 버튼을 누르면
       해당 구간의 <b>구글 지도 자전거 길찾기</b>가 바로 열립니다.
       ※ 구글 자전거 경로는 일부 비포장 카미노 구간을 인근 도로로 우회할 수 있습니다.</p>
+      <p class="gpxsrc"><b>자전거 내비게이션 (GPX)</b> — 가민 등 GPS 기기에 넣는 파일입니다. 트랙에 고도가 들어 있고, 순례자 알베르게가 경로 순서대로 웨이포인트로 붙어 있습니다(전체 442곳).<br>짐 실은 자전거로 내려가기 어려운 <b>급경사 18곳</b>이 있는 <b>5일치</b>는 포장도로 우회로로 갈아 끼웠습니다 (DAY 1 · 2 · 10 · 11 · 12, <i>우회</i> 표시).<small>트랙 출처 santiago.nl 도보 노선 · 고도 Copernicus EU-DEM · 알베르게 santiago.nl 시설 자료 · 2026-08-21 생성. GPX 에는 <b>노면 정보가 없습니다</b> — 우회로는 경사 기준으로만 골랐고 자갈·포장 여부를 확인한 것이 아닙니다. 재배포 시 출처 표기와 원 자료 라이선스 확인이 필요합니다.</small></p>
     </div>
     
 <div id="daysHost" data-src="camino-days.html">
@@ -4778,6 +4791,10 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     }
     return pts;
   }
+  function wpt(txt){
+    var m=txt.match(/<wpt[\s>]/g);
+    return m?m.length:0;
+  }
   function km(pts){
     var R=6371, rad=Math.PI/180, d=0;
     for(var i=1;i<pts.length;i++){
@@ -4839,8 +4856,11 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
         if(pts.length<2) throw 0;
         draw(box,pts);
         if(sub){
-          var share=!!(navigator.canShare && navigator.share);
-          sub.textContent=km(pts).toFixed(1)+" km · "+(share?"저장 · 앱으로 보내기":"GPX 내려받기");
+          var w=wpt(t), bits=[];
+          bits.push((a.dataset.km||km(pts).toFixed(1))+" km");
+          if(w) bits.push("알베르게 "+w+"곳");
+          if(a.dataset.note) bits.push(a.dataset.note);
+          sub.textContent=bits.join(" · ");
           a._sub=sub.textContent;
         }
       })
@@ -4920,8 +4940,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     var canShare=!!(navigator.canShare && navigator.share);
     list.forEach(function(a){
       a.addEventListener("click",onClick);
-      var sub=a.querySelector(".gpxlab small");
-      if(sub && canShare) sub.textContent="GPX 저장 · 앱으로 보내기";
+      a.title = canShare ? "눌러서 저장하거나 내비 앱으로 보내기" : "눌러서 GPX 내려받기";
     });
     if(!("IntersectionObserver" in window)){ list.forEach(load); return; }
     var io=new IntersectionObserver(function(es){
@@ -4943,7 +4962,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260821-0250";
+  var BUILD="20260821-1847";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
