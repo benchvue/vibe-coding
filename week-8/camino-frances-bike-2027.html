@@ -466,6 +466,31 @@
     background:#FFFDF6;border-radius:12px}
   .dmap.dsvg img{min-height:1px}
 
+  /* ── 자전거 내비게이션 (GPX) 내려받기 ── */
+  .gpxbtn{position:relative;display:flex;align-items:center;gap:9px;width:100%;
+    background:#fff;border:1px solid #D4DFF2;border-radius:10px;padding:7px 9px;
+    text-decoration:none;color:var(--ink);transition:border-color .2s,box-shadow .2s,transform .2s}
+  .gpxbtn:hover{border-color:var(--flecha);box-shadow:0 4px 12px rgba(21,42,85,.13);transform:translateY(-1px)}
+  .gpxthumb{flex:0 0 62px;height:38px;border-radius:7px;background:#F2F6FD;
+    border:1px solid #E1E9F6;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .gpxthumb.ok{background:#FBFAF5}
+  .gpxthumb.na::after{content:"GPX";font-size:.6rem;font-weight:700;color:#A9BAD6;letter-spacing:.06em}
+  .gpxlab{flex:1;min-width:0;line-height:1.3}
+  .gpxlab b{display:block;font-size:.74rem;color:var(--camino-blue)}
+  .gpxlab small{display:block;font-size:.62rem;color:var(--ink-soft);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  /* 반투명 내려받기 아이콘 */
+  .gpxdl{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:22px;height:22px;
+    border-radius:50%;background:rgba(30,58,110,.10);display:flex;align-items:center;
+    justify-content:center;transition:background .2s}
+  .gpxdl::before{content:"";width:8px;height:8px;border-left:2px solid var(--camino-blue);
+    border-bottom:2px solid var(--camino-blue);transform:rotate(-45deg) translate(-1px,-1px)}
+  .gpxdl::after{content:"";position:absolute;bottom:4px;width:11px;height:2px;
+    background:var(--camino-blue);border-radius:1px;opacity:.75}
+  .gpxbtn:hover .gpxdl{background:var(--flecha)}
+  @media(max-width:760px){ .gpxbtn{max-width:230px} }
+  @media print{ .gpxbtn{display:none} }
+
   /* ── DAY별 날씨 카드 ───────────────────────────── */
   .dwx{padding:2px 14px 14px}
   .dwx h4{font-size:.8rem;color:var(--camino-blue);font-weight:700;margin-bottom:8px;
@@ -4729,11 +4754,121 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
 </script>
 
 <script>
+/* ══════════════════════════════════════════════════════════════════════
+   자전거 내비게이션 (GPX) 내려받기 버튼
+   · 링크 자체는 순수 HTML 이라 자바스크립트가 없어도 내려받아집니다.
+   · 화면에 들어올 때만 GPX 를 읽어 경로 모양을 작은 지도로 그립니다
+     (12개 파일 합계 약 1.6MB — 한꺼번에 받지 않도록 지연 처리)
+   ══════════════════════════════════════════════════════════════════════ */
+(function(){
+  "use strict";
+
+  function parse(txt){
+    var pts=[], re=/<trkpt[^>]*lat="([-\d.]+)"[^>]*lon="([-\d.]+)"/g, m;
+    while((m=re.exec(txt))){
+      var la=parseFloat(m[1]), lo=parseFloat(m[2]);
+      if(!isNaN(la)&&!isNaN(lo)) pts.push([la,lo]);
+    }
+    if(!pts.length){                                   /* lon 이 먼저 오는 파일 대비 */
+      re=/<trkpt[^>]*lon="([-\d.]+)"[^>]*lat="([-\d.]+)"/g;
+      while((m=re.exec(txt))){
+        var lo2=parseFloat(m[1]), la2=parseFloat(m[2]);
+        if(!isNaN(la2)&&!isNaN(lo2)) pts.push([la2,lo2]);
+      }
+    }
+    return pts;
+  }
+  function km(pts){
+    var R=6371, rad=Math.PI/180, d=0;
+    for(var i=1;i<pts.length;i++){
+      var a=pts[i-1], b=pts[i];
+      var dla=(b[0]-a[0])*rad, dlo=(b[1]-a[1])*rad;
+      var h=Math.sin(dla/2)*Math.sin(dla/2)
+        + Math.cos(a[0]*rad)*Math.cos(b[0]*rad)*Math.sin(dlo/2)*Math.sin(dlo/2);
+      d+=2*R*Math.asin(Math.min(1,Math.sqrt(h)));
+    }
+    return d;
+  }
+  function thin(pts,max){
+    if(pts.length<=max) return pts;
+    var step=pts.length/max, out=[];
+    for(var i=0;i<max;i++) out.push(pts[Math.floor(i*step)]);
+    out.push(pts[pts.length-1]);
+    return out;
+  }
+
+  function draw(box, pts){
+    var W=118, H=62, P=7;
+    var p=thin(pts,240);
+    var la=p.map(function(x){return x[0];}), lo=p.map(function(x){return x[1];});
+    var la0=Math.min.apply(null,la), la1=Math.max.apply(null,la);
+    var lo0=Math.min.apply(null,lo), lo1=Math.max.apply(null,lo);
+    /* 위도에 따라 경도 폭이 줄어드는 것을 반영 */
+    var kx=Math.cos((la0+la1)/2*Math.PI/180);
+    var w=Math.max(1e-6,(lo1-lo0)*kx), h=Math.max(1e-6,la1-la0);
+    var s=Math.min((W-P*2)/w,(H-P*2)/h);
+    var ox=(W-w*s)/2, oy=(H-h*s)/2;
+    var d=p.map(function(x,i){
+      var X=ox+(x[1]-lo0)*kx*s, Y=H-(oy+(x[0]-la0)*s);
+      return (i?"L":"M")+X.toFixed(1)+" "+Y.toFixed(1);
+    }).join("");
+    var f=p[0], e=p[p.length-1];
+    function xy(x){ return [ox+(x[1]-lo0)*kx*s, H-(oy+(x[0]-la0)*s)]; }
+    var fa=xy(f), ea=xy(e);
+    box.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="100%" aria-hidden="true">'
+      +'<path d="'+d+'" fill="none" stroke="#1E3A6E" stroke-opacity=".25" stroke-width="4.5" '
+      +'stroke-linecap="round" stroke-linejoin="round"/>'
+      +'<path d="'+d+'" fill="none" stroke="#8E2C3A" stroke-width="2" '
+      +'stroke-linecap="round" stroke-linejoin="round"/>'
+      +'<circle cx="'+fa[0].toFixed(1)+'" cy="'+fa[1].toFixed(1)+'" r="3" fill="#fff" stroke="#1E7A46" stroke-width="2"/>'
+      +'<circle cx="'+ea[0].toFixed(1)+'" cy="'+ea[1].toFixed(1)+'" r="3" fill="#fff" stroke="#8E2C3A" stroke-width="2"/>'
+      +'</svg>';
+    box.classList.add("ok");
+  }
+
+  function load(a){
+    if(a.dataset.done) return;
+    a.dataset.done="1";
+    var box=a.querySelector(".gpxthumb");
+    var sub=a.querySelector(".gpxlab small");
+    fetch(a.getAttribute("href"),{cache:"force-cache"})
+      .then(function(r){ if(!r.ok) throw 0; return r.text(); })
+      .then(function(t){
+        var pts=parse(t);
+        if(pts.length<2) throw 0;
+        draw(box,pts);
+        if(sub) sub.textContent="GPX · "+km(pts).toFixed(1)+" km · "+pts.length.toLocaleString()+"점";
+      })
+      .catch(function(){
+        box.classList.add("na");
+        if(sub) sub.textContent="GPX 내려받기";
+      });
+  }
+
+  function boot(){
+    var list=[].slice.call(document.querySelectorAll(".gpxbtn"));
+    if(!list.length) return;
+    if(!("IntersectionObserver" in window)){ list.forEach(load); return; }
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if(e.isIntersecting){ load(e.target); io.unobserve(e.target); }
+      });
+    },{rootMargin:"300px"});
+    list.forEach(function(a){ io.observe(a); });
+  }
+  if(window.onCaminoDays) window.onCaminoDays(boot);
+  else if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",boot);
+  else boot();
+})();
+
+</script>
+
+<script>
 /* ══════ 판(build) 표시 · 캐시 무시하고 다시 받기 ══════
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260820-0255";
+  var BUILD="20260821-0242";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
