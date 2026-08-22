@@ -571,6 +571,93 @@
     font-size:.76rem;color:var(--ink-soft);line-height:1.7}
   .jlegsum b{color:var(--rioja);font-variant-numeric:tabular-nums}
 
+  /* 항공 · 환승 안내 그림 */
+  .afig{margin:0 0 16px;border:1px solid var(--line);border-radius:14px;background:#fff;
+    padding:12px;box-shadow:0 2px 10px rgba(21,42,85,.06)}
+  .afig img{display:block;width:100%;height:auto;border-radius:9px;cursor:zoom-in}
+  .afig figcaption{margin-top:9px;font-size:.76rem;color:var(--ink-soft);line-height:1.75}
+  .afig figcaption b{color:var(--camino-blue)}
+  .afig.bin{border-color:#C7D6EE;background:#FAFCFF}
+  .afig.bin figcaption b{color:var(--camino-blue)}
+  .afig.jin{border-color:#E3C9B8;background:#FFFCFA}
+  .afig.jin figcaption b{color:var(--rioja)}
+  /* 안내 그림 크게 보기 */
+  .bigview{position:fixed;inset:0;z-index:125;background:rgba(11,16,30,.94);display:none;
+    align-items:center;justify-content:center;padding:18px;overflow:auto}
+  .bigview.show{display:flex}
+  .bigview img{max-width:100%;max-height:92vh;max-height:92dvh;display:block;border-radius:10px;background:#fff}
+  .bv-x{position:absolute;right:14px;top:14px;width:36px;height:36px;border-radius:50%;
+    border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:#fff;
+    cursor:pointer;font-size:1rem;font-family:inherit;line-height:1}
+  .bv-x:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
+  @media print{ .bigview{display:none!important} }
+
+  /* ── 생장 도착 후 · 자전거 사전 예약 ── */
+  .jp{font-size:.8rem;color:var(--ink-soft);line-height:1.8;margin-bottom:12px}
+  .jp b{color:var(--rioja)}
+  .jarr{border:1px solid var(--line);border-radius:14px;background:#fff;padding:14px 16px;margin-bottom:20px}
+  .jsteps{list-style:none;counter-reset:js;padding:0;margin:0}
+  .jsteps li{counter-increment:js;position:relative;padding:9px 0 9px 32px;font-size:.81rem;
+    line-height:1.65;border-bottom:1px dashed #F0EDE4}
+  .jsteps li:last-child{border-bottom:none}
+  .jsteps li::before{content:counter(js);position:absolute;left:0;top:11px;width:21px;height:21px;
+    border-radius:50%;background:var(--camino-blue);color:#fff;font-size:.63rem;font-weight:700;
+    display:flex;align-items:center;justify-content:center}
+  .jsteps li:not(:last-child)::after{content:"";position:absolute;left:10px;top:34px;bottom:0;
+    width:1px;background:var(--line)}
+  .jsteps b{color:var(--camino-blue);font-variant-numeric:tabular-nums}
+  .jsteps small{display:block;font-size:.72rem;color:var(--ink-soft);margin-top:2px;line-height:1.7}
+
+  .jbike{border:1px solid var(--line);border-radius:14px;background:#fff;padding:14px 16px 16px;
+    margin-bottom:20px}
+  .jbike > div > b{display:block;font-size:.84rem;color:var(--camino-blue);margin-bottom:9px}
+  .jb-cmp{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:16px}
+  @media(max-width:700px){ .jb-cmp{grid-template-columns:1fr} }
+  .jb-bad,.jb-good{border-radius:11px;padding:11px 13px;font-size:.78rem;line-height:1.75}
+  .jb-bad{background:#FBF3F3;border:1px solid #E8CFCF;color:#7A4A4A}
+  .jb-good{background:#F1F8F3;border:1px solid #C4E0CD;color:#2F5D45}
+  .jb-bad i,.jb-good i{display:block;font-style:normal;font-weight:700;font-size:.74rem;margin-bottom:4px;
+    letter-spacing:.02em}
+  .jb-bad em,.jb-good em{display:block;font-style:normal;font-weight:700;font-size:.74rem;margin-top:6px}
+  .jb-bad em{color:var(--err)} .jb-good em{color:var(--ok)}
+
+  .jb-list{list-style:none;padding:0;margin:0 0 16px;display:grid;
+    grid-template-columns:1fr 1fr;gap:2px 14px}
+  @media(max-width:700px){ .jb-list{grid-template-columns:1fr} }
+  .jb-list li{position:relative;padding:5px 0 5px 18px;font-size:.79rem;line-height:1.65;
+    color:var(--ink-soft)}
+  .jb-list li::before{content:"";position:absolute;left:3px;top:12px;width:5px;height:5px;
+    border-radius:50%;background:var(--flecha)}
+  .jb-list b{color:var(--ink)}
+  .jb-list small{color:#A79E86;font-size:.7rem;margin-left:3px}
+
+  .jb-mail{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  @media(max-width:820px){ .jb-mail{grid-template-columns:1fr} }
+  .jb-m{border:1px solid var(--line);border-radius:11px;overflow:hidden;background:#FBFAF5}
+  .jb-mh{display:flex;align-items:center;gap:8px;padding:8px 11px;background:#F1EEE4;
+    border-bottom:1px solid var(--line);font-size:.75rem;font-weight:700;color:var(--camino-blue)}
+  .jcopy{margin-left:auto;border:1px solid var(--line);background:#fff;color:var(--ink-soft);
+    border-radius:999px;padding:3px 11px;font-size:.68rem;font-family:inherit;cursor:pointer}
+  .jcopy:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
+  .jcopy.done{background:var(--ok);color:#fff;border-color:var(--ok)}
+  .jb-m pre{margin:0;padding:11px 13px;font-family:'IBM Plex Mono',ui-monospace,monospace;
+    font-size:.72rem;line-height:1.75;color:var(--ink);white-space:pre-wrap;word-break:break-word}
+  .jb-note{margin-top:12px;padding:10px 13px;background:#FFFBEE;border:1px solid #E7D9A8;
+    border-radius:10px;font-size:.77rem;line-height:1.75;color:var(--ink-soft)}
+  .jb-note b{color:#8A6A12}
+
+  .jfinal{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:20px}
+  @media(max-width:900px){ .jfinal{grid-template-columns:1fr 1fr} }
+  @media(max-width:520px){ .jfinal{grid-template-columns:1fr} }
+  .jf-col{border:1px solid var(--line);border-radius:12px;background:#fff;padding:11px 13px}
+  .jf-col b{display:block;font-size:.78rem;color:var(--camino-blue);margin-bottom:7px;
+    padding-bottom:6px;border-bottom:1px solid var(--line)}
+  .jf-col ul{list-style:none;padding:0;margin:0}
+  .jf-col li{position:relative;padding:4px 0 4px 17px;font-size:.76rem;line-height:1.6;
+    color:var(--ink-soft)}
+  .jf-col li::before{content:"";position:absolute;left:2px;top:10px;width:8px;height:4px;
+    border-left:1.6px solid var(--ok);border-bottom:1.6px solid var(--ok);transform:rotate(-45deg)}
+
   /* ── DAY별 날씨 카드 ───────────────────────────── */
   .dwx{padding:2px 14px 14px}
   .dwx h4{font-size:.8rem;color:var(--camino-blue);font-weight:700;margin-bottom:8px;
@@ -1184,7 +1271,7 @@
           <li><b>14:05</b> Bayonne 도착 → 전광판에서 생장행 TER 승강장 확인 <small>환승 20분</small></li>
           <li><b>14:25</b> Bayonne 출발 <small>TER · 약 1시간 1분</small></li>
           <li class="jgoal"><b>15:26</b> Saint-Jean-Pied-de-Port 도착
-            <small>숙소 체크인 → 자전거 수령 → 순례자 사무소에서 크레덴시알 발급</small></li>
+            <small>호텔 체크인 → <b>미리 배달된 렌트 자전거</b> 확인·세팅 → 크레덴시알 수령 → Day 1 준비</small></li>
         </ul>
         <div class="jsum">기차 총 이동 <b>5시간 21분</b> · 파리 출발부터 생장까지 문 앞에서 문 앞까지 약 7시간</div>
       </div>
@@ -1209,6 +1296,84 @@
       <a href="https://www.ouigo.com" target="_blank" rel="noopener">OUIGO <small>저가 TGV (12:06편)</small></a>
       <a href="https://www.thetrainline.com" target="_blank" rel="noopener">Trainline <small>영어 UI · 통합 검색</small></a>
       <a href="https://www.raileurope.com" target="_blank" rel="noopener">Rail Europe <small>해외 카드 결제 편리</small></a>
+    </div>
+
+    <h3 class="jh3">생장 도착 후 (5/8 오후)</h3>
+    <p class="jp">5/8은 관광하는 날이 아니라 <b>다음 날 출발을 준비하는 날</b>입니다.
+    15:26에 도착하니 오후에 쓸 수 있는 시간이 서너 시간뿐입니다.</p>
+
+    <div class="jarr">
+      <ol class="jsteps">
+        <li><b>15:26</b> 생장 역 도착 → 호텔 이동 <small>역에서 마을 중심까지 도보권입니다</small></li>
+        <li><b>16:00 전후</b> 호텔 체크인 · 미리 배달된 자전거 확인</li>
+        <li>자전거 점검 <small>사이즈 · 안장 높이 · 브레이크 · 변속 · 타이어 공기압 · 페달</small></li>
+        <li>패니어 장착 후 <b>짧은 시운전</b> <small>짐을 실은 상태의 무게중심을 미리 느껴 두세요</small></li>
+        <li>순례자 사무소에서 <b>크레덴시알 신청·수령</b> <small>늦지 않게, 자전거 점검 직후에</small></li>
+        <li>저녁 식사 → Day 1 준비 <small>GPX 확인 · 가민 충전 · 물과 간식</small></li>
+      </ol>
+    </div>
+
+    <h3 class="jh3">자전거는 미리 예약하고 호텔로 받기</h3>
+    <div class="jbike">
+      <div class="jb-why">
+        <b>왜 현장 대여가 아니라 사전 예약인가</b>
+        <div class="jb-cmp">
+          <div class="jb-bad"><i>현장에서 시작하면</i>
+            렌트점 찾기 → 계약 → 차량 선택 → 사이즈 조절 → 장비 확인 → 호텔 이동
+            <em>오후 시간이 대부분 사라집니다</em></div>
+          <div class="jb-good"><i>호텔로 미리 받으면</i>
+            도착 → 체크인 → 바로 점검·세팅
+            <em>크레덴시알과 저녁 준비까지 여유가 생깁니다</em></div>
+        </div>
+      </div>
+
+      <div class="jb-info">
+        <b>예약할 때 업체에 알려줄 것</b>
+        <ul class="jb-list">
+          <li>이름 (2인)</li>
+          <li>렌트 시작일 <b>5/8</b> · 카미노 출발일 <b>5/9</b></li>
+          <li>자전거 종류와 사이즈 · 키 · (요청 시) 몸무게</li>
+          <li>페달 종류 <small>클릿 사용 여부</small></li>
+          <li>헬멧 · 패니어 · 수리킷 · 자물쇠 필요 여부</li>
+          <li>생장 호텔 이름 · 주소 · 전화번호</li>
+          <li>예상 호텔 도착시간 <b>15:30 전후</b></li>
+          <li><b>호텔 배달 가능 여부</b></li>
+        </ul>
+      </div>
+
+      <div class="jb-mail">
+        <div class="jb-m">
+          <div class="jb-mh">렌트 업체에 보낼 문장 <button type="button" class="jcopy" data-c="m1">복사</button></div>
+          <pre id="m1">We will arrive in Saint-Jean-Pied-de-Port at approximately 3:30 PM on May 8.
+We will start our Camino bicycle trip on the morning of May 9.
+
+Could you deliver our rental bicycles to our hotel in Saint-Jean-Pied-de-Port
+before we arrive? We would like to check and adjust the bicycles at the hotel
+on the afternoon of May 8.</pre>
+        </div>
+        <div class="jb-m">
+          <div class="jb-mh">호텔에 보낼 문장 <button type="button" class="jcopy" data-c="m2">복사</button></div>
+          <pre id="m2">We have rental bicycles being delivered to the hotel before our arrival
+on May 8. Could you please receive and store the bicycles for us
+until we check in?</pre>
+        </div>
+      </div>
+      <p class="jb-note"><b>양쪽 모두에게 확인을 받아 두세요.</b>
+      업체가 배달하겠다고 해도 호텔이 보관을 거절하면 소용이 없습니다.
+      두 곳의 답장을 휴대폰에 저장해 두면 현장에서 이야기가 빨라집니다.</p>
+    </div>
+
+    <h3 class="jh3">5/8 저녁 최종 점검</h3>
+    <div class="jfinal">
+      <div class="jf-col"><b>자전거</b>
+        <ul><li>렌트 자전거 2대 수령</li><li>사이즈 · 안장 높이</li><li>브레이크 · 변속</li>
+        <li>타이어 공기압</li><li>패니어 장착</li><li>가민 거치 · 충전</li></ul></div>
+      <div class="jf-col"><b>서류 · 소지품</b>
+        <ul><li>크레덴시알</li><li>여권</li><li>현금 · 카드</li><li>휴대전화 · 보조배터리</li></ul></div>
+      <div class="jf-col"><b>정비 · 보급</b>
+        <ul><li>수리킷 · 예비 튜브</li><li>펌프</li><li>물통</li><li>간식</li></ul></div>
+      <div class="jf-col"><b>내일 준비</b>
+        <ul><li>DAY 1 GPX 확인</li><li>날씨 확인</li><li>출발 시각 정하기</li></ul></div>
     </div>
 
     <h3 class="jh3">확인해 둘 것</h3>
@@ -1262,6 +1427,11 @@
       아래 모든 편의 시간대 계산을 검증했습니다 — 결과는 맨 아래 ✔ 박스 참고.</p>
     </div>
 
+    <figure class="afig">
+      <img src="images/cdg-arrivals-departure-guide.png" alt="CDG 도착 터미널과 이동 안내" loading="lazy">
+      <figcaption><b>5/7 CDG 도착</b> — 두 사람 모두 이 흐름을 거칩니다. Bin 06:10 도착(AF · T2E 계열) · Jin 18:30 도착(KE901 · T2E). 입국심사 → 수하물 → RER B 또는 택시로 시내 이동</figcaption>
+    </figure>
+
     <!-- Bin 가는 길 -->
     <div class="flow" style="margin-bottom:14px">
       <h3>가는 길<span class="who bin">BIN</span> <span class="chip">5/6 목 → 5/7 금</span></h3>
@@ -1301,6 +1471,11 @@
       <div class="note" style="margin-top:10px">18:30 도착 → 몽파르나스 인근 호텔에서 Bin과 합류, 파리 1박.
       다음 날 5/8(토) 10:05 몽파르나스發 TGV로 함께 생장 이동 (섹션 Ⅳ 참고).</div>
     </div>
+
+    <figure class="afig bin">
+      <img src="images/bin-arrival-return-travel-guide.png" alt="Bin 가는 길과 귀국 경로" loading="lazy">
+      <figcaption><b>BIN</b> — 가는 길 EWR → CDG · 귀국 SCQ → MAD(T4 → T4S 환승) → EWR. 마드리드 T4에서 T4S 로는 셔틀 열차로 이동하며 출국심사가 그 사이에 있습니다</figcaption>
+    </figure>
 
     <!-- Bin 귀국 -->
     <div class="flow" style="margin-bottom:14px">
@@ -1425,6 +1600,11 @@
       짐이 인천까지 자동 수속되고 환승 보호도 받습니다 — 이 일정의 가장 큰 장점입니다.
       갈 때(KE901)와 올 때(KE902) 모두 파리를 지나는 대칭 일정이기도 합니다.</div>
     </div>
+
+    <figure class="afig jin">
+      <img src="images/jin-paris-santiago-travel-guide.png" alt="Jin 가는 길과 귀국 경로" loading="lazy">
+      <figcaption><b>JIN</b> — 가는 길 ICN → CDG · 귀국 SCQ → BCN → CDG T2 환승 → ICN. BCN 이후가 모두 대한항공 편명이라 한 장으로 발권하면 짐이 인천까지 자동 수속됩니다</figcaption>
+    </figure>
 
     <!-- 시간대 검증 -->
     <div class="flow" style="margin-bottom:14px;background:#F3F6EC;border-color:#CBDCC9">
@@ -4938,15 +5118,68 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
   /* 흐름도 그림이 없으면 자리만 감춤 */
   (function(){
     function hide(){
-      document.querySelectorAll(".jfig img").forEach(function(im){
+      document.querySelectorAll(".jfig img,.afig img").forEach(function(im){
         im.addEventListener("error",function(){
           var f=im.closest("figure"); if(f) f.style.display="none";
         });
+      });
+      /* 안내 그림은 글씨가 작아 눌러서 크게 볼 수 있게 */
+      document.querySelectorAll(".afig img,.jfig img").forEach(function(im){
+        im.addEventListener("click",function(){ bigView(im); });
       });
     }
     if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",hide);
     else hide();
   })();
+
+  /* 문장 복사 버튼 */
+  (function(){
+    function bind(){
+      document.querySelectorAll(".jcopy").forEach(function(b){
+        b.addEventListener("click",function(){
+          var el=document.getElementById(b.dataset.c); if(!el) return;
+          var t=el.textContent;
+          var done=function(){
+            var old=b.textContent;
+            b.textContent="복사됨"; b.classList.add("done");
+            setTimeout(function(){ b.textContent=old; b.classList.remove("done"); },1600);
+          };
+          if(navigator.clipboard && navigator.clipboard.writeText)
+            navigator.clipboard.writeText(t).then(done,function(){ fallback(t,done); });
+          else fallback(t,done);
+        });
+      });
+    }
+    function fallback(t,done){
+      var ta=document.createElement("textarea");
+      ta.value=t; ta.style.position="fixed"; ta.style.opacity="0";
+      document.body.appendChild(ta); ta.select();
+      try{ document.execCommand("copy"); done(); }catch(e){}
+      document.body.removeChild(ta);
+    }
+    if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",bind);
+    else bind();
+  })();
+
+  /* 그림 크게 보기 */
+  var bv=null;
+  function bigView(im){
+    if(!bv){
+      bv=document.createElement("div"); bv.className="bigview";
+      bv.innerHTML='<button class="bv-x" type="button" aria-label="닫기">✕</button><img alt="">';
+      document.body.appendChild(bv);
+      bv.addEventListener("click",function(e){
+        if(e.target===bv||e.target.className==="bv-x") close();
+      });
+      document.addEventListener("keydown",function(e){
+        if(bv.classList.contains("show")&&e.key==="Escape") close();
+      });
+    }
+    function close(){ bv.classList.remove("show"); document.body.style.overflow=""; }
+    bv.querySelector("img").src=im.src;
+    bv.querySelector("img").alt=im.alt||"";
+    bv.classList.add("show"); document.body.style.overflow="hidden";
+  }
 
   /* 날짜 카드가 나중에 들어오므로, 그 시점에도 한 번 더 */
   document.addEventListener("camino:days-ready",function(){
@@ -5152,7 +5385,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260822-0100";
+  var BUILD="20260822-0129";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
