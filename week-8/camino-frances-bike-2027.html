@@ -802,6 +802,84 @@
   .sched tr.fin td{background:#EAF3EC}
   .sched tfoot th{background:#F4F2EA;color:var(--camino-blue);border-top:2px solid var(--line)}
 
+  /* ── GPX 파일 3종 · 기기 넣기 ── */
+  .gpxset{display:block}
+  .gpxalts{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:6px}
+  .gpxalt{display:block;text-align:center;text-decoration:none;border:1px solid var(--line);
+    border-radius:8px;padding:6px 4px;background:#fff;line-height:1.3}
+  .gpxalt b{display:block;font-size:.66rem;color:var(--camino-blue)}
+  .gpxalt small{display:block;font-size:.56rem;color:var(--ink-soft);margin-top:1px}
+  .gpxalt:hover{border-color:var(--flecha);background:#FFFBEE}
+  .gpxalt:first-child{border-color:#B9C7DF;background:#F7FAFF}
+  .gpxhelp{margin-top:6px;font-size:.64rem;color:var(--ink-soft);line-height:1.6}
+  .gpxhelp a{color:var(--camino-blue)}
+
+  .zipbox{display:flex;align-items:center;gap:16px;flex-wrap:wrap;border:1px solid var(--line);
+    border-radius:14px;background:#fff;padding:16px 18px;margin-bottom:20px}
+  .zipl{flex:1;min-width:220px}
+  .zipl b{display:block;font-size:.9rem;color:var(--camino-blue);margin-bottom:5px}
+  .zipl p{font-size:.79rem;color:var(--ink-soft);line-height:1.75}
+  .zipmeta{margin-top:6px;font-size:.71rem;color:#A79E86;font-variant-numeric:tabular-nums}
+  .zipbtn{display:flex;align-items:center;gap:11px;text-decoration:none;background:var(--camino-blue);
+    color:#fff;border-radius:12px;padding:13px 20px;white-space:nowrap}
+  .zipbtn:hover{background:var(--flecha);color:#3B2E00}
+  .zipbtn b{display:block;font-size:.86rem}
+  .zipbtn small{display:block;font-size:.68rem;opacity:.75}
+  .zipico{width:24px;height:24px;border:2px solid currentColor;border-radius:5px;position:relative;
+    flex:0 0 auto}
+  .zipico::before{content:"";position:absolute;left:50%;top:4px;width:2px;height:9px;
+    background:currentColor;margin-left:-1px}
+  .zipico::after{content:"";position:absolute;left:50%;top:9px;width:8px;height:8px;
+    border-left:2px solid currentColor;border-bottom:2px solid currentColor;
+    transform:rotate(-45deg);margin-left:-4px}
+
+  .gh3{font-family:'Gowun Batang',serif;font-size:1rem;color:var(--camino-blue);margin:20px 0 10px;
+    padding-bottom:7px;border-bottom:2px solid var(--flecha)}
+  .ftab td{vertical-align:top}
+  .ftab td b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.78rem}
+  .ftab td small{display:block;font-size:.68rem;color:var(--ink-soft);margin-top:2px}
+  .ftab tr.pick{background:#FFF9E8}
+  .ftab tr.pick td b{color:#8A6A12}
+
+  .wayrow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px}
+  @media(max-width:760px){ .wayrow{grid-template-columns:1fr} }
+  .way{border:1px solid var(--line);border-radius:13px;background:#fff;padding:13px 15px}
+  .way.good{border-color:#A9CFB8;background:#F4FAF6}
+  .way.warn{border-color:#E7D9A8;background:#FFFBEE}
+  .wayh{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:.82rem;color:var(--ink);
+    margin-bottom:9px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+  .wayh b{font-family:'IBM Plex Mono',ui-monospace,monospace}
+  .wtag{margin-left:auto;font-size:.6rem;font-weight:700;color:#fff;background:var(--ok);
+    border-radius:999px;padding:2px 9px}
+  .wtag.alt{background:#B8A97A}
+  .way ul{list-style:none;padding:0;margin:0}
+  .way li{position:relative;padding:5px 0 5px 18px;font-size:.78rem;line-height:1.7;color:var(--ink-soft)}
+  .way li::before{content:"";position:absolute;left:3px;top:13px;width:5px;height:5px;
+    border-radius:50%;background:var(--ok)}
+  .way.warn li::before{background:#C9B67A}
+  .way li.bad::before{background:var(--err)}
+  .way li.bad{color:#7A4A4A}
+
+  .binjin{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0 4px}
+  @media(max-width:760px){ .binjin{grid-template-columns:1fr} }
+  .bj{border:1px solid var(--line);border-radius:13px;background:#fff;padding:13px 15px}
+  .bj.bin{border-color:#C7D6EE;background:#FAFCFF}
+  .bj.jin{border-color:#E3C9B8;background:#FFFCFA}
+  .bjh{display:flex;align-items:center;gap:8px;font-size:.86rem;font-weight:700;
+    color:var(--camino-blue);margin-bottom:8px}
+  .bjs{font-size:.74rem;font-weight:700;border-radius:999px;padding:4px 11px;display:inline-block;
+    margin-bottom:8px}
+  .bjs.done{background:#E6F3EA;color:var(--ok)}
+  .bjs.todo{background:#F6EEDC;color:#8A6A12}
+  .bj p{font-size:.78rem;color:var(--ink-soft);line-height:1.75}
+  .bjo{list-style:none;counter-reset:bj;padding:0;margin:0}
+  .bjo li{counter-increment:bj;position:relative;padding:6px 0 6px 26px;font-size:.78rem;
+    line-height:1.7;color:var(--ink-soft)}
+  .bjo li::before{content:counter(bj);position:absolute;left:0;top:8px;width:18px;height:18px;
+    border-radius:50%;background:var(--camino-blue);color:#fff;font-size:.6rem;font-weight:700;
+    display:flex;align-items:center;justify-content:center}
+  .bjo small{display:block;font-size:.7rem;color:#A79E86;margin-top:2px}
+
   /* ── DAY별 날씨 카드 ───────────────────────────── */
   .dwx{padding:2px 14px 14px}
   .dwx h4{font-size:.8rem;color:var(--camino-blue);font-weight:700;margin-bottom:8px;
@@ -1369,6 +1447,163 @@
 <div id="daysHost" data-src="camino-days.html">
   <p class="loadnote" id="daysLoadNote">날짜별 카드를 불러오는 중… <small>camino-days.html</small></p>
 </div>
+  </div>
+</section>
+
+<!-- ───────── GPS 기기에 넣기 ───────── -->
+<section id="secG" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="no">Navegación</div>
+      <h2>GPS 기기에 넣기</h2>
+      <p>날짜별 파일은 각 DAY 카드에서 받습니다. 여기서는 <b>전체를 한 번에 받는 법</b>과
+      <b>Edge 840 · 1030 에 넣는 방법</b>, 그리고 파일 세 가지가 각각 무엇인지 정리했습니다.</p>
+    </div>
+
+    <div class="zipbox">
+      <div class="zipl">
+        <b>전체 한 번에 받기</b>
+        <p>12일치 GPX · TCX 를 묶은 파일입니다. 데스크톱에서 받아 압축을 풀고
+        USB 로 기기에 넣을 때 씁니다.</p>
+        <div class="zipmeta">camino-day-all-alb-photo.zip · 약 704 KB · 12일 전체</div>
+      </div>
+      <a class="zipbtn gpxdlx" href="route/camino-day-all-alb-photo.zip"
+         download="camino-day-all-alb-photo.zip">
+        <span class="zipico" aria-hidden="true"></span>
+        <span><b>ZIP 내려받기</b><small>전체 12일</small></span>
+      </a>
+    </div>
+
+    <h3 class="gh3">파일 세 가지</h3>
+    <div class="sched-wrap">
+      <table class="sched ftab" style="min-width:680px">
+        <thead><tr><th>파일</th><th>들어 있는 것</th><th>기기에서</th><th>언제 쓰나</th></tr></thead>
+        <tbody>
+          <tr class="pick">
+            <td><b>…-icons.gpx</b><small>GPX 아이콘</small></td>
+            <td>트랙(고도 포함) + 웨이포인트 519개<br><small>가민 표준 심볼로 정규화</small></td>
+            <td>코스 + 지도 위 아이콘</td>
+            <td><b>기본으로 이것만 쓰면 됩니다</b></td>
+          </tr>
+          <tr>
+            <td><b>….gpx</b><small>GPX 기본</small></td>
+            <td>같은 내용 · 심볼 정규화 전</td>
+            <td>앱에 따라 아이콘이 다르게 보임</td>
+            <td>가민이 아닌 앱에서 아이콘이 깨질 때</td>
+          </tr>
+          <tr>
+            <td><b>….tcx</b><small>TCX</small></td>
+            <td>코스 포인트 하루 25개<br><small>이름 10자 제한 · 합성 시각</small></td>
+            <td>주행 중 <b>Up Ahead</b> 알림</td>
+            <td>다음 지점까지 남은 거리를 보고 싶을 때</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">GPX 의 웨이포인트는 Edge 에서 <b>지도 위 표시(locations)</b> 로 들어가고,
+    TCX 의 코스 포인트는 <b>주행 중 알림 목록</b>으로 들어갑니다. 서로 다른 자리라 둘 다 넣어도 겹치지 않습니다.</p>
+
+    <h3 class="gh3">넣는 방법 두 가지 — 무엇이 다른가</h3>
+    <div class="wayrow">
+      <div class="way good">
+        <div class="wayh">USB 케이블 · <b>Garmin\NewFiles</b><span class="wtag">권장</span></div>
+        <ul>
+          <li>트랙 <b>+ 웨이포인트 519개가 그대로</b> 들어갑니다</li>
+          <li>TCX 의 주행 중 알림도 살아 있습니다</li>
+          <li>여러 날짜를 한 번에 복사할 수 있습니다</li>
+          <li>컴퓨터가 있어야 합니다</li>
+        </ul>
+      </div>
+      <div class="way warn">
+        <div class="wayh">휴대폰 · <b>Garmin Connect 앱</b><span class="wtag alt">보조</span></div>
+        <ul>
+          <li>케이블 없이 어디서나 보낼 수 있습니다</li>
+          <li class="bad"><b>웨이포인트가 함께 넘어가지 않습니다</b> —
+            알베르게·포토존 표시가 사라집니다</li>
+          <li class="bad">TCX 의 코스 포인트도 대부분 빠집니다</li>
+          <li>길만 따라가면 될 때, 또는 하루치를 급히 다시 넣을 때</li>
+        </ul>
+      </div>
+    </div>
+    <p class="note">가민 포럼과 사용자 보고에 따르면 Connect 로 GPX 를 가져오면
+    코스(트랙)만 만들어지고 <b>웨이포인트는 실리지 않습니다</b>. iOS 앱에서는 첫 번째 웨이포인트 하나만
+    인식되는 사례도 보고됐습니다. 그래서 <b>출발 전 USB 로 한 번에 넣어 두는 것</b>을 권합니다.</p>
+
+    <div class="binjin">
+      <div class="bj bin">
+        <div class="bjh"><span class="who bin">BIN</span> Edge 840</div>
+        <div class="bjs done">완료 — 드라이브\Garmin\NewFiles 로 복사해 가져오기 끝</div>
+        <p>남은 것은 <b>여행 중 하루치를 다시 넣어야 할 때</b>입니다.
+        컴퓨터가 없으니 아래 휴대폰 방법을 쓰면 됩니다.
+        다만 그렇게 넣으면 웨이포인트가 빠지므로, <b>이미 넣어 둔 원본은 지우지 마세요.</b></p>
+      </div>
+      <div class="bj jin">
+        <div class="bjh"><span class="who jin">JIN</span> Edge 1030</div>
+        <div class="bjs todo">할 일 — 위의 ZIP 을 데스크톱에서 받아 USB 로 복사</div>
+        <ol class="bjo">
+          <li>ZIP 내려받아 압축 풀기</li>
+          <li>Edge 1030 을 USB 로 연결</li>
+          <li><b>Garmin\NewFiles</b> 폴더에 <b>…-icons.gpx 12개</b>를 복사
+            <small>알림까지 쓰려면 …tcx 12개도 함께</small></li>
+          <li>USB 안전 제거 → Edge 가 자동으로 읽어 들임
+            <small>화면이 잠깐 깜빡이거나 재시작할 수 있습니다</small></li>
+          <li>코스 목록에서 12개가 보이는지 확인</li>
+        </ol>
+      </div>
+    </div>
+
+    <h3 class="gh3">휴대폰에서 하루치 보내기 (Garmin Connect)</h3>
+    <p class="jp">여행 중 컴퓨터 없이 특정 날짜만 다시 넣어야 할 때 쓰는 방법입니다.
+    두 사람 모두 같습니다.</p>
+    <div class="jarr">
+      <ol class="jsteps">
+        <li>이 사이트에서 그 날짜 카드의 <b>GPX 아이콘</b> 버튼을 누릅니다</li>
+        <li>공유 창이 열리면 <b>Garmin Connect</b> 를 고릅니다
+          <small>안 보이면 <b>파일에 저장</b> 후, Connect 앱에서 불러오세요</small></li>
+        <li>Connect 가 <b>코스</b>로 가져옵니다 — 이름을 <b>Day 10</b> 처럼 바꿔 두면 찾기 쉽습니다</li>
+        <li>코스를 열고 <b>기기로 보내기</b> → Edge 선택</li>
+        <li>Edge 에서 <b>탐색 &rarr; 코스</b> 에 들어왔는지 확인</li>
+      </ol>
+      <div class="soff-w">이 방법으로 넣은 코스에는 <b>알베르게·포토존 표시가 없습니다.</b>
+      길 안내만 필요할 때 쓰고, 숙소를 찾아야 하면 사이트의 <b>포토·맛집 지도</b>를 보세요.</div>
+    </div>
+
+    <h3 class="gh3">알아 둘 것</h3>
+    <div class="jchk">
+      <div class="jc warn">
+        <b>DAY 1 에 -33% 내리막이 있습니다</b>
+        레포에데르 하산(약 20 km 지점, 43.030 · -1.296 부근)입니다.
+        일부러 원본을 남긴 구간이니 <b>자전거에서 내려 끌고</b> 내려가세요.
+      </div>
+      <div class="jc">
+        <b>턴바이턴 안내는 없습니다</b>
+        GPX 트랙에는 방향 지시가 들어 있지 않습니다. Edge 의 <b>트랙 따라가기</b>로 쓰거나
+        기기가 스스로 다시 계산하게 두세요.
+      </div>
+      <div class="jc">
+        <b>웨이포인트가 519개입니다</b>
+        축소해서 보면 화면이 아이콘으로 덮입니다. 지도를 <b>확대해야</b> 숙소가 제대로 보입니다.
+        <small>숙소 458 · 성당 33 · 포토존 17 · 음식점 6 · 고개 5</small>
+      </div>
+      <div class="jc">
+        <b>노면 정보는 들어 있지 않습니다</b>
+        자갈인지 포장인지 파일로는 알 수 없습니다. 우회로는 <b>경사 기준으로만</b> 골랐습니다.
+      </div>
+      <div class="jc">
+        <b>시각 정보가 없습니다</b>
+        트랙에 시간이 없어, 이를 요구하는 일부 앱은 열지 못할 수 있습니다.
+        그럴 때는 TCX 를 써 보세요.
+      </div>
+      <div class="jc">
+        <b>기기에서 지울 때</b>
+        Edge 를 USB 로 연결해 <b>Garmin\Courses</b> 안의 파일을 지우면 됩니다.
+        코스가 100개를 넘으면 들어가지 않는 기기도 있습니다.
+      </div>
+    </div>
+
+    <div class="note">출처 santiago.nl (OSM · ODbL) · 고도 EU-DEM/Copernicus ·
+    우회 cycle.travel (OSM) · 원본 2026-06-16판 · 2026-08-22 생성.
+    재배포 시 출처 표기가 필요합니다.</div>
   </div>
 </section>
 
@@ -2422,6 +2657,7 @@ until we check in?</pre>
     <a href="#sec1">Ⅰ · 고도 프로필</a>
     <a href="#sec2">Ⅱ · 일정 한눈에</a>
     <a href="#sec3">Ⅲ · 날짜별 카드 (D1~D13)</a>
+    <a href="#secG">GPS 기기에 넣기 (Edge · Connect)</a>
     <a href="#secP">📕 디지털 순례자 여권</a>
     <a href="#sec4">Ⅳ · 파리 → 생장 기차</a>
     <a href="#sec5">Ⅴ · 항공 · 환승</a>
@@ -5618,7 +5854,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     setTimeout(function(){ document.body.removeChild(t); URL.revokeObjectURL(url); },1500);
   }
   function note(a,msg,ms){
-    var sub=a.querySelector(".gpxlab small"); if(!sub) return;
+    var sub=a.querySelector(".gpxlab small")||a.querySelector("small"); if(!sub) return;
     if(a._note) clearTimeout(a._note);
     if(!a._sub) a._sub=sub.textContent;
     sub.textContent=msg;
@@ -5667,6 +5903,9 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     var list=[].slice.call(document.querySelectorAll(".gpxbtn"));
     if(!list.length) return;
     var canShare=!!(navigator.canShare && navigator.share);
+    document.querySelectorAll(".gpxdlx").forEach(function(a){
+      a.addEventListener("click",onClick);
+    });
     list.forEach(function(a){
       a.addEventListener("click",onClick);
       a.title = canShare ? "눌러서 저장하거나 내비 앱으로 보내기" : "눌러서 GPX 내려받기";
@@ -5691,7 +5930,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260822-2152";
+  var BUILD="20260822-2338";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
