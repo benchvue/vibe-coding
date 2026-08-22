@@ -733,6 +733,45 @@
   .hchk .who{margin-right:5px}
   .hcaveat{margin-top:10px;font-size:.73rem;color:#A79E86;line-height:1.7}
 
+  /* ── 생장 마을 배치 · 호텔 ── */
+  .smapwrap{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px;
+    align-items:start;margin-bottom:14px;padding:14px;border:1px solid var(--line);
+    border-radius:14px;background:#fff}
+  @media(max-width:900px){ .smapwrap{grid-template-columns:1fr} }
+  .smap{overflow-x:auto}
+  .smap svg{display:block;min-width:420px;border-radius:10px}
+  .soff h4{font-family:'Gowun Batang',serif;font-size:.95rem;color:var(--ok);margin-bottom:9px;
+    padding-bottom:7px;border-bottom:2px solid #A9CFB8}
+  .soff-a{font-size:.79rem;line-height:1.7;color:var(--ink-soft);background:#F1F8F3;
+    border-radius:9px;padding:9px 12px}
+  .soff-a b{color:var(--ink)}
+  .soff-l{list-style:none;padding:0;margin:10px 0 0}
+  .soff-l li{display:flex;gap:9px;align-items:baseline;padding:6px 0;font-size:.78rem;
+    line-height:1.65;border-bottom:1px dashed #F0EDE4;color:var(--ink-soft)}
+  .soff-l li:last-child{border-bottom:none}
+  .soff-l em{flex:0 0 52px;font-style:normal;font-size:.66rem;font-weight:700;color:#8A7F63;
+    background:#F4F2EA;border-radius:6px;padding:2px 0;text-align:center}
+  .soff-l b{color:var(--ink);font-variant-numeric:tabular-nums}
+  .soff-w{margin-top:11px;padding:9px 12px;background:#FFFBEE;border:1px solid #E7D9A8;
+    border-radius:9px;font-size:.76rem;line-height:1.75;color:#7A5E00}
+  .soff-w b{color:#8A6A12}
+
+  .stab td{vertical-align:top}
+  .stab .sno{font-weight:700;color:var(--ink-soft);width:26px}
+  .stab td b{font-size:.86rem}
+  .stab td small{display:block;font-size:.68rem;color:var(--ink-soft);margin-top:2px}
+  .stab .sd{white-space:nowrap;font-size:.76rem;color:var(--ink-soft);
+    font-variant-numeric:tabular-nums}
+  .stab .sv{font-size:.76rem;font-weight:700;color:var(--rioja);white-space:nowrap}
+  .stag{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:4px}
+  .stag li{font-size:.66rem;color:var(--ink-soft);background:#F4F2EA;border-radius:999px;
+    padding:2px 8px;white-space:nowrap}
+  .stab tr.best{background:#FFF9E8}
+  .stab tr.best .sno{color:#8A6A12}
+  .stab tr.best .sv{color:#8A6A12}
+  .stab tr.bike{background:#F4FAF6}
+  .stab tr.bike .sv{color:var(--ok)}
+
   /* ── DAY별 날씨 카드 ───────────────────────────── */
   .dwx{padding:2px 14px 14px}
   .dwx h4{font-size:.8rem;color:var(--camino-blue);font-weight:700;margin-bottom:8px;
@@ -1467,9 +1506,144 @@
         <li><b>16:00 전후</b> 호텔 체크인 · 미리 배달된 자전거 확인</li>
         <li>자전거 점검 <small>사이즈 · 안장 높이 · 브레이크 · 변속 · 타이어 공기압 · 페달</small></li>
         <li>패니어 장착 후 <b>짧은 시운전</b> <small>짐을 실은 상태의 무게중심을 미리 느껴 두세요</small></li>
-        <li>순례자 사무소에서 <b>크레덴시알 신청·수령</b> <small>늦지 않게, 자전거 점검 직후에</small></li>
+        <li>순례자 사무소에서 <b>크레덴시알 신청·수령</b>
+          <small>39 rue de la Citadelle · 토요일 20:15까지 · 자전거 점검 직후에 바로.
+          피레네 날씨와 노선 상태도 함께 물어보세요</small></li>
         <li>저녁 식사 → Day 1 준비 <small>GPX 확인 · 가민 충전 · 물과 간식</small></li>
       </ol>
+    </div>
+
+    <h3 class="jh3">생장 호텔 후보와 마을 배치</h3>
+    <p class="jp">생장 구시가는 <b>한 덩어리</b>라 어느 호텔에 묵어도 순례자 사무소까지 걸어서 몇 분입니다.
+    그래서 위치보다 <b>자전거를 미리 받아 보관해 줄 수 있는지</b>가 훨씬 중요합니다.</p>
+
+    <figure class="jfig hmap">
+      <img src="images/Saint-Jean-Hotel-Map.png" alt="생장피에드포르 호텔 후보 위치" loading="lazy">
+      <figcaption>생장 호텔 후보 위치 — 눌러서 크게 볼 수 있습니다</figcaption>
+    </figure>
+
+    <div class="smapwrap">
+      <div class="smap"><svg viewBox="0 0 660 380" width="100%" role="img" aria-label="생장피에드포르 역·순례자 사무소·호텔 위치 모식도">
+<title>Saint-Jean-Pied-de-Port — 역, 순례자 사무소, 호텔 후보</title>
+<defs>
+  <marker id="smk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+    <path d="M1 1L9 5L1 9Z" fill="#152A55"/></marker>
+</defs>
+
+<rect x="0" y="0" width="660" height="380" fill="#F7F5EE"/>
+
+<path d="M92 300 C170 296 214 268 244 224 C272 184 290 150 300 96"
+      fill="none" stroke="#9FC3DE" stroke-width="13" stroke-linecap="round" opacity=".55"/>
+<text class="riv" x="132" y="290" transform="rotate(-12 132 290)">La Nive</text>
+
+<path d="M436 62 L436 330" stroke="#D8CFBB" stroke-width="26" stroke-linecap="round"/>
+<text class="st" x="436" y="128" transform="rotate(-90 436 128)">rue de la Citadelle</text>
+<text class="st" x="436" y="286" transform="rotate(-90 436 286)">rue d&#8217;Espagne</text>
+
+<path d="M300 96 L436 96" stroke="#D8CFBB" stroke-width="11" stroke-linecap="round"/>
+<path d="M244 224 L436 224" stroke="#D8CFBB" stroke-width="11" stroke-linecap="round"/>
+
+<path d="M96 138 L112 128 L128 138 L128 162 L96 162 Z" fill="#E4DFCE" stroke="#C0B79F"/>
+<text class="lb" x="112" y="182" text-anchor="middle">생장 역</text>
+<text class="sm" x="112" y="195" text-anchor="middle">Gare SNCF</text>
+<circle cx="112" cy="150" r="6" fill="#152A55"/>
+
+<path d="M126 156 C210 176 260 176 320 168" fill="none" stroke="#152A55" stroke-width="2.2"
+      stroke-dasharray="6 4" marker-end="url(#smk)"/>
+<text class="wk" x="228" y="146" text-anchor="middle">도보 8~10분 · 약 650 m</text>
+
+<g><rect x="512" y="30" width="118" height="40" rx="9" fill="#EDE7D6" stroke="#C9BF9F"/>
+<text class="lb" x="571" y="47" text-anchor="middle">시타델</text>
+<text class="sm" x="571" y="61" text-anchor="middle">Citadelle</text></g>
+
+<circle cx="436" cy="96" r="8" fill="#fff" stroke="#8A7F63" stroke-width="2.5"/>
+<text class="gt" x="452" y="93">Porte St-Jacques</text>
+<text class="sm" x="452" y="106">순례길 입구</text>
+
+<circle cx="436" cy="330" r="8" fill="#fff" stroke="#8A7F63" stroke-width="2.5"/>
+<text class="gt" x="452" y="327">Porte d&#8217;Espagne</text>
+<text class="sm" x="452" y="340">5/9 출발 방향 →</text>
+
+<circle cx="436" cy="150" r="12" fill="#1E7A46"/>
+<circle cx="436" cy="150" r="19" fill="none" stroke="#1E7A46" stroke-width="1.6" opacity=".45"/>
+<text class="of" x="412" y="146" text-anchor="end">순례자 사무소</text>
+<text class="og" x="412" y="160" text-anchor="end">39 rue de la Citadelle</text>
+
+<g class="h"><circle cx="392" cy="224" r="9" fill="#152A55"/>
+<text class="hn" x="392" y="228" text-anchor="middle">1</text>
+<text class="hl" x="376" y="212" text-anchor="end">Ramuntcho</text></g>
+
+<g class="h"><circle cx="352" cy="272" r="9" fill="#152A55"/>
+<text class="hn" x="352" y="276" text-anchor="middle">2</text>
+<text class="hl" x="336" y="276" text-anchor="end">Itzalpea</text></g>
+
+<g class="h"><circle cx="470" cy="272" r="9" fill="#152A55"/>
+<text class="hn" x="470" y="276" text-anchor="middle">3</text>
+<text class="hl" x="486" y="276">Les Pyrénées</text></g>
+
+<g class="h"><circle cx="392" cy="180" r="9" fill="#152A55"/>
+<text class="hn" x="392" y="184" text-anchor="middle">4</text>
+<text class="hl" x="376" y="184" text-anchor="end">des Remparts</text></g>
+
+<text class="cap" x="20" y="352">※ 위 지도를 단순하게 다시 그린 모식도 — 축척이 아니라 위치 관계와 걷는 시간을 보기 위한 그림</text>
+<text class="cap" x="20" y="368">구시가는 한 덩어리라 어느 호텔이든 사무소까지 도보 2~5분입니다</text>
+
+<style>
+ .lb{font-family:"IBM Plex Sans KR",sans-serif;font-size:12px;font-weight:700;fill:#2B2B29}
+ .sm{font-family:"IBM Plex Sans KR",sans-serif;font-size:9.5px;fill:#6B6B66}
+ .st{font-family:"IBM Plex Sans KR",sans-serif;font-size:10px;fill:#8A7F63;text-anchor:middle;letter-spacing:.06em}
+ .riv{font-family:"IBM Plex Sans KR",sans-serif;font-size:10px;fill:#4D7E9E}
+ .wk{font-family:"IBM Plex Sans KR",sans-serif;font-size:10.5px;font-weight:700;fill:#152A55;
+     paint-order:stroke;stroke:#F7F5EE;stroke-width:3px}
+ .gt{font-family:"IBM Plex Sans KR",sans-serif;font-size:11px;font-weight:700;fill:#8A6A12}
+ .of{font-family:"IBM Plex Sans KR",sans-serif;font-size:12.5px;font-weight:700;fill:#1E7A46;
+     paint-order:stroke;stroke:#F7F5EE;stroke-width:3px}
+ .og{font-family:"IBM Plex Sans KR",sans-serif;font-size:9.5px;fill:#3F7A5A}
+ .hn{font-family:"IBM Plex Sans KR",sans-serif;font-size:10px;font-weight:700;fill:#fff}
+ .hl{font-family:"IBM Plex Sans KR",sans-serif;font-size:11px;font-weight:700;fill:#152A55;
+     paint-order:stroke;stroke:#F7F5EE;stroke-width:3px}
+ .cap{font-family:"IBM Plex Sans KR",sans-serif;font-size:9.5px;fill:#A79E86}
+</style></svg></div>
+      <div class="soff">
+        <h4>순례자 사무소</h4>
+        <div class="soff-a"><b>39 rue de la Citadelle</b><br>Maison Laborde · 64220 Saint-Jean-Pied-de-Port</div>
+        <ul class="soff-l">
+          <li><em>전화</em>+33 5 59 37 05 09</li>
+          <li><em>5/8 토</em><b>07:45–12:00 · 14:00–20:15</b></li>
+          <li><em>받는 것</em>크레덴시알 · 생장 출발 도장 · 구간 안내</li>
+          <li><em>물어볼 것</em>피레네 <b>날씨와 노선 상태</b> —
+            나폴레옹 길이 열렸는지, 발카를로스로 돌아야 하는지</li>
+        </ul>
+        <div class="soff-w">15:26 도착이면 <b>사무소가 열려 있습니다.</b>
+        다만 자전거 점검을 마친 뒤 바로 가세요 — 20:15에 닫고,
+        저녁에는 다음 날 출발하는 순례자가 몰립니다.</div>
+      </div>
+    </div>
+
+    <div class="sched-wrap">
+      <table class="sched stab" style="min-width:660px">
+        <thead><tr><th></th><th>호텔</th><th>역에서</th><th>사무소까지</th><th>특징</th><th>판단</th></tr></thead>
+        <tbody>
+          <tr class="best"><td class="sno">1</td><td><b>Hôtel Ramuntcho</b><small>1 rue de France</small></td><td class="sd">약 650 m · 도보 8분</td><td class="sd">도보 2분</td><td><ul class="stag"><li>구시가 성벽 아래</li><li>자전거 여행객 환영</li><li>레스토랑 · 테라스</li><li>무료 주차</li></ul></td><td class="sv">순례 출발점으로 가장 무난</td></tr>
+          <tr class="bike"><td class="sno">2</td><td><b>Hôtel Itzalpea</b><small>5 place du Trinquet</small></td><td class="sd">약 700 m · 도보 9분</td><td class="sd">도보 4분</td><td><ul class="stag"><li>2성급</li><li>안전한 자전거 보관소</li><li>자전거·도보 여행객 많음</li><li>아침 평이 좋음</li></ul></td><td class="sv">자전거 보관이 확실한 곳</td></tr>
+          <tr><td class="sno">3</td><td><b>Hôtel Les Pyrénées</b><small>19 place Charles de Gaulle</small></td><td class="sd">약 700 m · 도보 9분</td><td class="sd">도보 4분</td><td><ul class="stag"><li>4성급</li><li>옛 역참 여관</li><li>수영장 · 레스토랑</li></ul></td><td class="sv">조금 더 좋은 숙소</td></tr>
+          <tr><td class="sno">4</td><td><b>Hôtel des Remparts</b><small>16 place Floquet</small></td><td class="sd">약 700 m · 도보 9분</td><td class="sd">도보 3분</td><td><ul class="stag"><li>성벽 바로 옆</li><li>중심가</li><li>실속형</li></ul></td><td class="sv">비용 절약형</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="hnote">
+      <b>예약할 때 확인할 것</b>
+      <ul class="hchk">
+        <li><b>자전거를 미리 받아 보관해 줄 수 있는지</b> — 이것이 가장 중요합니다.
+          렌트 업체가 5/8 오후에 배달할 예정이라고 함께 알려 주세요</li>
+        <li>밤새 <b>자전거를 둘 실내 공간</b>이 있는지 (창고 · 안뜰 · 차고).
+          생장의 오래된 건물은 계단이 좁아 객실까지 들고 올라가기 어렵습니다</li>
+        <li>5/9 아침 <b>이른 출발</b>이 가능한지 — 6시대에 나가려면 열쇠 반납 방법을 미리 정해 두세요</li>
+        <li>아침 식사 시각 — 대개 07:30부터라 그보다 일찍 나가려면 전날 밤 간식을 챙겨야 합니다</li>
+      </ul>
+      <p class="hcaveat">성급·주소·도보 시간은 대략값입니다. 예약 화면과 지도에서 다시 확인하세요.
+      5월은 순례 성수기라 <b>일찍 예약</b>해야 합니다.</p>
     </div>
 
     <h3 class="jh3">자전거는 미리 예약하고 호텔로 받기</h3>
@@ -5544,7 +5718,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260822-0200";
+  var BUILD="20260822-0216";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
