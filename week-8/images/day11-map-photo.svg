@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+<rect width="1600" height="1000" fill="#FAFAF7"/>
+<rect x="20" y="18" rx="14" ry="14" width="175" height="58" fill="#1D4ED8"/>
+<text x="107" y="58" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="34" font-weight="700" fill="white">DAY 11</text>
+<text x="220" y="55" font-family="Arial, Noto Sans KR, sans-serif" font-size="36" font-weight="700" fill="#111827">Vega de Valcarce → Sarria</text>
+<text x="220" y="92" font-family="Arial, Noto Sans KR, sans-serif" font-size="24" font-weight="700" fill="#1D4ED8">62.3 km / 상승 1,067 m</text>
+<polyline points="800,127 1015,109 1270,124 1510,130" fill="none" stroke="#1D4ED8" stroke-width="5"/>
+<circle cx="800" cy="127" r="7" fill="#1D4ED8"/>
+<text x="800" y="92" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#111">Vega de Valcarce</text>
+<text x="800" y="155" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="14" fill="#374151">0 km</text>
+<circle cx="1015" cy="109" r="7" fill="#1D4ED8"/>
+<text x="1015" y="92" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#111">O Cebreiro</text>
+<text x="1015" y="155" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="14" fill="#374151">17.9 km</text>
+<circle cx="1270" cy="124" r="7" fill="#1D4ED8"/>
+<text x="1270" y="92" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#111">Triacastela</text>
+<text x="1270" y="155" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="14" fill="#374151">~38 km</text>
+<circle cx="1510" cy="130" r="7" fill="#1D4ED8"/>
+<text x="1510" y="92" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#111">Sarria</text>
+<text x="1510" y="155" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="14" fill="#374151">62.3 km</text>
+<rect x="20" y="145" rx="16" ry="16" width="365" height="825" fill="#FFFFFF" stroke="#8B2F1C" stroke-width="2"/>
+<rect x="20" y="145" rx="16" ry="16" width="365" height="62" fill="#8B2F1C"/>
+<text x="42" y="186" font-family="Arial, Noto Sans KR, sans-serif" font-size="25" font-weight="700" fill="white">도장 (Sello) 장소 &amp; 순서</text>
+<circle cx="48" cy="234" r="18" fill="#8B2F1C"/>
+<text x="48" y="240" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white">1</text>
+<text x="78" y="222" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#8B2F1C">km 17.9</text>
+<text x="78" y="248" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Iglesia de Santa María la Real, O</text>
+<text x="78" y="272" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Cebreiro</text>
+<text x="78" y="298" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">오 세브레이로 왕립 성당</text>
+<line x1="38" y1="318" x2="367" y2="318" stroke="#E5E7EB" stroke-width="1"/>
+<circle cx="48" cy="346" r="18" fill="#8B2F1C"/>
+<text x="48" y="352" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white">2</text>
+<text x="78" y="334" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#8B2F1C">km 22.5</text>
+<text x="78" y="360" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Alto de San Roque</text>
+<text x="78" y="386" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">산 로케 언덕 순례자 동상 부근</text>
+<line x1="38" y1="406" x2="367" y2="406" stroke="#E5E7EB" stroke-width="1"/>
+<circle cx="48" cy="434" r="18" fill="#8B2F1C"/>
+<text x="48" y="440" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white">3</text>
+<text x="78" y="422" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#8B2F1C">km 47.2</text>
+<text x="78" y="448" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Monasterio de Samos</text>
+<text x="78" y="474" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">사모스 수도원 (약 2.7 km 우회)</text>
+<line x1="38" y1="494" x2="367" y2="494" stroke="#E5E7EB" stroke-width="1"/>
+<circle cx="48" cy="522" r="18" fill="#8B2F1C"/>
+<text x="48" y="528" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white">4</text>
+<text x="78" y="510" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#8B2F1C">km 62.3</text>
+<text x="78" y="536" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Sarria</text>
+<text x="78" y="562" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">도착지 성당·알베르게에서 Sello 확인</text>
+<line x1="38" y1="582" x2="367" y2="582" stroke="#E5E7EB" stroke-width="1"/>
+<rect x="34" y="865" rx="12" ry="12" width="337" height="84" fill="#8B2F1C" opacity="0.07" stroke="#8B2F1C" stroke-width="1"/>
+<text x="48" y="893" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" fill="#374151">팁: O Cebreiro는 대표적인 Sello 지점입니다.</text>
+<text x="48" y="915" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" fill="#374151">Samos는 우회가 필요하므로 시간과 체력을 보고 선택하세요.</text>
+<rect x="400" y="145" rx="16" ry="16" width="365" height="825" fill="#FFFFFF" stroke="#0E6B36" stroke-width="2"/>
+<rect x="400" y="145" rx="16" ry="16" width="365" height="62" fill="#0E6B36"/>
+<text x="422" y="186" font-family="Arial, Noto Sans KR, sans-serif" font-size="25" font-weight="700" fill="white">오늘의 포토존 (Photo Spots)</text>
+<circle cx="428" cy="234" r="18" fill="#0E6B36"/>
+<text x="428" y="240" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white">1</text>
+<text x="458" y="222" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#0E6B36">km 17.9</text>
+<text x="458" y="248" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Busto de Elías Valiña Sampedro</text>
+<text x="458" y="274" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">엘리아스 발리냐 신부 흉상 · 노란 화살표</text>
+<line x1="418" y1="294" x2="747" y2="294" stroke="#E5E7EB" stroke-width="1"/>
+<circle cx="428" cy="322" r="18" fill="#0E6B36"/>
+<text x="428" y="328" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white">2</text>
+<text x="458" y="310" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#0E6B36">km 17.9</text>
+<text x="458" y="336" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Iglesia de Santa María la Real, O</text>
+<text x="458" y="360" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Cebreiro</text>
+<text x="458" y="386" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">오 세브레이로 왕립 성당</text>
+<line x1="418" y1="406" x2="747" y2="406" stroke="#E5E7EB" stroke-width="1"/>
+<circle cx="428" cy="434" r="18" fill="#0E6B36"/>
+<text x="428" y="440" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white">3</text>
+<text x="458" y="422" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#0E6B36">km 22.5</text>
+<text x="458" y="448" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Monumento ao Peregrino, Alto de</text>
+<text x="458" y="472" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">San Roque</text>
+<text x="458" y="498" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">산 로케 언덕 순례자 동상</text>
+<line x1="418" y1="518" x2="747" y2="518" stroke="#E5E7EB" stroke-width="1"/>
+<circle cx="428" cy="546" r="18" fill="#0E6B36"/>
+<text x="428" y="552" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white">4</text>
+<text x="458" y="534" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#0E6B36">km 47.2</text>
+<text x="458" y="560" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Monasterio de Samos</text>
+<text x="458" y="586" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">사모스 수도원 · 약 2.7 km 우회</text>
+<line x1="418" y1="606" x2="747" y2="606" stroke="#E5E7EB" stroke-width="1"/>
+<rect x="414" y="865" rx="12" ry="12" width="337" height="84" fill="#0E6B36" opacity="0.07" stroke="#0E6B36" stroke-width="1"/>
+<text x="428" y="893" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" fill="#374151">팁: O Cebreiro는 Day 11의 핵심 포토존입니다. 안개가</text>
+<text x="428" y="915" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" fill="#374151">잦아 날씨가 맑을 때 먼저 촬영하세요.</text>
+<rect x="780" y="145" rx="16" ry="16" width="390" height="825" fill="#FFFFFF" stroke="#D97706" stroke-width="2"/>
+<rect x="780" y="145" rx="16" ry="16" width="390" height="62" fill="#D97706"/>
+<text x="802" y="186" font-family="Arial, Noto Sans KR, sans-serif" font-size="25" font-weight="700" fill="white">점심 맛집 추천</text>
+<rect x="796" y="213" rx="8" ry="8" width="68" height="28" fill="#D97706" opacity="0.12"/>
+<text x="830" y="233" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="15" font-weight="700" fill="#D97706">위치</text>
+<text x="876" y="222" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#D97706">Triacastela</text>
+<text x="876" y="248" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">중간 구간 식사 후보</text>
+<text x="876" y="274" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">O Cebreiro 하강 후 휴식</text>
+<line x1="798" y1="294" x2="1152" y2="294" stroke="#E5E7EB" stroke-width="1"/>
+<rect x="796" y="301" rx="8" ry="8" width="68" height="28" fill="#D97706" opacity="0.12"/>
+<text x="830" y="321" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="15" font-weight="700" fill="#D97706">메뉴</text>
+<text x="876" y="336" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Menú del Peregrino</text>
+<text x="876" y="362" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">순례자 메뉴</text>
+<line x1="798" y1="382" x2="1152" y2="382" stroke="#E5E7EB" stroke-width="1"/>
+<rect x="796" y="389" rx="8" ry="8" width="68" height="28" fill="#D97706" opacity="0.12"/>
+<text x="830" y="409" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="15" font-weight="700" fill="#D97706">추천</text>
+<text x="876" y="424" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Caldo Gallego</text>
+<text x="876" y="450" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">갈리시아식 수프</text>
+<line x1="798" y1="470" x2="1152" y2="470" stroke="#E5E7EB" stroke-width="1"/>
+<rect x="796" y="477" rx="8" ry="8" width="68" height="28" fill="#D97706" opacity="0.12"/>
+<text x="830" y="497" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="15" font-weight="700" fill="#D97706">추천</text>
+<text x="876" y="512" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Empanada Gallega</text>
+<text x="876" y="538" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">갈리시아식 파이</text>
+<line x1="798" y1="558" x2="1152" y2="558" stroke="#E5E7EB" stroke-width="1"/>
+<rect x="794" y="865" rx="12" ry="12" width="362" height="84" fill="#D97706" opacity="0.07" stroke="#D97706" stroke-width="1"/>
+<text x="808" y="893" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" fill="#374151">긴 O Cebreiro 오르막과 하강 후 Triacastela에서</text>
+<text x="808" y="915" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" fill="#374151">점심과 수분 보충을 하는 동선이 좋습니다.</text>
+<rect x="1185" y="145" rx="16" ry="16" width="395" height="825" fill="#FFFFFF" stroke="#0F4AA3" stroke-width="2"/>
+<rect x="1185" y="145" rx="16" ry="16" width="395" height="62" fill="#0F4AA3"/>
+<text x="1207" y="186" font-family="Arial, Noto Sans KR, sans-serif" font-size="25" font-weight="700" fill="white">저녁 맛집 추천 (도착지)</text>
+<rect x="1201" y="213" rx="8" ry="8" width="68" height="28" fill="#0F4AA3" opacity="0.12"/>
+<text x="1235" y="233" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="15" font-weight="700" fill="#0F4AA3">위치</text>
+<text x="1281" y="222" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#0F4AA3">Sarria</text>
+<text x="1281" y="248" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Mesón O Tapas</text>
+<text x="1281" y="274" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">사리아 중심가</text>
+<line x1="1203" y1="294" x2="1562" y2="294" stroke="#E5E7EB" stroke-width="1"/>
+<rect x="1201" y="301" rx="8" ry="8" width="68" height="28" fill="#0F4AA3" opacity="0.12"/>
+<text x="1235" y="321" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="15" font-weight="700" fill="#0F4AA3">메뉴</text>
+<text x="1281" y="336" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Menú del Peregrino</text>
+<text x="1281" y="362" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">순례자 메뉴</text>
+<line x1="1203" y1="382" x2="1562" y2="382" stroke="#E5E7EB" stroke-width="1"/>
+<rect x="1201" y="389" rx="8" ry="8" width="68" height="28" fill="#0F4AA3" opacity="0.12"/>
+<text x="1235" y="409" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="15" font-weight="700" fill="#0F4AA3">추천</text>
+<text x="1281" y="424" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Pulpo a Feira</text>
+<text x="1281" y="450" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">갈리시아식 문어</text>
+<line x1="1203" y1="470" x2="1562" y2="470" stroke="#E5E7EB" stroke-width="1"/>
+<rect x="1201" y="477" rx="8" ry="8" width="68" height="28" fill="#0F4AA3" opacity="0.12"/>
+<text x="1235" y="497" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="15" font-weight="700" fill="#0F4AA3">추천</text>
+<text x="1281" y="512" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Lacón con Grelos</text>
+<text x="1281" y="538" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">돼지고기와 순무잎 요리</text>
+<line x1="1203" y1="558" x2="1562" y2="558" stroke="#E5E7EB" stroke-width="1"/>
+<rect x="1199" y="865" rx="12" ry="12" width="367" height="84" fill="#0F4AA3" opacity="0.07" stroke="#0F4AA3" stroke-width="1"/>
+<text x="1213" y="893" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" fill="#374151">Sarria 도착 후 구시가지에서 저녁을 먹고, 다음 날 긴 Day</text>
+<text x="1213" y="915" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" fill="#374151">12를 위해 일찍 쉬는 일정이 좋습니다.</text>
+</svg>

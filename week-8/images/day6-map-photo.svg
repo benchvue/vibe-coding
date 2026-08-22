@@ -1,0 +1,150 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+<rect width="1600" height="1000" fill="#FAFAF7"/>
+<rect x="20" y="18" rx="14" ry="14" width="160" height="58" fill="#7C2D12"/>
+<text x="100" y="58" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="34" font-weight="700" fill="white">DAY 6</text>
+<text x="205" y="55" font-family="Arial, Noto Sans KR, sans-serif" font-size="38" font-weight="700" fill="#111827">Castrojeriz → Sahagún</text>
+<text x="205" y="92" font-family="Arial, Noto Sans KR, sans-serif" font-size="24" font-weight="700" fill="#7C2D12">82.3 km / 상승 516 m</text>
+<polyline points="790,120 950,124 1110,117 1290,112 1510,116" fill="none" stroke="#7C2D12" stroke-width="5"/>
+<circle cx="790" cy="120" r="7" fill="#7C2D12"/>
+<text x="790" y="94" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#111">Castrojeriz</text>
+<text x="790" y="154" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="14" fill="#374151">0 km</text>
+<circle cx="950" cy="124" r="7" fill="#7C2D12"/>
+<text x="950" y="94" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#111">Frómista</text>
+<text x="950" y="154" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="14" fill="#374151">24.4 km</text>
+<circle cx="1110" cy="117" r="7" fill="#7C2D12"/>
+<text x="1110" y="94" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#111">Carrión</text>
+<text x="1110" y="154" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="14" fill="#374151">43.2 km</text>
+<circle cx="1290" cy="112" r="7" fill="#7C2D12"/>
+<text x="1290" y="94" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#111">Calzadilla</text>
+<text x="1290" y="154" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="14" fill="#374151">~61 km</text>
+<circle cx="1510" cy="116" r="7" fill="#7C2D12"/>
+<text x="1510" y="94" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#111">Sahagún</text>
+<text x="1510" y="154" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="14" fill="#374151">82.3 km</text>
+<rect x="20" y="145" rx="16" ry="16" width="365" height="825" fill="#FFFFFF" stroke="#8B2F1C" stroke-width="2"/>
+<rect x="20" y="145" rx="16" ry="16" width="365" height="62" fill="#8B2F1C"/>
+<text x="42" y="186" font-family="Arial, Noto Sans KR, sans-serif" font-size="26" font-weight="700" fill="white">도장 (Sello) 장소 &amp; 순서</text>
+<circle cx="48" cy="234" r="18" fill="#8B2F1C"/>
+<text x="48" y="240" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white">1</text>
+<text x="78" y="222" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#8B2F1C">km 0.0</text>
+<text x="78" y="248" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Iglesia de Santo Domingo,</text>
+<text x="78" y="272" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Castrojeriz</text>
+<text x="78" y="298" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">카스트로헤리스 산토 도밍고 성당</text>
+<line x1="38" y1="318" x2="367" y2="318" stroke="#E5E7EB" stroke-width="1"/>
+<circle cx="48" cy="346" r="18" fill="#8B2F1C"/>
+<text x="48" y="352" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white">2</text>
+<text x="78" y="334" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#8B2F1C">km 24.4</text>
+<text x="78" y="360" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Iglesia de San Martín de Frómista</text>
+<text x="78" y="386" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">프로미스타 산 마르틴 성당</text>
+<line x1="38" y1="406" x2="367" y2="406" stroke="#E5E7EB" stroke-width="1"/>
+<circle cx="48" cy="434" r="18" fill="#8B2F1C"/>
+<text x="48" y="440" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white">3</text>
+<text x="78" y="422" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#8B2F1C">km 43.2</text>
+<text x="78" y="448" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Iglesia de Santa María del Camino,</text>
+<text x="78" y="472" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Carrión</text>
+<text x="78" y="498" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">카리온 산타 마리아 델 카미노 성당</text>
+<line x1="38" y1="518" x2="367" y2="518" stroke="#E5E7EB" stroke-width="1"/>
+<circle cx="48" cy="546" r="18" fill="#8B2F1C"/>
+<text x="48" y="552" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white">4</text>
+<text x="78" y="534" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#8B2F1C">km 44.3</text>
+<text x="78" y="560" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Monasterio de San Zoilo</text>
+<text x="78" y="586" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">산 소일로 수도원</text>
+<line x1="38" y1="606" x2="367" y2="606" stroke="#E5E7EB" stroke-width="1"/>
+<circle cx="48" cy="634" r="18" fill="#8B2F1C"/>
+<text x="48" y="640" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white">5</text>
+<text x="78" y="622" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#8B2F1C">km 82.3</text>
+<text x="78" y="648" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Arco de San Benito, Sahagún</text>
+<text x="78" y="674" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">사아군 산 베니토 아치</text>
+<line x1="38" y1="694" x2="367" y2="694" stroke="#E5E7EB" stroke-width="1"/>
+<rect x="34" y="865" rx="12" ry="12" width="337" height="84" fill="#8B2F1C" opacity="0.07" stroke="#8B2F1C" stroke-width="1"/>
+<text x="48" y="893" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" fill="#374151">팁: 성당·수도원·알베르게에서 Sello를 받을 수 있습니다.</text>
+<text x="48" y="915" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" fill="#374151">운영시간은 현장에서 확인하세요.</text>
+<rect x="400" y="145" rx="16" ry="16" width="365" height="825" fill="#FFFFFF" stroke="#0E6B36" stroke-width="2"/>
+<rect x="400" y="145" rx="16" ry="16" width="365" height="62" fill="#0E6B36"/>
+<text x="422" y="186" font-family="Arial, Noto Sans KR, sans-serif" font-size="26" font-weight="700" fill="white">오늘의 포토존 (Photo Spots)</text>
+<circle cx="428" cy="234" r="18" fill="#0E6B36"/>
+<text x="428" y="240" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white">1</text>
+<text x="458" y="222" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#0E6B36">km 3.3</text>
+<text x="458" y="248" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Mirador del Alto de Mostelares</text>
+<text x="458" y="274" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">모스텔라레스 언덕 전망대</text>
+<line x1="418" y1="294" x2="747" y2="294" stroke="#E5E7EB" stroke-width="1"/>
+<circle cx="428" cy="322" r="18" fill="#0E6B36"/>
+<text x="428" y="328" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white">2</text>
+<text x="458" y="310" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#0E6B36">km 24.4</text>
+<text x="458" y="336" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Iglesia de San Martín de Frómista</text>
+<text x="458" y="362" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">프로미스타 산 마르틴 성당</text>
+<line x1="418" y1="382" x2="747" y2="382" stroke="#E5E7EB" stroke-width="1"/>
+<circle cx="428" cy="410" r="18" fill="#0E6B36"/>
+<text x="428" y="416" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white">3</text>
+<text x="458" y="398" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#0E6B36">km 44.3</text>
+<text x="458" y="424" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Monasterio de San Zoilo</text>
+<text x="458" y="450" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">산 소일로 수도원</text>
+<line x1="418" y1="470" x2="747" y2="470" stroke="#E5E7EB" stroke-width="1"/>
+<circle cx="428" cy="498" r="18" fill="#0E6B36"/>
+<text x="428" y="504" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white">4</text>
+<text x="458" y="486" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#0E6B36">km 79.6</text>
+<text x="458" y="512" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Ermita de la Virgen del Puente</text>
+<text x="458" y="538" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">푸엔테 성모 예배당 · 순례길 중간지점</text>
+<line x1="418" y1="558" x2="747" y2="558" stroke="#E5E7EB" stroke-width="1"/>
+<circle cx="428" cy="586" r="18" fill="#0E6B36"/>
+<text x="428" y="592" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white">5</text>
+<text x="458" y="574" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#0E6B36">km 82.3</text>
+<text x="458" y="600" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Arco de San Benito, Sahagún</text>
+<text x="458" y="626" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">산 베니토 아치</text>
+<line x1="418" y1="646" x2="747" y2="646" stroke="#E5E7EB" stroke-width="1"/>
+<rect x="414" y="865" rx="12" ry="12" width="337" height="84" fill="#0E6B36" opacity="0.07" stroke="#0E6B36" stroke-width="1"/>
+<text x="428" y="893" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" fill="#374151">팁: Mostelares 전망대와 San Martín 성당은 Day</text>
+<text x="428" y="915" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" fill="#374151">6의 대표 포토존입니다.</text>
+<rect x="780" y="145" rx="16" ry="16" width="390" height="825" fill="#FFFFFF" stroke="#D97706" stroke-width="2"/>
+<rect x="780" y="145" rx="16" ry="16" width="390" height="62" fill="#D97706"/>
+<text x="802" y="186" font-family="Arial, Noto Sans KR, sans-serif" font-size="26" font-weight="700" fill="white">점심 맛집 추천</text>
+<rect x="796" y="213" rx="8" ry="8" width="68" height="28" fill="#D97706" opacity="0.12"/>
+<text x="830" y="233" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="15" font-weight="700" fill="#D97706">위치</text>
+<text x="876" y="222" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#D97706">Frómista / Carrión</text>
+<text x="876" y="248" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">중간 구간 식사 후보</text>
+<text x="876" y="274" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">출발 약 2시간 이후 구간</text>
+<line x1="798" y1="294" x2="1152" y2="294" stroke="#E5E7EB" stroke-width="1"/>
+<rect x="796" y="301" rx="8" ry="8" width="68" height="28" fill="#D97706" opacity="0.12"/>
+<text x="830" y="321" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="15" font-weight="700" fill="#D97706">메뉴</text>
+<text x="876" y="336" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Menú del Peregrino</text>
+<text x="876" y="362" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">순례자 메뉴</text>
+<line x1="798" y1="382" x2="1152" y2="382" stroke="#E5E7EB" stroke-width="1"/>
+<rect x="796" y="389" rx="8" ry="8" width="68" height="28" fill="#D97706" opacity="0.12"/>
+<text x="830" y="409" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="15" font-weight="700" fill="#D97706">추천</text>
+<text x="876" y="424" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Tortilla Española</text>
+<text x="876" y="450" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">스페인식 오믈렛</text>
+<line x1="798" y1="470" x2="1152" y2="470" stroke="#E5E7EB" stroke-width="1"/>
+<rect x="796" y="477" rx="8" ry="8" width="68" height="28" fill="#D97706" opacity="0.12"/>
+<text x="830" y="497" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="15" font-weight="700" fill="#D97706">추천</text>
+<text x="876" y="512" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Lomo con Patatas</text>
+<text x="876" y="538" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">돼지고기 등심과 감자</text>
+<line x1="798" y1="558" x2="1152" y2="558" stroke="#E5E7EB" stroke-width="1"/>
+<rect x="794" y="865" rx="12" ry="12" width="362" height="84" fill="#D97706" opacity="0.07" stroke="#D97706" stroke-width="1"/>
+<text x="808" y="893" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" fill="#374151">82.3 km 장거리이므로 Frómista~Carrión 구간에서</text>
+<text x="808" y="915" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" fill="#374151">점심과 충분한 수분 보충을 권장합니다.</text>
+<rect x="1185" y="145" rx="16" ry="16" width="395" height="825" fill="#FFFFFF" stroke="#0F4AA3" stroke-width="2"/>
+<rect x="1185" y="145" rx="16" ry="16" width="395" height="62" fill="#0F4AA3"/>
+<text x="1207" y="186" font-family="Arial, Noto Sans KR, sans-serif" font-size="26" font-weight="700" fill="white">저녁 맛집 추천 (도착지)</text>
+<rect x="1201" y="213" rx="8" ry="8" width="68" height="28" fill="#0F4AA3" opacity="0.12"/>
+<text x="1235" y="233" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="15" font-weight="700" fill="#0F4AA3">위치</text>
+<text x="1281" y="222" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#0F4AA3">Sahagún</text>
+<text x="1281" y="248" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Restaurante Luis</text>
+<text x="1281" y="274" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">사아군 중심가</text>
+<line x1="1203" y1="294" x2="1562" y2="294" stroke="#E5E7EB" stroke-width="1"/>
+<rect x="1201" y="301" rx="8" ry="8" width="68" height="28" fill="#0F4AA3" opacity="0.12"/>
+<text x="1235" y="321" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="15" font-weight="700" fill="#0F4AA3">메뉴</text>
+<text x="1281" y="336" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Menú del Peregrino</text>
+<text x="1281" y="362" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">순례자 메뉴</text>
+<line x1="1203" y1="382" x2="1562" y2="382" stroke="#E5E7EB" stroke-width="1"/>
+<rect x="1201" y="389" rx="8" ry="8" width="68" height="28" fill="#0F4AA3" opacity="0.12"/>
+<text x="1235" y="409" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="15" font-weight="700" fill="#0F4AA3">추천</text>
+<text x="1281" y="424" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Lechazo Asado</text>
+<text x="1281" y="450" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">카스티야식 어린 양고기 구이</text>
+<line x1="1203" y1="470" x2="1562" y2="470" stroke="#E5E7EB" stroke-width="1"/>
+<rect x="1201" y="477" rx="8" ry="8" width="68" height="28" fill="#0F4AA3" opacity="0.12"/>
+<text x="1235" y="497" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="15" font-weight="700" fill="#0F4AA3">추천</text>
+<text x="1281" y="512" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Sopa Castellana</text>
+<text x="1281" y="538" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">카스티야식 마늘 수프</text>
+<line x1="1203" y1="558" x2="1562" y2="558" stroke="#E5E7EB" stroke-width="1"/>
+<rect x="1199" y="865" rx="12" ry="12" width="367" height="84" fill="#0F4AA3" opacity="0.07" stroke="#0F4AA3" stroke-width="1"/>
+<text x="1213" y="893" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" fill="#374151">도착 후 중심가에서 쉽게 이용할 수 있는 저녁 식사 후보입니다.</text>
+</svg>

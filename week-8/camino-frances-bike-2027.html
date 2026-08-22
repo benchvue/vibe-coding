@@ -441,14 +441,15 @@
     .cv-nav{width:38px;height:38px}
   }
   @media print{ .cvw{display:none!important} .sarrow{display:none} }
-  /* 글자 선명본(SVG) 보조 지도 */
-  .dsvgbox{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
-  .dsvgbox[hidden]{display:none}
-  .dmap.dsvg{background:#FFFDF6;cursor:zoom-in}
-  .dmap.dsvg img{background:#FFFDF6}
+  /* 지도 3장 (경로+고도 / 포토·맛집 / 글자 선명본) */
+  .dmapblock + .dmapblock{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+  .dmapblock[hidden]{display:none}
+  .dmapblock.svg .dmap{background:#FFFDF6}
+  .dmapblock.svg .dmap img{background:#FFFDF6}
+  .dmapblock.png2 .dmap{background:#FBFAF5}
   .dmap .dtag.alt{background:var(--camino-blue);color:#fff}
-  .dsvgbox .dmap-cap{text-align:left;line-height:1.6}
-  .dsvgbox .dmap-cap b{color:var(--camino-blue)}
+  .dmapblock .dmap-cap{text-align:left;line-height:1.65}
+  .dmapblock .dmap-cap b{color:var(--camino-blue)}
   /* 뷰어 상단 보기 전환 (지도 ↔ 글자) */
   .cv-tabs{flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:6px;
     padding:9px 14px 4px;background:rgba(11,16,30,.9)}
@@ -459,12 +460,8 @@
     font-family:inherit;white-space:nowrap;transition:all .15s}
   .cv-tabs button:hover{border-color:var(--flecha);color:var(--flecha)}
   .cv-tabs button.on{background:var(--flecha);border-color:var(--flecha);color:#3B2E00}
-  /* SVG 보조 지도 로딩 중 자리 */
-  .dmap.dsvg{min-height:56px}
-  .dmap.dsvg.loading::after{content:"글자 선명본(SVG) 불러오는 중…";position:absolute;inset:0;
-    display:flex;align-items:center;justify-content:center;color:#A79E86;font-size:.74rem;
-    background:#FFFDF6;border-radius:12px}
-  .dmap.dsvg img{min-height:1px}
+  .dmapblock.svg .dmap{min-height:56px}
+  .dmapblock .dmap img{min-height:1px}
 
   /* ── 자전거 내비게이션 (GPX) 내려받기 ── */
   .gpxbtn{position:relative;display:flex;align-items:center;gap:9px;width:100%;
@@ -773,6 +770,37 @@
   .stab tr.bike .sv{color:var(--ok)}
   .hlink{color:var(--camino-blue);text-decoration:none;border-bottom:1px dotted var(--camino-blue)}
   .hlink:hover{color:var(--rioja);border-bottom-color:var(--rioja)}
+
+  /* ── 고도 프로필 · 힘든 날 ── */
+  .climb{margin-top:18px}
+  .climbh{font-family:'Gowun Batang',serif;font-size:1rem;color:var(--camino-blue);
+    margin-bottom:11px;padding-bottom:7px;border-bottom:2px solid var(--flecha)}
+  .climbh small{font-family:'IBM Plex Sans KR',sans-serif;font-size:.72rem;font-weight:400;
+    color:var(--ink-soft);margin-left:6px}
+  .climbrow{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-bottom:12px}
+  @media(max-width:760px){ .climbrow{grid-template-columns:1fr} }
+  .cc{position:relative;border:1px solid var(--line);border-radius:13px;background:#fff;
+    padding:13px 15px 14px}
+  .cc.c1{border-color:#E0B4B4;background:#FDF6F5}
+  .cc.c2{border-color:#E7D9A8;background:#FFFBEE}
+  .cc.c3{border-color:#C4DCE9;background:#F7FBFD}
+  .ccn{position:absolute;right:12px;top:11px;width:22px;height:22px;border-radius:50%;
+    background:#EDEAE1;color:var(--ink-soft);font-size:.66rem;font-weight:700;
+    display:flex;align-items:center;justify-content:center}
+  .cc.c1 .ccn{background:var(--rioja);color:#fff}
+  .cc b{display:block;font-size:.82rem;color:var(--camino-blue)}
+  .cc em{display:block;font-style:normal;font-family:'Gowun Batang',serif;font-size:1.45rem;
+    font-weight:700;color:var(--rioja);line-height:1.2;margin-top:2px;
+    font-variant-numeric:tabular-nums}
+  .cc.c2 em{color:#8A6A12} .cc.c3 em{color:var(--camino-blue)}
+  .cc small{display:block;font-size:.73rem;color:var(--ink-soft);line-height:1.7;margin-top:6px}
+  .climbnote{padding:11px 14px;background:#FFFBEE;border:1px solid #E7D9A8;border-radius:11px;
+    font-size:.79rem;line-height:1.8;color:var(--ink-soft);margin-bottom:14px}
+  .climbnote b{color:#8A6A12}
+  .sched td.hi,.sched th.hi{color:var(--rioja);font-weight:700}
+  .sched tr.rest td{background:#F4F2EA;color:var(--ink-soft)}
+  .sched tr.fin td{background:#EAF3EC}
+  .sched tfoot th{background:#F4F2EA;color:var(--camino-blue);border-top:2px solid var(--line)}
 
   /* ── DAY별 날씨 카드 ───────────────────────────── */
   .dwx{padding:2px 14px 14px}
@@ -1208,16 +1236,16 @@
 <header class="hero">
   <div class="wrap">
     <div class="eyebrow">2027. 5. 6 – 5. 22 · Bicigrino</div>
-    <h1 class="display">카미노 프란세스,<br>자전거로 <em>808.5km</em>를 달리다</h1>
+    <h1 class="display">카미노 프란세스,<br>자전거로 <em>782.4km</em>를 달리다</h1>
     <p class="hero-sub"><b style="color:#fff">Bin</b>(미국 Newark 출발)과 <b style="color:#fff">Jin</b>(한국 인천 출발)이
     5월 7일 파리에서 만나 5월 8일 기차로 생장에 들어가, 12일 라이딩 + 레온 휴식 1일로
     산티아고 대성당까지 완주하는 자전거 순례 일정입니다.</p>
     <div class="stats">
-      <div class="stat"><b>808.5 km</b><span>총 주행 거리</span></div>
+      <div class="stat"><b>782.4 km</b><span>총 주행 거리</span></div>
       <div class="stat"><b>12 + 1일</b><span>라이딩 12일 · 휴식 1일 (5/9–5/21)</span></div>
-      <div class="stat"><b>67 km</b><span>일평균 주행</span></div>
-      <div class="stat"><b>96.5 km</b><span>최장 구간 (5일차)</span></div>
-      <div class="stat"><b>8,500 m</b><span>총 획득고도</span></div>
+      <div class="stat"><b>65 km</b><span>일평균 주행</span></div>
+      <div class="stat"><b>90.0 km</b><span>최장 구간 (5일차)</span></div>
+      <div class="stat"><b>10,726 m</b><span>총 획득고도</span></div>
     </div>
     <figure class="detail-map">
       <img src="images/detail-v2-map.png"
@@ -1233,12 +1261,57 @@
     <div class="sec-head">
       <div class="no">Ⅰ · Perfil</div>
       <h2>고도 프로필</h2>
-      <p>획득고도 기준 세 고비는 1일차 피레네 +1,350m, 10일차 크루스 데 페로 +1,050m,
-      11일차 오 세브레이로 +1,250m입니다. 총 누적 상승 약 8,500m.</p>
+      <p>실제 GPX 트랙에서 다시 계산한 값입니다 — 12일 주행 <b>782.4 km</b>,
+      누적 상승 <b>10,726 m</b>. 예전 계획표의 어림값(8,500 m)보다 2,200 m 더 오릅니다.
+      길이만 보면 평탄해 보이는 날에도 잔오르막이 쌓입니다.</p>
     </div>
     <figure class="img-card">
-      <img src="images/profile-v1.png" alt="카미노 프란세스 자전거 경로 고도 프로파일" loading="lazy">
+      <img src="images/camino-2027-profile.png" alt="카미노 프란세스 자전거 경로 고도 프로파일" loading="lazy">
     </figure>
+
+    <div class="climb">
+      <h3 class="climbh">힘든 날 순서 <small>· 획득고도 기준</small></h3>
+      <div class="climbrow">
+        <div class="cc c1"><span class="ccn">1</span>
+          <b>DAY 1</b><em>+1,741 m</em>
+          <small>생장 → 수비리 · 45.8 km<br>피레네 · 171 m 에서 론세스바예스 956 m</small></div>
+        <div class="cc c2"><span class="ccn">2</span>
+          <b>DAY 12</b><em>+1,337 m</em>
+          <small>사리아 → 아르수아 · 76.3 km<br>갈리시아 잔오르막이 끝없이 반복</small></div>
+        <div class="cc c3"><span class="ccn">3</span>
+          <b>DAY 11</b><em>+1,067 m</em>
+          <small>베가 데 발카르세 → 사리아 · 62.3 km<br>오 세브레이로 637 m → 1,290 m</small></div>
+      </div>
+      <p class="climbnote"><b>DAY 12를 조심하세요.</b> 큰 고개가 없어 방심하기 쉽지만
+      획득고도가 두 번째로 높습니다. 짧은 오르내림이 76 km 내내 이어져
+      다리에 남는 피로는 산 하나 넘는 것과 비슷합니다.</p>
+
+      <div class="sched-wrap">
+        <table class="sched" style="min-width:640px">
+          <thead><tr><th>DAY</th><th>구간</th><th style="text-align:right">거리</th>
+            <th style="text-align:right">획득고도</th><th style="text-align:right">누적</th>
+            <th>고도 변화</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>생장 → 수비리</td><td class="km">45.8</td><td class="km hi">1,741</td><td class="km">45.8</td><td>171 → 956 → 531 m</td></tr>
+            <tr><td>2</td><td>수비리 → 에스테야</td><td class="km">68.9</td><td class="km">944</td><td class="km">114.7</td><td>528 → 350 → 425 m</td></tr>
+            <tr><td>3</td><td>에스테야 → 나바레테</td><td class="km">61.3</td><td class="km">908</td><td class="km">176.1</td><td>428 → 395 → 515 m</td></tr>
+            <tr><td>4</td><td>나바레테 → 벨로라도</td><td class="km">58.7</td><td class="km">832</td><td class="km">234.8</td><td>516 → 645 → 769 m</td></tr>
+            <tr><td>5</td><td>벨로라도 → 카스트로헤리스</td><td class="km">90.0</td><td class="km">940</td><td class="km">324.8</td><td>768 → 1,005 → 812 m</td></tr>
+            <tr><td>6</td><td>카스트로헤리스 → 사아군</td><td class="km">82.3</td><td class="km">516</td><td class="km">407.1</td><td>810 → 857 → 826 m</td></tr>
+            <tr><td>7</td><td>사아군 → 레온</td><td class="km">54.7</td><td class="km">261</td><td class="km">461.8</td><td>821 → 879 → 838 m</td></tr>
+            <tr class="rest"><td>8</td><td>레온 휴식</td><td class="km">—</td><td class="km">—</td><td class="km">461.8</td><td>838 m</td></tr>
+            <tr><td>9</td><td>레온 → 라바날</td><td class="km">68.9</td><td class="km">666</td><td class="km">530.7</td><td>840 → 873 → 1,149 m</td></tr>
+            <tr><td>10</td><td>라바날 → 베가 데 발카르세</td><td class="km">74.3</td><td class="km">908</td><td class="km">604.9</td><td>1,150 → 482 → 634 m</td></tr>
+            <tr><td>11</td><td>베가 데 발카르세 → 사리아</td><td class="km">62.3</td><td class="km hi">1,067</td><td class="km">667.2</td><td>637 → 1,290 → 421 m</td></tr>
+            <tr><td>12</td><td>사리아 → 아르수아</td><td class="km">76.3</td><td class="km hi">1,337</td><td class="km">743.5</td><td>421 → 347 → 394 m</td></tr>
+            <tr class="fin"><td>13</td><td>아르수아 → 산티아고</td><td class="km">38.9</td><td class="km">606</td><td class="km">782.4</td><td>392 → 293 → 262 m</td></tr>
+          </tbody>
+          <tfoot><tr><th>12일</th><th>주행</th><th class="km">782.4</th><th class="km">10,726</th><th></th><th></th></tr></tfoot>
+        </table>
+      </div>
+      <p class="note">거리·획득고도는 실제 GPX 트랙에서 계산한 값입니다
+      (고도는 Copernicus EU-DEM). 기기와 계산 방식에 따라 획득고도는 ±10% 정도 차이가 납니다.</p>
+    </div>
   </div>
 </section>
 
@@ -1257,20 +1330,24 @@
         <tr><th>일차</th><th>날짜</th><th>구간</th><th style="text-align:right">거리</th><th style="text-align:right">획득고도</th><th style="text-align:right">누적 km</th></tr>
       </thead>
       <tbody>
-        <tr><td>1</td><td class="day">5/9<small>일</small></td><td class="route"><b>생장</b> <small>(Saint-Jean-Pied-de-Port)</small> → <b>수비리</b> <small>(Zubiri)</small></td><td class="km">48.0 km</td><td class="gain">+1,350 m</td><td class="km">48.0</td></tr>
-        <tr><td>2</td><td class="day">5/10<small>월</small></td><td class="route"><b>수비리</b> <small>(Zubiri)</small> → <b>에스떼야</b> <small>(Estella)</small></td><td class="km">65.9 km</td><td class="gain">+800 m</td><td class="km">113.9</td></tr>
-        <tr><td>3</td><td class="day">5/11<small>화</small></td><td class="route"><b>에스떼야</b> <small>(Estella)</small> → <b>나베레테</b> <small>(Navarrete)</small></td><td class="km">61.3 km</td><td class="gain">+700 m</td><td class="km">175.2</td></tr>
-        <tr><td>4</td><td class="day">5/12<small>수</small></td><td class="route"><b>나베레테</b> <small>(Navarrete)</small> → <b>벨로라도</b> <small>(Belorado)</small></td><td class="km">59.3 km</td><td class="gain">+850 m</td><td class="km">234.5</td></tr>
-        <tr><td>5</td><td class="day">5/13<small>목</small></td><td class="route"><b>벨로라도</b> <small>(Belorado)</small> → <b>키스트로헤리스</b> <small>(Castrojeriz)</small></td><td class="km">96.5 km</td><td class="gain">+350 m</td><td class="km">331.0</td></tr>
-        <tr><td>6</td><td class="day">5/14<small>금</small></td><td class="route"><b>키스트로헤리스</b> <small>(Castrojeriz)</small> → <b>사아군</b> <small>(Sahagún)</small></td><td class="km">83.5 km</td><td class="gain">+450 m</td><td class="km">414.5</td></tr>
-        <tr><td>7</td><td class="day">5/15<small>토</small></td><td class="route"><b>사아군</b> <small>(Sahagún)</small> → <b>레온</b> <small>(León)</small></td><td class="km">68.0 km</td><td class="gain">+250 m</td><td class="km">482.5</td></tr>
-        <tr class="restrow"><td>8</td><td class="day">5/16<small>일</small></td><td class="route">🛌 <b>레온</b> (León) 휴식일 — 자전거 주행 없음</td><td class="km">0 km</td><td class="gain">—</td><td class="km">482.5</td></tr>
-        <tr><td>9</td><td class="day">5/17<small>월</small></td><td class="route"><b>레온</b> <small>(León)</small> → <b>라바날 델 까미노</b> <small>(Rabanal del Camino)</small></td><td class="km">74.0 km</td><td class="gain">+250 m</td><td class="km">556.5</td></tr>
-        <tr><td>10</td><td class="day">5/18<small>화</small></td><td class="route"><b>라바날 델 까미노</b> <small>(Rabanal del Camino)</small> → <b>베가 데 발까르세</b> <small>(Vega de Valcarce)</small></td><td class="km">75.5 km</td><td class="gain">+1,050 m</td><td class="km">632.0</td></tr>
-        <tr><td>11</td><td class="day">5/19<small>수</small></td><td class="route"><b>베가 데 발까르세</b> <small>(Vega de Valcarce)</small> → <b>사리아</b> <small>(Sarria)</small></td><td class="km">60.0 km</td><td class="gain">+1,250 m</td><td class="km">692.0</td></tr>
-        <tr><td>12</td><td class="day">5/20<small>목</small></td><td class="route"><b>사리아</b> <small>(Sarria)</small> → <b>아르수아</b> <small>(Arzúa)</small></td><td class="km">76.5 km</td><td class="gain">+900 m</td><td class="km">768.5</td></tr>
-        <tr><td>13</td><td class="day">5/21<small>금</small></td><td class="route"><b>아르수아</b> <small>(Arzúa)</small> → <b>산티아고 대성당</b> <small>(Santiago de Compostela)</small></td><td class="km">40.0 km</td><td class="gain">+300 m</td><td class="km">808.5</td></tr>
+        <tr><td>1</td><td class="day">5/9<small>일</small></td><td class="route"><b>생장</b> <small>(Saint-Jean-Pied-de-Port)</small> → <b>수비리</b> <small>(Zubiri)</small></td><td class="km">45.8 km</td><td class="gain">+1,741 m</td><td class="km">45.8</td></tr>
+        <tr><td>2</td><td class="day">5/10<small>월</small></td><td class="route"><b>수비리</b> <small>(Zubiri)</small> → <b>에스떼야</b> <small>(Estella)</small></td><td class="km">68.9 km</td><td class="gain">+944 m</td><td class="km">114.7</td></tr>
+        <tr><td>3</td><td class="day">5/11<small>화</small></td><td class="route"><b>에스떼야</b> <small>(Estella)</small> → <b>나베레테</b> <small>(Navarrete)</small></td><td class="km">61.3 km</td><td class="gain">+908 m</td><td class="km">176.1</td></tr>
+        <tr><td>4</td><td class="day">5/12<small>수</small></td><td class="route"><b>나베레테</b> <small>(Navarrete)</small> → <b>벨로라도</b> <small>(Belorado)</small></td><td class="km">58.7 km</td><td class="gain">+832 m</td><td class="km">234.8</td></tr>
+        <tr><td>5</td><td class="day">5/13<small>목</small></td><td class="route"><b>벨로라도</b> <small>(Belorado)</small> → <b>키스트로헤리스</b> <small>(Castrojeriz)</small></td><td class="km">90.0 km</td><td class="gain">+940 m</td><td class="km">324.8</td></tr>
+        <tr><td>6</td><td class="day">5/14<small>금</small></td><td class="route"><b>키스트로헤리스</b> <small>(Castrojeriz)</small> → <b>사아군</b> <small>(Sahagún)</small></td><td class="km">82.3 km</td><td class="gain">+516 m</td><td class="km">407.1</td></tr>
+        <tr><td>7</td><td class="day">5/15<small>토</small></td><td class="route"><b>사아군</b> <small>(Sahagún)</small> → <b>레온</b> <small>(León)</small></td><td class="km">54.7 km</td><td class="gain">+261 m</td><td class="km">461.8</td></tr>
+        <tr class="restrow"><td>8</td><td class="day">5/16<small>일</small></td><td class="route">🛌 <b>레온</b> (León) 휴식일 — 자전거 주행 없음</td><td class="km">0 km</td><td class="gain">—</td><td class="km">461.8</td></tr>
+        <tr><td>9</td><td class="day">5/17<small>월</small></td><td class="route"><b>레온</b> <small>(León)</small> → <b>라바날 델 까미노</b> <small>(Rabanal del Camino)</small></td><td class="km">68.9 km</td><td class="gain">+666 m</td><td class="km">530.7</td></tr>
+        <tr><td>10</td><td class="day">5/18<small>화</small></td><td class="route"><b>라바날 델 까미노</b> <small>(Rabanal del Camino)</small> → <b>베가 데 발까르세</b> <small>(Vega de Valcarce)</small></td><td class="km">74.3 km</td><td class="gain">+908 m</td><td class="km">604.9</td></tr>
+        <tr><td>11</td><td class="day">5/19<small>수</small></td><td class="route"><b>베가 데 발까르세</b> <small>(Vega de Valcarce)</small> → <b>사리아</b> <small>(Sarria)</small></td><td class="km">62.3 km</td><td class="gain">+1,067 m</td><td class="km">667.2</td></tr>
+        <tr><td>12</td><td class="day">5/20<small>목</small></td><td class="route"><b>사리아</b> <small>(Sarria)</small> → <b>아르수아</b> <small>(Arzúa)</small></td><td class="km">76.3 km</td><td class="gain">+1,337 m</td><td class="km">743.5</td></tr>
+        <tr><td>13</td><td class="day">5/21<small>금</small></td><td class="route"><b>아르수아</b> <small>(Arzúa)</small> → <b>산티아고 대성당</b> <small>(Santiago de Compostela)</small></td><td class="km">38.9 km</td><td class="gain">+606 m</td><td class="km">782.4</td></tr>
       </tbody>
+      <tfoot>
+        <tr><th colspan="3">12일 주행 · 레온 휴식 1일</th><th class="km">782.4 km</th>
+          <th class="gain">+10,726 m</th><th class="km">782.4</th></tr>
+      </tfoot>
     </table>
     </div>
   </div>
@@ -1286,7 +1363,7 @@
       <p>각 카드의 QR 코드를 휴대폰 카메라로 스캔하거나 버튼을 누르면
       해당 구간의 <b>구글 지도 자전거 길찾기</b>가 바로 열립니다.
       ※ 구글 자전거 경로는 일부 비포장 카미노 구간을 인근 도로로 우회할 수 있습니다.</p>
-      <p class="gpxsrc"><b>자전거 내비게이션 (GPX)</b> — 가민 등 GPS 기기에 넣는 파일입니다. 트랙에 고도가 들어 있고, 순례자 알베르게가 경로 순서대로 웨이포인트로 붙어 있습니다(전체 442곳).<br>짐 실은 자전거로 내려가기 어려운 <b>급경사 18곳</b>이 있는 <b>5일치</b>는 포장도로 우회로로 갈아 끼웠습니다 (DAY 1 · 2 · 10 · 11 · 12, <i>우회</i> 표시).<small>트랙 출처 santiago.nl 도보 노선 · 고도 Copernicus EU-DEM · 알베르게 santiago.nl 시설 자료 · 2026-08-21 생성. GPX 에는 <b>노면 정보가 없습니다</b> — 우회로는 경사 기준으로만 골랐고 자갈·포장 여부를 확인한 것이 아닙니다. 재배포 시 출처 표기와 원 자료 라이선스 확인이 필요합니다.</small></p>
+      <p class="gpxsrc"><b>자전거 내비게이션 (GPX)</b> — 가민 등 GPS 기기에 넣는 파일입니다. 트랙에 고도가 들어 있고, 순례자 <b>알베르게</b>와 <b>포토존·명소 61곳</b>이 경로 순서대로 웨이포인트로 붙어 있습니다.<br>짐 실은 자전거로 내려가기 어려운 급경사가 있는 <b>4일치</b>는 포장도로 우회로로 갈아 끼웠습니다 (DAY 2 · 10 · 11 · 12, <i>우회</i> 표시). DAY 1 은 도보 순례 노선과 같습니다.<small>트랙 출처 santiago.nl 도보 노선 · 고도 Copernicus EU-DEM · 알베르게 santiago.nl 시설 자료 · 2026-08-22 생성. GPX 에는 <b>노면 정보가 없습니다</b> — 우회로는 경사 기준으로만 골랐고 자갈·포장 여부를 확인한 것이 아닙니다. 재배포 시 출처 표기와 원 자료 라이선스 확인이 필요합니다.</small></p>
     </div>
     
 <div id="daysHost" data-src="camino-days.html">
@@ -2244,7 +2321,7 @@ until we check in?</pre>
       <div class="fd-row frame fd-final">
         <div class="fd-img pthumb" data-fd="13" style="display:none"><img alt="DAY 13 완주 기념 요리"></div>
         <div class="fd-head"><span class="fd-chip final">D13</span> <b>아르수아 → 산티아고 데 콤포스텔라</b> <small>5/21 금</small></div>
-        <div class="fd-name">⭐ 808.5km 완주 기념 저녁 — Restaurante El Puente</div>
+        <div class="fd-name">⭐ 782.4km 완주 기념 저녁 — Restaurante El Puente</div>
         <div class="fd-menu">전통 갈리시아 마리스께리아 (Marisquería tradicional gallega)</div>
         <div class="fd-addr">📍 Viaducto da Rocha, 11, Bajo, 15706 Santiago de Compostela</div>
         <div class="fd-menu" style="margin-top:8px"><b>추천 메뉴:</b>
@@ -2357,10 +2434,8 @@ until we check in?</pre>
 </div>
 <footer class="site">
   <div class="buen display">¡Buen Camino!</div>
-  <p>Camino Francés 808.5km · 2027. 5. 6 – 5. 22 · <b>Bin &amp; Jin</b>의 Bicigrino 일정표<br>
-  라이딩 12일 + 레온 휴식 1일 · 일평균 약 67km · 총 획득고도 약 8,500m</p>
-  <p class="buildline"><span class="buildver"></span>
-  <button type="button" class="buildreload" title="캐시를 무시하고 최신 파일을 다시 받습니다">↻ 최신본 받기</button></p>
+  <p>Camino Francés 782.4km · 2027. 5. 6 – 5. 22 · <b>Bin &amp; Jin</b>의 Bicigrino 일정표<br>
+  라이딩 12일 + 레온 휴식 1일 · 일평균 약 65km · 총 획득고도 10,726m</p>
 </footer>
 
 
@@ -3456,226 +3531,116 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
   /* 지도 파일 경로
      1순위: camino-days.html 의 data-map / data-svg 값
      그 뒤로는 흔한 위치를 차례로 시도합니다. */
-  function pngCands(d, given){
+  function cands(given, list){
     var a = given ? [given] : [];
-    return a.concat(["images/day"+d+"-map.png","images/maps/day"+d+"-map.png",
-                     "day"+d+"-map.png","maps/day"+d+"-map.png","images/day"+d+"-map.jpg"]);
+    return a.concat(list);
+  }
+  function pngCands(d, given){
+    return cands(given, ["images/day"+d+"-map.png","images/maps/day"+d+"-map.png","day"+d+"-map.png"]);
+  }
+  function png2Cands(d, given){
+    return cands(given, ["images/day"+d+"-map-photo.png","images/maps/day"+d+"-map-photo.png",
+                         "day"+d+"-map-photo.png"]);
   }
   function svgCands(d, given){
-    var a = given ? [given] : [];
-    return a.concat(["images/day"+d+"-map.svg","images/maps/day"+d+"-map.svg",
-                     "day"+d+"-map.svg"]);
-  }
-  var THUMB_W = 900, BIG_W = 1600;
-
-  function ph(txt){
-    var t=(txt||"").slice(0,22);
-    var svg='<svg xmlns="http://www.w3.org/2000/svg" width="600" height="450">'
-      +'<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">'
-      +'<stop offset="0" stop-color="#E7E3D6"/><stop offset="1" stop-color="#CFC8B4"/></linearGradient></defs>'
-      +'<rect width="600" height="450" fill="url(#g)"/>'
-      +'<text x="300" y="215" font-size="34" text-anchor="middle" fill="#A79E86">&#9873;</text>'
-      +'<text x="300" y="262" font-size="19" text-anchor="middle" fill="#8E8672" font-family="sans-serif">'+t+'</text>'
-      +'</svg>';
-    return "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg);
-  }
-  function bigger(u){
-    if(!u) return u;
-    return u.replace(/\/(\d{2,4})px-/, "/"+BIG_W+"px-");
+    return cands(given, ["images/day"+d+"-map-photo.svg","images/maps/day"+d+"-map-photo.svg",
+                         "day"+d+"-map-photo.svg","images/day"+d+"-map.svg"]);
   }
 
-  /* ───────── 위키 이미지 수집 ───────── */
-  var listAll=[];
-  Object.keys(SPOTS).forEach(function(d){
-    SPOTS[d].forEach(function(s,i){ s._d=d; s._i=i; s._el=[]; listAll.push(s); });
-  });
-
-  function jget(url){
-    return fetch(url,{mode:"cors",credentials:"omit"}).then(function(r){
-      if(!r.ok) throw 0; return r.json();
-    });
+  /* 한 장짜리 지도 블록을 만들어 줍니다 */
+  function mapBlock(cls, tag, alt, cap, hint){
+    return '<div class="dmapblock '+cls+'">'
+      +'<button class="dmap" type="button" data-kind="'+cls+'" aria-label="'+esc(alt)+' 크게 보기">'
+      +'<span class="dtag'+(cls==="png"?"":" alt")+'">'+tag+'</span>'
+      +'<img alt="'+esc(alt)+'">'
+      +'<span class="zhint">'+hint+'</span></button>'
+      +'<p class="dmap-cap">'+cap+'</p></div>';
   }
-  function chunk(a,n){ var o=[],i; for(i=0;i<a.length;i+=n)o.push(a.slice(i,i+n)); return o; }
-
-  function applyImg(s,url,page){
-    s.img=url; s.page=page||s.page||null;
-    s._el.forEach(function(im){ setThumb(im,url); });
-    s._el=[];
-  }
-  function setThumb(im,url){
-    if(!im) return;
-    im.onload=function(){ im.classList.add("on"); var l=im.parentNode.querySelector(".sload"); if(l)l.remove(); };
-    im.onerror=function(){ im.onerror=null; im.src=ph(im.getAttribute("data-kr")||""); };
-    im.src=url;
-  }
-
-  /* 1단계 — 언어별로 문서 제목을 묶어서 한 번에 요청 */
-  function stepTitles(){
-    var byLang={};
-    listAll.forEach(function(s){
-      if(!s.w || s.w.indexOf("|")<0) return;
-      var p=s.w.split("|"), lang=p[0], title=p[1];
-      if(!lang || !title) return;
-      s._lang=lang; s._title=title;
-      (byLang[lang]=byLang[lang]||[]).push(s);
-    });
-    var jobs=[];
-    Object.keys(byLang).forEach(function(lang){
-      chunk(byLang[lang],20).forEach(function(grp){
-        var titles=grp.map(function(s){return s._title;}).join("|");
-        var url="https://"+lang+".wikipedia.org/w/api.php?action=query&format=json&origin=*"
-          +"&prop=pageimages&piprop=thumbnail&pithumbsize="+THUMB_W+"&pilimit=50&redirects=1"
-          +"&titles="+encodeURIComponent(titles);
-        jobs.push(jget(url).then(function(j){
-          var q=j&&j.query; if(!q) return;
-          var chain={};
-          (q.normalized||[]).forEach(function(n){ chain[n.from]=n.to; });
-          (q.redirects||[]).forEach(function(r){ chain[r.from]=r.to; });
-          function res(t){ var n=0; while(chain[t]&&n++<6) t=chain[t]; return t; }
-          var byTitle={};
-          Object.keys(q.pages||{}).forEach(function(k){
-            var p=q.pages[k];
-            byTitle[p.title]={thumb:p.thumbnail?p.thumbnail.source:null,title:p.title};
-          });
-          grp.forEach(function(s){
-            var hit=byTitle[res(s._title)];
-            if(hit&&hit.thumb) applyImg(s,hit.thumb,"https://"+lang+".wikipedia.org/wiki/"+encodeURIComponent(hit.title.replace(/ /g,"_")));
-          });
-        }).catch(function(){}));
-      });
-    });
-    return Promise.all(jobs);
-  }
-
-  /* 2단계 — 못 찾은 항목은 스페인어 위키 검색으로 재시도 */
-  function stepWikiSearch(){
-    var miss=listAll.filter(function(s){return !s.img;});
-    return seq(miss,function(s){
-      var qy=s.q||s.o||s.e;
-      var url="https://es.wikipedia.org/w/api.php?action=query&format=json&origin=*"
-        +"&generator=search&gsrsearch="+encodeURIComponent(qy)+"&gsrlimit=1"
-        +"&prop=pageimages&piprop=thumbnail&pithumbsize="+THUMB_W;
-      return jget(url).then(function(j){
-        var pg=j&&j.query&&j.query.pages; if(!pg) return;
-        var k=Object.keys(pg)[0]; if(!k) return;
-        var p=pg[k];
-        if(p.thumbnail&&p.thumbnail.source)
-          applyImg(s,p.thumbnail.source,"https://es.wikipedia.org/wiki/"+encodeURIComponent((p.title||"").replace(/ /g,"_")));
-      }).catch(function(){});
-    });
-  }
-
-  /* 3단계 — 그래도 없으면 위키미디어 커먼즈 사진 검색 */
-  function stepCommons(){
-    var miss=listAll.filter(function(s){return !s.img;});
-    return seq(miss,function(s){
-      var qy=(s.q||s.o||s.e)+" filetype:bitmap";
-      var url="https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*"
-        +"&generator=search&gsrnamespace=6&gsrlimit=1&gsrsearch="+encodeURIComponent(qy)
-        +"&prop=imageinfo&iiprop=url&iiurlwidth="+THUMB_W;
-      return jget(url).then(function(j){
-        var pg=j&&j.query&&j.query.pages; if(!pg) return;
-        var k=Object.keys(pg)[0]; if(!k) return;
-        var ii=pg[k].imageinfo&&pg[k].imageinfo[0];
-        if(ii&&(ii.thumburl||ii.url))
-          applyImg(s,ii.thumburl||ii.url,"https://commons.wikimedia.org/wiki/"+encodeURIComponent((pg[k].title||"").replace(/ /g,"_")));
-      }).catch(function(){});
-    });
-  }
-
-  /* 요청을 조금씩 나눠 보내 서버에 부담을 주지 않도록 */
-  function seq(arr,fn){
-    var i=0;
-    function next(){
-      if(i>=arr.length) return Promise.resolve();
-      var batch=arr.slice(i,i+4); i+=4;
-      return Promise.all(batch.map(fn)).then(function(){
-        return new Promise(function(r){ setTimeout(r,120); }).then(next);
-      });
-    }
-    return next();
-  }
-
-  function finish(){
-    listAll.forEach(function(s){
-      if(!s.img){ s._el.forEach(function(im){ setThumb(im,ph(s.k)); }); s._el=[]; }
-    });
-  }
-
-  /* ───────── DOM 만들기 ───────── */
-  function esc(t){ return String(t==null?"":t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 
   function buildMap(box,d){
     var wrap=document.createElement("div"); wrap.className="dmapbox";
     var title=dayTitle(d);
+    var rest=(d===8);
+
     wrap.innerHTML=
-       '<h4>🗺 DAY '+d+' 경로 지도 <small>· 탭하면 크게 볼 수 있습니다</small></h4>'
-      +'<button class="dmap" type="button" data-kind="png" aria-label="DAY '+d+' 경로 지도 크게 보기">'
-      +'<span class="dtag">DAY '+d+'</span>'
-      +'<img alt="DAY '+d+' '+esc(title)+' 경로 지도" loading="lazy">'
-      +'<span class="zhint">⤢ 탭하면 확대</span></button>'
-      +'<p class="dmap-cap">DAY '+d+' · '+esc(title)+'</p>'
-      +'<div class="dsvgbox">'
-      +'<button class="dmap dsvg loading" type="button" data-kind="svg" aria-label="DAY '+d+' 지명 선명본 크게 보기">'
-      +'<span class="dtag alt">🔠 글자 선명본 · SVG</span>'
-      +'<img alt="DAY '+d+' 경로 지도 지명 (벡터)">'
-      +'<span class="zhint">⤢ 몇 배로 키워도 또렷</span></button>'
-      +'<p class="dmap-cap">위 지도의 <b>글자만 벡터(SVG)</b>로 다시 그린 것입니다 — '
-      +'300% 이상 확대해도 지명이 깨지지 않습니다</p>'
-      +'</div>';
+       '<h4>🗺 DAY '+d+' 지도 <small>· 탭하면 크게 볼 수 있습니다</small></h4>'
+      +(rest?'':mapBlock("png","DAY "+d,
+          "DAY "+d+" "+title+" 경로 지도",
+          '<b>경로와 고도</b> — DAY '+d+' · '+esc(title),
+          "⤢ 탭하면 확대"))
+      +mapBlock("png2","📍 포토·맛집",
+          "DAY "+d+" 세요·포토존·맛집 지도",
+          '<b>세요 · 포토존 · 맛집</b> — 도장 받는 곳과 순서, 오늘의 포토존, 점심·저녁 추천',
+          "⤢ 탭하면 확대")
+      +mapBlock("svg","🔠 글자 선명본 · SVG",
+          "DAY "+d+" 지명 (벡터)",
+          '위 <b>포토·맛집 지도의 글자만 벡터(SVG)</b>로 다시 그린 것입니다 — '
+          +'300% 이상 확대해도 지명이 깨지지 않습니다',
+          "⤢ 몇 배로 키워도 또렷");
 
-    var btnP=wrap.querySelector('.dmap[data-kind="png"]'), imgP=btnP.querySelector("img");
-    var svgBox=wrap.querySelector(".dsvgbox");
-    var btnS=wrap.querySelector('.dmap[data-kind="svg"]'), imgS=btnS.querySelector("img");
+    var blocks={};
+    ["png","png2","svg"].forEach(function(k){
+      var el=wrap.querySelector('.dmapblock.'+k);
+      if(el) blocks[k]={box:el, btn:el.querySelector(".dmap"), img:el.querySelector("img"), ok:false};
+    });
 
-    /* 후보 경로를 차례로 시도 */
-    function chain(img, list, onFail){
+    function chain(o, list, onFail){
+      if(!o) return;
       var i=0;
-      img.onerror=function(){
+      o.img.onerror=function(){
         i++;
-        if(i<list.length){ img.src=list[i]; return; }
-        img.onerror=null; onFail();
+        if(i<list.length){ o.img.src=list[i]; return; }
+        o.img.onerror=null; onFail(o);
       };
-      img.src=list[0];
+      o.img.addEventListener("load",function(){ o.ok=true; });
+      o.img.src=list[0];
     }
 
-    var svgState="loading";        /* loading → ok | fail */
-    chain(imgP, pngCands(d, box.dataset.map), function(){
-      btnP.classList.add("err");
-      btnP.innerHTML='지도 이미지를 찾지 못했습니다<br><small style="opacity:.8">'
-        +'images/ 폴더에 <b>day'+d+'-map.png</b> 파일을 넣어 주세요</small>';
+    if(blocks.png)
+      chain(blocks.png, pngCands(d, box.dataset.map), function(o){
+        o.btn.classList.add("err");
+        o.btn.innerHTML='경로 지도를 찾지 못했습니다<br><small style="opacity:.8">'
+          +'images/ 폴더에 <b>day'+d+'-map.png</b> 파일을 넣어 주세요</small>';
+      });
+    chain(blocks.png2, png2Cands(d, box.dataset.map2), function(o){
+      o.btn.classList.add("err");
+      o.btn.innerHTML='포토·맛집 지도를 찾지 못했습니다<br><small style="opacity:.8">'
+        +'images/ 폴더에 <b>day'+d+'-map-photo.png</b> 파일을 넣어 주세요</small>';
     });
-    imgS.addEventListener("load",function(){
-      svgState="ok"; btnS.classList.remove("loading");
-    });
-    chain(imgS, svgCands(d, box.dataset.svg), function(){
-      svgState="fail";
-      if(svgBox.parentNode) svgBox.parentNode.removeChild(svgBox);  /* 보조 자료라 없으면 통째로 제거 */
+    chain(blocks.svg, svgCands(d, box.dataset.svg), function(o){
+      o.box.hidden=true;                 /* 보조 자료라 없으면 조용히 감춤 */
     });
 
-    /* 확대 뷰어 — 두 장을 좌우로 넘겨 볼 수 있게 함께 넘김 */
+    /* 확대 뷰어 — 세 장을 좌우로 넘겨 볼 수 있게 함께 넘김 */
+    var META={
+      png :{tab:"🗺 경로",   k:"DAY "+d+" 경로와 고도",
+            d:"오늘 달리는 길과 고도 변화입니다. 두 손가락으로 벌리거나 +/− 로 확대하세요."},
+      png2:{tab:"📍 포토·맛집", k:"DAY "+d+" 세요 · 포토존 · 맛집",
+            d:"도장 받는 곳과 순서, 오늘의 포토존, 점심·저녁 맛집입니다. "
+              +"글자가 흐려지면 위의 [🔠 글자] 를 누르세요 — 배율은 그대로 유지됩니다."},
+      svg :{tab:"🔠 글자",   k:"DAY "+d+" 지명 (글자 선명본)",
+            d:"벡터(SVG)라 몇 배로 확대해도 지명이 또렷합니다."}
+    };
     function items(){
       var a=[];
-      if(!btnP.classList.contains("err"))
-        a.push({img:imgP.src, big:imgP.src, k:"DAY "+d+" 경로 지도", o:title,
-                tab:"🗺 지도", pair:true,
-                d:"두 손가락으로 벌리거나 +/− 로 확대하고, 확대한 뒤에는 끌어서 이동하세요."
-                  +(svgState!=="fail"?" 글자가 흐려지면 위의 [🔠 글자] 버튼을 누르세요 — 확대한 배율 그대로 선명한 지명으로 바뀝니다.":""),
-                badge:"DAY "+d});
-      if(svgState!=="fail")
-        a.push({img:imgS.src, big:imgS.src, k:"DAY "+d+" 지명 (글자 선명본)", o:title,
-                tab:"🔠 글자", pair:true,
-                d:"벡터(SVG)라 몇 배로 확대해도 지명이 또렷합니다. [🗺 지도] 를 누르면 같은 배율로 되돌아갑니다.",
-                badge:"DAY "+d+" · SVG"});
+      ["png","png2","svg"].forEach(function(k){
+        var o=blocks[k];
+        if(!o || o.box.hidden || o.btn.classList.contains("err")) return;
+        var m=META[k];
+        a.push({img:o.img.src, big:o.img.src, tab:m.tab, pair:true,
+                k:m.k, o:title, d:m.d, badge:"DAY "+d});
+      });
       return a;
     }
-    btnP.addEventListener("click",function(){
-      if(btnP.classList.contains("err")) return;
-      openViewer(items(), 0);
-    });
-    btnS.addEventListener("click",function(){
-      var a=items();
-      openViewer(a, a.length>1 ? 1 : 0);
+    ["png","png2","svg"].forEach(function(k){
+      var o=blocks[k]; if(!o) return;
+      o.btn.addEventListener("click",function(){
+        if(o.btn.classList.contains("err")) return;
+        var a=items();
+        var i=0;
+        for(var n=0;n<a.length;n++) if(a[n].tab===META[k].tab){ i=n; break; }
+        openViewer(a, i);
+      });
     });
 
     box.appendChild(wrap);
@@ -5044,7 +5009,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       +'<div class="cpg-b"><b>1. 자전거 순례자의 발급 조건</b>'
         +'<ul class="cpg-l">'
         +'<li><em>거리</em>Santiago까지 <b>마지막 200 km 이상</b> 자전거 주행 '
-          +'<span class="ok">이번 일정 808.5 km — 충족</span></li>'
+          +'<span class="ok">이번 일정 782.4 km — 충족</span></li>'
         +'<li><em>여권</em>Credencial(순례자 여권)에 경로를 따라 세요를 받을 것</li>'
         +'<li><em>세요</em>마지막 구간은 <b>하루 2개</b>를 받아 두는 것이 안전합니다 '
           +'<span class="sub">공식 규정문에는 개수가 명시되어 있지 않지만, 사무소 확인 관행입니다. '
@@ -5115,11 +5080,11 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
           +'<tr><th>경로</th><td>Camino Francés (French Way)</td></tr>'
           +'<tr><th>출발</th><td>Saint-Jean-Pied-de-Port, France · 2027년 5월 9일</td></tr>'
           +'<tr><th>도착</th><td>Santiago de Compostela · 2027년 5월 21일</td></tr>'
-          +'<tr><th>계획 거리</th><td>808.5 km</td></tr>'
+          +'<tr><th>계획 거리</th><td>782.4 km</td></tr>'
         +'</tbody></table>'
         +'<p class="cpg-note" style="margin-top:10px">'
         +'<b>주의</b> 증서에 적히는 거리는 Pilgrim Office 가 크레덴시알과 인정 경로를 확인해 '
-        +'<b>직접 결정</b>합니다. 808.5 km 는 우리 계획 거리일 뿐, 그대로 기재된다고 볼 수 없습니다.</p></div>'
+        +'<b>직접 결정</b>합니다. 782.4 km 는 우리 계획 거리일 뿐, 그대로 기재된다고 볼 수 없습니다.</p></div>'
 
       +'<div class="cpg-b"><b>3. 신청 방법</b>'
         +'<p class="cpg-p">따로 등록하는 곳은 없습니다. 앞의 <b>온라인 등록</b> 화면에서 '
@@ -5150,7 +5115,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
           +'<tr><th>도착일</th><td class="yes">있음</td><td class="yes">있음</td></tr>'
           +'<tr><th>가격</th><td>무료</td><td>3 €</td></tr>'
         +'</tbody></table></div>'
-        +'<p class="cpg-p">Compostela 에는 808.5 km 가 남지 않습니다. '
+        +'<p class="cpg-p">Compostela 에는 782.4 km 가 남지 않습니다. '
         +'이번 자전거 순례의 기록으로는 <b>두 가지를 함께 받는 편</b>을 권합니다.</p></div>'
       +'</div>';
   }
@@ -5241,7 +5206,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     return '<div class="ppc-t">CREDENCIAL DEL PEREGRINO</div>'
       +'<div class="ppc-n">'+p.n+'</div>'
       +'<div class="ppc-s">Camino Francés · 2027</div>'
-      +'<div class="ppc-d">Saint-Jean-Pied-de-Port → Santiago de Compostela · 808.5 km</div>';
+      +'<div class="ppc-d">Saint-Jean-Pied-de-Port → Santiago de Compostela · 782.4 km</div>';
   }
   function whoTabs(){
     return '<div class="ppwhobar">'+PP.people.map(function(p){
@@ -5622,7 +5587,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
         if(sub){
           var w=wpt(t), bits=[];
           bits.push((a.dataset.km||km(pts).toFixed(1))+" km");
-          if(w) bits.push("알베르게 "+w+"곳");
+          if(w) bits.push("알베르게·포토존 "+w+"곳");
           if(a.dataset.note) bits.push(a.dataset.note);
           sub.textContent=bits.join(" · ");
           a._sub=sub.textContent;
@@ -5726,7 +5691,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260822-0242";
+  var BUILD="20260822-2152";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){

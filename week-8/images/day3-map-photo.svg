@@ -1,0 +1,145 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+<rect width="1600" height="1000" fill="#FAFAF7"/>
+<rect x="20" y="18" rx="14" ry="14" width="160" height="58" fill="#6B21A8"/>
+<text x="100" y="58" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="34" font-weight="700" fill="white">DAY 3</text>
+<text x="205" y="55" font-family="Arial, Noto Sans KR, sans-serif" font-size="38" font-weight="700" fill="#111827">Estella → Navarrete</text>
+<text x="205" y="92" font-family="Arial, Noto Sans KR, sans-serif" font-size="24" font-weight="700" fill="#6B21A8">61.3 km / 상승 908 m</text>
+<polyline points="880,120 1050,114 1265,122 1510,112" fill="none" stroke="#6B21A8" stroke-width="5"/>
+<circle cx="880" cy="120" r="7" fill="#6B21A8"/>
+<text x="880" y="94" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" font-weight="700" fill="#111">Estella</text>
+<text x="880" y="154" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="15" fill="#374151">0 km</text>
+<circle cx="1050" cy="114" r="7" fill="#6B21A8"/>
+<text x="1050" y="94" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" font-weight="700" fill="#111">Los Arcos</text>
+<text x="1050" y="154" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="15" fill="#374151">21.4 km</text>
+<circle cx="1265" cy="122" r="7" fill="#6B21A8"/>
+<text x="1265" y="94" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" font-weight="700" fill="#111">Logroño</text>
+<text x="1265" y="154" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="15" fill="#374151">49.1 km</text>
+<circle cx="1510" cy="112" r="7" fill="#6B21A8"/>
+<text x="1510" y="94" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" font-weight="700" fill="#111">Navarrete</text>
+<text x="1510" y="154" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="15" fill="#374151">61.3 km</text>
+<rect x="20" y="145" rx="16" ry="16" width="365" height="825" fill="#FFFFFF" stroke="#8B2F1C" stroke-width="2"/>
+<rect x="20" y="145" rx="16" ry="16" width="365" height="62" fill="#8B2F1C"/>
+<text x="42" y="186" font-family="Arial, Noto Sans KR, sans-serif" font-size="26" font-weight="700" fill="white">도장 (Sello) 장소 &amp; 순서</text>
+<circle cx="48" cy="234" r="18" fill="#8B2F1C"/>
+<text x="48" y="240" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white">1</text>
+<text x="78" y="222" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#8B2F1C">km 0.0</text>
+<text x="78" y="248" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Iglesia del Santo Sepulcro,</text>
+<text x="78" y="272" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Estella</text>
+<text x="78" y="298" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">산토 세풀크로 성당</text>
+<line x1="38" y1="318" x2="367" y2="318" stroke="#E5E7EB" stroke-width="1"/>
+<circle cx="48" cy="348" r="18" fill="#8B2F1C"/>
+<text x="48" y="354" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white">2</text>
+<text x="78" y="336" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#8B2F1C">km 2.5</text>
+<text x="78" y="362" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Fuente del Vino, Bodegas Irache</text>
+<text x="78" y="388" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">와인의 샘 (보데가스 이라체)</text>
+<line x1="38" y1="408" x2="367" y2="408" stroke="#E5E7EB" stroke-width="1"/>
+<circle cx="48" cy="438" r="18" fill="#8B2F1C"/>
+<text x="48" y="444" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white">3</text>
+<text x="78" y="426" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#8B2F1C">km 21.4</text>
+<text x="78" y="452" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Iglesia de Santa María de Los</text>
+<text x="78" y="476" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Arcos</text>
+<text x="78" y="502" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">로스 아르코스 산타 마리아 성당</text>
+<line x1="38" y1="522" x2="367" y2="522" stroke="#E5E7EB" stroke-width="1"/>
+<circle cx="48" cy="552" r="18" fill="#8B2F1C"/>
+<text x="48" y="558" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white">4</text>
+<text x="78" y="540" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#8B2F1C">km 49.2</text>
+<text x="78" y="566" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Iglesia de Santiago el Real,</text>
+<text x="78" y="590" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Logroño</text>
+<text x="78" y="616" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">로그로뇨 산티아고 엘 레알 성당</text>
+<line x1="38" y1="636" x2="367" y2="636" stroke="#E5E7EB" stroke-width="1"/>
+<circle cx="48" cy="666" r="18" fill="#8B2F1C"/>
+<text x="48" y="672" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white">5</text>
+<text x="78" y="654" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#8B2F1C">km 61.3</text>
+<text x="78" y="680" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Ermita de la Virgen de la Plaza,</text>
+<text x="78" y="704" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Navarrete</text>
+<text x="78" y="730" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">나바레테 광장 성모 예배당</text>
+<line x1="38" y1="750" x2="367" y2="750" stroke="#E5E7EB" stroke-width="1"/>
+<rect x="34" y="865" rx="12" ry="12" width="337" height="84" fill="#8B2F1C" opacity="0.07" stroke="#8B2F1C" stroke-width="1"/>
+<text x="48" y="893" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" fill="#374151">팁: 성당·예배당·알베르게·시청 등에서 Sello를 받을 수</text>
+<text x="48" y="915" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" fill="#374151">있습니다. 운영시간은 현장에서 확인하세요.</text>
+<rect x="400" y="145" rx="16" ry="16" width="365" height="825" fill="#FFFFFF" stroke="#0E6B36" stroke-width="2"/>
+<rect x="400" y="145" rx="16" ry="16" width="365" height="62" fill="#0E6B36"/>
+<text x="422" y="186" font-family="Arial, Noto Sans KR, sans-serif" font-size="26" font-weight="700" fill="white">오늘의 포토존 (Photo Spots)</text>
+<circle cx="428" cy="234" r="18" fill="#0E6B36"/>
+<text x="428" y="240" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white">1</text>
+<text x="458" y="222" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#0E6B36">km 2.5</text>
+<text x="458" y="248" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Fuente del Vino, Bodegas Irache</text>
+<text x="458" y="274" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">와인의 샘</text>
+<line x1="418" y1="294" x2="747" y2="294" stroke="#E5E7EB" stroke-width="1"/>
+<circle cx="428" cy="324" r="18" fill="#0E6B36"/>
+<text x="428" y="330" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white">2</text>
+<text x="458" y="312" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#0E6B36">km 21.4</text>
+<text x="458" y="338" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Iglesia de Santa María de Los</text>
+<text x="458" y="362" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Arcos</text>
+<text x="458" y="388" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">로스 아르코스 산타 마리아 성당</text>
+<line x1="418" y1="408" x2="747" y2="408" stroke="#E5E7EB" stroke-width="1"/>
+<circle cx="428" cy="438" r="18" fill="#0E6B36"/>
+<text x="428" y="444" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white">3</text>
+<text x="458" y="426" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#0E6B36">km 49.1</text>
+<text x="458" y="452" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Concatedral de Santa María de la</text>
+<text x="458" y="476" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Redonda</text>
+<text x="458" y="502" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">라 레돈다 대성당 (로그로뇨)</text>
+<line x1="418" y1="522" x2="747" y2="522" stroke="#E5E7EB" stroke-width="1"/>
+<circle cx="428" cy="552" r="18" fill="#0E6B36"/>
+<text x="428" y="558" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white">4</text>
+<text x="458" y="540" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#0E6B36">km 54.8</text>
+<text x="458" y="566" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Pantano de la Grajera</text>
+<text x="458" y="592" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">그라헤라 저수지</text>
+<line x1="418" y1="612" x2="747" y2="612" stroke="#E5E7EB" stroke-width="1"/>
+<rect x="414" y="865" rx="12" ry="12" width="337" height="84" fill="#0E6B36" opacity="0.07" stroke="#0E6B36" stroke-width="1"/>
+<text x="428" y="893" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" fill="#374151">팁: 와인의 샘은 Day 3의 대표 포토존입니다. 로그로뇨 구시가지와</text>
+<text x="428" y="915" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" fill="#374151">저수지도 사진 찍기 좋습니다.</text>
+<rect x="780" y="145" rx="16" ry="16" width="390" height="825" fill="#FFFFFF" stroke="#D97706" stroke-width="2"/>
+<rect x="780" y="145" rx="16" ry="16" width="390" height="62" fill="#D97706"/>
+<text x="802" y="186" font-family="Arial, Noto Sans KR, sans-serif" font-size="26" font-weight="700" fill="white">점심 맛집 추천</text>
+<rect x="796" y="213" rx="8" ry="8" width="68" height="28" fill="#D97706" opacity="0.12"/>
+<text x="830" y="233" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="15" font-weight="700" fill="#D97706">위치</text>
+<text x="876" y="222" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#D97706">km 30~40</text>
+<text x="876" y="248" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Mesón Aldeanueva</text>
+<text x="876" y="274" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">Los Arcos 이후 중간 구간</text>
+<line x1="798" y1="294" x2="1152" y2="294" stroke="#E5E7EB" stroke-width="1"/>
+<rect x="796" y="303" rx="8" ry="8" width="68" height="28" fill="#D97706" opacity="0.12"/>
+<text x="830" y="323" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="15" font-weight="700" fill="#D97706">메뉴</text>
+<text x="876" y="338" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Menú del Peregrino</text>
+<text x="876" y="364" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">순례자 메뉴</text>
+<line x1="798" y1="384" x2="1152" y2="384" stroke="#E5E7EB" stroke-width="1"/>
+<rect x="796" y="393" rx="8" ry="8" width="68" height="28" fill="#D97706" opacity="0.12"/>
+<text x="830" y="413" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="15" font-weight="700" fill="#D97706">추천</text>
+<text x="876" y="428" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Chuletillas de Cordero</text>
+<text x="876" y="454" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">양갈비 구이</text>
+<line x1="798" y1="474" x2="1152" y2="474" stroke="#E5E7EB" stroke-width="1"/>
+<rect x="796" y="483" rx="8" ry="8" width="68" height="28" fill="#D97706" opacity="0.12"/>
+<text x="830" y="503" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="15" font-weight="700" fill="#D97706">추천</text>
+<text x="876" y="518" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Pimientos del Padrón</text>
+<text x="876" y="544" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">파드론 고추</text>
+<line x1="798" y1="564" x2="1152" y2="564" stroke="#E5E7EB" stroke-width="1"/>
+<rect x="794" y="865" rx="12" ry="12" width="362" height="84" fill="#D97706" opacity="0.07" stroke="#D97706" stroke-width="1"/>
+<text x="808" y="893" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" fill="#374151">출발 약 2시간 후, 도착 약 1시간 전 조건을 고려한 중간 구간</text>
+<text x="808" y="915" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" fill="#374151">점심 후보.</text>
+<rect x="1185" y="145" rx="16" ry="16" width="395" height="825" fill="#FFFFFF" stroke="#0F4AA3" stroke-width="2"/>
+<rect x="1185" y="145" rx="16" ry="16" width="395" height="62" fill="#0F4AA3"/>
+<text x="1207" y="186" font-family="Arial, Noto Sans KR, sans-serif" font-size="26" font-weight="700" fill="white">저녁 맛집 추천 (도착지)</text>
+<rect x="1201" y="213" rx="8" ry="8" width="68" height="28" fill="#0F4AA3" opacity="0.12"/>
+<text x="1235" y="233" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="15" font-weight="700" fill="#0F4AA3">위치</text>
+<text x="1281" y="222" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#0F4AA3">Navarrete</text>
+<text x="1281" y="248" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Villa de Navarrete</text>
+<text x="1281" y="274" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">나바레테 중심가</text>
+<line x1="1203" y1="294" x2="1562" y2="294" stroke="#E5E7EB" stroke-width="1"/>
+<rect x="1201" y="303" rx="8" ry="8" width="68" height="28" fill="#0F4AA3" opacity="0.12"/>
+<text x="1235" y="323" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="15" font-weight="700" fill="#0F4AA3">추천</text>
+<text x="1281" y="338" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Bacalao a la Riojana</text>
+<text x="1281" y="364" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">리오하식 대구 요리</text>
+<line x1="1203" y1="384" x2="1562" y2="384" stroke="#E5E7EB" stroke-width="1"/>
+<rect x="1201" y="393" rx="8" ry="8" width="68" height="28" fill="#0F4AA3" opacity="0.12"/>
+<text x="1235" y="413" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="15" font-weight="700" fill="#0F4AA3">추천</text>
+<text x="1281" y="428" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Entrecot a la Brasa</text>
+<text x="1281" y="454" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">숯불 소고기 스테이크</text>
+<line x1="1203" y1="474" x2="1562" y2="474" stroke="#E5E7EB" stroke-width="1"/>
+<rect x="1201" y="483" rx="8" ry="8" width="68" height="28" fill="#0F4AA3" opacity="0.12"/>
+<text x="1235" y="503" text-anchor="middle" font-family="Arial, Noto Sans KR, sans-serif" font-size="15" font-weight="700" fill="#0F4AA3">추천</text>
+<text x="1281" y="518" font-family="Arial, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#111827">Pimientos del Padrón</text>
+<text x="1281" y="544" font-family="Arial, Noto Sans KR, sans-serif" font-size="17" fill="#374151">파드론 고추</text>
+<line x1="1203" y1="564" x2="1562" y2="564" stroke="#E5E7EB" stroke-width="1"/>
+<rect x="1199" y="865" rx="12" ry="12" width="367" height="84" fill="#0F4AA3" opacity="0.07" stroke="#0F4AA3" stroke-width="1"/>
+<text x="1213" y="893" font-family="Arial, Noto Sans KR, sans-serif" font-size="16" fill="#374151">도착지에서 도보 이동이 쉬운 중심가 저녁 식사 후보.</text>
+</svg>

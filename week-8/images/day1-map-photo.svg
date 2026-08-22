@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+  <defs>
+    <style><![CDATA[
+      .bg{fill:#f7f9fc}
+      .card{fill:#fff;stroke:#d8e0ea;stroke-width:2}
+      .hdr{font-family:"Arial","Noto Sans KR",sans-serif;font-size:31px;font-weight:700}
+      .title{font-family:"Arial","Noto Sans KR",sans-serif;font-size:34px;font-weight:800;fill:#102a43}
+      .route{font-family:"Arial","Noto Sans KR",sans-serif;font-size:22px;font-weight:700;fill:#334e68}
+      .h{font-family:"Arial","Noto Sans KR",sans-serif;font-size:23px;font-weight:700;fill:#1f2937}
+      .body{font-family:"Arial","Noto Sans KR",sans-serif;font-size:20px;fill:#26313f}
+      .small{font-family:"Arial","Noto Sans KR",sans-serif;font-size:18px;fill:#52606d}
+      .km{font-family:"Arial","Noto Sans KR",sans-serif;font-size:19px;font-weight:700}
+      .num{font-family:Arial,sans-serif;font-size:21px;font-weight:700;fill:#fff;text-anchor:middle;dominant-baseline:middle}
+      .note{font-family:"Arial","Noto Sans KR",sans-serif;font-size:18px;fill:#334155}
+    ]]></style>
+  </defs>
+
+  <rect class="bg" width="1600" height="1000"/>
+
+  <!-- Header -->
+  <rect x="20" y="18" width="1560" height="88" rx="18" fill="#ffffff" stroke="#d8e0ea" stroke-width="2"/>
+  <rect x="40" y="35" width="120" height="54" rx="12" fill="#0b6b3a"/>
+  <text x="100" y="71" class="hdr" fill="#fff" text-anchor="middle">DAY 1</text>
+  <text x="185" y="64" class="title">Saint-Jean-Pied-de-Port → Orisson → Roncesvalles → Zubiri</text>
+  <text x="185" y="91" class="route">45.8 km  |  누적 상승 1,741 m  |  텍스트 전용 SVG · 300% 확대 대응</text>
+
+  <!-- Column 1: Sello -->
+  <rect class="card" x="20" y="128" width="380" height="842" rx="18"/>
+  <rect x="20" y="128" width="380" height="76" rx="18" fill="#8b2f1f"/>
+  <text x="48" y="175" class="hdr" fill="#fff">도장 (Sello) 장소 &amp; 순서</text>
+  <line x1="62" y1="250" x2="62" y2="760" stroke="#d99b8f" stroke-width="3" stroke-dasharray="6,10"/>
+
+  <circle cx="62" cy="258" r="23" fill="#a83a26"/><text x="62" y="258" class="num">1</text>
+  <text x="102" y="250" class="km" fill="#a83a26">출발 · Saint-Jean-Pied-de-Port</text>
+  <text x="102" y="282" class="h">Pilgrim Office</text>
+  <text x="102" y="314" class="body">순례자 여권(Credencial)과 첫 도장.</text>
+  <text x="102" y="343" class="small">가능하면 출발 전에 미리 받아 두기.</text>
+
+  <circle cx="62" cy="452" r="23" fill="#a83a26"/><text x="62" y="452" class="num">2</text>
+  <text x="102" y="444" class="km" fill="#a83a26">중간 · Roncesvalles</text>
+  <text x="102" y="476" class="h">Real Colegiata / Pilgrim Office</text>
+  <text x="102" y="508" class="body">왕립 성당·순례자 시설에서 도장.</text>
+  <text x="102" y="537" class="small">점심·휴식과 함께 처리하기 좋은 지점.</text>
+
+  <circle cx="62" cy="646" r="23" fill="#a83a26"/><text x="62" y="646" class="num">3</text>
+  <text x="102" y="638" class="km" fill="#a83a26">도착 · Zubiri</text>
+  <text x="102" y="670" class="h">숙소 / Albergue / Hotel</text>
+  <text x="102" y="702" class="body">체크인하면서 Day 1 마지막 도장.</text>
+  <text x="102" y="731" class="small">숙소에서 안 되면 인근 바·성당 확인.</text>
+
+  <rect x="42" y="802" width="336" height="136" rx="14" fill="#fff4f0" stroke="#efc1b5"/>
+  <text x="62" y="838" class="h" fill="#8b2f1f">Day 1 Sello 핵심</text>
+  <text x="62" y="873" class="body">출발 → Roncesvalles → Zubiri</text>
+  <text x="62" y="906" class="small">여권은 방수 파우치에 넣고 쉽게 꺼내기.</text>
+
+  <!-- Column 2: Photo spots -->
+  <rect class="card" x="420" y="128" width="380" height="842" rx="18"/>
+  <rect x="420" y="128" width="380" height="76" rx="18" fill="#176b3a"/>
+  <text x="450" y="175" class="hdr" fill="#fff">오늘의 포토존 (Photo Spots)</text>
+
+  <rect x="442" y="226" width="336" height="188" rx="14" fill="#f2fbf5" stroke="#cde7d4"/>
+  <text x="462" y="260" class="km" fill="#176b3a">1 · km 0.0</text>
+  <text x="462" y="294" class="h">Porte Saint-Jacques</text>
+  <text x="462" y="324" class="body">순례자의 문 (생 자크)</text>
+  <text x="462" y="356" class="small">출발 직전 첫 기념사진.</text>
+  <text x="462" y="384" class="small">성벽과 문을 함께 프레임에 담기.</text>
+
+  <rect x="442" y="435" width="336" height="188" rx="14" fill="#f2fbf5" stroke="#cde7d4"/>
+  <text x="462" y="469" class="km" fill="#176b3a">2 · km 7.5</text>
+  <text x="462" y="503" class="h">Refuge Orisson</text>
+  <text x="462" y="533" class="body">오리손 산장 · 해발 약 792 m</text>
+  <text x="462" y="565" class="small">피레네 계곡과 산악 풍경이 핵심.</text>
+  <text x="462" y="593" class="small">아침 빛일수록 원경이 선명함.</text>
+
+  <rect x="442" y="644" width="336" height="188" rx="14" fill="#f2fbf5" stroke="#cde7d4"/>
+  <text x="462" y="678" class="km" fill="#176b3a">3 · km 24.4</text>
+  <text x="462" y="712" class="h">Real Colegiata de Santa María</text>
+  <text x="462" y="742" class="body">Roncesvalles 왕립 성당</text>
+  <text x="462" y="774" class="small">성당 정면과 광장을 함께 촬영.</text>
+  <text x="462" y="802" class="small">도장·점심과 한 번에 해결 가능.</text>
+
+  <rect x="442" y="852" width="336" height="86" rx="14" fill="#edf8ef" stroke="#cde7d4"/>
+  <text x="462" y="887" class="h" fill="#176b3a">추천 순서</text>
+  <text x="462" y="918" class="body">Porte Saint-Jacques → Orisson → Roncesvalles</text>
+
+  <!-- Column 3: Lunch -->
+  <rect class="card" x="820" y="128" width="380" height="842" rx="18"/>
+  <rect x="820" y="128" width="380" height="76" rx="18" fill="#d66b00"/>
+  <text x="850" y="175" class="hdr" fill="#fff">점심 맛집 추천</text>
+
+  <rect x="842" y="226" width="336" height="420" rx="16" fill="#fff9f1" stroke="#f1c994"/>
+  <text x="1010" y="272" class="h" text-anchor="middle">Venta de Espinal</text>
+  <text x="1010" y="304" class="body" text-anchor="middle">Espinal / Roncesvalles 이후</text>
+  <line x1="870" y1="330" x2="1150" y2="330" stroke="#e8c58f"/>
+  <text x="870" y="372" class="body">추천 이유</text>
+  <text x="870" y="407" class="body">• 첫 큰 오르막을 넘은 뒤 식사하기 좋음</text>
+  <text x="870" y="440" class="body">• 순례자·사이클리스트 이용이 많은 구간</text>
+  <text x="870" y="473" class="body">• 따뜻한 메뉴와 충분한 휴식 가능</text>
+  <text x="870" y="528" class="h" fill="#d66b00">추천 메뉴</text>
+  <text x="870" y="562" class="body">Menú del Peregrino / Menú del Día</text>
+  <text x="870" y="594" class="body">수프 · 메인 · 빵 · 음료</text>
+
+  <rect x="842" y="670" width="336" height="268" rx="14" fill="#fffdf9" stroke="#f1d8b7"/>
+  <text x="866" y="708" class="h" fill="#d66b00">점심 타이밍</text>
+  <text x="866" y="744" class="body">출발 약 2시간 이후를 기준으로</text>
+  <text x="866" y="774" class="body">Roncesvalles/Espinal 구간에서 식사.</text>
+  <text x="866" y="818" class="body">이후 Zubiri까지 내리막이 길어</text>
+  <text x="866" y="848" class="body">과식보다 수분·탄수화물 보충 위주.</text>
+  <text x="866" y="897" class="small">영업시간은 출발 전 다시 확인.</text>
+
+  <!-- Column 4: Dinner -->
+  <rect class="card" x="1220" y="128" width="360" height="842" rx="18"/>
+  <rect x="1220" y="128" width="360" height="76" rx="18" fill="#174f9b"/>
+  <text x="1250" y="175" class="hdr" fill="#fff">저녁 맛집 추천</text>
+
+  <rect x="1242" y="226" width="316" height="420" rx="16" fill="#f3f7ff" stroke="#bfd2ef"/>
+  <text x="1400" y="272" class="h" text-anchor="middle">Arbizu Asador</text>
+  <text x="1400" y="304" class="body" text-anchor="middle">Zubiri 도착 후</text>
+  <line x1="1268" y1="330" x2="1532" y2="330" stroke="#c6d7ed"/>
+  <text x="1268" y="372" class="body">추천 이유</text>
+  <text x="1268" y="407" class="body">• 첫날 도착 후 편하게 식사하기 좋음</text>
+  <text x="1268" y="440" class="body">• 고기·채소 중심으로 회복식 구성 가능</text>
+  <text x="1268" y="473" class="body">• 숙소 체크인 뒤 걸어서 이동하기 편리</text>
+  <text x="1268" y="528" class="h" fill="#174f9b">추천 메뉴</text>
+  <text x="1268" y="562" class="body">Chuleta de Ternera</text>
+  <text x="1268" y="594" class="body">Pimientos del Padrón · Cuajada</text>
+
+  <rect x="1242" y="670" width="316" height="268" rx="14" fill="#f8fbff" stroke="#cad8ec"/>
+  <text x="1266" y="708" class="h" fill="#174f9b">저녁 타이밍</text>
+  <text x="1266" y="744" class="body">Zubiri 도착 → 숙소 체크인 → 샤워</text>
+  <text x="1266" y="774" class="body">→ 자전거 간단 점검 → 저녁 식사.</text>
+  <text x="1266" y="818" class="body">첫날 피로가 크므로 너무 늦지 않게</text>
+  <text x="1266" y="848" class="body">식사하고 다음 날을 위해 휴식.</text>
+  <text x="1266" y="897" class="small">예약 가능 여부와 영업시간 사전 확인.</text>
+</svg>
