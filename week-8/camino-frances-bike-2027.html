@@ -503,6 +503,47 @@
   .gpxsrc small{display:block;margin-top:6px;font-size:.71rem;color:#A79E86;line-height:1.75}
   .gpxsrc small b{color:var(--rioja)}
 
+  /* ══════════════ 파리 합류 → 생장 ══════════════ */
+  .jfig{margin:0 0 18px}
+  .jfig img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:14px;
+    background:#fff;box-shadow:0 4px 16px rgba(21,42,85,.08)}
+  .jfig figcaption{margin-top:7px;font-size:.72rem;color:var(--ink-soft);text-align:center}
+
+  .jtl{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;align-items:start}
+  @media(max-width:820px){ .jtl{grid-template-columns:1fr} }
+  .jday{border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden;
+    box-shadow:0 2px 8px rgba(21,42,85,.05)}
+  .jd-h{display:flex;align-items:baseline;gap:8px;padding:10px 13px;background:var(--camino-blue);color:#fff}
+  .jd-h b{font-family:'Gowun Batang',serif;font-size:1.15rem;color:var(--flecha)}
+  .jd-h span{font-size:.72rem;color:#C6D0E4}
+  .jd-h em{margin-left:auto;font-style:normal;font-size:.68rem;color:#fff;background:rgba(255,255,255,.16);
+    border-radius:999px;padding:2px 9px;white-space:nowrap}
+  .jlist{list-style:none;padding:8px 12px 10px;margin:0}
+  .jlist li{position:relative;padding:8px 0 8px 4px;font-size:.8rem;line-height:1.6;
+    border-bottom:1px dashed #F0EDE4}
+  .jlist li:last-child{border-bottom:none}
+  .jlist li b{color:var(--camino-blue);font-variant-numeric:tabular-nums}
+  .jlist li small{display:block;font-size:.7rem;color:var(--ink-soft);line-height:1.65;margin-top:2px}
+  .jlist .who{display:inline-block;margin-right:6px;font-size:.58rem;vertical-align:1px}
+  .jlist .jmeet{background:#FFF6D8;margin:4px -12px 0;padding:9px 12px;border-bottom:none}
+  .jlist .jmeet b{color:#8A6A12}
+  .jlist .jgoal{background:#EAF3EC;margin:4px -12px 0;padding:9px 12px;border-bottom:none}
+  .jlist .jgoal b{color:var(--ok)}
+  .jsum{padding:9px 13px;border-top:1px solid var(--line);background:#FBFAF5;
+    font-size:.74rem;color:var(--ink-soft)}
+  .jsum b{color:var(--rioja);font-variant-numeric:tabular-nums}
+
+  .jh3{font-family:'Gowun Batang',serif;font-size:1rem;color:var(--camino-blue);margin:20px 0 10px;
+    padding-bottom:7px;border-bottom:2px solid var(--flecha)}
+  .jchk{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  @media(max-width:760px){ .jchk{grid-template-columns:1fr} }
+  .jc{border:1px solid var(--line);border-radius:12px;background:#fff;padding:12px 14px;
+    font-size:.78rem;line-height:1.75;color:var(--ink-soft)}
+  .jc b{display:block;color:var(--camino-blue);font-size:.82rem;margin-bottom:4px}
+  .jc b + b,.jc > b:not(:first-child){display:inline;color:var(--rioja);font-size:inherit;margin:0}
+  .jc.warn{background:#FFFBEE;border-color:#E7D9A8}
+  .jc.warn > b:first-child{color:#8A6A12}
+
   /* ── DAY별 날씨 카드 ───────────────────────────── */
   .dwx{padding:2px 14px 14px}
   .dwx h4{font-size:.8rem;color:var(--camino-blue);font-weight:700;margin-bottom:8px;
@@ -1045,11 +1086,57 @@
   <div class="wrap">
     <div class="sec-head">
       <div class="no">Ⅳ · Tren</div>
-      <h2>파리 → 생장피에드포르 기차 (5/8)</h2>
-      <p>파리 몽파르나스에서 TGV로 Bayonne까지, TER 완행으로 환승.
-      이 일정은 <b>10:05 출발편</b> 기준입니다 (SJPP 15:26 도착 — 자전거 수령 여유 충분).</p>
+      <h2>파리 합류 → 생장피에드포르 (5/6~5/8)</h2>
+      <p>Bin은 5/7 아침, Jin은 같은 날 저녁 파리에 도착해 <b>몽파르나스 인근 호텔</b>에서 합류합니다.
+      다음 날 5/8(토) 아침 함께 TGV로 Bayonne까지, TER로 갈아타 생장에 도착합니다.
+      자전거는 생장에서 렌트하므로 파리에서 자전거를 옮길 필요가 없습니다.
+      항공편 상세는 <a href="#sec5">Ⅴ 항공 · 환승</a>에 있습니다.</p>
     </div>
-    <div class="sched-wrap">
+
+    <figure class="jfig">
+      <img src="images/replenish.png" alt="파리 합류 → 생장 이동 흐름도" loading="lazy">
+      <figcaption>5/6 뉴어크 출발부터 5/8 생장 도착까지 — 두 사람의 동선</figcaption>
+    </figure>
+
+    <!-- 3일 타임라인 -->
+    <div class="jtl">
+      <div class="jday">
+        <div class="jd-h"><b>5/6</b><span>목</span></div>
+        <ul class="jlist">
+          <li><i class="who bin">BIN</i><b>17:00</b> 뉴어크 EWR 출발 <small>AF0071 · A350-900</small></li>
+        </ul>
+      </div>
+
+      <div class="jday">
+        <div class="jd-h"><b>5/7</b><span>금</span><em>파리 합류 · 1박</em></div>
+        <ul class="jlist">
+          <li><i class="who bin">BIN</i><b>06:10</b> 파리 CDG 도착 <small>비행 7시간 10분</small></li>
+          <li><i class="who bin">BIN</i>입국 · 수하물 → <b>시내 이동</b> → 호텔 짐 보관 → 휴식 또는 관광
+            <small>CDG에서 12시간 기다리는 것보다 시내로 먼저 들어가는 편이 낫습니다</small></li>
+          <li><i class="who jin">JIN</i><b>11:20</b> 인천 T2 출발 <small>KE901 · B777-300ER</small></li>
+          <li><i class="who jin">JIN</i><b>18:30</b> 파리 CDG T2E 도착 <small>비행 14시간 10분</small></li>
+          <li><i class="who jin">JIN</i>입국 · 수하물 → 시내 이동 → 호텔 도착</li>
+          <li class="jmeet"><b>저녁</b> 몽파르나스 인근 호텔에서 <b>합류</b>
+            <small>짐 정리 · 호텔에서 역까지 가는 길 확인 · 다음 날 표 확인</small></li>
+        </ul>
+      </div>
+
+      <div class="jday">
+        <div class="jd-h"><b>5/8</b><span>토</span><em>파리 → 생장</em></div>
+        <ul class="jlist">
+          <li><b>08:30~09:00</b> 호텔 출발 → Gare Montparnasse <small>09:15 이전 도착 권장</small></li>
+          <li><b>10:05</b> Paris Montparnasse 출발 <small>TGV INOUI · 약 4시간</small></li>
+          <li><b>14:05</b> Bayonne 도착 → 전광판에서 생장행 TER 승강장 확인 <small>환승 20분</small></li>
+          <li><b>14:25</b> Bayonne 출발 <small>TER · 약 1시간 1분</small></li>
+          <li class="jgoal"><b>15:26</b> Saint-Jean-Pied-de-Port 도착
+            <small>숙소 체크인 → 자전거 수령 → 순례자 사무소에서 크레덴시알 발급</small></li>
+        </ul>
+        <div class="jsum">기차 총 이동 <b>5시간 21분</b> · 파리 출발부터 생장까지 문 앞에서 문 앞까지 약 7시간</div>
+      </div>
+    </div>
+
+    <h3 class="jh3">5/8 다른 시간대 후보</h3>
+<div class="sched-wrap">
     <table class="sched" style="min-width:560px">
       <thead>
         <tr><th>몽파르나스 출발</th><th>Bayonne 도착</th><th>Bayonne 출발 (TER)</th><th>SJPP 도착</th><th style="text-align:right">총 소요</th></tr>
@@ -1068,9 +1155,44 @@
       <a href="https://www.thetrainline.com" target="_blank" rel="noopener">Trainline <small>영어 UI · 통합 검색</small></a>
       <a href="https://www.raileurope.com" target="_blank" rel="noopener">Rail Europe <small>해외 카드 결제 편리</small></a>
     </div>
-    <div class="note">표는 sncf-connect.com 기준 예시이며 실제 2027년 5월 시각은 예매 오픈(출발 3–4개월 전) 후 확정됩니다.
-    파리→Bayonne + Bayonne→SJPP를 한 번에 묶어 예매하면 환승이 보장됩니다.
-    Bayonne 환승 20~30분 — 여유 있게 이동하세요.</div>
+
+    <h3 class="jh3">확인해 둘 것</h3>
+    <div class="jchk">
+      <div class="jc warn">
+        <b>5/8은 토요일 — TER 편수가 줄어듭니다</b>
+        Bayonne ↔ 생장 구간은 평일 6왕복이지만 <b>주말에는 5왕복</b>입니다.
+        평일 시간표를 보고 계획을 세우면 실제 토요일에는 그 열차가 없을 수 있습니다.
+        예매할 때 반드시 <b>2027-05-08 토요일</b> 날짜로 조회하세요.
+      </div>
+      <div class="jc">
+        <b>한 번에 묶어 예매하세요</b>
+        파리→Bayonne와 Bayonne→생장을 <b>하나의 여정으로</b> 예매하면 TGV가 늦어도 다음 TER 연결이 보장됩니다.
+        따로 사면 지연 시 보상이 없습니다. 예매 오픈은 대체로 출발 <b>3~6개월 전</b>입니다.
+      </div>
+      <div class="jc">
+        <b>Bayonne 환승 20분</b>
+        Bayonne는 작은 역이라 20분이면 충분하지만, 생장행 TER은 별도 승강장을 쓰는 경우가 있습니다.
+        도착 직후 전광판에서 <b>Saint-Jean-Pied-de-Port</b> 행 승강장부터 확인하세요.
+      </div>
+      <div class="jc">
+        <b>TER은 단량 디젤 차량입니다</b>
+        52km 단선 비전철 구간을 X 73500 한 량짜리 열차가 다닙니다.
+        좌석이 적고 순례철(5월)에는 배낭을 멘 순례자로 붐빕니다. 좌석 지정이 없으니 일찍 승강장에 서세요.
+      </div>
+      <div class="jc">
+        <b>운휴 · 대체버스 가능성</b>
+        이 노선은 산사태로 운휴된 적이 있고, 그럴 때는 Cambo-les-Bains 이후 구간을 버스로 대체합니다.
+        출발 전날 SNCF에서 운행 여부를 한 번 더 확인하세요. 대체버스면 소요시간이 늘어납니다.
+      </div>
+      <div class="jc">
+        <b>호텔은 몽파르나스 도보권으로</b>
+        5/8 아침 이동이 훨씬 편해집니다. Jin이 저녁 늦게 도착하므로
+        <b>늦은 체크인</b>이 가능한 곳인지도 미리 확인하세요.
+      </div>
+    </div>
+
+    <div class="note">시간표는 예시이며 2027년 5월 실제 시각은 예매 오픈 후 확정됩니다.
+    생장 역은 종착역이라 내리면 바로 마을이고, 순례자 사무소까지 도보 10분 안쪽입니다.</div>
   </div>
 </section>
 
@@ -4758,6 +4880,18 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       document.addEventListener("DOMContentLoaded",function(){ setTimeout(onHash,60); });
     else setTimeout(onHash,60);
   }
+  /* 흐름도 그림이 없으면 자리만 감춤 */
+  (function(){
+    function hide(){
+      var im=document.querySelector(".jfig img"); if(!im) return;
+      im.addEventListener("error",function(){
+        var f=im.closest("figure"); if(f) f.style.display="none";
+      });
+    }
+    if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",hide);
+    else hide();
+  })();
+
   /* 날짜 카드가 나중에 들어오므로, 그 시점에도 한 번 더 */
   document.addEventListener("camino:days-ready",function(){
     if(location.hash) setTimeout(onHash,80);
@@ -4962,7 +5096,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260821-1847";
+  var BUILD="20260822-0047";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
