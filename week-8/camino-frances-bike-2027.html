@@ -658,6 +658,43 @@
   .jf-col li::before{content:"";position:absolute;left:2px;top:10px;width:8px;height:4px;
     border-left:1.6px solid var(--ok);border-bottom:1.6px solid var(--ok);transform:rotate(-45deg)}
 
+  /* ── CDG → 몽파르나스 이동 ── */
+  .udiag{border:1px solid var(--line);border-radius:14px;background:#fff;padding:14px 16px;
+    margin-bottom:14px;overflow-x:auto}
+  .udiag svg{display:block;min-width:520px}
+  .ugrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;margin-bottom:14px;align-items:start}
+  @media(max-width:900px){ .ugrid{grid-template-columns:1fr} }
+  .ucard{border:1px solid var(--line);border-radius:13px;background:#fff;padding:13px 15px}
+  .ucard > b{display:flex;align-items:center;gap:7px;font-size:.84rem;color:var(--camino-blue);
+    margin-bottom:9px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+  .ucard.bin{border-color:#C7D6EE;background:#FAFCFF}
+  .ucard.jin{border-color:#E3C9B8;background:#FFFCFA}
+  .ulist{list-style:none;padding:0;margin:0}
+  .ulist li{position:relative;padding:6px 0 6px 18px;font-size:.79rem;line-height:1.7;color:var(--ink-soft)}
+  .ulist li::before{content:"";position:absolute;left:2px;top:13px;width:8px;height:4px;
+    border-left:1.6px solid var(--ok);border-bottom:1.6px solid var(--ok);transform:rotate(-45deg)}
+  .ulist b{color:var(--ink)}
+  .uflow{font-size:.78rem;line-height:1.85;color:var(--ink-soft)}
+  .uflow b{color:var(--camino-blue)}
+  .utime{margin-top:9px;padding:7px 11px;background:#F4F2EA;border-radius:9px;font-size:.76rem;
+    color:var(--ink-soft)}
+  .utime b{color:var(--rioja);font-variant-numeric:tabular-nums}
+  .utime small{margin-left:5px;font-size:.7rem;color:#A79E86}
+  .uwarn{margin-top:8px;font-size:.74rem;line-height:1.7;color:#8A6A12;background:#FFFBEE;
+    border:1px solid #E7D9A8;border-radius:9px;padding:8px 11px}
+  .uwarn b{color:#7A5E00}
+
+  .usum{border:1px solid var(--line);border-radius:13px;background:#fff;padding:13px 15px;
+    margin-bottom:20px}
+  .utab{width:100%;border-collapse:collapse;font-size:.79rem}
+  .utab th,.utab td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left}
+  .utab thead th{background:#F4F2EA;color:var(--camino-blue);font-size:.75rem}
+  .utab tr.hi td{background:#EAF3EC;font-weight:600}
+  .utab tr:last-child td{border-bottom:none}
+  .unote{margin-top:11px;padding:10px 13px;background:#FBF7E9;border-radius:10px;
+    font-size:.77rem;line-height:1.8;color:var(--ink-soft)}
+  .unote b{color:var(--rioja)}
+
   /* ── DAY별 날씨 카드 ───────────────────────────── */
   .dwx{padding:2px 14px 14px}
   .dwx h4{font-size:.8rem;color:var(--camino-blue);font-weight:700;margin-bottom:8px;
@@ -1218,14 +1255,14 @@
     </figure>
 
     <div class="jmapwrap">
-      <div class="jmap"><svg viewBox="0 0 430 470" width="100%" role="img" aria-label="파리에서 생장까지 이동 경로 지도"><title>CDG · 몽파르나스 · Bayonne · Saint-Jean-Pied-de-Port 위치와 거리</title><defs><marker id="rmk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L9 5L1 9Z" fill="#8E2C3A"/></marker></defs><path d="M228.2 44.7 L212.6 49.1 L189.5 95.0 L163.1 103.8 L143.6 119.1 L98.9 102.9 L109.1 141.0 L96.5 149.7 L53.6 146.2 L27.2 149.7 L26.0 186.9 L70.1 198.7 L91.1 209.6 L103.7 243.7 L122.6 259.1 L125.6 285.3 L121.1 324.7 L112.1 372.8 L104.6 383.7 L176.6 405.6 L200.6 418.7 L252.2 425.3 L248.6 392.5 L318.2 383.7 L367.7 372.8 L380.3 364.0 L365.6 326.9 L368.6 274.4 L347.6 248.1 L367.1 217.5 L384.8 197.8 L404.0 135.7 L368.6 125.6 L348.2 110.3 L331.1 83.2 L283.1 68.8 Z" fill="#EFEDE3" stroke="#C9C2AE" stroke-width="1.2" stroke-linejoin="round"/><path d="M226.7 141.4 Q166.0 220.5 140.4 317.0" fill="none" stroke="#8E2C3A" stroke-width="2.6" stroke-linecap="round" marker-end="url(#rmk)" opacity=".9"/><path d="M140.4 317.0 Q122.1 343.8 113.0 375.1" fill="none" stroke="#8E2C3A" stroke-width="2.6" stroke-linecap="round" marker-end="url(#rmk)" opacity=".9"/><path d="M113.0 375.1 Q119.4 381.0 120.0 389.7" fill="none" stroke="#1E7A46" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="5 3" marker-end="url(#rmk)"/><path d="M233.5 134.0 L226.7 141.4" stroke="#1E3A6E" stroke-width="2" stroke-dasharray="3 3" stroke-linecap="round" fill="none"/><circle cx="233.5" cy="134.0" r="4.5" class="m-air"/><circle cx="226.7" cy="141.4" r="5.5" class="m-hub"/><circle cx="140.4" cy="317.0" r="3.5" class="m-via"/><circle cx="113.0" cy="375.1" r="5" class="m-hub"/><circle cx="120.0" cy="389.7" r="6.5" class="m-goal"/><circle cx="120.0" cy="389.7" r="11" class="m-ring"/><text class="lb" x="242.5" y="131.0">CDG 공항</text><text class="lb b" x="235.7" y="152.4">파리 몽파르나스</text><text class="lb s" x="148.4" y="321.0">보르도 경유</text><text class="lb b" x="104.0" y="374.1" text-anchor="end">Bayonne</text><text class="lb g" x="107.0" y="401.7" text-anchor="end">Saint-Jean-</text><text class="lb g" x="107.0" y="412.7" text-anchor="end">Pied-de-Port</text><rect class="tag" x="195.6" y="213.2" width="126" height="30" rx="8"/><text class="tg1" x="203.6" y="226.2">TGV INOUI · 약 4시간</text><text class="tg2" x="203.6" y="238.2">철도 약 768 km (직선 662)</text><rect class="tag g" x="129.0" y="401.1" width="118" height="30" rx="8"/><text class="tg1 g" x="137.0" y="414.1">TER · 1시간 1분</text><text class="tg2" x="137.0" y="426.1">철도 52 km (직선 42)</text><rect class="tag b" x="241.5" y="94.0" width="122" height="30" rx="8"/><text class="tg1 b" x="249.5" y="107.0">RER B+지하철 약 1시간</text><text class="tg2" x="249.5" y="119.0">약 30 km (직선 25)</text><g transform="translate(404,30)"><path d="M0 -13 L4.5 4 L0 0.5 L-4.5 4 Z" fill="#5B6270"/><text class="np" x="0" y="16" text-anchor="middle">N</text></g><g transform="translate(24,448)"><line x1="0" y1="0" x2="39.4" y2="0" stroke="#5B6270" stroke-width="1.6"/><line x1="0" y1="-4" x2="0" y2="4" stroke="#5B6270" stroke-width="1.6"/><line x1="39.4" y1="-4" x2="39.4" y2="4" stroke="#5B6270" stroke-width="1.6"/><text class="np" x="19.7" y="-7" text-anchor="middle">100 km</text></g><style>.lb{font-family:"IBM Plex Sans KR",sans-serif;font-size:11px;fill:#2B2B29;paint-order:stroke;stroke:#EFEDE3;stroke-width:3px;stroke-linejoin:round}.lb.b{font-weight:700;fill:#152A55}.lb.g{font-weight:700;fill:#1E7A46}.lb.s{font-size:9.5px;fill:#6B6B66}.np{font-family:"IBM Plex Sans KR",sans-serif;font-size:8.5px;fill:#5B6270}.tag{fill:#fff;stroke:#D9CFC0;stroke-width:1}.tag.g{stroke:#A9CFB8}.tag.b{stroke:#B9C7DF}.tg1{font-family:"IBM Plex Sans KR",sans-serif;font-size:9.5px;font-weight:700;fill:#8E2C3A}.tg1.g{fill:#1E7A46}.tg1.b{fill:#1E3A6E}.tg2{font-family:"IBM Plex Sans KR",sans-serif;font-size:8.5px;fill:#6B6B66}.m-air{fill:#fff;stroke:#1E3A6E;stroke-width:2.5}.m-hub{fill:#152A55;stroke:#fff;stroke-width:2}.m-via{fill:#fff;stroke:#8E2C3A;stroke-width:2}.m-goal{fill:#1E7A46;stroke:#fff;stroke-width:2.5}.m-ring{fill:none;stroke:#1E7A46;stroke-width:1.4;opacity:.45}</style></svg></div>
+      <div class="jmap"><svg viewBox="0 0 430 470" width="100%" role="img" aria-label="파리에서 생장까지 이동 경로 지도"><title>CDG · 몽파르나스 · Bayonne · Saint-Jean-Pied-de-Port 위치와 거리</title><defs><marker id="rmk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L9 5L1 9Z" fill="#8E2C3A"/></marker></defs><path d="M228.2 44.7 L212.6 49.1 L189.5 95.0 L163.1 103.8 L143.6 119.1 L98.9 102.9 L109.1 141.0 L96.5 149.7 L53.6 146.2 L27.2 149.7 L26.0 186.9 L70.1 198.7 L91.1 209.6 L103.7 243.7 L122.6 259.1 L125.6 285.3 L121.1 324.7 L112.1 372.8 L104.6 383.7 L176.6 405.6 L200.6 418.7 L252.2 425.3 L248.6 392.5 L318.2 383.7 L367.7 372.8 L380.3 364.0 L365.6 326.9 L368.6 274.4 L347.6 248.1 L367.1 217.5 L384.8 197.8 L404.0 135.7 L368.6 125.6 L348.2 110.3 L331.1 83.2 L283.1 68.8 Z" fill="#EFEDE3" stroke="#C9C2AE" stroke-width="1.2" stroke-linejoin="round"/><path d="M226.7 141.4 Q166.0 220.5 140.4 317.0" fill="none" stroke="#8E2C3A" stroke-width="2.6" stroke-linecap="round" marker-end="url(#rmk)" opacity=".9"/><path d="M140.4 317.0 Q122.1 343.8 113.0 375.1" fill="none" stroke="#8E2C3A" stroke-width="2.6" stroke-linecap="round" marker-end="url(#rmk)" opacity=".9"/><path d="M113.0 375.1 Q119.4 381.0 120.0 389.7" fill="none" stroke="#1E7A46" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="5 3" marker-end="url(#rmk)"/><path d="M233.5 134.0 L226.7 141.4" stroke="#1E3A6E" stroke-width="2" stroke-dasharray="3 3" stroke-linecap="round" fill="none"/><circle cx="233.5" cy="134.0" r="4.5" class="m-air"/><circle cx="226.7" cy="141.4" r="5.5" class="m-hub"/><circle cx="140.4" cy="317.0" r="3.5" class="m-via"/><circle cx="113.0" cy="375.1" r="5" class="m-hub"/><circle cx="120.0" cy="389.7" r="6.5" class="m-goal"/><circle cx="120.0" cy="389.7" r="11" class="m-ring"/><text class="lb" x="242.5" y="131.0">CDG 공항</text><text class="lb b" x="235.7" y="152.4">파리 몽파르나스</text><text class="lb s" x="148.4" y="321.0">보르도 경유</text><text class="lb b" x="104.0" y="374.1" text-anchor="end">Bayonne</text><text class="lb g" x="107.0" y="401.7" text-anchor="end">Saint-Jean-</text><text class="lb g" x="107.0" y="412.7" text-anchor="end">Pied-de-Port</text><rect class="tag" x="195.6" y="213.2" width="126" height="30" rx="8"/><text class="tg1" x="203.6" y="226.2">TGV INOUI · 약 4시간</text><text class="tg2" x="203.6" y="238.2">철도 약 768 km (직선 662)</text><rect class="tag g" x="129.0" y="401.1" width="118" height="30" rx="8"/><text class="tg1 g" x="137.0" y="414.1">TER · 1시간 1분</text><text class="tg2" x="137.0" y="426.1">철도 52 km (직선 42)</text><rect class="tag b" x="241.5" y="94.0" width="122" height="30" rx="8"/><text class="tg1 b" x="249.5" y="107.0">Uber 약 45~75분</text><text class="tg2" x="249.5" y="119.0">약 30 km (직선 25)</text><g transform="translate(404,30)"><path d="M0 -13 L4.5 4 L0 0.5 L-4.5 4 Z" fill="#5B6270"/><text class="np" x="0" y="16" text-anchor="middle">N</text></g><g transform="translate(24,448)"><line x1="0" y1="0" x2="39.4" y2="0" stroke="#5B6270" stroke-width="1.6"/><line x1="0" y1="-4" x2="0" y2="4" stroke="#5B6270" stroke-width="1.6"/><line x1="39.4" y1="-4" x2="39.4" y2="4" stroke="#5B6270" stroke-width="1.6"/><text class="np" x="19.7" y="-7" text-anchor="middle">100 km</text></g><style>.lb{font-family:"IBM Plex Sans KR",sans-serif;font-size:11px;fill:#2B2B29;paint-order:stroke;stroke:#EFEDE3;stroke-width:3px;stroke-linejoin:round}.lb.b{font-weight:700;fill:#152A55}.lb.g{font-weight:700;fill:#1E7A46}.lb.s{font-size:9.5px;fill:#6B6B66}.np{font-family:"IBM Plex Sans KR",sans-serif;font-size:8.5px;fill:#5B6270}.tag{fill:#fff;stroke:#D9CFC0;stroke-width:1}.tag.g{stroke:#A9CFB8}.tag.b{stroke:#B9C7DF}.tg1{font-family:"IBM Plex Sans KR",sans-serif;font-size:9.5px;font-weight:700;fill:#8E2C3A}.tg1.g{fill:#1E7A46}.tg1.b{fill:#1E3A6E}.tg2{font-family:"IBM Plex Sans KR",sans-serif;font-size:8.5px;fill:#6B6B66}.m-air{fill:#fff;stroke:#1E3A6E;stroke-width:2.5}.m-hub{fill:#152A55;stroke:#fff;stroke-width:2}.m-via{fill:#fff;stroke:#8E2C3A;stroke-width:2}.m-goal{fill:#1E7A46;stroke:#fff;stroke-width:2.5}.m-ring{fill:none;stroke:#1E7A46;stroke-width:1.4;opacity:.45}</style></svg></div>
       <div class="jmapleg">
         <h4>구간별 위치와 거리</h4>
         <ol class="jleg">
           <li><span class="d air"></span><b>CDG 공항 → 파리 몽파르나스</b>
             <em>약 30 km · 직선 25 km</em>
-            <small>RER B로 Denfert-Rochereau 또는 Châtelet 환승 · 약 1시간.
-            짐이 많으면 택시 45~70분(교통 상황에 따라 €60~90).</small></li>
+            <small><b>Uber로 문 앞까지</b> — Bin 아침 45~75분 · Jin 저녁 50~90분.
+            RER B는 Gare du Nord 환승이 필요해 큰 가방으로는 불편합니다.</small></li>
           <li><span class="d rail"></span><b>파리 몽파르나스 → Bayonne</b>
             <em>철도 약 768 km · 직선 662 km</em>
             <small>TGV INOUI · 약 4시간. 파리–보르도는 LGV 고속선(583 km),
@@ -1253,11 +1290,12 @@
         <div class="jd-h"><b>5/7</b><span>금</span><em>파리 합류 · 1박</em></div>
         <ul class="jlist">
           <li><i class="who bin">BIN</i><b>06:10</b> 파리 CDG 도착 <small>비행 7시간 10분</small></li>
-          <li><i class="who bin">BIN</i>입국 · 수하물 → <b>시내 이동</b> → 호텔 짐 보관 → 휴식 또는 관광
-            <small>CDG에서 12시간 기다리는 것보다 시내로 먼저 들어가는 편이 낫습니다</small></li>
+          <li><i class="who bin">BIN</i>입국 · 수하물 · 세관 → <b>Uber</b>로 호텔 이동 → 짐 보관 → 휴식 또는 관광
+            <small>이동 45~75분 · CDG에서 12시간 기다리는 것보다 시내로 먼저 들어가는 편이 낫습니다</small></li>
           <li><i class="who jin">JIN</i><b>11:20</b> 인천 T2 출발 <small>KE901 · B777-300ER</small></li>
           <li><i class="who jin">JIN</i><b>18:30</b> 파리 CDG T2E 도착 <small>비행 14시간 10분</small></li>
-          <li><i class="who jin">JIN</i>입국 · 수하물 → 시내 이동 → 호텔 도착</li>
+          <li><i class="who jin">JIN</i>입국 · 수하물 · 세관 → <b>Uber</b>로 호텔 이동
+            <small>저녁 정체를 감안해 50~90분</small></li>
           <li class="jmeet"><b>저녁</b> 몽파르나스 인근 호텔에서 <b>합류</b>
             <small>짐 정리 · 호텔에서 역까지 가는 길 확인 · 다음 날 표 확인</small></li>
         </ul>
@@ -1266,7 +1304,8 @@
       <div class="jday">
         <div class="jd-h"><b>5/8</b><span>토</span><em>파리 → 생장</em></div>
         <ul class="jlist">
-          <li><b>08:30~09:00</b> 호텔 출발 → Gare Montparnasse <small>09:15 이전 도착 권장</small></li>
+          <li><b>08:30~09:00</b> 호텔 출발 → <b>도보 5~10분</b> → Gare Montparnasse
+            <small>09:15 이전 도착 권장 · 지하철을 다시 탈 필요가 없습니다</small></li>
           <li><b>10:05</b> Paris Montparnasse 출발 <small>TGV INOUI · 약 4시간</small></li>
           <li><b>14:05</b> Bayonne 도착 → 전광판에서 생장행 TER 승강장 확인 <small>환승 20분</small></li>
           <li><b>14:25</b> Bayonne 출발 <small>TER · 약 1시간 1분</small></li>
@@ -1275,6 +1314,56 @@
         </ul>
         <div class="jsum">기차 총 이동 <b>5시간 21분</b> · 파리 출발부터 생장까지 문 앞에서 문 앞까지 약 7시간</div>
       </div>
+    </div>
+
+    <h3 class="jh3">CDG → 몽파르나스 호텔 이동</h3>
+    <p class="jp">두 사람 모두 <b>Uber로 문 앞까지</b> 이동합니다.
+    RER·지하철보다 비싸지만, 장거리 비행 뒤에 큰 가방을 들고 환승하지 않아도 됩니다.</p>
+
+    <div class="udiag"><svg viewBox="0 0 640 128" width="100%" role="img" aria-label="CDG에서 호텔을 거쳐 몽파르나스역까지"><defs><marker id="umk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L9 5L1 9Z" fill="#152A55"/></marker></defs><line x1="86" y1="52" x2="272" y2="52" stroke="#152A55" stroke-width="2.4" marker-end="url(#umk)"/><line x1="368" y1="52" x2="470" y2="52" stroke="#1E7A46" stroke-width="2.4" stroke-dasharray="5 4" marker-end="url(#umk)"/><line x1="566" y1="52" x2="620" y2="52" stroke="#8E2C3A" stroke-width="2.4" marker-end="url(#umk)"/><g><rect x="8" y="30" width="78" height="44" rx="10" fill="#EEF3FB" stroke="#B9C7DF"/><text class="ux b" x="47" y="49">CDG</text><text class="uy" x="47" y="64">공항</text></g><g><rect x="272" y="30" width="96" height="44" rx="10" fill="#152A55"/><text class="ux w" x="320" y="49">몽파르나스</text><text class="uy w" x="320" y="64">인근 호텔</text></g><g><rect x="470" y="30" width="96" height="44" rx="10" fill="#EAF3EC" stroke="#A9CFB8"/><text class="ux g" x="518" y="49">Gare</text><text class="uy" x="518" y="64">Montparnasse</text></g><text class="ul b" x="179" y="26">Uber · 한 번에</text><text class="um" x="179" y="90">약 30 km · 45~90분</text><text class="ul g" x="419" y="26">도보</text><text class="um" x="419" y="90">5~10분</text><text class="ul r" x="600" y="26">TGV</text><text class="um" x="600" y="90">10:05</text><text class="uz" x="179" y="106">5/7 · 짐 들고 환승 없음</text><text class="uz" x="419" y="106">5/8 아침</text><style>.ux{font-family:"IBM Plex Sans KR",sans-serif;font-size:13px;font-weight:700;fill:#152A55;text-anchor:middle}.ux.w{fill:#fff}.ux.g{fill:#1E7A46}.ux.b{fill:#152A55}.uy{font-family:"IBM Plex Sans KR",sans-serif;font-size:10px;fill:#6B6B66;text-anchor:middle}.uy.w{fill:#C6D0E4}.ul{font-family:"IBM Plex Sans KR",sans-serif;font-size:11px;font-weight:700;text-anchor:middle}.ul.b{fill:#152A55}.ul.g{fill:#1E7A46}.ul.r{fill:#8E2C3A}.um{font-family:"IBM Plex Sans KR",sans-serif;font-size:10px;fill:#6B6B66;text-anchor:middle}.uz{font-family:"IBM Plex Sans KR",sans-serif;font-size:9px;fill:#A79E86;text-anchor:middle}</style></svg></div>
+
+    <div class="ugrid">
+      <div class="ucard">
+        <b>Uber를 고른 이유</b>
+        <ul class="ulist">
+          <li>무거운 가방을 들고 <b>환승할 필요가 없음</b></li>
+          <li>Gare du Nord와 지하철에서 소매치기 걱정이 적음</li>
+          <li>공항에서 호텔까지 <b>한 번에</b> (Door to Door)</li>
+          <li>장거리 비행 직후 이동이 편함</li>
+          <li>복잡한 파리 대중교통 환승을 피할 수 있음</li>
+        </ul>
+      </div>
+
+      <div class="ucard bin">
+        <b><span class="who bin">BIN</span> 5/7 아침</b>
+        <div class="uflow">06:10 CDG 도착 → 입국심사 → 수하물 → 세관 →
+          <b>Uber 호출</b> → 몽파르나스 인근 호텔 → 짐 보관 → 휴식 · 파리 관광</div>
+        <div class="utime">이동 <b>45~75분</b> <small>아침 시간대</small></div>
+        <div class="uwarn">체크인 시각보다 한참 이르므로, 호텔에
+          <b>얼리 체크인 가능 여부</b> 또는 <b>무료 짐 보관</b>을 미리 확인하세요.</div>
+      </div>
+
+      <div class="ucard jin">
+        <b><span class="who jin">JIN</span> 5/7 저녁</b>
+        <div class="uflow">18:30 CDG T2E 도착 → 입국심사 → 수하물 → 세관 →
+          <b>Uber 호출</b> → 몽파르나스 인근 호텔 → Bin과 합류 → 저녁 식사</div>
+        <div class="utime">이동 <b>50~90분</b> <small>저녁 정체 감안</small></div>
+        <div class="uwarn">늦게 도착하므로 호텔에 <b>늦은 체크인</b>이 가능한지 확인해 두세요.</div>
+      </div>
+    </div>
+
+    <div class="usum">
+      <table class="utab">
+        <thead><tr><th>사람</th><th>CDG 도착</th><th>호텔까지</th></tr></thead>
+        <tbody>
+          <tr><td><span class="who bin">BIN</span></td><td>5/7 06:10</td><td>Uber → 몽파르나스 호텔</td></tr>
+          <tr><td><span class="who jin">JIN</span></td><td>5/7 18:30</td><td>Uber → 몽파르나스 호텔</td></tr>
+          <tr class="hi"><td colspan="2">5/8 아침 · 두 사람</td><td>호텔 → <b>도보</b> → Gare Montparnasse</td></tr>
+        </tbody>
+      </table>
+      <p class="unote"><b>호텔은 Gare Montparnasse 도보 5~10분 이내로 잡으세요.</b>
+      그러면 파리에서 <b>지하철을 한 번도 타지 않고</b> 움직일 수 있고,
+      5/8 아침에도 걸어서 역까지 가 10:05 TGV를 여유 있게 탈 수 있습니다.</p>
     </div>
 
     <h3 class="jh3">5/8 다른 시간대 후보</h3>
@@ -1429,7 +1518,7 @@ until we check in?</pre>
 
     <figure class="afig">
       <img src="images/cdg-arrivals-departure-guide.png" alt="CDG 도착 터미널과 이동 안내" loading="lazy">
-      <figcaption><b>5/7 CDG 도착</b> — 두 사람 모두 이 흐름을 거칩니다. Bin 06:10 도착(AF · T2E 계열) · Jin 18:30 도착(KE901 · T2E). 입국심사 → 수하물 → RER B 또는 택시로 시내 이동</figcaption>
+      <figcaption><b>5/7 CDG 도착</b> — 두 사람 모두 이 흐름을 거칩니다. Bin 06:10 도착(AF · T2E 계열) · Jin 18:30 도착(KE901 · T2E). 입국심사 → 수하물 → 세관 → <b>Uber</b>로 몽파르나스 호텔까지 문 앞 이동</figcaption>
     </figure>
 
     <!-- Bin 가는 길 -->
@@ -5385,7 +5474,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260822-0129";
+  var BUILD="20260822-0147";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
