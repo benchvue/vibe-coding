@@ -695,6 +695,44 @@
     font-size:.77rem;line-height:1.8;color:var(--ink-soft)}
   .unote b{color:var(--rioja)}
 
+  /* ── 몽파르나스 호텔 후보 ── */
+  .jfig.hmap{border:1px solid var(--line);border-radius:14px;background:#fff;padding:12px}
+  .jfig.hmap img{border:none;border-radius:9px;box-shadow:none;cursor:zoom-in}
+  .hgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin-bottom:14px;align-items:start}
+  @media(max-width:820px){ .hgrid{grid-template-columns:1fr} }
+  .hcard{display:flex;gap:11px;border:1px solid var(--line);border-radius:13px;background:#fff;
+    padding:12px 14px}
+  .hcard.best{border-color:var(--flecha);background:#FFFBEE;box-shadow:0 3px 12px rgba(245,185,23,.18)}
+  .hno{flex:0 0 26px;height:26px;border-radius:50%;background:#EDEAE1;color:var(--ink-soft);
+    font-size:.74rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+  .hcard.best .hno{background:var(--flecha);color:#3B2E00}
+  .hbody{flex:1;min-width:0}
+  .hbody > b{font-family:'Gowun Batang',serif;font-size:.94rem;color:var(--ink);line-height:1.35}
+  .hbest{display:inline-block;margin-left:7px;font-size:.6rem;font-weight:700;color:#3B2E00;
+    background:var(--flecha);border-radius:999px;padding:2px 9px;vertical-align:2px}
+  .hdist{margin-top:4px;font-size:.74rem;color:var(--ink-soft)}
+  .hdist b{color:var(--camino-blue);font-variant-numeric:tabular-nums}
+  .hpro{list-style:none;padding:0;margin:8px 0 0;display:flex;flex-wrap:wrap;gap:5px}
+  .hpro li{font-size:.68rem;color:var(--ink-soft);background:#F4F2EA;border-radius:999px;
+    padding:3px 9px;white-space:nowrap}
+  .hcard.best .hpro li{background:#fff;border:1px solid #E7D9A8}
+  .hverd{margin-top:9px;font-size:.76rem;font-weight:700;color:var(--rioja)}
+  .hcard.best .hverd{color:#8A6A12}
+
+  .hnote{border:1px solid var(--line);border-radius:13px;background:#fff;padding:13px 15px;
+    margin-bottom:20px}
+  .hnote > b{display:block;font-size:.84rem;color:var(--camino-blue);margin-bottom:9px;
+    padding-bottom:8px;border-bottom:1px solid var(--line)}
+  .hchk{list-style:none;padding:0;margin:0}
+  .hchk li{position:relative;padding:7px 0 7px 18px;font-size:.79rem;line-height:1.75;
+    color:var(--ink-soft);border-bottom:1px dashed #F0EDE4}
+  .hchk li:last-child{border-bottom:none}
+  .hchk li::before{content:"";position:absolute;left:2px;top:15px;width:5px;height:5px;
+    border-radius:50%;background:var(--flecha)}
+  .hchk b{color:var(--ink)}
+  .hchk .who{margin-right:5px}
+  .hcaveat{margin-top:10px;font-size:.73rem;color:#A79E86;line-height:1.7}
+
   /* ── DAY별 날씨 카드 ───────────────────────────── */
   .dwx{padding:2px 14px 14px}
   .dwx h4{font-size:.8rem;color:var(--camino-blue);font-weight:700;margin-bottom:8px;
@@ -1364,6 +1402,38 @@
       <p class="unote"><b>호텔은 Gare Montparnasse 도보 5~10분 이내로 잡으세요.</b>
       그러면 파리에서 <b>지하철을 한 번도 타지 않고</b> 움직일 수 있고,
       5/8 아침에도 걸어서 역까지 가 10:05 TGV를 여유 있게 탈 수 있습니다.</p>
+    </div>
+
+    <h3 class="jh3">몽파르나스 호텔 후보</h3>
+    <p class="jp">모두 <b>Gare Montparnasse 도보권</b>입니다.
+    Bin은 아침 일찍, Jin은 밤늦게 도착하므로 <b>프런트 운영 시간</b>과 <b>짐 보관</b>이 가격보다 중요합니다.</p>
+
+    <figure class="jfig hmap">
+      <img src="images/Montparnasse-Hotels-Map.png" alt="몽파르나스역 주변 호텔 후보 위치" loading="lazy">
+      <figcaption>Gare Montparnasse 주변 후보 네 곳 — 눌러서 크게 볼 수 있습니다</figcaption>
+    </figure>
+
+    <div class="hgrid">
+      <div class="hcard best"><div class="hno">1</div><div class="hbody"><b>Hôtel de Paris Montparnasse</b><span class="hbest">추천</span><div class="hdist">Montparnasse역에서 <b>약 100~170 m</b></div><ul class="hpro"><li>24시간 프런트</li><li>도착일 짐 보관</li><li>얼리 체크인 요청 가능</li></ul><div class="hverd">가장 추천</div></div></div>
+      <div class="hcard"><div class="hno">2</div><div class="hbody"><b>Hôtel Terminus Montparnasse</b><div class="hdist">Montparnasse역에서 <b>역 바로 앞</b></div><ul class="hpro"><li>24시간 운영</li><li>24시간 짐 보관</li><li>체크인 14:00</li></ul><div class="hverd">매우 편리</div></div></div>
+      <div class="hcard"><div class="hno">3</div><div class="hbody"><b>Les Artistes</b><div class="hdist">Montparnasse역에서 <b>약 240 m</b></div><ul class="hpro"><li>4성급</li><li>평점이 좋은 편</li><li>역과 매우 가까움</li></ul><div class="hverd">조금 더 좋은 숙소</div></div></div>
+      <div class="hcard"><div class="hno">4</div><div class="hbody"><b>La Perle Montparnasse</b><div class="hdist">Montparnasse역에서 <b>약 600 m</b></div><ul class="hpro"><li>2성급</li><li>실속형</li></ul><div class="hverd">비용 절약형</div></div></div>
+    </div>
+
+    <div class="hnote">
+      <b>예약할 때 확인할 것</b>
+      <ul class="hchk">
+        <li><span class="who bin">BIN</span> 5/7 <b>오전 8~9시경 도착</b> — 얼리 체크인 가능 여부,
+          안 되면 <b>무료 짐 보관</b>이 되는지</li>
+        <li><span class="who jin">JIN</span> 5/7 <b>20~21시경 체크인</b> — 늦은 체크인이 가능한지
+          (프런트 24시간 운영이면 안심)</li>
+        <li>두 사람이 <b>따로 도착</b>하므로, 먼저 온 사람 이름으로 예약해 두고
+          늦게 오는 사람의 이름도 함께 등록해 두세요</li>
+        <li>역까지 실제 도보 경로 확인 — 몽파르나스역은 크기 때문에
+          <b>출입구에 따라 5분이 10분</b>이 됩니다. TGV 승강장은 주로 대합실 위층입니다</li>
+      </ul>
+      <p class="hcaveat">성급·거리·정책은 바뀔 수 있으니 예약 화면에서 다시 확인하세요.
+      2027년 5월은 아직 요금이 뜨지 않는 곳도 있습니다.</p>
     </div>
 
     <h3 class="jh3">5/8 다른 시간대 후보</h3>
@@ -5474,7 +5544,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260822-0147";
+  var BUILD="20260822-0200";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
