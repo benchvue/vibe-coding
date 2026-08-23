@@ -1240,6 +1240,61 @@
   .oldtodo > summary small{font-weight:400;color:var(--ink-soft);font-size:.72rem}
   .oldtodo[open]{padding-bottom:14px}
 
+  /* ══════════════ 비용 ══════════════ */
+  .xsum{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+  @media(max-width:700px){ .xsum{grid-template-columns:1fr 1fr} }
+  .xc{border:1px solid var(--line);border-radius:13px;background:#fff;padding:12px 14px}
+  .xc small{display:block;font-size:.68rem;color:var(--ink-soft)}
+  .xc b{display:block;font-family:'Gowun Batang',serif;font-size:1.4rem;color:var(--camino-blue);
+    margin-top:2px;font-variant-numeric:tabular-nums}
+  .xc i{display:block;font-style:normal;font-size:.66rem;color:#A79E86;margin-top:1px}
+
+  .xowe{border:1px solid #C7D6EE;background:#EDF2FA;border-radius:13px;padding:14px 16px;
+    margin-bottom:18px}
+  .xowe.done{border-color:#A9CFB8;background:#EAF3EC}
+  .xowe-h{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+  .xowe-h b{font-family:'Gowun Batang',serif;font-size:1rem;color:var(--camino-blue)}
+  .xprov{font-size:.64rem;font-weight:700;color:#8A6A12;background:#F6EEDC;border-radius:999px;
+    padding:3px 10px}
+  .xdone{font-size:.64rem;font-weight:700;color:#fff;background:var(--ok);border-radius:999px;
+    padding:3px 10px}
+  .xowe-v{font-size:.92rem;color:var(--ink)}
+  .xowe-v em{font-style:normal;font-family:'Gowun Batang',serif;font-size:1.6rem;font-weight:700;
+    color:var(--rioja);margin-left:7px;font-variant-numeric:tabular-nums}
+  .xowe-n{margin-top:8px;font-size:.72rem;color:var(--ink-soft);line-height:1.7}
+
+  .xh3{font-family:'Gowun Batang',serif;font-size:1rem;color:var(--camino-blue);margin:18px 0 10px;
+    padding-bottom:7px;border-bottom:2px solid var(--flecha)}
+
+  .xpay{border:1px solid var(--line);border-radius:13px;background:#fff;padding:13px 15px}
+  .xpbar{display:flex;height:22px;border-radius:11px;overflow:hidden;background:#EDEAE1}
+  .xpbar i{display:block;height:100%}
+  .xpbar i.bin{background:var(--camino-blue)}
+  .xpbar i.jin{background:var(--rioja)}
+  .xpl{display:flex;justify-content:space-between;margin-top:8px;font-size:.8rem;
+    color:var(--ink);font-variant-numeric:tabular-nums}
+  .xpl .who{margin:0 4px}
+
+  .xcats{display:flex;flex-direction:column;gap:5px}
+  .xcat{display:flex;align-items:center;gap:10px;font-size:.79rem}
+  .xcat.off{opacity:.4}
+  .xcn{flex:0 0 96px;display:flex;align-items:center;gap:6px;color:var(--ink)}
+  .xcn i{width:9px;height:9px;border-radius:2px;flex:0 0 auto}
+  .xcb{flex:1;height:9px;background:#F1EEE4;border-radius:5px;overflow:hidden}
+  .xcb em{display:block;height:100%;border-radius:5px}
+  .xcv{flex:0 0 auto;min-width:66px;text-align:right;font-variant-numeric:tabular-nums;
+    color:var(--ink-soft)}
+  .xcp{flex:0 0 34px;text-align:right;font-size:.7rem;color:#A79E86}
+
+  .xdays{display:flex;align-items:flex-end;gap:3px;height:120px;padding:8px 10px;
+    border:1px solid var(--line);border-radius:13px;background:#fff}
+  .xd{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%}
+  .xdb{flex:1;width:100%;display:flex;align-items:flex-end;background:#F7F5EE;border-radius:3px}
+  .xdb i{display:block;width:100%;background:var(--camino-blue);border-radius:3px;min-height:2px}
+  .xd.sp .xdb i{background:#B8A97A}
+  .xdl{font-size:.6rem;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+  .xdnote{margin-top:7px;font-size:.7rem;color:var(--ink-soft)}
+
 </style>
 
 <!-- ══════════════════════════════════════════════════════════════════════
@@ -1652,6 +1707,20 @@
       같은 내용이 위의 날짜별 카드에도 그날의 세요로 함께 표시됩니다.</p>
     </div>
     <div id="ppRoot"></div>
+  </div>
+</section>
+
+<!-- ───────── 비용 ───────── -->
+<section id="secX" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="no">Gastos</div>
+      <h2>비용</h2>
+      <p>영수증을 사진으로 남기고 금액을 기록합니다. 기준 통화는 <b>유로</b>이고,
+      원화·달러로 낸 것은 <b>결제 당시 환율</b>로 환산해 저장합니다.
+      항공권과 보험은 각자 부담이라 총비용에는 들어가지만 <b>서로 주고받을 금액에서는 빠집니다</b>.</p>
+    </div>
+    <div id="exSiteRoot"></div>
   </div>
 </section>
 
@@ -2690,6 +2759,7 @@ until we check in?</pre>
     <a href="#sec2">Ⅱ · 일정 한눈에</a>
     <a href="#sec3">Ⅲ · 날짜별 카드 (D1~D13)</a>
     <a href="#secG">GPS 기기에 넣기 (Edge · Connect)</a>
+    <a href="#secX">💶 비용 (Gastos)</a>
     <a href="#secP">📕 디지털 순례자 여권</a>
     <a href="#sec4">Ⅳ · 파리 → 생장 기차</a>
     <a href="#sec5">Ⅴ · 항공 · 환승</a>
@@ -5958,11 +6028,183 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
 </script>
 
 <script>
+/* ══════════════════════════════════════════════════════════════════════
+   💶 비용 — Drive db/expense-*.json 을 읽어 보여 줍니다
+   총비용 · 분류별 · 개인별 · 기간별 · 정산 현황
+   기록은 upload-camino.html 의 💶 비용 탭에서 합니다.
+   ══════════════════════════════════════════════════════════════════════ */
+(function(){
+  "use strict";
+
+  var XF = { bin:"expense-bin.json", jin:"expense-jin.json", settle:"expense-settle.json" };
+  var XC = [
+    {k:"stay", n:"숙박",      c:"#8E2C3A"},
+    {k:"food", n:"음식",      c:"#C79A17"},
+    {k:"move", n:"교통",      c:"#1E3A6E"},
+    {k:"bike", n:"자전거",    c:"#1E7A46"},
+    {k:"pil",  n:"순례",      c:"#7A5EA8"},
+    {k:"comm", n:"통신·보험", c:"#2F7F8F"},
+    {k:"gear", n:"장비·의류", c:"#A0642A"},
+    {k:"etc",  n:"기타",      c:"#8A8578"}
+  ];
+  var DAYS = 13;
+  var DATA = {bin:[], jin:[]}, SET = null, state="load";
+
+  function esc(t){ return String(t==null?"":t)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+  function eur(v){
+    return "€" + (Math.round(v*100)/100).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+  function eur0(v){ return "€" + Math.round(v).toLocaleString(); }
+  function cat(k){ for(var i=0;i<XC.length;i++) if(XC[i].k===k) return XC[i]; return XC[XC.length-1]; }
+  function dayName(d){ return d<=0 ? "출발 전" : (d>DAYS ? "완주 후" : "DAY "+d); }
+
+  function norm(j){
+    if(!j || !j.items) return [];
+    return j.items.filter(function(x){ return x && x.id && !x.del; })
+      .map(function(x){
+        return { id:x.id, eur:+x.eur||0, amt:+x.amt||0, cur:x.cur||"EUR",
+          cat:x.cat||"etc", sub:x.sub||"", payer:x.payer||"bin",
+          split:x.split||"half", settle:(x.settle===undefined?true:!!x.settle),
+          day:(x.day===undefined?0:+x.day), place:x.place||"", memo:x.memo||"",
+          fileId:x.fileId||"" };
+      });
+  }
+
+  function load(){
+    if(!window.CAMINO_DRIVE) return Promise.reject(new Error("Drive 설정이 없습니다"));
+    return window.CAMINO_DRIVE.files().then(function(files){
+      var jobs=["bin","jin"].map(function(k){
+        var f=files.filter(function(x){ return x.name===XF[k]; })[0];
+        if(!f) return null;
+        return window.CAMINO_DRIVE.text(f.id).then(function(t){
+          var j=null; try{ j=JSON.parse(t); }catch(e){}
+          DATA[k]=norm(j);
+        }).catch(function(){});
+      });
+      var sf=files.filter(function(x){ return x.name===XF.settle; })[0];
+      if(sf) jobs.push(window.CAMINO_DRIVE.text(sf.id).then(function(t){
+        try{ SET=JSON.parse(t); }catch(e){}
+      }).catch(function(){}));
+      return Promise.all(jobs);
+    });
+  }
+
+  function all(){
+    return DATA.bin.concat(DATA.jin).sort(function(a,b){ return a.day-b.day; });
+  }
+  function totals(){
+    var t={all:0,bin:0,jin:0,cat:{},day:{},sBin:0,sJin:0,pre:0,ride:0,post:0,n:0};
+    all().forEach(function(x){
+      var v=x.eur; t.all+=v; t.n++;
+      t[x.payer]=(t[x.payer]||0)+v;
+      t.cat[x.cat]=(t.cat[x.cat]||0)+v;
+      t.day[x.day]=(t.day[x.day]||0)+v;
+      if(x.day<=0) t.pre+=v; else if(x.day>DAYS) t.post+=v; else t.ride+=v;
+      if(!x.settle) return;
+      var owed = x.split==="half" ? v/2 : (x.split==="other" ? v : 0);
+      if(x.payer==="bin") t.sBin+=owed; else t.sJin+=owed;
+    });
+    t.owe=t.sBin-t.sJin;
+    return t;
+  }
+
+  function render(){
+    var root=document.getElementById("exSiteRoot"); if(!root) return;
+    if(state==="load"){ root.innerHTML='<p class="tsload">비용 자료를 불러오는 중…</p>'; return; }
+    if(state==="err"){
+      root.innerHTML='<p class="tsload">비용 자료를 불러오지 못했습니다. '
+        +'Drive 의 <b>db</b> 폴더와 공유 설정을 확인해 주세요.</p>'; return;
+    }
+    var t=totals();
+    if(!t.n){
+      root.innerHTML='<p class="tsload">아직 기록된 비용이 없습니다.<br>'
+        +'<b>upload-camino.html → 💶 비용</b> 탭에서 영수증을 올리면 여기에 나타납니다.</p>';
+      return;
+    }
+    var rideDays=0;
+    for(var d=1;d<=DAYS;d++) if(t.day[d]) rideDays++;
+
+    var h='<div class="xsum">'
+      + xc("총비용", eur0(t.all), t.n+"건")
+      + xc("1인당", eur0(t.all/2), "단순 절반")
+      + xc("여행 중 하루평균", rideDays?eur0(t.ride/rideDays):"—", rideDays+"일 기준")
+      + xc("출발 전", eur0(t.pre), "항공·장비·예약금")
+      + '</div>';
+
+    /* 정산 */
+    var closed = SET && SET.closed && SET.closed.length;
+    var from = t.owe>0 ? "JIN" : "BIN", to = t.owe>0 ? "BIN" : "JIN";
+    h+='<div class="xowe'+(closed?" done":"")+'">'
+      +'<div class="xowe-h"><b>정산</b>'
+      +(closed?'<span class="xdone">확정됨</span>':'<span class="xprov">여행 중 · 참고용</span>')+'</div>'
+      +(Math.abs(t.owe)<0.01
+        ? '<div class="xowe-v">지금은 <b>비긴 상태</b>입니다</div>'
+        : '<div class="xowe-v"><b>'+from+'</b> 이 <b>'+to+'</b> 에게 <em>'+eur(Math.abs(t.owe))+'</em></div>')
+      +'<div class="xowe-n">항공권과 보험은 각자 부담이라 정산에서 빠져 있습니다. '
+      +'실제 정산은 산티아고 도착 후 확정하세요.</div></div>';
+
+    /* 개인별 */
+    var bp = t.all ? Math.round((t.bin||0)/t.all*100) : 50;
+    h+='<h3 class="xh3">누가 얼마를 냈나</h3>'
+      +'<div class="xpay"><div class="xpbar">'
+        +'<i class="bin" style="width:'+bp+'%"></i><i class="jin" style="width:'+(100-bp)+'%"></i></div>'
+      +'<div class="xpl"><span><b class="who bin">BIN</b> '+eur(t.bin||0)+'</span>'
+        +'<span>'+eur(t.jin||0)+' <b class="who jin">JIN</b></span></div></div>';
+
+    /* 분류별 */
+    var cats=XC.map(function(c){ return {c:c, v:t.cat[c.k]||0}; })
+      .sort(function(a,b){ return b.v-a.v; });
+    h+='<h3 class="xh3">분류별</h3><div class="xcats">';
+    cats.forEach(function(o){
+      var pct=t.all?Math.round(o.v/t.all*100):0;
+      h+='<div class="xcat'+(o.v?"":" off")+'">'
+        +'<span class="xcn"><i style="background:'+o.c.c+'"></i>'+o.c.n+'</span>'
+        +'<span class="xcb"><em style="width:'+pct+'%;background:'+o.c.c+'"></em></span>'
+        +'<span class="xcv">'+(o.v?eur0(o.v):"—")+'</span>'
+        +'<span class="xcp">'+(o.v?pct+"%":"")+'</span></div>';
+    });
+    h+='</div>';
+
+    /* 기간별 */
+    var max=0;
+    for(var i=0;i<=DAYS+1;i++) if((t.day[i]||0)>max) max=t.day[i]||0;
+    h+='<h3 class="xh3">기간별</h3><div class="xdays">';
+    for(var d2=0;d2<=DAYS+1;d2++){
+      var v=t.day[d2]||0, hh=max?Math.round(v/max*100):0;
+      h+='<div class="xd'+(d2===0||d2>DAYS?" sp":"")+'" title="'+dayName(d2)+' '+eur(v)+'">'
+        +'<span class="xdb"><i style="height:'+hh+'%"></i></span>'
+        +'<span class="xdl">'+(d2===0?"전":(d2>DAYS?"후":d2))+'</span></div>';
+    }
+    h+='</div><p class="xdnote">막대에 손을 올리면 금액이 보입니다 · '
+      +'<b>전</b> 출발 전 · <b>후</b> 완주 후</p>';
+
+    h+='<p class="tsfoot">기록은 <b>upload-camino.html → 💶 비용</b> 탭에서 합니다. '
+      +'금액은 모두 유로로 환산한 값이며, 원화·달러는 결제 당시 환율로 계산했습니다.</p>';
+
+    root.innerHTML=h;
+  }
+  function xc(n,v,s){
+    return '<div class="xc"><small>'+n+'</small><b>'+v+'</b><i>'+(s||"")+'</i></div>';
+  }
+
+  function boot(){
+    render();
+    load().then(function(){ state="ok"; render(); })
+          .catch(function(){ state="err"; render(); });
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",boot);
+  else boot();
+})();
+
+</script>
+
+<script>
 /* ══════ 판(build) 표시 · 캐시 무시하고 다시 받기 ══════
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260823-0007";
+  var BUILD="20260823-0113";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){

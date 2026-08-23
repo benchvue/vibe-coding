@@ -524,6 +524,150 @@
   .pgdone{display:block;width:100%;margin-top:10px;border:none;background:var(--ok);color:#fff;
     border-radius:10px;padding:12px;font-size:14px;font-weight:700;font-family:inherit}
   .pgdone:hover{background:var(--flecha);color:#3B2E00}
+
+  /* ══════════════ 💶 비용 ══════════════ */
+  .exsum{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:12px}
+  @media(max-width:700px){ .exsum{grid-template-columns:1fr 1fr} }
+  .exc{border:1px solid var(--line);border-radius:12px;background:#fff;padding:11px 13px}
+  .exc small{display:block;font-size:11px;color:var(--muted)}
+  .exc b{display:block;font-family:'Gowun Batang',serif;font-size:20px;color:var(--blue);
+    margin-top:2px;font-variant-numeric:tabular-nums}
+  .exc i{display:block;font-style:normal;font-size:10.5px;color:#A7A296;margin-top:1px}
+
+  .exowe{display:flex;align-items:center;gap:12px;flex-wrap:wrap;border:1px solid #C7D6EE;
+    background:#EDF2FA;border-radius:12px;padding:12px 15px;margin-bottom:14px}
+  .exowe.zero{border-color:var(--line);background:#F4F2EA}
+  .exowe-l b{display:block;font-size:13.5px;color:var(--blue)}
+  .exowe-l small{display:block;font-size:11px;color:var(--muted);line-height:1.6;margin-top:2px}
+  .exowe-v{margin-left:auto;font-size:14px;color:var(--ink);white-space:nowrap}
+  .exowe-v em{font-style:normal;font-family:'Gowun Batang',serif;font-size:22px;font-weight:700;
+    color:var(--err);margin-left:6px;font-variant-numeric:tabular-nums}
+
+  .exadd{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+  .exbig{flex:1;min-width:200px;background:var(--blue);color:#fff;border-radius:12px;padding:15px;
+    text-align:center;font-size:15px;font-weight:600;cursor:pointer}
+  .exbig:hover{background:var(--flecha);color:#3B2E00}
+  .exsm{border:1px solid var(--line);background:#fff;color:var(--muted);border-radius:12px;
+    padding:14px 16px;font-size:13px;font-family:inherit;cursor:pointer;white-space:nowrap}
+  .exsm:hover{border-color:var(--flecha);background:#FFFBEE}
+  .exq{font-size:11px;color:#8A6A12;background:#FFFBEE;border:1px solid #E7D9A8;
+    border-radius:999px;padding:4px 10px}
+
+  .exh3{font-family:'Gowun Batang',serif;font-size:16px;color:var(--blue);margin:18px 0 10px;
+    padding-bottom:7px;border-bottom:2px solid var(--flecha)}
+  .exh3 small{font-family:'IBM Plex Sans KR',sans-serif;font-size:11.5px;font-weight:400;
+    color:var(--muted);margin-left:6px}
+
+  .excats{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  @media(max-width:640px){ .excats{grid-template-columns:1fr} }
+  .excat{display:flex;align-items:center;gap:9px;padding:7px 11px;border:1px solid var(--line);
+    border-radius:10px;background:#fff;font-size:12.5px}
+  .excat.off{opacity:.45}
+  .exci{flex:0 0 auto;font-size:14px}
+  .excn{flex:0 0 68px;color:var(--ink)}
+  .excb{flex:1;height:6px;background:#EDEAE1;border-radius:3px;overflow:hidden}
+  .excb i{display:block;height:100%;background:var(--blue)}
+  .excv{flex:0 0 auto;font-variant-numeric:tabular-nums;color:var(--muted);min-width:64px;
+    text-align:right}
+
+  .exlist{display:flex;flex-direction:column;gap:7px}
+  .exrow{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);
+    border-radius:11px;background:#fff;padding:9px 11px}
+  .exrow.mine{border-color:#C7D6EE}
+  .exthumb{flex:0 0 52px;height:52px;border-radius:8px;border:1px solid var(--line);
+    background-size:cover;background-position:center;background-color:#F4F2EA;padding:0;cursor:zoom-in}
+  .exthumb.none{display:flex;align-items:center;justify-content:center;font-size:18px;cursor:default}
+  .exinfo{flex:1;min-width:0}
+  .exinfo b{display:block;font-size:13px;color:var(--ink)}
+  .exinfo small{display:block;font-size:11px;color:var(--muted);line-height:1.55;margin-top:1px}
+  .extags{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
+  .extags i{font-style:normal;font-size:10px;border-radius:999px;padding:2px 7px;
+    background:#EDEAE1;color:var(--muted)}
+  .extags i.who.bin{background:#EDF2FA;color:var(--blue)}
+  .extags i.who.jin{background:#FBEDE6;color:var(--err)}
+  .extags i.no{background:#F1E7C9;color:#8A6A12}
+  .examt{flex:0 0 auto;text-align:right}
+  .examt b{display:block;font-family:'Gowun Batang',serif;font-size:16px;color:var(--ink);
+    font-variant-numeric:tabular-nums}
+  .examt small{display:block;font-size:10.5px;color:var(--muted)}
+  .exed{margin-top:4px;border:1px solid var(--line);background:#fff;color:var(--blue);
+    border-radius:7px;padding:3px 9px;font-size:12px;font-family:inherit}
+  .exed:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
+
+  /* 입력 창 */
+  .exed-w{position:fixed;inset:0;z-index:145;background:rgba(11,16,30,.94);display:none;
+    height:100vh;height:100dvh;overscroll-behavior:contain}
+  .exed-w.show{display:block}
+  .exed-in{max-width:520px;height:100%;margin:0 auto;background:var(--paper);
+    display:flex;flex-direction:column;overflow:hidden}
+  .exed-top{flex:0 0 auto;display:flex;align-items:center;gap:10px;padding:11px 14px;
+    background:var(--blue);color:#fff}
+  .exed-top b{font-family:'Gowun Batang',serif;font-size:15px;flex:1}
+  .exed-x{border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.1);color:#fff;
+    border-radius:999px;padding:6px 13px;font-size:12.5px;font-family:inherit}
+  .exed-x:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
+  .exed-body{flex:1;min-height:0;overflow-y:auto;padding:14px;overscroll-behavior:contain}
+  .exed-img{margin-bottom:12px}
+  .exed-img img{display:block;width:100%;border-radius:10px;border:1px solid var(--line)}
+  .exl{display:block;font-size:11.5px;color:var(--muted);margin-bottom:11px}
+  .exl input,.exl select{display:block;width:100%;margin-top:4px;border:1px solid var(--line);
+    border-radius:9px;padding:11px;font-size:16px;font-family:inherit;background:#fff;color:var(--ink)}
+  .exl input:focus,.exl select:focus{outline:none;border-color:var(--flecha);
+    box-shadow:0 0 0 2px rgba(245,185,23,.3)}
+  .exrow2{display:grid;grid-template-columns:1fr 110px;gap:8px;margin-top:4px}
+  .exrow2 input,.exrow2 select{margin-top:0}
+  .exrow2 input{font-size:22px;font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+  .exrow3{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .exrate{display:flex;align-items:center;gap:7px;flex-wrap:wrap;background:#F4F2EA;
+    border-radius:9px;padding:9px 11px;margin-bottom:11px;font-size:12px;color:var(--muted)}
+  .exrate[hidden]{display:none}
+  .exrate input{flex:1;min-width:90px;border:1px solid var(--line);border-radius:7px;
+    padding:6px 9px;font-size:14px;font-family:inherit}
+  .exrate button{border:1px solid var(--line);background:#fff;color:var(--blue);border-radius:999px;
+    padding:5px 11px;font-size:11.5px;font-family:inherit;white-space:nowrap}
+  .exrate em{flex-basis:100%;font-style:normal;font-weight:700;color:var(--blue)}
+
+  .excatgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:4px 0 9px}
+  @media(max-width:420px){ .excatgrid{grid-template-columns:repeat(2,1fr)} }
+  .excatb{border:1px solid var(--line);background:#fff;border-radius:10px;padding:10px 4px;
+    font-size:11.5px;font-family:inherit;color:var(--muted);line-height:1.4}
+  .excatb span{display:block;font-size:19px;margin-bottom:2px}
+  .excatb.on{background:var(--blue);border-color:var(--blue);color:#fff}
+  .exsubs{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+  .exsub{border:1px solid var(--line);background:#fff;color:var(--muted);border-radius:999px;
+    padding:6px 13px;font-size:12px;font-family:inherit}
+  .exsub.on{background:var(--flecha);border-color:var(--flecha);color:#3B2E00;font-weight:600}
+
+  .exseg{display:flex;gap:5px;margin:4px 0 12px}
+  .exseg button{flex:1;border:1px solid var(--line);background:#fff;color:var(--muted);
+    border-radius:9px;padding:11px 6px;font-size:12.5px;font-family:inherit}
+  .exseg button.on{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:600}
+  .exchk{display:flex;align-items:flex-start;gap:9px;margin-bottom:12px;font-size:13px;
+    background:#FBFAF5;border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+  .exchk input{width:19px;height:19px;margin-top:1px;accent-color:var(--ok)}
+  .exchk em{display:block;font-style:normal;font-size:11px;color:var(--muted);margin-top:2px}
+
+  .exed-foot{flex:0 0 auto;display:flex;gap:8px;padding:11px 14px calc(env(safe-area-inset-bottom,0px) + 14px);
+    border-top:1px solid var(--line);background:#fff}
+  .exok{flex:1;border:none;background:var(--ok);color:#fff;border-radius:11px;padding:14px;
+    font-size:15px;font-weight:700;font-family:inherit}
+  .exok:hover{background:var(--flecha);color:#3B2E00}
+  .exdel{border:1px solid var(--line);background:#fff;color:var(--err);border-radius:11px;
+    padding:14px 18px;font-size:13px;font-family:inherit}
+  .exdel:hover{background:var(--err);color:#fff;border-color:var(--err)}
+
+  .exrules{margin-top:22px;border:1px solid var(--line);border-radius:13px;background:#FBFAF5;
+    padding:15px 17px 17px}
+  .exrules h3{font-family:'Gowun Batang',serif;font-size:15px;color:var(--blue);margin-bottom:10px;
+    padding-bottom:8px;border-bottom:2px solid var(--flecha)}
+  .exrl{list-style:none;counter-reset:exr;padding:0;margin:0}
+  .exrl li{counter-increment:exr;position:relative;padding:8px 0 8px 27px;font-size:12.5px;
+    line-height:1.8;color:var(--muted);border-bottom:1px dashed #E8E4D8}
+  .exrl li:last-child{border-bottom:none}
+  .exrl li::before{content:counter(exr);position:absolute;left:0;top:11px;width:19px;height:19px;
+    border-radius:50%;background:var(--blue);color:#fff;font-size:10.5px;font-weight:700;
+    display:flex;align-items:center;justify-content:center}
+  .exrl b{color:var(--ink)}
 </style>
 </head>
 <body>
@@ -561,6 +705,7 @@
     <button id="viewPhotoBtn" class="on">📸 사진 · 영상</button>
     <button id="viewPassBtn">📕 여권 (Credencial)</button>
     <button id="viewTodoBtn">✅ 할 일 (To-Do)</button>
+    <button id="viewExBtn">💶 비용 (Gastos)</button>
   </div>
 
   <div id="photoView">
@@ -620,7 +765,26 @@
     <div id="todoRoot"></div>
   </div>
 
+  <!-- 비용 -->
+  <div id="exView" style="display:none">
+    <div class="tdtop">
+      <span class="me" id="exMe"></span>
+      <button class="mini2" id="exReloadBtn">다시 불러오기</button>
+      <span class="st" id="exStatus"></span>
+    </div>
+    <p class="tdhint">
+      영수증을 찍어 올리고 <b>금액과 분류</b>만 넣으면 됩니다. 나머지는 기본값
+      (<b>내가 결제 · 반반 · EUR</b>)으로 채워지니 대개 두 번만 누르면 끝납니다.
+      사진은 <b>2400px 고화질</b>로 저장되어 잔글씨가 남습니다 — 종이는 버리셔도 됩니다.<br>
+      연결이 없으면 폰에 잠시 담아 두었다가 <b>자동으로</b> 올립니다.
+      자세한 내용은 이 화면 <b>맨 아래 기록 규칙</b>을 보세요.
+    </p>
+    <div id="exRoot"></div>
+  </div>
+
 </div>
+
+<div class="exed-w" id="exEditor"></div>
 
 <div class="pged" id="pgEditor"></div>
 
@@ -678,7 +842,7 @@ const initAuth=()=>{
         $("lockScreen").style.display="none";$("panel").style.display="block";
         $("whoAmI").innerHTML="로그인: <b>"+myEmail+"</b>";
         $("tdSaveBtn").style.display="";
-        tdOnSignedIn(); pgOnSignedIn();
+        tdOnSignedIn(); pgOnSignedIn(); exOnSignedIn();
         loadAll();
       }).catch(()=>toast("계정 정보를 가져오지 못했습니다"));
     }
@@ -1653,11 +1817,14 @@ const showView = (which) => {
   $("photoView").style.display = which==="photo" ? "" : "none";
   $("todoView") .style.display = which==="todo"  ? "" : "none";
   $("passView") .style.display = which==="pass"  ? "" : "none";
+  $("exView")   .style.display = which==="ex"    ? "" : "none";
   $("viewPhotoBtn").classList.toggle("on", which==="photo");
   $("viewTodoBtn") .classList.toggle("on", which==="todo");
   $("viewPassBtn") .classList.toggle("on", which==="pass");
+  $("viewExBtn")   .classList.toggle("on", which==="ex");
   if(which==="todo" && !tdLoaded) tdLoad();
   if(which==="pass" && !pgLoaded)  pgLoad();
+  if(which==="ex"   && !exLoaded)  exLoad();
 };
 $("viewPhotoBtn").addEventListener("click",()=>showView("photo"));
 $("viewTodoBtn") .addEventListener("click",()=>showView("todo"));
@@ -2672,7 +2839,7 @@ const pgOnSignedIn=()=>{
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260820-0247";
+  var BUILD="20260823-0113";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
@@ -2685,6 +2852,583 @@ const pgOnSignedIn=()=>{
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",paint);
   else paint();
 })();
+
+/* ══════════════════════════════════════════════════════════════════════
+   💶 비용 — 영수증 사진 + 금액 기록
+   · Bin / Jin 각자 자기 것만 올리고 고칩니다. 서로의 내역은 볼 수 있습니다.
+   · 기본 통화는 EUR. 원화·달러는 그날 환율을 함께 저장합니다.
+   · 정산은 여행 중 현황만 보여 주고, 산티아고 도착 후 확정합니다.
+   저장:  db/expense-bin.json · expense-jin.json · expense-settle.json
+          receipt/  (영수증 사진 · 2400px)
+   ══════════════════════════════════════════════════════════════════════ */
+
+const EX = {
+  folder : "receipt",
+  files  : { bin:"expense-bin.json", jin:"expense-jin.json" },
+  settleFile : "expense-settle.json",
+  maxDim : 2400,          /* 잔글씨가 살아 있어야 종이를 버릴 수 있습니다 */
+  quality: 0.88,
+  start  : new Date(2027,4,9),
+  days   : 13
+};
+
+const EXCAT = [
+  {k:"stay", n:"숙박",      icon:"🛏", subs:["알베르게","호텔","아파트"]},
+  {k:"food", n:"음식",      icon:"🍽", subs:["식당","장보기","카페·간식"]},
+  {k:"move", n:"교통",      icon:"🚆", subs:["기차","버스·택시","항공"],  off:["항공"]},
+  {k:"bike", n:"자전거",    icon:"🚲", subs:["렌트","정비·부품","보관"]},
+  {k:"pil",  n:"순례",      icon:"🐚", subs:["크레덴시알","증서","입장료"]},
+  {k:"comm", n:"통신·보험", icon:"📶", subs:["유심·로밍","보험"],        off:["보험"]},
+  {k:"gear", n:"장비·의류", icon:"🎒", subs:[]},
+  {k:"etc",  n:"기타",      icon:"＋", subs:["수수료·환전","의료·약국","세탁","팁"]}
+];
+const EXCUR = [
+  {k:"EUR", n:"€",  step:"0.01"},
+  {k:"KRW", n:"₩",  step:"100"},
+  {k:"USD", n:"$",  step:"0.01"}
+];
+const SPLIT = [
+  {k:"half",  n:"반반"},
+  {k:"self",  n:"전액 본인"},
+  {k:"other", n:"전액 상대"}
+];
+
+let exFolderId=null, exLoaded=false, exData={}, exMeta={}, exSettle=null, exSettleMeta=null;
+let exWho=null, exEdit=null, exPending=null;
+const exTimers={};
+
+const exId   = () => "e"+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const exCan  = (k) => k===exWho;
+const exEsc  = t => String(t==null?"":t)
+  .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+const exCat  = k => EXCAT.filter(c=>c.k===k)[0] || EXCAT[EXCAT.length-1];
+const exDayDate = d => {
+  if(d<=0) return "";
+  const x=new Date(EX.start); x.setDate(x.getDate()+(d-1));
+  return x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0");
+};
+const exDayName = d => d<=0 ? "출발 전" : (d>EX.days ? "완주 후" : "DAY "+d+" · "+exDayDate(d).slice(5));
+const exMoney = (v,cur) => {
+  const c=EXCUR.filter(x=>x.k===(cur||"EUR"))[0]||EXCUR[0];
+  return c.k==="KRW" ? c.n+Math.round(v).toLocaleString()
+                     : c.n+v.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,",");
+};
+const exEur = v => "€"+(Math.round(v*100)/100).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,",");
+
+/* 날짜 → DAY 번호 */
+const exDayOf = (iso) => {
+  if(!iso) return 0;
+  const t=new Date(iso+"T12:00:00").getTime();
+  if(isNaN(t)) return 0;
+  const d=Math.round((t-new Date(EX.start.getFullYear(),EX.start.getMonth(),EX.start.getDate(),12).getTime())/86400000)+1;
+  if(d<1) return 0;
+  if(d>EX.days) return EX.days+1;
+  return d;
+};
+
+/* ══════════ 저장소 ══════════ */
+const exEmpty = () => ({items:[]});
+const exNorm = (raw) => {
+  const d=exEmpty(); if(!raw) return d;
+  d.items=(raw.items||[]).filter(x=>x&&x.id).map(x=>({
+    id:String(x.id), amt:+x.amt||0, cur:x.cur||"EUR", rate:+x.rate||1, eur:+x.eur||0,
+    cat:x.cat||"etc", sub:x.sub||"", payer:x.payer||"bin", split:x.split||"half",
+    settle:(x.settle===undefined?true:!!x.settle),
+    day:(x.day===undefined?0:+x.day), date:x.date||"", place:x.place||"",
+    memo:x.memo||"", fileId:x.fileId||"", del:!!x.del, ts:+x.ts||0
+  }));
+  return d;
+};
+const exPack = (k) => ({ver:1, owner:k, updatedAt:new Date().toISOString(),
+  updatedBy:myEmail, items:exData[k].items});
+
+const exEnsureFolder = () =>
+  listFolder(CONFIG.parentFolder).then(items=>{
+    const f=items.find(x=>x.mimeType==="application/vnd.google-apps.folder"
+                       && x.name.toLowerCase()===EX.folder);
+    return f ? f.id : createFolder(EX.folder, CONFIG.parentFolder).then(x=>x.id);
+  });
+
+const exLoad = () => {
+  exStatus("불러오는 중…");
+  return tdEnsureFolder().then(fid=>{ dbFolderId=fid; return listFolder(fid); })
+    .then(files=>{
+      const jobs=["bin","jin"].map(key=>{
+        const name=EX.files[key], f=files.find(x=>x.name===name);
+        if(!f){
+          exData[key]=exEmpty();
+          return driveCreateJson(name, exPack(key), dbFolderId)
+            .then(r=>{ exMeta[key]={id:r.id, modifiedTime:r.modifiedTime}; });
+        }
+        return driveDownload(f.id).then(t=>{
+          let raw=null; try{ raw=JSON.parse(t); }catch(e){}
+          exData[key]=exNorm(raw);
+          return driveGetMeta(f.id).then(m=>{ exMeta[key]={id:f.id, modifiedTime:m.modifiedTime}; });
+        });
+      });
+      const sf=files.find(x=>x.name===EX.settleFile);
+      if(!sf){
+        exSettle={closed:[]};
+        jobs.push(driveCreateJson(EX.settleFile, exSettle, dbFolderId)
+          .then(r=>{ exSettleMeta={id:r.id, modifiedTime:r.modifiedTime}; }));
+      }else{
+        jobs.push(driveDownload(sf.id).then(t=>{
+          let raw=null; try{ raw=JSON.parse(t); }catch(e){}
+          exSettle=(raw&&Array.isArray(raw.closed))?raw:{closed:[]};
+          return driveGetMeta(sf.id).then(m=>{ exSettleMeta={id:sf.id, modifiedTime:m.modifiedTime}; });
+        }));
+      }
+      return Promise.all(jobs);
+    })
+    .then(()=>exEnsureFolder()).then(id=>{ exFolderId=id; })
+    .then(()=>{ exLoaded=true; exFlush(); exRender(); exStatus("불러오기 완료","sav"); })
+    .catch(e=>{ exStatus(e.message,"err");
+      $("exRoot").innerHTML='<div class="tdhint" style="color:var(--err)">⚠ '+exEsc(e.message)+'</div>'; });
+};
+
+const exMerge = (remote, local) => {
+  const m=new Map();
+  (remote.items||[]).forEach(x=>m.set(x.id,x));
+  (local.items||[]).forEach(x=>{ const r=m.get(x.id); if(!r||(x.ts||0)>=(r.ts||0)) m.set(x.id,x); });
+  return {items:[...m.values()]};
+};
+const exSave = (k) => {
+  if(!exCan(k)||!exMeta[k]) return Promise.resolve();
+  exStatus("저장 중…");
+  const id=exMeta[k].id;
+  return driveGetMeta(id).then(m=>{
+    if(m.modifiedTime!==exMeta[k].modifiedTime)
+      return driveDownload(id).then(t=>{
+        let raw=null; try{ raw=JSON.parse(t); }catch(e){}
+        exData[k]=exMerge(exNorm(raw), exData[k]);
+      });
+  }).then(()=>driveUpdateJson(id, exPack(k)))
+    .then(r=>{ exMeta[k].modifiedTime=r.modifiedTime;
+      exStatus("저장됨 · "+new Date().toLocaleTimeString("ko-KR",{hour:"2-digit",minute:"2-digit"}),"sav"); })
+    .catch(e=>{ exStatus("⚠ "+e.message,"err"); toast("⚠ "+e.message); });
+};
+const exQueue = (k) => { exStatus("변경됨 — 곧 저장합니다…");
+  clearTimeout(exTimers[k]); exTimers[k]=setTimeout(()=>exSave(k),1200); };
+const exStatus = (m,c) => { const el=$("exStatus"); if(el){ el.textContent=m; el.className="st"+(c?" "+c:""); } };
+
+/* ══════════ 오프라인 대기열 ══════════ */
+const EXQ = "caminoExQueue-v1";
+const exQGet = () => { try{ return JSON.parse(localStorage.getItem(EXQ)||"[]"); }catch(e){ return []; } };
+const exQSet = (a) => { try{ localStorage.setItem(EXQ, JSON.stringify(a)); }catch(e){} };
+const exQAdd = (rec) => { const a=exQGet(); a.push(rec); exQSet(a); exQBadge(); };
+const exQBadge = () => {
+  const el=$("exQn"); if(!el) return;
+  const n=exQGet().length;
+  el.textContent = n ? ("대기 "+n+"건") : "";
+  el.style.display = n ? "" : "none";
+};
+const exFlush = () => {
+  const a=exQGet(); if(!a.length||!exLoaded||!exWho) return;
+  let n=0;
+  a.forEach(r=>{ if(r.owner===exWho){ exData[exWho].items.push(r.item); n++; } });
+  exQSet(a.filter(r=>r.owner!==exWho));
+  if(n){ exQueue(exWho); toast("대기 중이던 "+n+"건을 올렸습니다"); }
+  exQBadge();
+};
+
+/* ══════════ 환율 ══════════ */
+const exRate = (cur, date) => {
+  if(cur==="EUR") return Promise.resolve(1);
+  const d=(date||"").slice(0,10);
+  const url="https://api.frankfurter.app/"+(d||"latest")+"?from=EUR&to="+cur;
+  return fetch(url).then(r=>{ if(!r.ok) throw 0; return r.json(); })
+    .then(j=>{ const v=j&&j.rates&&j.rates[cur]; if(!v) throw 0; return v; });
+};
+
+/* ══════════ 계산 ══════════ */
+const exAll = () => {
+  const a=[];
+  ["bin","jin"].forEach(k=>{
+    ((exData[k]||{}).items||[]).forEach(x=>{ if(!x.del) a.push(x); });
+  });
+  return a.sort((p,q)=> (p.day-q.day) || (p.ts-q.ts));
+};
+const exTotals = () => {
+  const t={all:0, bin:0, jin:0, cat:{}, day:{}, owe:0, settleBin:0, settleJin:0};
+  exAll().forEach(x=>{
+    const v=x.eur||0;
+    t.all+=v;
+    t[x.payer]=(t[x.payer]||0)+v;
+    t.cat[x.cat]=(t.cat[x.cat]||0)+v;
+    t.day[x.day]=(t.day[x.day]||0)+v;
+    if(!x.settle) return;
+    /* 정산 대상만 — 상대가 갚아야 할 몫 */
+    let owedByOther=0;
+    if(x.split==="half")  owedByOther=v/2;
+    if(x.split==="other") owedByOther=v;
+    if(x.payer==="bin") t.settleBin+=owedByOther; else t.settleJin+=owedByOther;
+  });
+  t.owe=t.settleBin-t.settleJin;   /* >0 이면 Jin 이 Bin 에게 */
+  return t;
+};
+
+/* ══════════ 영수증 업로드 ══════════ */
+const exUpload = async(file) => {
+  const k=exWho; if(!k){ toast("담당이 지정된 계정으로 로그인해야 합니다"); return null; }
+  const oldD=CONFIG.webpMaxDim, oldQ=CONFIG.webpQuality;
+  CONFIG.webpMaxDim=EX.maxDim; CONFIG.webpQuality=EX.quality;
+  try{
+    const gps=await readGps(file).catch(()=>null);
+    const blob=await toWebp(file,null);
+    const name=k+"-receipt-"+Date.now().toString(36)+".webp";
+    toast("영수증 올리는 중…");
+    const res=await uploadFile(name,"image/webp",blob,exFolderId,
+      p=>toast("업로드 "+Math.round(p*100)+"%"));
+    return {fileId:res.id, name:name, gps:gps, taken:gps&&gps.taken};
+  }catch(e){ toast("⚠ "+e.message); return null; }
+  finally{ CONFIG.webpMaxDim=oldD; CONFIG.webpQuality=oldQ; }
+};
+
+/* ══════════ 화면 ══════════ */
+const exRender = () => {
+  const root=$("exRoot"); if(!root) return;
+  if(!exLoaded){ root.innerHTML='<p class="wxload">비용 자료를 불러오는 중…</p>'; return; }
+
+  const t=exTotals(), items=exAll();
+  const per = items.length ? t.all/2 : 0;
+  const rideDays = Object.keys(t.day).filter(d=>+d>=1 && +d<=EX.days).length;
+
+  let h='<div class="exsum">'
+    + exCard("전체", exEur(t.all), items.length+"건")
+    + exCard("1인당", exEur(per), "단순 절반")
+    + exCard("BIN 결제", exEur(t.bin||0), "")
+    + exCard("JIN 결제", exEur(t.jin||0), "")
+    + '</div>';
+
+  /* 정산 현황 */
+  const owe=t.owe, from = owe>0 ? "JIN" : "BIN", to = owe>0 ? "BIN" : "JIN";
+  h+='<div class="exowe'+(Math.abs(owe)<0.01?" zero":"")+'">'
+    + '<div class="exowe-l"><b>정산 현황</b><small>여행 중에는 참고용입니다 · '
+    + '항공권과 보험은 빠져 있습니다</small></div>'
+    + (Math.abs(owe)<0.01
+        ? '<div class="exowe-v">지금은 <b>비긴 상태</b>입니다</div>'
+        : '<div class="exowe-v"><b>'+from+'</b> 이 <b>'+to+'</b> 에게 '
+          +'<em>'+exEur(Math.abs(owe))+'</em></div>')
+    + '</div>';
+
+  /* 입력 버튼 */
+  if(exWho){
+    h+='<div class="exadd">'
+      + '<label class="exbig">📷 영수증 찍어 올리기'
+      + '<input type="file" accept="image/*" capture="environment" id="exCam" hidden></label>'
+      + '<label class="exsm">🖼 앨범에서<input type="file" accept="image/*" id="exPick" hidden></label>'
+      + '<button type="button" class="exsm" id="exNoPhoto">✎ 사진 없이</button>'
+      + '<span class="exq" id="exQn"></span>'
+      + '</div>';
+  }else{
+    h+='<p class="tdhint">담당이 지정되지 않은 계정이라 <b>보기만</b> 가능합니다.</p>';
+  }
+
+  /* 분류별 */
+  h+='<h3 class="exh3">분류별</h3><div class="excats">';
+  EXCAT.forEach(c=>{
+    const v=t.cat[c.k]||0, pct=t.all? Math.round(v/t.all*100):0;
+    h+='<div class="excat'+(v?"":" off")+'"><span class="exci">'+c.icon+'</span>'
+      +'<span class="excn">'+c.n+'</span>'
+      +'<span class="excb"><i style="width:'+pct+'%"></i></span>'
+      +'<span class="excv">'+(v?exEur(v):"—")+'</span></div>';
+  });
+  h+='</div>';
+
+  /* 목록 */
+  h+='<h3 class="exh3">내역 <small>'+items.length+'건 · 최근 순</small></h3>';
+  if(!items.length){
+    h+='<p class="tdhint">아직 올린 비용이 없습니다. 위의 <b>영수증 찍어 올리기</b>로 시작하세요.</p>';
+  }else{
+    h+='<div class="exlist">';
+    items.slice().reverse().forEach(x=>{
+      const c=exCat(x.cat), mine=exCan(x.payer);
+      h+='<div class="exrow'+(mine?" mine":"")+'" data-id="'+x.id+'" data-o="'+x.payer+'">'
+        + (x.fileId
+            ? '<button type="button" class="exthumb" style="background-image:url(\''
+              +"https://lh3.googleusercontent.com/d/"+x.fileId+"=w300"+'\')" data-f="'+x.fileId+'"></button>'
+            : '<span class="exthumb none">'+c.icon+'</span>')
+        + '<div class="exinfo">'
+          + '<b>'+c.icon+' '+exEsc(c.n)+(x.sub?' · '+exEsc(x.sub):'')+'</b>'
+          + '<small>'+exDayName(x.day)+(x.place?' · '+exEsc(x.place):'')
+            +(x.memo?' · '+exEsc(x.memo):'')+'</small>'
+          + '<span class="extags">'
+            + '<i class="who '+x.payer+'">'+x.payer.toUpperCase()+'</i>'
+            + '<i class="sp">'+(SPLIT.filter(s=>s.k===x.split)[0]||SPLIT[0]).n+'</i>'
+            + (x.settle?'':'<i class="no">정산 제외</i>')
+          + '</span>'
+        + '</div>'
+        + '<div class="examt"><b>'+exEur(x.eur)+'</b>'
+          + (x.cur!=="EUR"?'<small>'+exMoney(x.amt,x.cur)+'</small>':'')
+          + (mine?'<button type="button" class="exed">✎</button>':'')
+        + '</div></div>';
+    });
+    h+='</div>';
+  }
+
+  h+=exRules();
+  root.innerHTML=h;
+  exBind();
+  exQBadge();
+};
+
+const exCard = (n,v,s) =>
+  '<div class="exc"><small>'+n+'</small><b>'+v+'</b><i>'+(s||'')+'</i></div>';
+
+/* ══════════ 입력 폼 ══════════ */
+const exForm = (rec) => {
+  exPending = rec;
+  const today = new Date();
+  const iso = rec.date || (rec.taken ? String(rec.taken).slice(0,10)
+    : today.getFullYear()+"-"+String(today.getMonth()+1).padStart(2,"0")+"-"+String(today.getDate()).padStart(2,"0"));
+  const day = rec.day!==undefined ? rec.day : exDayOf(iso);
+  const cat = rec.cat||"food", sub = rec.sub||"";
+  const c = exCat(cat);
+
+  const ed=$("exEditor");
+  ed.classList.add("show"); document.body.style.overflow="hidden";
+  ed.innerHTML =
+     '<div class="exed-in">'
+    +'<div class="exed-top"><b>'+(rec.id?"비용 고치기":"비용 기록")+'</b>'
+      +'<button type="button" class="exed-x">닫기 ✕</button></div>'
+    +'<div class="exed-body">'
+      + (rec.fileId
+          ? '<div class="exed-img"><img src="https://lh3.googleusercontent.com/d/'+rec.fileId+'=w900" alt="영수증"></div>'
+          : '')
+      +'<label class="exl">금액'
+        +'<div class="exrow2">'
+          +'<input type="number" inputmode="decimal" id="exAmt" step="0.01" '
+            +'value="'+(rec.amt||"")+'" placeholder="0.00" autofocus>'
+          +'<select id="exCur">'+EXCUR.map(x=>'<option value="'+x.k+'"'
+            +((rec.cur||"EUR")===x.k?" selected":"")+'>'+x.n+' '+x.k+'</option>').join("")+'</select>'
+        +'</div></label>'
+      +'<div class="exrate" id="exRateBox" hidden>'
+        +'<span>1 EUR =</span><input type="number" id="exRateV" step="0.0001" '
+          +'value="'+(rec.rate||"")+'"><span id="exRateC">KRW</span>'
+        +'<button type="button" id="exRateGet">환율 가져오기</button>'
+        +'<em id="exRateEur"></em></div>'
+
+      +'<label class="exl">분류</label>'
+      +'<div class="excatgrid">'+EXCAT.map(x=>'<button type="button" class="excatb'
+        +(x.k===cat?" on":"")+'" data-c="'+x.k+'"><span>'+x.icon+'</span>'+x.n+'</button>').join("")+'</div>'
+      +'<div class="exsubs" id="exSubs"></div>'
+
+      +'<div class="exrow3">'
+        +'<label class="exl">날짜<input type="date" id="exDate" value="'+iso+'"></label>'
+        +'<label class="exl">구간<select id="exDay">'
+          +'<option value="0"'+(day===0?" selected":"")+'>출발 전</option>'
+          +Array.from({length:EX.days},(_,i)=>'<option value="'+(i+1)+'"'
+            +(day===i+1?" selected":"")+'>DAY '+(i+1)+'</option>').join("")
+          +'<option value="'+(EX.days+1)+'"'+(day===EX.days+1?" selected":"")+'>완주 후</option>'
+        +'</select></label>'
+      +'</div>'
+
+      +'<label class="exl">결제한 사람</label>'
+      +'<div class="exseg" id="exPayer">'
+        +['bin','jin'].map(p=>'<button type="button" data-v="'+p+'"'
+          +((rec.payer||exWho)===p?' class="on"':'')+'>'+p.toUpperCase()+'</button>').join("")
+      +'</div>'
+
+      +'<label class="exl">나눔</label>'
+      +'<div class="exseg" id="exSplit">'
+        +SPLIT.map(s=>'<button type="button" data-v="'+s.k+'"'
+          +((rec.split||"half")===s.k?' class="on"':'')+'>'+s.n+'</button>').join("")
+      +'</div>'
+
+      +'<label class="exchk"><input type="checkbox" id="exSettle"'
+        +((rec.settle===undefined?true:rec.settle)?" checked":"")+'>'
+        +'<span>정산에 포함<em>항공권·보험은 자동으로 제외됩니다</em></span></label>'
+
+      +'<label class="exl">장소<input type="text" id="exPlace" value="'+exEsc(rec.place||"")
+        +'" placeholder="예: Logroño"></label>'
+      +'<label class="exl">메모<input type="text" id="exMemo" value="'+exEsc(rec.memo||"")
+        +'" placeholder="선택 사항"></label>'
+    +'</div>'
+    +'<div class="exed-foot">'
+      + (rec.id?'<button type="button" class="exdel" id="exDel">삭제</button>':'')
+      +'<button type="button" class="exok" id="exOk">저장</button>'
+    +'</div></div>';
+
+  exFormBind(cat, sub);
+};
+
+const exFormBind = (cat, sub) => {
+  const ed=$("exEditor");
+  let curCat=cat, curSub=sub;
+
+  const subsBox=$("exSubs");
+  const paintSubs=()=>{
+    const c=exCat(curCat);
+    subsBox.innerHTML = c.subs.length
+      ? c.subs.map(s=>'<button type="button" class="exsub'+(s===curSub?" on":"")
+          +'" data-s="'+exEsc(s)+'">'+exEsc(s)+'</button>').join("")
+      : '';
+    subsBox.querySelectorAll(".exsub").forEach(b=>b.addEventListener("click",()=>{
+      curSub = (curSub===b.dataset.s) ? "" : b.dataset.s;
+      paintSubs(); autoSettle();
+    }));
+  };
+  const autoSettle = () => {
+    const c=exCat(curCat);
+    if(c.off && c.off.indexOf(curSub)>=0){
+      $("exSettle").checked=false;
+      toast(curSub+" 은 정산에서 제외됩니다");
+    }
+  };
+  paintSubs();
+
+  ed.querySelectorAll(".excatb").forEach(b=>b.addEventListener("click",()=>{
+    curCat=b.dataset.c; curSub="";
+    ed.querySelectorAll(".excatb").forEach(x=>x.classList.toggle("on",x===b));
+    paintSubs();
+  }));
+  ["exPayer","exSplit"].forEach(id=>{
+    const box=$(id);
+    box.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{
+      box.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
+    }));
+  });
+
+  /* 통화 · 환율 */
+  const cur=$("exCur"), box=$("exRateBox"), rv=$("exRateV"), rc=$("exRateC"), re=$("exRateEur");
+  const showRate=()=>{
+    const c=cur.value;
+    box.hidden = (c==="EUR");
+    rc.textContent=c;
+    calc();
+  };
+  const calc=()=>{
+    const a=parseFloat($("exAmt").value)||0, c=cur.value, r=parseFloat(rv.value)||0;
+    if(c==="EUR"){ re.textContent=""; return; }
+    re.textContent = r>0 ? ("= "+exEur(a/r)) : "환율을 넣어 주세요";
+  };
+  cur.addEventListener("change",()=>{ showRate();
+    if(cur.value!=="EUR" && !parseFloat(rv.value)) getRate(); });
+  rv.addEventListener("input",calc);
+  $("exAmt").addEventListener("input",calc);
+  const getRate=()=>{
+    const c=cur.value; if(c==="EUR") return;
+    re.textContent="가져오는 중…";
+    exRate(c, $("exDate").value).then(v=>{ rv.value=v; calc(); })
+      .catch(()=>{ re.textContent="가져오지 못했습니다 — 직접 넣어 주세요"; });
+  };
+  $("exRateGet").addEventListener("click",getRate);
+  showRate();
+
+  $("exDate").addEventListener("change",()=>{
+    const d=exDayOf($("exDate").value);
+    $("exDay").value=String(d);
+  });
+
+  ed.querySelector(".exed-x").addEventListener("click",exClose);
+
+  const del=$("exDel");
+  if(del) del.addEventListener("click",async()=>{
+    const r=exPending;
+    if(!confirm("이 비용 기록을 지울까요?\n영수증 사진도 Drive 휴지통으로 들어갑니다.")) return;
+    const it=exData[exWho].items.find(x=>x.id===r.id);
+    if(it){
+      if(it.fileId) await driveTrash(it.fileId).catch(()=>toast("⚠ 사진 삭제 실패 — 기록만 지웁니다"));
+      it.del=true; it.ts=Date.now();
+      exQueue(exWho);
+    }
+    exClose(); exRender();
+  });
+
+  $("exOk").addEventListener("click",()=>{
+    const a=parseFloat($("exAmt").value)||0;
+    if(a<=0){ toast("금액을 넣어 주세요"); $("exAmt").focus(); return; }
+    const c=cur.value, r=(c==="EUR")?1:(parseFloat(rv.value)||0);
+    if(c!=="EUR" && r<=0){ toast("환율을 넣어 주세요"); rv.focus(); return; }
+    const rec=exPending;
+    const item={
+      id: rec.id||exId(),
+      amt:a, cur:c, rate:r, eur:Math.round((c==="EUR"?a:a/r)*100)/100,
+      cat:curCat, sub:curSub,
+      payer:$("exPayer").querySelector(".on").dataset.v,
+      split:$("exSplit").querySelector(".on").dataset.v,
+      settle:$("exSettle").checked,
+      day:+$("exDay").value, date:$("exDate").value,
+      place:$("exPlace").value.trim(), memo:$("exMemo").value.trim(),
+      fileId:rec.fileId||"", del:false, ts:Date.now()
+    };
+    if(!exLoaded || !exWho){
+      exQAdd({owner:exWho||"bin", item:item});
+      toast("연결되면 자동으로 올라갑니다");
+    }else{
+      const arr=exData[exWho].items;
+      const i=arr.findIndex(x=>x.id===item.id);
+      if(i>=0) arr[i]=item; else arr.push(item);
+      exQueue(exWho);
+    }
+    exClose(); exRender();
+  });
+};
+
+const exClose = () => { $("exEditor").classList.remove("show");
+  document.body.style.overflow=""; exPending=null; };
+
+const exBind = () => {
+  const cam=$("exCam"), pick=$("exPick"), no=$("exNoPhoto");
+  const shot=async(e)=>{
+    const f=e.target.files[0]; e.target.value="";
+    if(!f) return;
+    const up=await exUpload(f);
+    exForm(up ? {fileId:up.fileId, taken:up.taken,
+                 place:(up.gps&&up.gps.place)||""} : {});
+  };
+  if(cam) cam.addEventListener("change",shot);
+  if(pick) pick.addEventListener("change",shot);
+  if(no) no.addEventListener("click",()=>exForm({}));
+
+  document.querySelectorAll(".exrow .exed").forEach(b=>b.addEventListener("click",()=>{
+    const id=b.closest(".exrow").dataset.id;
+    const it=(exData[exWho]||{items:[]}).items.find(x=>x.id===id);
+    if(it) exForm(Object.assign({},it));
+  }));
+  document.querySelectorAll(".exthumb[data-f]").forEach(b=>b.addEventListener("click",()=>{
+    window.open("https://lh3.googleusercontent.com/d/"+b.dataset.f+"=w2000","_blank");
+  }));
+};
+
+/* ══════════ 규칙 안내 (섹션 맨 아래) ══════════ */
+const exRules = () => (
+  '<div class="exrules"><h3>기록 규칙</h3>'
+  +'<ol class="exrl">'
+  +'<li><b>단위는 유로입니다.</b> 원화·달러로 넣으면 그날 환율을 함께 저장해 유로로 환산합니다. '
+    +'환율을 같이 저장하므로 나중에 환율이 바뀌어도 과거 금액이 흔들리지 않습니다.</li>'
+  +'<li><b>결제한 사람과 나눔을 반드시 확인하세요.</b> 기본값은 <b>내가 결제 · 반반</b> 입니다. '
+    +'혼자 쓴 것이면 <b>전액 본인</b>, 상대 것을 대신 냈으면 <b>전액 상대</b> 로 바꾸세요.</li>'
+  +'<li><b>항공권과 보험은 정산에서 빠집니다.</b> 각자 알아서 낸 돈이라 총비용에는 들어가지만 '
+    +'서로 주고받을 금액에는 포함하지 않습니다. 해당 세부 항목을 고르면 자동으로 꺼집니다.</li>'
+  +'<li><b>수수료는 정산에 포함합니다.</b> ATM 인출·카드 해외결제·환전 수수료는 '
+    +'공동 경비를 마련하며 생긴 비용이라 함께 나눕니다. <b>기타 → 수수료·환전</b> 으로 넣으세요.</li>'
+  +'<li><b>출발 전 지출도 넣습니다.</b> 자전거 예약금, Jin 의 침낭·운송비처럼 '
+    +'둘이 함께 쓸 것은 <b>출발 전 · 반반</b> 으로 기록하면 마지막 정산에 자동으로 반영됩니다.</li>'
+  +'<li><b>서로의 내역을 볼 수 있습니다.</b> 고치고 지우는 것은 자기가 올린 것만 됩니다.</li>'
+  +'<li><b>영수증은 2400px 고화질로 저장됩니다.</b> 잔글씨가 남으니 종이는 버리셔도 됩니다. '
+    +'다만 세금 환급이나 카드 분쟁이 걸릴 만한 <b>큰 금액</b>(자전거 렌트·항공권)은 원본을 챙겨 두세요.</li>'
+  +'<li><b>지우면 되돌리기 어렵습니다.</b> 사진은 Drive 휴지통으로 가니 복구는 가능하지만, '
+    +'종이를 이미 버렸다면 그것뿐입니다. 삭제 전에 한 번 더 확인하세요.</li>'
+  +'<li><b>연결이 없어도 기록할 수 있습니다.</b> 알베르게 와이파이가 안 되면 폰에 잠시 담아 두었다가 '
+    +'연결되는 즉시 자동으로 올라갑니다. 대기 중인 건수가 버튼 옆에 표시됩니다.</li>'
+  +'<li><b>여행 중 정산 금액은 참고용입니다.</b> 실제 정산은 산티아고 도착 후 '
+    +'사이트의 <b>비용</b> 섹션에서 확정합니다.</li>'
+  +'</ol></div>'
+);
+
+const exOnSignedIn = () => {
+  exWho = CONFIG.owners[myEmail] || null;
+  const me=$("exMe");
+  if(me) me.innerHTML = exWho
+    ? '로그인: <b>'+exWho.toUpperCase()+'</b> — 내가 올린 것만 고칠 수 있고, 상대 내역은 볼 수 있습니다.'
+    : '담당이 지정되지 않은 계정이라 <b>보기만</b> 가능합니다.';
+};
+
+$("viewExBtn").addEventListener("click",()=>showView("ex"));
+$("exReloadBtn").addEventListener("click",()=>{ exLoaded=false; exLoad(); });
+window.addEventListener("online",()=>{ if(exLoaded) exFlush(); });
+
 </script>
 </body>
 </html>
