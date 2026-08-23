@@ -149,7 +149,7 @@ def process_gpx(path, out_path):
     return counts, points, track
 
 
-def write_tcx(path, name, track, points, max_points, speed_kmh=15.0):
+def write_tcx(path, name, track, points, max_points, speed_kmh=15.0, lang="en"):
     """A Garmin course: the track plus course-point alerts."""
     ET.register_namespace("", TCX_NS)
     N = "{%s}" % TCX_NS
@@ -219,7 +219,12 @@ def write_tcx(path, name, track, points, max_points, speed_kmh=15.0):
 
     for _, idx, p in placed:
         cp = ET.SubElement(course, N + "CoursePoint")
-        ET.SubElement(cp, N + "Name").text = p["name"][:10]
+        # The Name is what the Edge shows in the alert banner, and it is capped
+        # at 10 characters. Korean fits far more meaning into 10 characters
+        # than English does -- but only if the unit's language is set to Korean,
+        # otherwise the font has no Hangul and you get boxes.
+        label = p["ko"] if (lang == "ko" and p["ko"]) else p["name"]
+        ET.SubElement(cp, N + "Name").text = label[:10]
         ET.SubElement(cp, N + "Time").text = times[idx].strftime("%Y-%m-%dT%H:%M:%SZ")
         pos = ET.SubElement(cp, N + "Position")
         ET.SubElement(pos, N + "LatitudeDegrees").text = "%.7f" % track[idx][0]
@@ -239,19 +244,25 @@ def main():
     ap = argparse.ArgumentParser(description="Garmin icons and course points")
     ap.add_argument("--day", help="one GPX file")
     ap.add_argument("--all", action="store_true",
-                    help="every camino-day*.gpx in --dir")
+                    help="every file matching --pattern in --dir")
     ap.add_argument("--dir", default=".")
+    ap.add_argument("--pattern", default="camino-day*.gpx",
+                    help="glob for --all (default camino-day*.gpx; use "
+                         "\"camino-2027-day*.gpx\" for the published files)")
     ap.add_argument("--suffix", default="-icons",
                     help="output suffix. Use --suffix= to overwrite in place")
     ap.add_argument("--tcx", action="store_true",
                     help="also write a TCX course with course points")
+    ap.add_argument("--cp-lang", choices=["en", "ko"], default="en",
+                    help="language of the TCX alert title. 'ko' only works if "
+                         "the Edge menu language is Korean")
     ap.add_argument("--max-course-points", type=int, default=100,
                     help="Edge units get slow past ~100 (default 100)")
     args = ap.parse_args()
 
     if args.all:
         files = sorted(f for f in glob.glob(
-            os.path.join(args.dir, "camino-day*.gpx"))
+            os.path.join(args.dir, args.pattern))
             if args.suffix == "" or args.suffix not in os.path.basename(f))
     elif args.day:
         files = [args.day]
@@ -273,7 +284,7 @@ def main():
         if args.tcx and track:
             tcx = base + ".tcx"
             n = write_tcx(tcx, os.path.basename(base), track, points,
-                          args.max_course_points)
+                          args.max_course_points, lang=args.cp_lang)
             line += "  -> %s (%d course points%s)" % (
                 os.path.basename(tcx), n[0],
                 ", %d landmarks kept" % n[1] if n[1] else "")

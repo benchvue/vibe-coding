@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <gpx xmlns="http://www.topografix.com/GPX/1/1" version="1.1" creator="add_waypoints.py">
   <metadata>
     <name>camino-day02-bike-tmp</name>
@@ -49,7 +49,7 @@
   <wpt lat="42.6722820" lon="-1.9458650">
     <name>Jose Ramon</name>
     <desc>c/ Mayor 40, Lorca Â· Tel +34 948 541 190</desc>
-    <sym>Lodging</sym>
+    <sym>Scenic Area</sym>
     <cmt>c/ Mayor 40, Lorca Â· Tel +34 948 541 190</cmt>
   </wpt>
   <wpt lat="42.6596087" lon="-1.9924481">
@@ -61,7 +61,7 @@
   <wpt lat="42.6591220" lon="-1.9926885">
     <name>La Casa Mágica</name>
     <desc>c/ Rebote 5, Villatuerta Â· Tel +34 948 439 689</desc>
-    <sym>Lodging</sym>
+    <sym>Scenic Area</sym>
     <cmt>c/ Rebote 5, Villatuerta Â· Tel +34 948 439 689</cmt>
   </wpt>
   <wpt lat="42.6586799" lon="-1.9933334">
@@ -91,7 +91,7 @@
   <wpt lat="42.6656559" lon="-2.0315724">
     <name>Capuchinos Rocamador</name>
     <desc>c/ Rocamador 6, Estella Â· Tel +34 948 550 549</desc>
-    <sym>Lodging</sym>
+    <sym>Scenic Area</sym>
     <cmt>c/ Rocamador 6, Estella Â· Tel +34 948 550 549</cmt>
   </wpt>
   <wpt lat="42.8198625" lon="-1.6408159">
