@@ -3,274 +3,142 @@
   <metadata>
     <name>camino-day02-bike-tmp</name>
   </metadata>
-  <wpt lat="42.9306930" lon="-1.5044230">
-    <name>El Palo de Avellano</name>
-    <desc>Av. de Roncesvalles 16 | Zubiri | Tel: +34 666 499 175 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €18 PP/PN | Extra info: Ontbijt en Diner- Ook privékamers - Wasmachine en droger - Diner - Restaurant - Fietsenberging - | Dieren: Nee | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €18 PP/PN | Extra info: Breakfast and Dinner- Also private rooms - Washing machine and dryer - Dinner - Restaurant - Bicycle storage -. | Animals: No | Incorrect information?</desc>
-    <sym>Lodging</sym>
-    <cmt>Zubiri | Tel: +34 666 499 175 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €18 PP/PN | Extra info: Ontbijt en Diner- Ook privékamers - Wasmachine en droger - Diner - Restaurant - Fietsenberging - | Dieren: Nee | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €18 PP/PN | Extra info: Breakfast and Dinner- Also private rooms - Washing machine and dryer - Dinner - Restaurant - Bicycle storage -. | Animals: No | Incorrect information?</cmt>
-  </wpt>
-  <wpt lat="42.9311520" lon="-1.5042022">
-    <name>Albergue Segunda Etapa</name>
-    <desc>Av. de Roncesvalles 22 | Zubiri | Tel: +34 697 186 560  | Tel:  +34 948 304 170 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €16 PP/PN | Extra info: Magnetron - Wasmachine en droger - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €16 PP/PN | Extra info: Microwave - Washer and dryer - Bicycle storage. | Animals: Not known | Incorrect information?</desc>
-    <sym>Lodging</sym>
-    <cmt>Zubiri | Tel: +34 697 186 560  | Tel:  +34 948 304 170 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €16 PP/PN | Extra info: Magnetron - Wasmachine en droger - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €16 PP/PN | Extra info: Microwave - Washer and dryer - Bicycle storage. | Animals: Not known | Incorrect information?</cmt>
-  </wpt>
-  <wpt lat="42.9316087" lon="-1.5045145">
-    <name>Albergue municipal de peregrinos de Zubiri</name>
-    <desc>Av. De Zubiri | Zubiri | Tel: +34 628 324 186 | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €14 PP/PN | Extra info: Keuken - Wasmachine en droger - Magnetron | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €14 PP/PN | Extra info: Kitchen - Washer and dryer - Microwave. | Animals: Not known | Incorrect information?</desc>
-    <sym>Lodging</sym>
-    <cmt>Zubiri | Tel: +34 628 324 186 | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €14 PP/PN | Extra info: Keuken - Wasmachine en droger - Magnetron | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €14 PP/PN | Extra info: Kitchen - Washer and dryer - Microwave. | Animals: Not known | Incorrect information?</cmt>
-  </wpt>
-  <wpt lat="42.9301351" lon="-1.5040518">
-    <name>Albergue Zalldiko</name>
-    <desc>c/ Puenta de la Rabia 1 | Zubiri | Tel: +34 609 736 420 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €14 PP/PN | Extra info: Magnetron - Wasmachine en droger - Credential - Fietsenberging - | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €14 PP/PN | Extra info: Microwave - Washer and dryer - Credential - Bicycle storage -. | Animals: Not known | Incorrect information?</desc>
-    <sym>Lodging</sym>
-    <cmt>Zubiri | Tel: +34 609 736 420 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €14 PP/PN | Extra info: Magnetron - Wasmachine en droger - Credential - Fietsenberging - | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €14 PP/PN | Extra info: Microwave - Washer and dryer - Credential - Bicycle storage -. | Animals: Not known | Incorrect information?</cmt>
-  </wpt>
-  <wpt lat="42.9297946" lon="-1.5036260">
-    <name>Río Rio Arga Ibaia</name>
-    <desc>c/ Puenta de la Rabia 7 | Zubiri | Tel: +34 948 304 243  | Tel:  +34 680 104 471 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €17 PP/PN | Extra info: Ook privékamers - Keuken - Wasmachine en droger - Fietsenberging | Dieren: Toegestaan | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €17 PP/PN | Extra info: Also private rooms - Kitchen - Washer and dryer - Bicycle storage room | Animals: Allowed | Incorrect information?</desc>
-    <sym>Lodging</sym>
-    <cmt>Zubiri | Tel: +34 948 304 243  | Tel:  +34 680 104 471 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €17 PP/PN | Extra info: Ook privékamers - Keuken - Wasmachine en droger - Fietsenberging | Dieren: Toegestaan | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €17 PP/PN | Extra info: Also private rooms - Kitchen - Washer and dryer - Bicycle storage room | Animals: Allowed | Incorrect information?</cmt>
-  </wpt>
-  <wpt lat="42.9125588" lon="-1.5237797">
-    <name>Acá y Allá</name>
-    <desc>c/ San Miguel 18 | Urdániz | Tel: +34 615 257 666 | Website | Type: Pelgrims herberg | Soort LO: L | Prijs: €20 PP/PN | Extra info: Keuken - Wasmachine en droger - Dineren | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €20 PP/PN | Extra info: Kitchen - Washer and dryer - Dining | Animals: Not known | Incorrect information?</desc>
-    <sym>Lodging</sym>
-    <cmt>Urdániz | Tel: +34 615 257 666 | Website | Type: Pelgrims herberg | Soort LO: L | Prijs: €20 PP/PN | Extra info: Keuken - Wasmachine en droger - Dineren | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €20 PP/PN | Extra info: Kitchen - Washer and dryer - Dining | Animals: Not known | Incorrect information?</cmt>
-  </wpt>
-  <wpt lat="42.9035000" lon="-1.5385000">
-    <name>San Nicolas</name>
-    <desc>c/ Sorandi 5-7 | Larrasoaña | Tel: +34 619 559 225  | Tel:  +34 659 815 961 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €14 PP/PN | Extra info: Keuken - Magnetron - Wasmachine en droger - Diner - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €14 PP/PN | Extra info: Kitchen - Microwave - Washer and dryer - Diner - Bicycle storage. | Animals: Not known | Incorrect information?</desc>
-    <sym>Lodging</sym>
-    <cmt>Larrasoaña | Tel: +34 619 559 225  | Tel:  +34 659 815 961 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €14 PP/PN | Extra info: Keuken - Magnetron - Wasmachine en droger - Diner - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €14 PP/PN | Extra info: Kitchen - Microwave - Washer and dryer - Diner - Bicycle storage. | Animals: Not known | Incorrect information?</cmt>
-  </wpt>
   <wpt lat="42.9011586" lon="-1.5419241">
     <name>Albergue de peregrinos de Larrasoaña</name>
-    <desc>C. San Nicolás | Larrasoaña | Tel: +34 626 718 417 | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €15 PP/PN | Extra info: Keuken - Magnetron | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €15 PP/PN | Extra info: Kitchen - Microwave | Animals: Not known | Incorrect information?</desc>
+    <desc>C. San Nicolás, Larrasoaña Â· Tel +34 626 718 417</desc>
     <sym>Lodging</sym>
-    <cmt>Larrasoaña | Tel: +34 626 718 417 | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €15 PP/PN | Extra info: Keuken - Magnetron | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €15 PP/PN | Extra info: Kitchen - Microwave | Animals: Not known | Incorrect information?</cmt>
-  </wpt>
-  <wpt lat="42.8785368" lon="-1.5661109">
-    <name>La Parada</name>
-    <desc>c/ Landa 8 | Zuriain | Tel: +34 699 556 741  | Tel:  +34 616 038 685 | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €10 PP/PN | Extra info: Ook privékamers - Wasmachine en droger - Ontbijt - Diner - Restaurant - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €10 PP/PN | Extra info: Also private rooms - Washer and dryer - Breakfast - Dinner - Restaurant - Bicycle storage | Animals: Not known | Incorrect information?</desc>
-    <sym>Lodging</sym>
-    <cmt>Zuriain | Tel: +34 699 556 741  | Tel:  +34 616 038 685 | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €10 PP/PN | Extra info: Ook privékamers - Wasmachine en droger - Ontbijt - Diner - Restaurant - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €10 PP/PN | Extra info: Also private rooms - Washer and dryer - Breakfast - Dinner - Restaurant - Bicycle storage | Animals: Not known | Incorrect information?</cmt>
+    <cmt>C. San Nicolás, Larrasoaña Â· Tel +34 626 718 417</cmt>
   </wpt>
   <wpt lat="42.8560368" lon="-1.5814938">
     <name>Albergue parroquial de Zabaldika</name>
-    <desc>C. San Esteban de arriba 8 | Zabaldika | Tel: +34 948 330 918  | Tel:  +34 619 436 863 | Website | E-mail | Type: Kerkelijk onderkomen | Soort LO: L | Prijs: Donativo  | Extra info: Keuken - Magnetron - Wasmachine en droger - Ontbijt Gemeenschappelijke Diner - Pelgrim Service - Fietsenberging - Kampeer mogelijkheid | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Church shelter | Lodging: B | Price: Donativo  | Extra info: Kitchen - Microwave - Washer and dryer - Breakfast Common Dinner - Pilgrim Service - Bicycle storage - Camping possibility | Animals: Not known | Incorrect information?</desc>
+    <desc>C. San Esteban de arriba 8, Zabaldika Â· Tel +34 948 330 918</desc>
     <sym>Lodging</sym>
-    <cmt>Zabaldika | Tel: +34 948 330 918  | Tel:  +34 619 436 863 | Website | E-mail | Type: Kerkelijk onderkomen | Soort LO: L | Prijs: Donativo  | Extra info: Keuken - Magnetron - Wasmachine en droger - Ontbijt Gemeenschappelijke Diner - Pelgrim Service - Fietsenberging - Kampeer mogelijkheid | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Church shelter | Lodging: B | Price: Donativo  | Extra info: Kitchen - Microwave - Washer and dryer - Breakfast Common Dinner - Pilgrim Service - Bicycle storage - Camping possibility | Animals: Not known | Incorrect information?</cmt>
-  </wpt>
-  <wpt lat="42.8364100" lon="-1.6044400">
-    <name>Basilica y albergue de la Trinidad de Arre</name>
-    <desc>Puente del Peregrino 2 | Trinidad de Arre | Tel: +34 948 332 941  | Tel:  +34 691 619 028 | Website | E-mail | Type: Kerkelijk onderkomen | Soort LO: L | Prijs: €10 PP/PN | Extra info: Keuken - Wasmachine en droger - Magnetron Restaurant in de buurt- Mogelijkheid om deel te nemen aan gebed in de kapel - Fietsenberging | Dieren: Ezels toegestaan | Taal: ES CA FR EN | Incorrecte informatie? | Accommodation Type: Church shelter | Lodging: B | Price: €10 PP/PN | Extra info: Kitchen - Washer and dryer - Microwave Restaurant nearby- Possibility to participate in prayer in the chapel - Bicycle storage room | Animals: Donkeys | Languages spoken: ES CA FR EN | Incorrect information?</desc>
-    <sym>Lodging</sym>
-    <cmt>Trinidad de Arre | Tel: +34 948 332 941  | Tel:  +34 691 619 028 | Website | E-mail | Type: Kerkelijk onderkomen | Soort LO: L | Prijs: €10 PP/PN | Extra info: Keuken - Wasmachine en droger - Magnetron Restaurant in de buurt- Mogelijkheid om deel te nemen aan gebed in de kapel - Fietsenberging | Dieren: Ezels toegestaan | Taal: ES CA FR EN | Incorrecte informatie? | Accommodation Type: Church shelter | Lodging: B | Price: €10 PP/PN | Extra info: Kitchen - Washer and dryer - Microwave Restaurant nearby- Possibility to participate in prayer in the chapel - Bicycle storage room | Animals: Donkeys | Languages spoken: ES CA FR EN | Incorrect information?</cmt>
+    <cmt>C. San Esteban de arriba 8, Zabaldika Â· Tel +34 948 330 918</cmt>
   </wpt>
   <wpt lat="42.8320157" lon="-1.6060374">
     <name>Iraipe Albergue de Villava</name>
-    <desc>C. Pedro de Atarrabia 17 (Trasera) | Villava | Tel: +34 948 517 731  | Tel:  +34 649 713 943 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €22 PP/PN | Extra info: Ook privékamers - Ontbijt - Diner mogelijk - Keuken - Magnetron - Wasmachine en droger - Fietsenberging - Bar-restaurant | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €22 PP/PN | Extra info: Also private rooms - Breakfast - Dinner possible - Kitchen - Microwave - Washing machine and dryer - Bicycle storage - Bar-restaurant | Animals: Not known | Incorrect information?</desc>
+    <desc>C. Pedro de Atarrabia 17 (Trasera), Villava Â· Tel +34 948 517 731</desc>
     <sym>Lodging</sym>
-    <cmt>Villava | Tel: +34 948 517 731  | Tel:  +34 649 713 943 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €22 PP/PN | Extra info: Ook privékamers - Ontbijt - Diner mogelijk - Keuken - Magnetron - Wasmachine en droger - Fietsenberging - Bar-restaurant | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €22 PP/PN | Extra info: Also private rooms - Breakfast - Dinner possible - Kitchen - Microwave - Washing machine and dryer - Bicycle storage - Bar-restaurant | Animals: Not known | Incorrect information?</cmt>
-  </wpt>
-  <wpt lat="42.8184726" lon="-1.6372516">
-    <name>Albergue Casa Paderborn</name>
-    <desc>C. Playa de Caparroso 6 | Pamplona | Tel: +34 948 395 423 | Website | Type: Pelgrims herberg | Soort LO: L | Prijs: €7 PP/PN | Extra info: Wasmachine en droger - Ontbijt - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €7 PP/PN | Extra info: Washer and dryer - Breakfast - Bicycle storage | Animals: Not known | Incorrect information?</desc>
-    <sym>Lodging</sym>
-    <cmt>Pamplona | Tel: +34 948 395 423 | Website | Type: Pelgrims herberg | Soort LO: L | Prijs: €7 PP/PN | Extra info: Wasmachine en droger - Ontbijt - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €7 PP/PN | Extra info: Washer and dryer - Breakfast - Bicycle storage | Animals: Not known | Incorrect information?</cmt>
-  </wpt>
-  <wpt lat="42.8206074" lon="-1.6433105">
-    <name>Casa Ibarrola</name>
-    <desc>c/ Carmen 31 | Pamplona | Tel: +34 948 223 332  | Tel:  +34 692 208 463 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €18 PP/PN | Extra info: Keuken - Magnetron - Wasmachine en droger - Ontbijt - Diner - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €18 PP/PN | Extra info: Kitchen - Microwave - Washer and dryer - Breakfast - Dinner - Bicycle storage. | Animals: Not known | Incorrect information?</desc>
-    <sym>Lodging</sym>
-    <cmt>Pamplona | Tel: +34 948 223 332  | Tel:  +34 692 208 463 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €18 PP/PN | Extra info: Keuken - Magnetron - Wasmachine en droger - Ontbijt - Diner - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €18 PP/PN | Extra info: Kitchen - Microwave - Washer and dryer - Breakfast - Dinner - Bicycle storage. | Animals: Not known | Incorrect information?</cmt>
-  </wpt>
-  <wpt lat="42.8196562" lon="-1.6420518">
-    <name>Plaza Catedral</name>
-    <desc>c/ Navarrería 35 | Pamplona | Tel: +34 620 913 968  | Tel:  +34 948 591 336 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €17 PP/PN | Extra info: Ook privékamers- Keuken - Wasmachine en droger - Ontbijt - Fietsenberging | Dieren: Nee | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €17 PP/PN | Extra info: Also private rooms- Kitchen- Washer and dryer- Breakfast- Bicycle storage. | Animals: No | Incorrect information?</desc>
-    <sym>Lodging</sym>
-    <cmt>Pamplona | Tel: +34 620 913 968  | Tel:  +34 948 591 336 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €17 PP/PN | Extra info: Ook privékamers- Keuken - Wasmachine en droger - Ontbijt - Fietsenberging | Dieren: Nee | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €17 PP/PN | Extra info: Also private rooms- Kitchen- Washer and dryer- Breakfast- Bicycle storage. | Animals: No | Incorrect information?</cmt>
-  </wpt>
-  <wpt lat="42.8198852" lon="-1.6430415">
-    <name>Albergue de Pamplona - Iruñako Aterpea</name>
-    <desc>c /Carmen 18 | Pamplona | Tel: +34 948 044 637  | Tel:  K102434 685 734 207 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €16 PP/PN | Extra info: Keuken - Magnetron - Diner mogelijk - Wasmachine en droger - Fietsenberging - | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €16 PP/PN | Extra info: Kitchen - Microwave - Dinner possible - Washer and dryer - Bicycle storage -. | Animals: Not known | Incorrect information?</desc>
-    <sym>Lodging</sym>
-    <cmt>Pamplona | Tel: +34 948 044 637  | Tel:  K102434 685 734 207 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €16 PP/PN | Extra info: Keuken - Magnetron - Diner mogelijk - Wasmachine en droger - Fietsenberging - | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €16 PP/PN | Extra info: Kitchen - Microwave - Dinner possible - Washer and dryer - Bicycle storage -. | Animals: Not known | Incorrect information?</cmt>
-  </wpt>
-  <wpt lat="42.8188865" lon="-1.6418802">
-    <name>Albergue Jesús y María</name>
-    <desc>C. Compañía 4 | Pamplona | Tel: +34 948 222 644  | Tel:  +34 648 008 932 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €11 PP/PN | Extra info: Keuken - Magnetron - Ontbijt - Wasmachine en droger - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €11 PP/PN | Extra info: Kitchen - Microwave - Breakfast - Washer and dryer - Bicycle storage. | Animals: Not known | Incorrect information?</desc>
-    <sym>Lodging</sym>
-    <cmt>Pamplona | Tel: +34 948 222 644  | Tel:  +34 648 008 932 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €11 PP/PN | Extra info: Keuken - Magnetron - Ontbijt - Wasmachine en droger - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €11 PP/PN | Extra info: Kitchen - Microwave - Breakfast - Washer and dryer - Bicycle storage. | Animals: Not known | Incorrect information?</cmt>
+    <cmt>C. Pedro de Atarrabia 17 (Trasera), Villava Â· Tel +34 948 517 731</cmt>
   </wpt>
   <wpt lat="42.7885429" lon="-1.6744112">
     <name>Albergue de la Orden de Malta</name>
-    <desc>Encomienda Sanjuanist | Cizur Menor | Tel: +34 616 651 330 | Type: Pelgrims herberg | Soort LO: L | Prijs: €7 PP/PN | Extra info: Keuken - Magnetron | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €7 PP/PN | Extra info: Kitchen - Microwave | Animals: Not known | Incorrect information?</desc>
+    <desc>Encomienda Sanjuanist, Cizur Menor Â· Tel +34 616 651 330</desc>
     <sym>Lodging</sym>
-    <cmt>Cizur Menor | Tel: +34 616 651 330 | Type: Pelgrims herberg | Soort LO: L | Prijs: €7 PP/PN | Extra info: Keuken - Magnetron | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €7 PP/PN | Extra info: Kitchen - Microwave | Animals: Not known | Incorrect information?</cmt>
-  </wpt>
-  <wpt lat="42.7481486" lon="-1.7229038">
-    <name>Albergue San Andrés</name>
-    <desc>c/ Santiago 4 | Zariquiegui | Tel: +34 948 353 876 | Website | Type: Pelgrims herberg | Soort LO: L | Prijs: €15 PP/PN | Extra info: Wasmachine en droger - Dineren | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €15 PP/PN | Extra info: Washer and dryer - Dining | Animals: Not known | Incorrect information?</desc>
-    <sym>Lodging</sym>
-    <cmt>Zariquiegui | Tel: +34 948 353 876 | Website | Type: Pelgrims herberg | Soort LO: L | Prijs: €15 PP/PN | Extra info: Wasmachine en droger - Dineren | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €15 PP/PN | Extra info: Washer and dryer - Dining | Animals: Not known | Incorrect information?</cmt>
-  </wpt>
-  <wpt lat="42.7083771" lon="-1.7611611">
-    <name>Albergue/hostal Camino del Perdón</name>
-    <desc>c/ Mayor 61 | Uterga | Tel: +34 948 344 598  | Tel:  +34 690 841 980 | Website | E-mail | Type: Pelgrims herberg/Hostel | Soort LO: L | Prijs: €14 PP/PN | Extra info: Ook 2 en 3 persoons kamers - Restaurant | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue/Hostel | Lodging: B | Price: €14 PP/PN | Extra info: Also 2 and 3 person rooms - Restaurant | Animals: Not known | Incorrect information?</desc>
-    <sym>Lodging</sym>
-    <cmt>Uterga | Tel: +34 948 344 598  | Tel:  +34 690 841 980 | Website | E-mail | Type: Pelgrims herberg/Hostel | Soort LO: L | Prijs: €14 PP/PN | Extra info: Ook 2 en 3 persoons kamers - Restaurant | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue/Hostel | Lodging: B | Price: €14 PP/PN | Extra info: Also 2 and 3 person rooms - Restaurant | Animals: Not known | Incorrect information?</cmt>
-  </wpt>
-  <wpt lat="42.7082851" lon="-1.7613694">
-    <name>Casa Baztan</name>
-    <desc>c/Mayor, 46 | Uterga | Tel: +34 948 344 528  | Tel:  +34 689 357 550  | Tel:  +34 602 545 791 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €14 PP/PN | Extra info: Ook privékamers - Restaurant | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €14 PP/PN | Extra info: Also private rooms - Restaurant | Animals: Not known | Incorrect information?</desc>
-    <sym>Lodging</sym>
-    <cmt>Uterga | Tel: +34 948 344 528  | Tel:  +34 689 357 550  | Tel:  +34 602 545 791 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €14 PP/PN | Extra info: Ook privékamers - Restaurant | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €14 PP/PN | Extra info: Also private rooms - Restaurant | Animals: Not known | Incorrect information?</cmt>
-  </wpt>
-  <wpt lat="42.6761296" lon="-1.8065740">
-    <name>Albergue Jakue</name>
-    <desc>c/ Irunbidea | Puente la Reina | Tel: +34 948 341 017  | Tel:  +34 638 498 313 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €25 PP/PN | Extra info: Ook privékamers - Keuken - Magnetron - Wasmachine en droger - Ontbijt - Diner - Restaurant - Fietsenberging | Dieren: Toegestaan | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €25 PP/PN | Extra info: Also private rooms - Kitchen - Microwave - Washer and dryer - Breakfast - Dinner - Restaurant - Bicycle storage | Animals: Allowed | Incorrect information?</desc>
-    <sym>Lodging</sym>
-    <cmt>Puente la Reina | Tel: +34 948 341 017  | Tel:  +34 638 498 313 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €25 PP/PN | Extra info: Ook privékamers - Keuken - Magnetron - Wasmachine en droger - Ontbijt - Diner - Restaurant - Fietsenberging | Dieren: Toegestaan | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €25 PP/PN | Extra info: Also private rooms - Kitchen - Microwave - Washer and dryer - Breakfast - Dinner - Restaurant - Bicycle storage | Animals: Allowed | Incorrect information?</cmt>
+    <cmt>Encomienda Sanjuanist, Cizur Menor Â· Tel +34 616 651 330</cmt>
   </wpt>
   <wpt lat="42.6734404" lon="-1.8103114">
     <name>Albergue de los Padres Reparadores</name>
-    <desc>c/ Crucifijo 1 (Seminario) | Puente la Reina | Tel: +34 663 615 795  | Tel:  +34 948 340 050 | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €9 PP/PN | Extra info: Keuken - Wasmachine en droger - Magnetron - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €9 PP/PN | Extra info: Kitchen - Washer and dryer - Microwave - Bicycle storage. | Animals: Not known | Incorrect information?</desc>
+    <desc>c/ Crucifijo 1 (Seminario), Puente la Reina Â· Tel +34 663 615 795</desc>
     <sym>Lodging</sym>
-    <cmt>Puente la Reina | Tel: +34 663 615 795  | Tel:  +34 948 340 050 | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €9 PP/PN | Extra info: Keuken - Wasmachine en droger - Magnetron - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €9 PP/PN | Extra info: Kitchen - Washer and dryer - Microwave - Bicycle storage. | Animals: Not known | Incorrect information?</cmt>
-  </wpt>
-  <wpt lat="42.6720439" lon="-1.8182308">
-    <name>Albergue Estrella Guia</name>
-    <desc>Calle La Población 2 | Puente la Reina | Tel: +34 622 262 431 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €18 PP/PN | Extra info: Ook privékamers - Magnetron - Wasmachine en droger - Dineren - Keuken met magnetron en eettafel maar geen kachel -fietsenstalling | Dieren: Nee | Taal: SP-EN-PO | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €18 PP/PN | Extra info: Also private rooms - Microwave - Washer and dryer - Dining - Kitchen with microwave and dining table but no stove -bike storage | Animals: No | Languages spoken: SP-EN-PO | Incorrect information?</desc>
-    <sym>Lodging</sym>
-    <cmt>Puente la Reina | Tel: +34 622 262 431 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €18 PP/PN | Extra info: Ook privékamers - Magnetron - Wasmachine en droger - Dineren - Keuken met magnetron en eettafel maar geen kachel -fietsenstalling | Dieren: Nee | Taal: SP-EN-PO | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €18 PP/PN | Extra info: Also private rooms - Microwave - Washer and dryer - Dining - Kitchen with microwave and dining table but no stove -bike storage | Animals: No | Languages spoken: SP-EN-PO | Incorrect information?</cmt>
-  </wpt>
-  <wpt lat="42.6723860" lon="-1.8241660">
-    <name>Santiago Apostól</name>
-    <desc>Paraje El Real | Puente la Reina | Tel: +34 948 340 220  | Tel:  +34 660 701 246 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €12 PP/PN | Extra info: Ook privékamers - Wasmachine en droger - Ontbijt - Diner - Bar restaurant - Fietsenberging - Zwembad - Kamperen mogelijk | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €12 PP/PN | Extra info: Also private rooms - Washer and dryer - Breakfast - Dinner - Bar restaurant - Bicycle storage - Swimming pool - Camping possible | Animals: Not known | Incorrect information?</desc>
-    <sym>Lodging</sym>
-    <cmt>Puente la Reina | Tel: +34 948 340 220  | Tel:  +34 660 701 246 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €12 PP/PN | Extra info: Ook privékamers - Wasmachine en droger - Ontbijt - Diner - Bar restaurant - Fietsenberging - Zwembad - Kamperen mogelijk | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €12 PP/PN | Extra info: Also private rooms - Washer and dryer - Breakfast - Dinner - Bar restaurant - Bicycle storage - Swimming pool - Camping possible | Animals: Not known | Incorrect information?</cmt>
+    <cmt>c/ Crucifijo 1 (Seminario), Puente la Reina Â· Tel +34 663 615 795</cmt>
   </wpt>
   <wpt lat="42.6688492" lon="-1.8631406">
     <name>Albergue El Cantero</name>
-    <desc>c/Esperanza 2 | Maneru | Tel: +34 948 342 142  | Tel:  +34 683 397 119 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €12 PP/PN | Extra info: Keuken - Magnetron - Ontbijt - Diner - Restaurant - Fietsenberging | Dieren: Ja slapen gratis buiten | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €12 PP/PN | Extra info: Kitchen - Microwave - Breakfast - Dinner - Restaurant - Bicycle storage. | Animals: Yes, sleep for free outside | Incorrect information?</desc>
+    <desc>c/Esperanza 2, Maneru Â· Tel +34 948 342 142</desc>
     <sym>Lodging</sym>
-    <cmt>Maneru | Tel: +34 948 342 142  | Tel:  +34 683 397 119 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €12 PP/PN | Extra info: Keuken - Magnetron - Ontbijt - Diner - Restaurant - Fietsenberging | Dieren: Ja slapen gratis buiten | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €12 PP/PN | Extra info: Kitchen - Microwave - Breakfast - Dinner - Restaurant - Bicycle storage. | Animals: Yes, sleep for free outside | Incorrect information?</cmt>
-  </wpt>
-  <wpt lat="42.6757717" lon="-1.8921504">
-    <name>Albergue Cirauqui Casa Maralotx</name>
-    <desc>Plaza Grande, 4 | Cirauqui | Tel: +34 678 635 208 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €17 PP/PN | Extra info: Ook privékamers - Ontbijt/Picnic en gemeenschappelijk diner - Wasmachine en droger - geen kookfaciliteiten - een bar in de buurt- Open van 1 april tot 30 oktober - Bar Cafetaria - Fietsenberging | Dieren: Nee | Taal: SP EN | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €17 PP/PN | Extra info: Also private rooms - Breakfast/Picnic and communal dinner - Washer and dryer - No cooking facilities - A bar nearby- Open April 1 to October 30 - Bar Cafeteria - Bicycle storage | Animals: No | Languages spoken: SP EN | Incorrect information?</desc>
-    <sym>Lodging</sym>
-    <cmt>Cirauqui | Tel: +34 678 635 208 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €17 PP/PN | Extra info: Ook privékamers - Ontbijt/Picnic en gemeenschappelijk diner - Wasmachine en droger - geen kookfaciliteiten - een bar in de buurt- Open van 1 april tot 30 oktober - Bar Cafetaria - Fietsenberging | Dieren: Nee | Taal: SP EN | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €17 PP/PN | Extra info: Also private rooms - Breakfast/Picnic and communal dinner - Washer and dryer - No cooking facilities - A bar nearby- Open April 1 to October 30 - Bar Cafeteria - Bicycle storage | Animals: No | Languages spoken: SP EN | Incorrect information?</cmt>
+    <cmt>c/Esperanza 2, Maneru Â· Tel +34 948 342 142</cmt>
   </wpt>
   <wpt lat="42.6722820" lon="-1.9458650">
     <name>Jose Ramon</name>
-    <desc>c/ Mayor 40 | Lorca | Tel: +34 948 541 190 | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €17 PP/PN | Extra info: Keuken - Ontbijt - Diner - Magnetron - Wasmachine en droger - Ook privékamers - Open van Pasen tot oktober - Fietsenstalling - Restaurant - Verschillende berichten van rascisme door eigenaar | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €17 PP/PN | Extra info: Kitchen - Breakfast - Dinner - Microwave - Washer and dryer - Also private rooms - Open from Easter to October - Bicycle storage - Restaurant - Reports from racism by owner | Animals: Not known | Incorrect information?</desc>
+    <desc>c/ Mayor 40, Lorca Â· Tel +34 948 541 190</desc>
     <sym>Lodging</sym>
-    <cmt>Lorca | Tel: +34 948 541 190 | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €17 PP/PN | Extra info: Keuken - Ontbijt - Diner - Magnetron - Wasmachine en droger - Ook privékamers - Open van Pasen tot oktober - Fietsenstalling - Restaurant - Verschillende berichten van rascisme door eigenaar | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €17 PP/PN | Extra info: Kitchen - Breakfast - Dinner - Microwave - Washer and dryer - Also private rooms - Open from Easter to October - Bicycle storage - Restaurant - Reports from racism by owner | Animals: Not known | Incorrect information?</cmt>
-  </wpt>
-  <wpt lat="42.6721800" lon="-1.9458590">
-    <name>Albergue La Bodega del Camino</name>
-    <desc>c/ Placeta 8 | Lorca | Tel: +34 690 718 621 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €16,5 PP/PN | Extra info: Ook privékamers - Keuken - Magnetron - Diner- Ontbijt - Wasmachine en droger - Bar-Restaurant - Fietsen stalling | Dieren: Niet bekend | Taal: SP-EN-DU | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €16,50 PP/PN | Extra info: Also private rooms - Kitchen - Microwave - Dinner- Breakfast - Washer and dryer - Bar-Restaurant - Bicycle storage | Animals: Not known | Languages spoken: SP-EN-DU | Incorrect information?</desc>
-    <sym>Lodging</sym>
-    <cmt>Lorca | Tel: +34 690 718 621 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €16,5 PP/PN | Extra info: Ook privékamers - Keuken - Magnetron - Diner- Ontbijt - Wasmachine en droger - Bar-Restaurant - Fietsen stalling | Dieren: Niet bekend | Taal: SP-EN-DU | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €16,50 PP/PN | Extra info: Also private rooms - Kitchen - Microwave - Dinner- Breakfast - Washer and dryer - Bar-Restaurant - Bicycle storage | Animals: Not known | Languages spoken: SP-EN-DU | Incorrect information?</cmt>
+    <cmt>c/ Mayor 40, Lorca Â· Tel +34 948 541 190</cmt>
   </wpt>
   <wpt lat="42.6596087" lon="-1.9924481">
     <name>Albergue Etxeurdina</name>
-    <desc>C. Río Iranzu 3 | Villatuerta | Tel: +34 621 267 282  | Tel:  +34 848 419 430 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €15 PP/PN | Extra info: Ook privékamers - Ontbijt - Keuken - Magnetron - Fietsenberging | Dieren: Welkom | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €15 PP/PN | Extra info: Also private rooms - Breakfast - Kitchen - Microwave - Bicycle shed | Animals: Welcome | Incorrect information?</desc>
+    <desc>C. Río Iranzu 3, Villatuerta Â· Tel +34 621 267 282</desc>
     <sym>Lodging</sym>
-    <cmt>Villatuerta | Tel: +34 621 267 282  | Tel:  +34 848 419 430 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €15 PP/PN | Extra info: Ook privékamers - Ontbijt - Keuken - Magnetron - Fietsenberging | Dieren: Welkom | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €15 PP/PN | Extra info: Also private rooms - Breakfast - Kitchen - Microwave - Bicycle shed | Animals: Welcome | Incorrect information?</cmt>
+    <cmt>C. Río Iranzu 3, Villatuerta Â· Tel +34 621 267 282</cmt>
   </wpt>
   <wpt lat="42.6591220" lon="-1.9926885">
     <name>La Casa Mágica</name>
-    <desc>c/ Rebote 5 | Villatuerta | Tel: +34 948 439 689 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €15 PP/PN | Extra info: Ook privékamers - Magnetron - Wasmachine en droger - Veg diner Veg ontbijt - fietsenstalling - Zwembad | Dieren: Welkom | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €15 PP/PN | Extra info: Also private rooms - Microwave - Washer and dryer - Veg dinner Veg breakfast - bicycle storage - Swimming pool | Animals: Welcome | Incorrect information?</desc>
+    <desc>c/ Rebote 5, Villatuerta Â· Tel +34 948 439 689</desc>
     <sym>Lodging</sym>
-    <cmt>Villatuerta | Tel: +34 948 439 689 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €15 PP/PN | Extra info: Ook privékamers - Magnetron - Wasmachine en droger - Veg diner Veg ontbijt - fietsenstalling - Zwembad | Dieren: Welkom | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €15 PP/PN | Extra info: Also private rooms - Microwave - Washer and dryer - Veg dinner Veg breakfast - bicycle storage - Swimming pool | Animals: Welcome | Incorrect information?</cmt>
+    <cmt>c/ Rebote 5, Villatuerta Â· Tel +34 948 439 689</cmt>
   </wpt>
   <wpt lat="42.6586799" lon="-1.9933334">
     <name>Casa Rural 643 km</name>
-    <desc>Pl. Rebote 3 | Villatuerta | Tel: +34 615 003 690 | Type: Pelgrims herberg | Soort LO: L | Prijs: €45 P2/PN | Extra info: Diner - Ontbijt | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €45 P2/PN | Extra info: Dinner - Breakfast | Animals: Not known | Incorrect information?</desc>
+    <desc>Pl. Rebote 3, Villatuerta Â· Tel +34 615 003 690</desc>
     <sym>Lodging</sym>
-    <cmt>Villatuerta | Tel: +34 615 003 690 | Type: Pelgrims herberg | Soort LO: L | Prijs: €45 P2/PN | Extra info: Diner - Ontbijt | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €45 P2/PN | Extra info: Dinner - Breakfast | Animals: Not known | Incorrect information?</cmt>
+    <cmt>Pl. Rebote 3, Villatuerta Â· Tel +34 615 003 690</cmt>
   </wpt>
   <wpt lat="42.6687734" lon="-2.0235118">
     <name>Albergue La Hostería Curtidores</name>
-    <desc>C. Curtidores 43 | Estella | Tel: +34 948 550 070  | Tel:  +34 663 613 642 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €16 PP/PN | Extra info: Ook privékamers - Keuken - Magnetron - Wasmachine en droger - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €16 PP/PN | Extra info: Also private rooms - Kitchen - Microwave - Washer and dryer - Bicycle storage room | Animals: Not known | Incorrect information?</desc>
+    <desc>C. Curtidores 43, Estella Â· Tel +34 948 550 070</desc>
     <sym>Lodging</sym>
-    <cmt>Estella | Tel: +34 948 550 070  | Tel:  +34 663 613 642 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €16 PP/PN | Extra info: Ook privékamers - Keuken - Magnetron - Wasmachine en droger - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €16 PP/PN | Extra info: Also private rooms - Kitchen - Microwave - Washer and dryer - Bicycle storage room | Animals: Not known | Incorrect information?</cmt>
+    <cmt>C. Curtidores 43, Estella Â· Tel +34 948 550 070</cmt>
   </wpt>
   <wpt lat="42.6708976" lon="-2.0253137">
     <name>Albergue Anfas</name>
-    <desc>C. Cordeleros 7 | Estella | Tel: +34 639 011 688 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €12 PP/PN | Extra info: Keuken aanwezig. Herberg van een pelgrimsvereniging met vrijwilligers | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €12 PP/PN | Extra info: Kitchen available. Hostel of a pilgrims' association with volunteers. | Animals: Not known | Incorrect information?</desc>
+    <desc>C. Cordeleros 7, Estella Â· Tel +34 639 011 688</desc>
     <sym>Lodging</sym>
-    <cmt>Estella | Tel: +34 639 011 688 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €12 PP/PN | Extra info: Keuken aanwezig. Herberg van een pelgrimsvereniging met vrijwilligers | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €12 PP/PN | Extra info: Kitchen available. Hostel of a pilgrims' association with volunteers. | Animals: Not known | Incorrect information?</cmt>
+    <cmt>C. Cordeleros 7, Estella Â· Tel +34 639 011 688</cmt>
   </wpt>
   <wpt lat="42.6719917" lon="-2.0281766">
     <name>Albergue San Miguel</name>
-    <desc>Mercado Viejo 18 | Estella | Tel: +34 654 480 239  | Tel:  +34 687 500 960  | Tel:  +34 675 967 411 | E-mail | Type: Kerkelijk onderkomen | Soort LO: L | Prijs: Donativo  | Extra info: Wasmachine en droger - Ontbijt - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Church shelter | Lodging: B | Price: Donativo  | Extra info: Washer and dryer - Breakfast - Bicycle storage | Animals: Not known | Incorrect information?</desc>
+    <desc>Mercado Viejo 18, Estella Â· Tel +34 654 480 239</desc>
     <sym>Lodging</sym>
-    <cmt>Estella | Tel: +34 654 480 239  | Tel:  +34 687 500 960  | Tel:  +34 675 967 411 | E-mail | Type: Kerkelijk onderkomen | Soort LO: L | Prijs: Donativo  | Extra info: Wasmachine en droger - Ontbijt - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Church shelter | Lodging: B | Price: Donativo  | Extra info: Washer and dryer - Breakfast - Bicycle storage | Animals: Not known | Incorrect information?</cmt>
+    <cmt>Mercado Viejo 18, Estella Â· Tel +34 654 480 239</cmt>
   </wpt>
   <wpt lat="42.6656559" lon="-2.0315724">
     <name>Capuchinos Rocamador</name>
-    <desc>c/ Rocamador 6 | Estella | Tel: +34 948 550 549 | Website | E-mail | Type: Kerkelijk onderkomen | Soort LO: L | Prijs: €16 PP/PN | Extra info: Ook privékamers - Keuken - Magnetron -Wasmachine en droger - Diner - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Church shelter | Lodging: B | Price: €16 PP/PN | Extra info: Also private rooms - Kitchen - Microwave -Washer and dryer - Dinner - Bicycle storage | Animals: Not known | Incorrect information?</desc>
+    <desc>c/ Rocamador 6, Estella Â· Tel +34 948 550 549</desc>
     <sym>Lodging</sym>
-    <cmt>Estella | Tel: +34 948 550 549 | Website | E-mail | Type: Kerkelijk onderkomen | Soort LO: L | Prijs: €16 PP/PN | Extra info: Ook privékamers - Keuken - Magnetron -Wasmachine en droger - Diner - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Church shelter | Lodging: B | Price: €16 PP/PN | Extra info: Also private rooms - Kitchen - Microwave -Washer and dryer - Dinner - Bicycle storage | Animals: Not known | Incorrect information?</cmt>
+    <cmt>c/ Rocamador 6, Estella Â· Tel +34 948 550 549</cmt>
   </wpt>
   <wpt lat="42.8198625" lon="-1.6408159">
     <name>Catedral de Santa Maria la Real, Pamplona</name>
-    <desc>Day 2 | 팜플로나 대성당</desc>
+    <desc>팜플로나 대성당</desc>
     <sym>Church</sym>
     <type>photo</type>
     <cmt>팜플로나 대성당</cmt>
   </wpt>
   <wpt lat="42.8174311" lon="-1.6432970">
     <name>Cafe Iruna</name>
-    <desc>Day 2 | 카페 이루냐 (헤밍웨이)</desc>
+    <desc>카페 이루냐 (헤밍웨이)</desc>
     <sym>Restaurant</sym>
     <type>photo</type>
     <cmt>카페 이루냐 (헤밍웨이)</cmt>
   </wpt>
   <wpt lat="42.8121347" lon="-1.6493171">
     <name>Ciudadela de Pamplona</name>
-    <desc>Day 2 | 팜플로나 요새</desc>
+    <desc>팜플로나 요새</desc>
     <sym>Scenic Area</sym>
     <type>photo</type>
     <cmt>팜플로나 요새</cmt>
   </wpt>
   <wpt lat="42.7358582" lon="-1.7426490">
     <name>Monumento al Peregrino, Alto del Perdon</name>
-    <desc>Day 2 | 용서의 언덕 순례자 조형물</desc>
+    <desc>용서의 언덕 순례자 조형물</desc>
     <sym>Summit</sym>
     <type>photo</type>
     <cmt>용서의 언덕 순례자 조형물</cmt>
   </wpt>
   <wpt lat="42.6731287" lon="-1.8107319">
     <name>Iglesia del Crucifijo</name>
-    <desc>Day 2 | 십자가상 성당</desc>
+    <desc>십자가상 성당</desc>
     <sym>Church</sym>
     <type>photo</type>
     <cmt>십자가상 성당</cmt>
   </wpt>
   <wpt lat="42.6711209" lon="-1.8187637">
     <name>Puente Romanico de Puente la Reina</name>
-    <desc>Day 2 | 중세 순례자 다리 (여왕의 다리)</desc>
+    <desc>중세 순례자 다리 (여왕의 다리)</desc>
     <sym>Scenic Area</sym>
     <type>photo</type>
     <cmt>중세 순례자 다리 (여왕의 다리)</cmt>
   </wpt>
   <wpt lat="42.6508675" lon="-2.0436277">
     <name>Fuente del Vino, Bodegas Irache</name>
-    <desc>Day 3 | 와인의 샘</desc>
+    <desc>와인의 샘</desc>
     <sym>Scenic Area</sym>
     <type>photo</type>
     <cmt>와인의 샘</cmt>
   </wpt>
   <wpt lat="42.6697222" lon="-2.0252778">
     <name>Iglesia del Santo Sepulcro, Estella</name>
-    <desc>Day 2 | 산토 세풀크로 성당</desc>
+    <desc>산토 세풀크로 성당</desc>
     <sym>Church</sym>
     <type>photo</type>
     <cmt>산토 세풀크로 성당</cmt>

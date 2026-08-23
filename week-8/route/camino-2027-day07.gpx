@@ -3,160 +3,105 @@
   <metadata>
     <name>Camino day07</name>
   </metadata>
-  <wpt lat="42.3718787" lon="-5.0254762">
-    <name>Albergue Domus Viatoris</name>
-    <desc>Ctra. Sahagún-Arrinondas s/n | Sahagún | Tel: +34 987 782 141  | Tel:  +34 679 977 928 | Website | Type: Pelgrims herberg | Soort LO: L | Prijs: €40 PP/PN | Extra info: Ook privékamers | Dieren: Toegestaan | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €40 PP/PN | Extra info: Also private rooms | Animals: Allowed | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.3719842" lon="-5.0245778">
-    <name>Albergue Viatoris</name>
-    <desc>Travesía El Arco, 25 | Sahagún | Tel: +34 987 780 975  | Tel:  +34 679 977 828 | Type: Pelgrims herberg | Soort LO: L | Prijs: €8 PP/PN | Dieren: Ja | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €8 PP/PN | Animals: Yes | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.3706278" lon="-5.0334585">
-    <name>Albergue Madres Benedictinas</name>
-    <desc>Monastery de Santa Cruz c/Antonio Nicolas 40 | Sahagún | Tel: +34 650 696 023 | Website | E-mail | Type: Kerkelijk onderkomen | Soort LO: L | Prijs: €7 PP/PN | Extra info: Ook privékamers - Keuken - Magnetron - Wasmachine - Ontbijt donativo - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Church shelter | Lodging: B | Price: €7 PP/PN | Extra info: Also private rooms - Kitchen - Microwave - Washing machine - Breakfast donativo - Bicycle shed | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.3881400" lon="-5.1415000">
-    <name>Albergue Bercianos 1900</name>
-    <desc>C. Mayor 49 | Bercianos del Real Camino | Tel: +34 669 282 824  | Tel:  +34 987 784 244 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €15 PP/PN | Extra info: Wasmachine en droger - Bar restaurant - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €15 PP/PN | Extra info: Washer and dryer - Bar restaurant - Bicycle storage room | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.3873773" lon="-5.1438584">
-    <name>Albergue La Perala</name>
-    <desc>Camino Sahagún s/n | Bercianos del Real Camino | Tel: +34 685 817 699 | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €12 PP/PN | Extra info: Ook 1-2-3 persoonskamers - Bar restaurant -Diner - Fietsenstalling | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €12 PP/PN | Extra info: Also 1-2-3 person rooms - Bar restaurant -Dinner - Bicycle storage | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.3884876" lon="-5.1453992">
-    <name>Albergue Santa Clara</name>
-    <desc>c/ Iglesia 3 | Bercianos del Real Camino | Tel: +34 605 839 993  | Tel:  +34 987 784 314  | Tel:  +34 605 839 996 | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €15 PP/PN | Extra info: Ook privékamers - Keuken - Magnetron - Wasmachine en droger - Ontbijt - Diner -Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €15 PP/PN | Extra info: Also private rooms - Kitchen - Microwave - Washer and dryer - Breakfast - Dinner -Bicycle storage | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
   <wpt lat="42.3863870" lon="-5.1465427">
     <name>Albergue parroquial Casa Rectoral</name>
-    <desc>c/ Santa Rita 11 | Bercianos del Real Camino | Tel: +34 692 858 498 | Type: Kerkelijk onderkomen | Soort LO: L | Prijs: Donativo  | Extra info: Ontbijt Donativo - Diner Donativo - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Church shelter | Lodging: B | Price: Donativo  | Extra info: Breakfast Donativo - Dinner Donativo - Bicycle storage. | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
+    <desc>c/ Santa Rita 11, Bercianos del Real Camino Â· Tel +34 692 858 498</desc>
+    <sym>Lodging</sym>
+    <cmt>c/ Santa Rita 11, Bercianos del Real Camino Â· Tel +34 692 858 498</cmt>
   </wpt>
   <wpt lat="42.4233871" lon="-5.2186162">
     <name>Albergue de peregrinos Domenico Laffi</name>
-    <desc>Pl. Mayor | El Burgo Ranero | Tel: +34 987 330 023  | Tel:  +34 689 855 304 | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: Donativo  | Extra info: Keuken - Magnetron - Wasmachine en droger | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: Donativo  | Extra info: Kitchen - Microwave - Washer and dryer | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.4240670" lon="-5.2205574">
-    <name>Albergue La Laguna</name>
-    <desc>c/ La Laguna 24 | El Burgo Ranero | Tel: +34 648 824 258 | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €12 PP/PN | Extra info: Ook privékamers - Keuken - Magnetron - Wasmachine en droger - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €12 PP/PN | Extra info: Also private rooms - Kitchen - Microwave - Washer and dryer - Bicycle storage room | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.4724132" lon="-5.3527650">
-    <name>Albergue Vive tu Camino</name>
-    <desc>C. Real 56 | Reliegos | Tel: +34 610 293 986  | Tel:  +34 987 317 837 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €13 PP/PN | Extra info: Ook privékamers - Wasmachine en droger - Bar Cafetaria - Ontbijt - Picnic - Diner - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €13 PP/PN | Extra info: Also private rooms - Washer and dryer - Bar Cafeteria - Breakfast - Picnic - Dinner - Bicycle Storage | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.4731015" lon="-5.3541724">
-    <name>Albergue Las Hadas</name>
-    <desc>C. Real 42 | Reliegos | Tel: +34 987 317 915  | Tel:  +34 620 547 454 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €15 PP/PN | Extra info: Ook privékamers - Magnetron - Wasmachine - Ontbijt - Diner - Fietsenberging | Dieren: Niet bekend | Taal: SP-EN-FR-PO | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €15 PP/PN | Extra info: Also private rooms - Microwave - Washing machine - Breakfast - Dinner - Bicycle storage | Animals: Not known | Languages spoken: SP-EN-FR-PO | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.4737893" lon="-5.3535846">
-    <name>Albergue Gil</name>
-    <desc>c/ Cantas 28 | Reliegos | Tel: +34 987 317 804  | Tel:  +34 620 424 271 | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €13 PP/PN | Extra info: Wasmachine en droger - Diner - Open van Pasen tot 1 december - Bar restaurant - Fietsenstalling -
- | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €13 PP/PN | Extra info: Washer and dryer - Diner - Open from Easter to Dec. 1 - Bar restaurant - Bicycle storage - | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
+    <desc>Pl. Mayor, El Burgo Ranero Â· Tel +34 987 330 023</desc>
+    <sym>Lodging</sym>
+    <cmt>Pl. Mayor, El Burgo Ranero Â· Tel +34 987 330 023</cmt>
   </wpt>
   <wpt lat="42.4747840" lon="-5.3536583">
     <name>Albergue municipal de Reliegos</name>
-    <desc>C. La Escuela 24 | Reliegos | Tel: +34 622 189 781 | E-mail | Type: Gemeentelijk onderkomen | Soort LO: L | Prijs: €8 PP/PN | Extra info: Keuken - Magnetron - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Municipal | Lodging: B | Price: €8 PP/PN | Extra info: Kitchen - Microwave - Bicycle storage | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.4750510" lon="-5.3538631">
-    <name>Albergue La Parada</name>
-    <desc>c/ Escuela 7 | Reliegos | Tel: +34 987 317 880 | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €12 PP/PN | Extra info: Ook privékamers - Keuken - Magnetron -Wasmachine en droger - Dineren - Fietsenstalling | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €12 PP/PN | Extra info: Also private rooms - Kitchen - Microwave -Washer and dryer - Dining - Bicycle storage | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
+    <desc>C. La Escuela 24, Reliegos Â· Tel +34 622 189 781</desc>
+    <sym>Lodging</sym>
+    <cmt>C. La Escuela 24, Reliegos Â· Tel +34 622 189 781</cmt>
   </wpt>
   <wpt lat="42.4992834" lon="-5.4124325">
     <name>Albergue municipal de Mansilla de las Mulas</name>
-    <desc>Avenida Picos de Europa, s/n | Mansilla de las Mulas | Tel: +34 604 090 221 | Type: Gemeentelijk onderkomen | Soort LO: L | Prijs: €7 PP/PN | Extra info: Tijdelijk gebouw voor deze herberg | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Municipal | Lodging: B | Price: €7 PP/PN | Extra info: Temporary building for this inn | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.4972269" lon="-5.4156130">
-    <name>Albergue Gaia</name>
-    <desc>Av de la Constitución 28 | Mansilla de las Mulas | Tel: +34 699 911 311  | Tel:  +34 987 310 308 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €12 PP/PN | Extra info: Keuken - Magnetron - Wasmachine en droger - Ontbijt Donativo - Massage - Fietsenberging | Dieren: Toegestaan extern | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €12 PP/PN | Extra info: Kitchen - Microwave - Washer and dryer - Breakfast Donativo - Massage - Bicycle storage. | Animals: Allowed | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.4977200" lon="-5.4146400">
-    <name>Albergue El Jardin del Camino</name>
-    <desc>c/ Camino de Santiago 1 | Mansilla de las Mulas | Tel: +34 987 310 232  | Tel:  +34 600 471 597 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €13,50 PP/PN | Extra info: Wasmachine en droger - Bar restaurant - Diner - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €13,50 PP/PN | Extra info: Washer and dryer - Bar restaurant - Dinner - Bicycle storage. | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
+    <desc>Avenida Picos de Europa, s/n, Mansilla de las Mulas Â· Tel +34 604 090 221</desc>
+    <sym>Lodging</sym>
+    <cmt>Avenida Picos de Europa, s/n, Mansilla de las Mulas Â· Tel +34 604 090 221</cmt>
   </wpt>
   <wpt lat="42.5442600" lon="-5.4553570">
     <name>Hostal El Delfin Verde</name>
-    <desc>Calle Carretera General, 601, nº15 | Puente Villarente | Tel: +34 987 312 065 | Website | E-mail | Type: Hotel | Soort LO: L | Prijs: €30 PP/PN | Extra info: Bar restaurant - zwembad. Dit hotel is mogelijk gesloten | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Hotel | Lodging: B | Price: €30 PP/PN | Extra info: Bar restaurant - pool. This hotel may be closed | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.5455107" lon="-5.4569883">
-    <name>Albergue San Pelayo</name>
-    <desc>c/ El Romero 9 | Puente Villarente | Tel: +34 987 312 677  | Tel:  +34 650 918 281  | Tel:  +34 615 459 919 | Website | E-mail | Type: Hostel en Pelgrims herberg | Soort LO: L | Prijs: €15 PP/PN | Extra info: Keuken - Magnetron - Wasmachine en droger - Bar restaurant - Ontbijt - Diner - Fietsenberging | Dieren: Toegestaan | Incorrecte informatie? | Accommodation Type: Hostel en Albergue | Lodging: B | Price: €15 PP/PN | Extra info: Kitchen - Microwave - Washer and dryer - Bar restaurant - Breakfast - Dinner - Bicycle storage. | Animals: Allowed | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
+    <desc>Calle Carretera General, 601, nº15, Puente Villarente Â· Tel +34 987 312 065</desc>
+    <sym>Lodging</sym>
+    <cmt>Calle Carretera General, 601, nº15, Puente Villarente Â· Tel +34 987 312 065</cmt>
   </wpt>
   <wpt lat="42.5785040" lon="-5.5502927">
     <name>Albergue Santo Tomás de Canterbury</name>
-    <desc>Av de La Lastra 53 bajo | León | Tel: +34 987 392 626 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €8 PP/PN | Extra info: Ook privékamers - Keuken - Wasmachine en droger - Bar restaurant - Ontbijt - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €8 PP/PN | Extra info: Also private rooms - Kitchen - Washer and dryer - Bar restaurant - Breakfast - Bicycle shed | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
+    <desc>Av de La Lastra 53 bajo, León Â· Tel +34 987 392 626</desc>
+    <sym>Lodging</sym>
+    <cmt>Av de La Lastra 53 bajo, León Â· Tel +34 987 392 626</cmt>
   </wpt>
   <wpt lat="42.5867916" lon="-5.5585856">
     <name>Check in León</name>
-    <desc>Av Alcalde Miguel Castaños 88 | León | Tel: +34 987 498 793  | Tel:  +34 686 956 896 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €11 PP/PN | Extra info: Keuken - Magnetron - Wasmachine en droger - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €11 PP/PN | Extra info: Kitchen - Microwave - Washer and dryer - Bicycle storage. | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
+    <desc>Av Alcalde Miguel Castaños 88, León Â· Tel +34 987 498 793</desc>
+    <sym>Lodging</sym>
+    <cmt>Av Alcalde Miguel Castaños 88, León Â· Tel +34 987 498 793</cmt>
   </wpt>
   <wpt lat="42.5935599" lon="-5.5699743">
     <name>Albergue-Residencia San Francisco de Asís</name>
-    <desc>Av. Alcalde Miguel Castaños 4 | León | Tel: +34 987 215 060  | Tel:  +34 637 439 848 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €12 PP/PN | Extra info: Ook privékamers - Credential - Ontbijt - Diner - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €12 PP/PN | Extra info: Also private rooms - Credential - Breakfast - Dinner - Bicycle storage | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
+    <desc>Av. Alcalde Miguel Castaños 4, León Â· Tel +34 987 215 060</desc>
+    <sym>Lodging</sym>
+    <cmt>Av. Alcalde Miguel Castaños 4, León Â· Tel +34 987 215 060</cmt>
   </wpt>
   <wpt lat="42.5952626" lon="-5.5680432">
     <name>Hospedería Monástica Pax</name>
-    <desc>Pl. Santa María del Camino 11 | León | Tel: +34 987 344 493 | Website | Type: Pelgrimsherberg | Soort LO: L | Prijs: €70 PP/PN | Extra info: Ook privékamers | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €70 PP/PN | Extra info: Also private rooms | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
+    <desc>Pl. Santa María del Camino 11, León Â· Tel +34 987 344 493</desc>
+    <sym>Lodging</sym>
+    <cmt>Pl. Santa María del Camino 11, León Â· Tel +34 987 344 493</cmt>
   </wpt>
   <wpt lat="42.5950380" lon="-5.5682589">
     <name>Monasterio de Benedictinas (Carbajalas)</name>
-    <desc>Plaza Santa María del Camino 3 | León | Tel: +34 680 649 289 | Website | E-mail | Type: Kerkelijk onderkomen | Soort LO: L | Prijs: €8 PP/PN | Extra info: Wasmachine en droger - Bar restaurant - Ontbijt Donativo - Meal - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Church shelter | Lodging: B | Price: €8 PP/PN | Extra info: Washer and Dryer - Bar Restaurant - Breakfast Donativo - Meal - Bicycle Storage | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
+    <desc>Plaza Santa María del Camino 3, León Â· Tel +34 680 649 289</desc>
+    <sym>Lodging</sym>
+    <cmt>Plaza Santa María del Camino 3, León Â· Tel +34 680 649 289</cmt>
   </wpt>
   <wpt lat="42.5964604" lon="-5.5661472">
     <name>Albergue Muralla Leonesa</name>
-    <desc>c/ Tarifa 5 | León | Tel: +34 987 177 873 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €16 PP/PN | Extra info: Ook privékamers - Keuken - Wasmachine en droger - Fietsenberging | Dieren: Nee | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €16 PP/PN | Extra info: Also private rooms - Kitchen - Washer and dryer - Bicycle storage room | Animals: No | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
+    <desc>c/ Tarifa 5, León Â· Tel +34 987 177 873</desc>
+    <sym>Lodging</sym>
+    <cmt>c/ Tarifa 5, León Â· Tel +34 987 177 873</cmt>
   </wpt>
   <wpt lat="42.5972221" lon="-5.5675397">
     <name>Hospedería Rincón de León</name>
-    <desc>C. Plegarias 14 | León | Tel: +34 987 033 282  | Tel:  +34 625 419 046 | Type: Pelgrimsherberg | Soort LO: L | Prijs: €35 P2/PN | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €35 P2/PN | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
+    <desc>C. Plegarias 14, León Â· Tel +34 987 033 282</desc>
+    <sym>Lodging</sym>
+    <cmt>C. Plegarias 14, León Â· Tel +34 987 033 282</cmt>
   </wpt>
   <wpt lat="42.3708207" lon="-4.9999132">
     <name>Ermita de la Virgen del Puente</name>
-    <desc>Day 6 | 푸엔테 성모 예배당 · 순례길 중간지점</desc>
-    <sym>Flag, Blue</sym>
+    <desc>푸엔테 성모 예배당 · 순례길 중간지점</desc>
+    <sym>Church</sym>
     <type>photo</type>
+    <cmt>푸엔테 성모 예배당 · 순례길 중간지점</cmt>
   </wpt>
   <wpt lat="42.3709297" lon="-5.0335682">
     <name>Arco de San Benito, Sahagun</name>
-    <desc>Day 6 | 산 베니토 아치</desc>
-    <sym>Flag, Blue</sym>
+    <desc>산 베니토 아치</desc>
+    <sym>Scenic Area</sym>
     <type>photo</type>
+    <cmt>산 베니토 아치</cmt>
   </wpt>
   <wpt lat="42.5994383" lon="-5.5671632">
     <name>Catedral de Santa Maria de Leon</name>
-    <desc>Day 7 | 레온 대성당</desc>
-    <sym>Flag, Blue</sym>
+    <desc>레온 대성당</desc>
+    <sym>Church</sym>
     <type>photo</type>
+    <cmt>레온 대성당</cmt>
   </wpt>
   <wpt lat="42.6007680" lon="-5.5707940">
     <name>Real Colegiata de San Isidoro de Leon</name>
-    <desc>Day 7 | 산 이시도로 성당</desc>
-    <sym>Flag, Blue</sym>
+    <desc>산 이시도로 성당</desc>
+    <sym>Church</sym>
     <type>photo</type>
+    <cmt>산 이시도로 성당</cmt>
   </wpt>
   <trk>
     <name>Camino day07</name>

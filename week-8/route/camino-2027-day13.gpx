@@ -3,207 +3,49 @@
   <metadata>
     <name>Camino day13</name>
   </metadata>
-  <wpt lat="42.9291858" lon="-8.1555675">
-    <name>Albergue Santiago Apostol</name>
-    <desc>c/ de Lugo 107 | Arzúa | Tel: +34 981 508 132  | Tel:  +34 981 500 004  | Tel:  +34 660 427 771 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €12 PP/PN | Extra info: Keuken - Magnetron - Wasmachine en droger - Bar restaurant - Ontbijt - Diner - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €12 PP/PN | Extra info: Kitchen - Microwave - Washer and dryer - Bar restaurant - Breakfast - Dinner - Bicycle storage. | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.9286699" lon="-8.1561600">
-    <name>Albergue de Camino</name>
-    <desc>c/ de Lugo 118 | Arzúa | Tel: +34 981 500 415  | Tel:  +34 678 758 296 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €12 PP/PN | Extra info: Magnetron - Wasmachine en droger - Ontbijt - Fietsenberging- Massage | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €12 PP/PN | Extra info: Microwave - Washer and dryer - Breakfast - Bicycle storage- Massage | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.9288748" lon="-8.1557499">
-    <name>Albergue Ultreia</name>
-    <desc>c/ de Lugo 126 | Arzúa | Tel: +34 981 500 471  | Tel:  +34 626 639 450 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €12 PP/PN | Extra info: Ook privékamers - Keuken - Magnetron - Wasmachine en droger - Bar restaurant - Ontbijt - Diner - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €12 PP/PN | Extra info: Also private rooms - Kitchen - Microwave - Washer and dryer - Bar restaurant - Breakfast - Dinner - Bicycle storage | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.9290355" lon="-8.1552957">
-    <name>Albergue Don Quijote</name>
-    <desc>c/ de Lugo 130 -1º | Arzúa | Tel: +34 981 500 139  | Tel:  +34 696 162 695 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €12 PP/PN | Extra info: Magnetron - Wasmachine en droger = Bar restaurant - Diner - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €12 PP/PN | Extra info: Microwave - Washer and dryer = Bar restaurant - Dinner - Bicycle storage | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.9298200" lon="-8.1540700">
-    <name>Albergue de Selmo</name>
-    <desc>c/ de Lugo 133 | Arzúa | Tel: +34 981 939 018 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €12 PP/PN | Extra info: Keuken - Magnetron - Ontbijt - Wasmachine en droger - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €12 PP/PN | Extra info: Kitchen - Microwave - Breakfast - Washer and dryer - Bicycle storage. | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.9271695" lon="-8.1591721">
-    <name>Albergue pension Arzúa</name>
-    <desc>c/ Rosalía de Castro 2 | Arzúa | Tel: +34 981 508 233  | Tel:  +34 608 380 011 | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €12 PP/PN | Extra info: Ook privékamers - Keuken - Magnetron - Wasmachine en droger - Fietsenberging | Dieren: Nee | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €12 PP/PN | Extra info: Also private rooms - Kitchen - Microwave - Washer and dryer - Bicycle storage room | Animals: No | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.9270632" lon="-8.1605726">
-    <name>Albergue-Pensión Cima do Lugar</name>
-    <desc>C. Cima do Lugar 22 | Arzúa | Tel: +34 661 633 669  | Tel:  +34 981 500 559 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €12 PP/PN | Extra info: Ook privékamers - Magnetron - Wasmachine en droger | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €12 PP/PN | Extra info: Also private rooms - Microwave - Washer and dryer | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.9263119" lon="-8.1625438">
-    <name>Xunta Albergue de peregrinos de Arzúa</name>
-    <desc>C. Cima do Lugar 6 | Arzúa | Tel: +34 660 396 824 | Website | Type: Pelgrims herberg | Soort LO: L | Prijs: €10 PP/PN | Extra info: Keuken - Magnetron - Wasmachine en droger - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €10 PP/PN | Extra info: Kitchen - Microwave - Washer and dryer - Bicycle storage. | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.9264602" lon="-8.1623600">
-    <name>Albergue Casa del Peregrino</name>
-    <desc>C. Cima do Lugar 7 | Arzúa | Tel: +34 690 813 566  | Tel:  +34 649 174 871 | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €12 PP/PN | Extra info: Keuken - Magnetron - Wasmachine en droger - Fietsenberging | Dieren: Toegestaan | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €12 PP/PN | Extra info: Kitchen - Microwave - Washer and dryer - Bicycle storage. | Animals: Allowed | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.9261693" lon="-8.1635777">
-    <name>Albergue San Francisco</name>
-    <desc>C. Carmen 7 | Arzúa | Tel: +34 881 979 304  | Tel:  +34 604 069 338  | Tel:  +34 649 135 311 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €14 PP/PN | Extra info: Ook privékamers - Magnetron - Wasmachine en droger - Ontbijt - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €14 PP/PN | Extra info: Also private rooms - Microwave - Washer and dryer - Breakfast - Bicycle storage | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.9273281" lon="-8.1641477">
-    <name>Pension del Peregrino</name>
-    <desc>C. Ramón Franco 7 | Arzúa | Tel: +34 981 500 908 | Website | Type: Pelgrims herberg | Soort LO: L | Prijs: €45 P2/PN | Extra info: Ook privékamers | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €45 P2/PN | Extra info: Also private rooms | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.9254535" lon="-8.1640376">
-    <name>Albergue Via Lactea</name>
-    <desc>c/ Xosé Neira Vilas 26 | Arzúa | Tel: +34 981 500 581  | Tel:  +34 616 759 447  | Tel:  +34 651 079 999 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €15 PP/PN | Extra info: Keuken - Magnetron - Wasmachine en droger - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €15 PP/PN | Extra info: Kitchen - Microwave - Washer and dryer - Bicycle storage. | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.9273226" lon="-8.1640143">
-    <name>Albergue del Peregrino</name>
-    <desc>Rúa Norte 7 | Arzúa | Tel: +34 981 500 145 | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €15 PP/PN | Extra info: Magnetron - Wasmachine en droger - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €15 PP/PN | Extra info: Microwave - Washer and dryer - Bicycle storage. | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.9266874" lon="-8.1641264">
-    <name>Albergie O Santo</name>
-    <desc>Rúa Xosé Neira Vilas 4 | Arzúa | Tel: +34 981 500 957 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €12 PP/PN | Extra info: Keuken - Magnetron - Wasmachine en droger - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €12 PP/PN | Extra info: Kitchen - Microwave - Washer and dryer - Bicycle storage. | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.9271008" lon="-8.1650850">
-    <name>Albergue Los Caminantes</name>
-    <desc>c/ de Santiago 14 | Arzúa | Tel: +34 647 020 600 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €10 PP/PN | Extra info: Keuken - Magnetron - Wasmachine en droger - Fietsenberging- Massage | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €10 PP/PN | Extra info: Kitchen - Microwave - Washer and dryer - Bicycle storage- Massage | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
   <wpt lat="42.9284820" lon="-8.2144991">
     <name>Albergue Taberna Vella</name>
-    <desc>Lugar de Taberna Vella s/n | As Quintas | Tel: +34 687 543 810 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €17 PP/PN | Extra info: Ook bekend als 'Heidi's place' - Keuken - Magnetron - Wasmachine en droger - Diner - Fietsenberging- Mogelijkheid tot kamperen | Dieren: Toeegestaan | Taal: ES -EN-DU | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €17 PP/PN | Extra info: Also known as "Heidi's place" - Kitchen - Microwave - Washer and dryer - Diner - Bicycle storage- Possibility of camping. | Animals: Allowed | Languages spoken: ES -EN-DU | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
+    <desc>Lugar de Taberna Vella s/n, As Quintas Â· Tel +34 687 543 810</desc>
+    <sym>Restaurant</sym>
+    <cmt>Lugar de Taberna Vella s/n, As Quintas Â· Tel +34 687 543 810</cmt>
   </wpt>
   <wpt lat="42.9160969" lon="-8.2431664">
     <name>Albergue A Ponte de Ferreiros</name>
-    <desc>A Ponte de ferreiros 1 | A Calle de Ferreiros | Tel: +34 665 641 877 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €15 PP/PN | Extra info: Magnetron - Wasmachine en droger - Bar Cafetaria - Ontbijt - Diner - Fietsenberging | Dieren: Toegestaan | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €15 PP/PN | Extra info: Microwave - Washer and dryer - Bar Cafeteria - Breakfast - Dinner - Bicycle storage. | Animals: Allowed | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.9221545" lon="-8.2754959">
-    <name>Albergue-Hotel Rural Salceda</name>
-    <desc>Cttra. N-574 km 75 | Salceda | Tel: +34 981 502 767 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €13 PP/PN | Extra info: Ook privékamers - Wasmachine en droger - Bar Restaurant - Ontbijt - Diner - Restaurant in de buurt - Fietsenberging -Zwembad - Gesloten van 15/11 tot 28/02 | Dieren: Toegestaan gratis | Taal: ES EN FR RU | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €13 PP/PN | Extra info: Also private rooms - Washer and dryer - Bar Restaurant - Breakfast - Dinner - Restaurant nearby - Bicycle storage -Swimming pool - Closed from 15/11 to 28/02 | Animals: Allowed | Languages spoken: ES EN FR RU | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.9267680" lon="-8.2801590">
-    <name>Albergue La Corona</name>
-    <desc>Lugar de Salceda 22 | Salceda | Tel: +34 6175 149 086  | Tel:  +34 981 073 382 | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €22 PP/PN | Extra info: Keuken - Magnetron - Wasmachine en droger - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €22 PP/PN | Extra info: Kitchen - Microwave - Washer and dryer - Bicycle storage. | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.9262240" lon="-8.2805620">
-    <name>Albergue Alborada</name>
-    <desc>Lugar de Salceda | Salceda | Tel: +34 981 502 956  | Tel:  +34 620 151 209 | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €15 PP/PN | Extra info: Ook privékamers - Keuken - Magnetron - Wasmachine en droger - Fietsenberging- Massage | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €15 PP/PN | Extra info: Also private rooms - Kitchen - Microwave - Washer and dryer - Bicycle storage- Massage | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.9155430" lon="-8.3233040">
-    <name>Albergue Andaina</name>
-    <desc>O Empalme de Santa Irene 11 | Cerceda | Tel: +34 981 502 925  | Tel:  +34 609 739 404 | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €12 PP/PN | Extra info: Ook privékamers - Wasmachine en droger - Bar Restaurant - Ontbijt -Diner - Fietsenberging | Dieren: Toegestaan | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €12 PP/PN | Extra info: Also private rooms - Washer and dryer - Bar Restaurant - Breakfast -Dinner - Bicycle Storage | Animals: Allowed | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.9170009" lon="-8.3322834">
-    <name>Albergue Santa Irene</name>
-    <desc>Santa Irene | Santa Irene | Tel: +34 981 511 000 | Type: Pelgrims herberg | Soort LO: L | Prijs: €14 PP/PN | Extra info: Wasmachine en droger - Ontbijt - Diner - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €14 PP/PN | Extra info: Washer and dryer - Breakfast - Dinner - Bicycle storage | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
+    <desc>A Ponte de ferreiros 1, A Calle de Ferreiros Â· Tel +34 665 641 877</desc>
+    <sym>Lodging</sym>
+    <cmt>A Ponte de ferreiros 1, A Calle de Ferreiros Â· Tel +34 665 641 877</cmt>
   </wpt>
   <wpt lat="42.9183120" lon="-8.3358020">
     <name>Xunta Albergue de peregrinos de Santa Irene</name>
-    <desc>Santa Irene s/n | Santa Irene | Website | Type: Pelgrims herberg | Soort LO: L | Prijs: €10 PP/PN | Extra info: Keuken Wasmachine en droger - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €10 PP/PN | Extra info: Kitchen Washer and dryer - Bicycle storage room | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.9140452" lon="-8.3501608">
-    <name>Albergue Espíritu Xacobeo</name>
-    <desc>A Rúa 49-50 | A Rúa | Tel: +34 620 635 284 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €12 PP/PN | Extra info: Ook privékamers - Keuken - Magnetron - Wasmachine en droger - Fietsenberging | Dieren: Toegestaan | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €12 PP/PN | Extra info: Also private rooms - Kitchen - Microwave - Washer and dryer - Bicycle storage room | Animals: Allowed | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.9091333" lon="-8.3589476">
-    <name>Albergue O Burgo</name>
-    <desc>Av. de Lugo 47 | Pedrouzo/Arca | Tel: +34 630 404 138  | Tel:  +34 981 511 406 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €13 PP/PN | Extra info: Ook privékamers - Magnetron - Wasmachine en droger - Fietsenberging | Dieren: Honden gratis | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €13 PP/PN | Extra info: Also private rooms - Microwave - Washer and dryer - Bicycle shed | Animals: Dogs free | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.9071912" lon="-8.3588643">
-    <name>Xunta Albergue de Peregrinos de Arca - O Pino</name>
-    <desc>Pedrouzo | O Pedrouzo | Website | Type: Pelgrims herberg | Soort LO: L | Prijs: €10 PP/PN | Extra info: Keuken - Magnetron - Wasmachine en droger - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €10 PP/PN | Extra info: Kitchen - Microwave - Washer and dryer - Bicycle storage. | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.9069079" lon="-8.3599646">
-    <name>Albergue Mirador de Pedrouzo</name>
-    <desc>Av. De Lugo s/n | O Pedrouzo | Tel: +34 686 871 215 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €13 PP/PN | Extra info: Magnetron - Wasmachine en droger - Bar Cafetaria - Fietsenberging- Massage - Zwembad | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €13 PP/PN | Extra info: Microwave - Washer and dryer - Bar Cafeteria - Bicycle storage- Massage - Swimming pool | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.9032394" lon="-8.3628087">
-    <name>Albergue Rem</name>
-    <desc>Av. De la Iglesia 7 | O Pedrouzo | Tel: +34 981 510 407  | Tel:  +34 673 381 721 | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €15 PP/PN | Extra info: Magnetron - Wasmachine en droger - Bar Cafetaria - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €15 PP/PN | Extra info: Microwave - Washer and dryer - Bar Cafeteria - Bicycle storage. | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.9029375" lon="-8.3627475">
-    <name>Albergue Cruceiro de Pedrouzo</name>
-    <desc>Av. de la Iglesia 7 | Pedrouzo/Arca | Tel: +34 981 511 371  | Tel:  +34 629 518 204 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €10 PP/PN | Extra info: Keuken - Magnetron - Wasmachine en droger - Fietsenberging - Massage | Dieren: Nee | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €10 PP/PN | Extra info: Kitchen - Microwave - Washer and dryer - Bicycle storage - Massage | Animals: No | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.9052846" lon="-8.3614845">
-    <name>Albergue Porta de Santiago</name>
-    <desc>Av. de Lugo 11 | Pedrouzo/Arca | Tel: +34 981 511 103  | Tel:  +34 607 835 354 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €12 PP/PN | Extra info: Wasmachine en droger - Automaat | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €12 PP/PN | Extra info: Washer and dryer - Automatic | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.9051105" lon="-8.3633134">
-    <name>Albergue Otero</name>
-    <desc>c/ de Forcarei 2 | Pedrouzo/Arca | Tel: +34 671 663 374 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €12 PP/PN | Extra info: Magnetron - Wasmachine en droger - Fietsenberging | Dieren: Toegestaan | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €12 PP/PN | Extra info: Microwave - Washer and dryer - Bicycle storage. | Animals: Allowed | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.9037322" lon="-8.3605374">
-    <name>Albergue Edreira</name>
-    <desc>Rua da Fonte 19 | Pedrouzo/Arca | Tel: +34 981 511 365  | Tel:  +34 660 234 995 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €12 PP/PN | Extra info: Magnetron - Wasmachine en droger - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €12 PP/PN | Extra info: Microwave - Washer and dryer - Bicycle storage. | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.9051042" lon="-8.3607839">
-    <name>Albergue O Trisquel</name>
-    <desc>Rua do Picón 1 | Pedrouzo/Arca | Tel: +34 616 644 740 | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €15 PP/PN | Extra info: Keuken - Magnetron - Wasmachine en droger - Fietsenberging | Dieren: Nee | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €15 PP/PN | Extra info: Kitchen - Microwave - Washer and dryer - Bicycle storage. | Animals: No | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
+    <desc>Santa Irene s/n, Santa Irene</desc>
+    <sym>Lodging</sym>
+    <cmt>Santa Irene s/n, Santa Irene</cmt>
   </wpt>
   <wpt lat="42.9002318" lon="-8.4477384">
     <name>Albergue A Fábrica</name>
-    <desc>Lavacolla 55 | Lavacolla | Tel: +34 681 075 647 | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €20 PP/PN | Dieren: Niet bekend | Taal: ES EN | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €20 PP/PN | Animals: Not known | Languages spoken: ES EN | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.8995096" lon="-8.4438950">
-    <name>Albergue Lavacolla</name>
-    <desc>Lugar Lavacolla 35 | Lavacolla | Tel: +34 981 897 274  | Tel:  +34 653 630 300 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €13 PP/PN | Extra info: Ook privékamers - Keuken - Magnetron - Wasmachine en droger - Bar cafetaria - Fietsenberging- Mogelijkheid tot kamperen | Dieren: Toegestaan | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €13 PP/PN | Extra info: Also private rooms - Kitchen - Microwave - Washing machine and dryer - Bar cafeteria - Bicycle storage- Possibility of camping. | Animals: Allowed | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.8915268" lon="-8.4489833">
-    <name>Albergue O Fervello</name>
-    <desc>Vilamaior 11 | Vilamaior | Tel: +34 611 698 858  | Tel:  +34 619 424 969 | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €20 PP/PN | Extra info: Zelf koken mogelijk - Fietsenstalling | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €20 PP/PN | Extra info: Self-catering possible - Bicycle storage | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
+    <desc>Lavacolla 55, Lavacolla Â· Tel +34 681 075 647</desc>
+    <sym>Lodging</sym>
+    <cmt>Lavacolla 55, Lavacolla Â· Tel +34 681 075 647</cmt>
   </wpt>
   <wpt lat="42.8881164" lon="-8.4962436">
     <name>Xunta Albergue de peregrinos del Monte do Gozo</name>
-    <desc>Rúa do Gozo 18 | Monte do Gozo | Tel: +34 981 558 942  | Tel:  +34 660 396 827 | Website | Type: Pelgrims herberg | Soort LO: L | Prijs: €10 PP/PN | Extra info: Keuken - Magnetron - Wasmachine en droger - Bar Restaurant - Diner - Fietsenberging | Dieren: Niet bekend | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €10 PP/PN | Extra info: Kitchen - Microwave - Washer and dryer - Bar Restaurant - Diner - Bicycle storage. | Animals: Not known | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
-  </wpt>
-  <wpt lat="42.8864152" lon="-8.5008971">
-    <name>Albergue Monte do Gozo</name>
-    <desc>Rúa do Gozo 18 | Monte do Gozo | Tel: +34 881 255 386 | Website | E-mail | Type: Pelgrims herberg | Soort LO: L | Prijs: €23 PP/PN | Extra info: Ook privékamers - Wasmachine en droger - Bar Cafetaria - Lunchpakket - Ontbijt - Diner - Fietsenberging- Zwembad | Dieren: Toegestaan | Incorrecte informatie? | Accommodation Type: Albergue | Lodging: B | Price: €23 PP/PN | Extra info: Also private rooms - Washer and dryer - Bar Cafeteria - Packed lunch - Breakfast - Dinner - Bicycle storage - Swimming pool | Animals: Allowed | Incorrect information?</desc>
-    <sym>Flag, Red</sym>
+    <desc>Rúa do Gozo 18, Monte do Gozo Â· Tel +34 981 558 942</desc>
+    <sym>Lodging</sym>
+    <cmt>Rúa do Gozo 18, Monte do Gozo Â· Tel +34 981 558 942</cmt>
   </wpt>
   <wpt lat="42.8855639" lon="-8.5005446">
     <name>Monte do Gozo</name>
-    <desc>Day 13 | 환희의 언덕</desc>
-    <sym>Flag, Blue</sym>
+    <desc>환희의 언덕</desc>
+    <sym>Summit</sym>
     <type>photo</type>
+    <cmt>환희의 언덕</cmt>
   </wpt>
   <wpt lat="42.8806880" lon="-8.5443954">
     <name>Catedral de Santiago de Compostela</name>
-    <desc>Day 13 | 산티아고 대성당</desc>
-    <sym>Flag, Blue</sym>
+    <desc>산티아고 대성당</desc>
+    <sym>Church</sym>
     <type>photo</type>
+    <cmt>산티아고 대성당</cmt>
   </wpt>
   <trk>
     <name>Camino day13</name>
