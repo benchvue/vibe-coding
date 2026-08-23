@@ -880,6 +880,18 @@
     display:flex;align-items:center;justify-content:center}
   .bjo small{display:block;font-size:.7rem;color:#A79E86;margin-top:2px}
 
+  /* 방법 A / B 구분 */
+  .mtag{display:inline-flex;align-items:center;gap:7px;font-size:.72rem;font-weight:700;
+    color:var(--camino-blue);background:#EDF2FA;border:1px solid #C7D6EE;border-radius:999px;
+    padding:4px 12px;margin-bottom:10px}
+  .mtag.ok{color:#0E4F2C;background:#EAF3EC;border-color:#A9CFB8}
+  .mtag span{font-weight:400;font-size:.66rem;color:#3F7A5A;background:#fff;border-radius:999px;
+    padding:1px 8px}
+  .jarr.web{margin-top:12px;border-color:#A9CFB8;background:#FBFEFC}
+  .jarr.web .jsteps li::before{background:var(--ok)}
+  .jarr.web .jsteps li:not(:last-child)::after{background:#C4E0CD}
+  .jarr a{color:var(--camino-blue)}
+
   /* ── DAY별 날씨 카드 ───────────────────────────── */
   .dwx{padding:2px 14px 14px}
   .dwx h4{font-size:.8rem;color:var(--camino-blue);font-weight:700;margin-bottom:8px;
@@ -1554,18 +1566,38 @@
 
     <h3 class="gh3">휴대폰에서 하루치 보내기 (Garmin Connect)</h3>
     <p class="jp">여행 중 컴퓨터 없이 특정 날짜만 다시 넣어야 할 때 쓰는 방법입니다.
-    두 사람 모두 같습니다.</p>
+    두 사람 모두 같습니다.<br>
+    <b>주의</b> — Connect 앱의 코스 화면에서 <b>+</b> 를 누르면 <i>코스를 새로 그리는</i> 마법사가 열립니다.
+    거기서는 파일을 넣을 수 없으니 뒤로 나오세요. 파일은 아래 두 방법 중 하나로 넣습니다.</p>
     <div class="jarr">
+      <div class="mtag">방법 A · 공유 시트</div>
       <ol class="jsteps">
         <li>이 사이트에서 그 날짜 카드의 <b>GPX 아이콘</b> 버튼을 누릅니다</li>
         <li>공유 창이 열리면 <b>Garmin Connect</b> 를 고릅니다
-          <small>안 보이면 <b>파일에 저장</b> 후, Connect 앱에서 불러오세요</small></li>
+          <small>목록에 없으면 앱 아이콘 줄을 왼쪽 끝까지 밀어 <b>더 보기(⋯)</b> 에서
+          Garmin Connect 스위치를 켜세요. 한 번만 켜 두면 계속 보입니다</small></li>
         <li>Connect 가 <b>코스</b>로 가져옵니다 — 이름을 <b>Day 10</b> 처럼 바꿔 두면 찾기 쉽습니다</li>
-        <li>코스를 열고 <b>기기로 보내기</b> → Edge 선택</li>
+        <li>코스를 열고 오른쪽 위 <b>⋯ → 기기로 보내기</b> → Edge 선택</li>
         <li>Edge 에서 <b>탐색 &rarr; 코스</b> 에 들어왔는지 확인</li>
       </ol>
       <div class="soff-w">이 방법으로 넣은 코스에는 <b>알베르게·포토존 표시가 없습니다.</b>
       길 안내만 필요할 때 쓰고, 숙소를 찾아야 하면 사이트의 <b>포토·맛집 지도</b>를 보세요.</div>
+    </div>
+
+    <div class="jarr web">
+      <div class="mtag ok">방법 B · 웹 Connect <span>확실한 방법</span></div>
+      <p class="jp" style="margin-bottom:6px">공유 시트에 Connect 가 끝내 안 보이거나,
+      앱에서 가져오기 메뉴를 못 찾을 때 씁니다. 폰·컴퓨터 어디서나 됩니다.</p>
+      <ol class="jsteps">
+        <li>브라우저로 <a href="https://connect.garmin.com" target="_blank" rel="noopener"><b>connect.garmin.com</b></a> 접속 후 로그인</li>
+        <li><b>Training &amp; Planning &rarr; Courses</b> (훈련 및 계획 &rarr; 코스)
+          <small>아이폰이면 주소창 왼쪽 <b>ᴀA &rarr; 데스크톱 웹사이트 요청</b> 을 켜야 메뉴가 제대로 보입니다</small></li>
+        <li><b>Import</b> (가져오기) 를 눌러 저장해 둔 <b>GPX 파일</b> 선택</li>
+        <li>코스가 만들어지면 열어서 <b>Send to Device</b> (기기로 보내기) &rarr; Edge 선택</li>
+        <li>Edge 를 켜 두면 다음 동기화 때 자동으로 받아 갑니다</li>
+      </ol>
+      <div class="soff-w">Edge 가 목록에 없으면 꺼져 있거나 연결이 끊긴 것입니다.
+      기기를 켜고 폰 옆에 둔 뒤 다시 시도하세요.</div>
     </div>
 
     <h3 class="gh3">알아 둘 것</h3>
@@ -5930,7 +5962,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260822-2338";
+  var BUILD="20260823-0007";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
