@@ -891,6 +891,11 @@
   .jarr.web .jsteps li::before{background:var(--ok)}
   .jarr.web .jsteps li:not(:last-child)::after{background:#C4E0CD}
   .jarr a{color:var(--camino-blue)}
+  .tcxlink{display:inline-flex;align-items:baseline;gap:4px;text-decoration:none;
+    border:1px solid var(--line);border-radius:7px;padding:2px 8px;background:#fff;
+    color:var(--camino-blue);font-size:.62rem;font-weight:700}
+  .tcxlink small{font-weight:400;color:var(--ink-soft);font-size:.56rem}
+  .tcxlink:hover{border-color:var(--flecha);background:#FFFBEE}
 
   /* ── DAY별 날씨 카드 ───────────────────────────── */
   .dwx{padding:2px 14px 14px}
@@ -1508,7 +1513,7 @@
       <p>각 카드의 QR 코드를 휴대폰 카메라로 스캔하거나 버튼을 누르면
       해당 구간의 <b>구글 지도 자전거 길찾기</b>가 바로 열립니다.
       ※ 구글 자전거 경로는 일부 비포장 카미노 구간을 인근 도로로 우회할 수 있습니다.</p>
-      <p class="gpxsrc"><b>자전거 내비게이션 (GPX)</b> — 가민 등 GPS 기기에 넣는 파일입니다. 날짜당 <b>한 개</b>이고, 트랙에 고도가 들어 있으며 <b>표시 지점 221곳</b>이 경로 순서대로 함께 들어 있습니다 (알베르게 159 · 성당 33 · 포토존 18 · 맛집 6 · 고개 5).<br>짐 실은 자전거로 내려가기 어려운 급경사가 있는 <b>4일치</b>는 포장도로 우회로로 갈아 끼웠습니다 (DAY 2 · 10 · 11 · 12, <i>우회</i> 표시). DAY 1 은 도보 순례 노선과 같습니다.<small>트랙 출처 santiago.nl 도보 노선 · 고도 Copernicus EU-DEM · 알베르게 santiago.nl 시설 자료 · 2026-08-23 생성. GPX 에는 <b>노면 정보가 없습니다</b> — 우회로는 경사 기준으로만 골랐고 자갈·포장 여부를 확인한 것이 아닙니다. 재배포 시 출처 표기와 원 자료 라이선스 확인이 필요합니다.</small></p>
+      <p class="gpxsrc"><b>자전거 내비게이션 (GPX)</b> — 가민 등 GPS 기기에 넣는 파일입니다. 날짜당 <b>한 개</b>이고, 트랙에 고도가 들어 있으며 <b>표시 지점 221곳</b>이 경로 순서대로 함께 들어 있습니다 (알베르게 147 · 성당 35 · 포토존 28 · 맛집 6 · 고개 5).<br>짐 실은 자전거로 내려가기 어려운 급경사가 있는 <b>4일치</b>는 포장도로 우회로로 갈아 끼웠습니다 (DAY 2 · 10 · 11 · 12, <i>우회</i> 표시). DAY 1 은 도보 순례 노선과 같습니다.<small>트랙 출처 santiago.nl 도보 노선 · 고도 Copernicus EU-DEM · 알베르게 santiago.nl 시설 자료 · 2026-08-23 생성. GPX 에는 <b>노면 정보가 없습니다</b> — 우회로는 경사 기준으로만 골랐고 자갈·포장 여부를 확인한 것이 아닙니다. 재배포 시 출처 표기와 원 자료 라이선스 확인이 필요합니다.</small></p>
     </div>
     
 <div id="daysHost" data-src="camino-days.html">
@@ -1524,13 +1529,13 @@
       <div class="no">Navegación</div>
       <h2>GPS 기기에 넣기</h2>
       <p>날짜별 파일은 각 DAY 카드에서 받습니다. 여기서는 <b>전체를 한 번에 받는 법</b>과
-      <b>Edge 840 · 1030 에 넣는 방법</b>, 그리고 파일 세 가지가 각각 무엇인지 정리했습니다.</p>
+      <b>Edge 840 · 1030 에 넣는 방법</b>, 그리고 GPX 와 TCX 가 무엇이 다른지 정리했습니다.</p>
     </div>
 
     <div class="zipbox">
       <div class="zipl">
         <b>전체 한 번에 받기</b>
-        <p>12일치 GPX 를 묶은 파일입니다. 데스크톱에서 받아 압축을 풀고
+        <p>12일치 GPX 를 묶은 파일입니다 (TCX 는 날짜별로 따로 받습니다). 데스크톱에서 받아 압축을 풀고
         USB 로 기기에 넣을 때 씁니다.</p>
         <div class="zipmeta">camino-frances-2027-gpx-20260823.zip · 약 162 KB · 12일 전체</div>
       </div>
@@ -1541,22 +1546,32 @@
       </a>
     </div>
 
-    <h3 class="gh3">파일 하나에 다 들어 있습니다</h3>
+    <h3 class="gh3">파일 두 가지</h3>
     <div class="sched-wrap">
-      <table class="sched ftab" style="min-width:600px">
-        <thead><tr><th>파일</th><th>들어 있는 것</th><th>기기에서</th></tr></thead>
+      <table class="sched ftab" style="min-width:660px">
+        <thead><tr><th>파일</th><th>들어 있는 것</th><th>기기에서</th><th>언제 쓰나</th></tr></thead>
         <tbody>
           <tr class="pick">
-            <td><b>camino-2027-dayNN.gpx</b><small>날짜당 한 개 · 68~167 KB</small></td>
-            <td>트랙(고도 포함)<br>표시 지점 <b>221곳</b>
-              <small>알베르게 159 · 성당 33 · 포토존 18 · 맛집 6 · 고개 5</small></td>
+            <td><b>camino-2027-dayNN.gpx</b><small>70~171 KB</small></td>
+            <td>트랙 · 약 50 m 간격 · 모든 점에 고도<br>
+              표시 지점 <b>221곳</b>
+              <small>알베르게 147 · 성당 35 · 포토존 28 · 맛집 6 · 고개 5</small></td>
             <td>코스 + 지도 위 아이콘</td>
+            <td><b>기본으로 이것만 받으면 됩니다</b></td>
+          </tr>
+          <tr>
+            <td><b>camino-2027-dayNN.tcx</b><small>270~655 KB</small></td>
+            <td>가민 Edge 전용 코스 파일<br>코스 포인트 하루 <b>20개</b>
+              <small>이름은 한글 · 10자 제한</small></td>
+            <td>주행 중 <b>알림</b> (Up Ahead)</td>
+            <td>다음 지점까지 남은 거리를 보고 싶을 때</td>
           </tr>
         </tbody>
       </table>
     </div>
-    <p class="note">예전에는 아이콘본·기본본·TCX 로 나뉘어 있었지만 <b>하나로 합쳤습니다</b>.
-    이제 날짜당 파일 하나만 넣으면 됩니다.</p>
+    <p class="note">GPX 의 웨이포인트는 <b>지도 위 표시</b>로, TCX 의 코스 포인트는
+    <b>주행 중 알림 목록</b>으로 들어갑니다. 서로 다른 자리라 둘 다 넣어도 겹치지 않습니다.
+    지도만 보면 되는 분은 <b>GPX 하나면 충분합니다</b>.</p>
 
     <h3 class="gh3">넣는 방법 두 가지 — 무엇이 다른가</h3>
     <div class="wayrow">
@@ -1564,6 +1579,7 @@
         <div class="wayh">USB 케이블 · <b>Garmin\NewFiles</b><span class="wtag">권장</span></div>
         <ul>
           <li>트랙 <b>+ 표시 지점 221곳이 그대로</b> 들어갑니다</li>
+          <li>TCX 의 주행 중 알림도 살아 있습니다</li>
           <li>여러 날짜를 한 번에 복사할 수 있습니다</li>
           <li>컴퓨터가 있어야 합니다</li>
         </ul>
@@ -1572,6 +1588,7 @@
         <div class="wayh">휴대폰 · <b>Garmin Connect 앱</b><span class="wtag alt">보조</span></div>
         <ul>
           <li>케이블 없이 어디서나 보낼 수 있습니다</li>
+          <li class="bad">TCX 의 코스 포인트도 대부분 빠집니다</li>
           <li class="bad"><b>웨이포인트가 함께 넘어가지 않습니다</b> —
             알베르게·포토존 표시가 사라집니다</li>
           <li>길만 따라가면 될 때, 또는 하루치를 급히 다시 넣을 때</li>
@@ -1596,7 +1613,8 @@
         <ol class="bjo">
           <li>ZIP 내려받아 압축 풀기</li>
           <li>Edge 1030 을 USB 로 연결</li>
-          <li><b>Garmin\NewFiles</b> 폴더에 <b>gpx 파일 12개</b>를 복사</li>
+          <li><b>Garmin\NewFiles</b> 폴더에 <b>gpx 파일 12개</b>를 복사
+            <small>주행 중 알림까지 쓰려면 tcx 12개도 함께</small></li>
           <li>USB 안전 제거 → Edge 가 자동으로 읽어 들임
             <small>화면이 잠깐 깜빡이거나 재시작할 수 있습니다</small></li>
           <li>코스 목록에서 12개가 보이는지 확인</li>
@@ -1643,9 +1661,15 @@
     <h3 class="gh3">알아 둘 것</h3>
     <div class="jchk">
       <div class="jc warn">
-        <b>DAY 1 에 -33% 내리막이 있습니다</b>
-        레포에데르 하산(약 20 km 지점, 43.030 · -1.296 부근)입니다.
-        일부러 원본을 남긴 구간이니 <b>자전거에서 내려 끌고</b> 내려가세요.
+        <b>Edge 는 재계산을 꺼 두세요</b>
+        기기가 스스로 길을 다시 찾으면 우리가 정한 우회로를 버리고
+        <b>엉뚱한 길로 안내합니다.</b> 코스를 시작하기 전
+        <b>탐색 설정에서 재계산(Recalculate)을 끄고</b>, 트랙을 그대로 따라가게 두세요.
+      </div>
+      <div class="jc warn">
+        <b>DAY 1 은 나폴레옹 루트입니다</b>
+        <b>28% 오르막</b>과 <b>-33% 내리막</b>(레포에데르 하산, 약 20 km 지점 · 43.030 · -1.296 부근)이 있습니다.
+        일부러 원본을 남긴 구간이니 두 곳 모두 <b>자전거에서 내려 끌고</b> 지나가세요.
       </div>
       <div class="jc">
         <b>턴바이턴 안내는 없습니다</b>
@@ -1655,7 +1679,7 @@
       <div class="jc">
         <b>표시 지점이 221곳입니다</b>
         축소해서 보면 화면이 아이콘으로 덮입니다. 지도를 <b>확대해야</b> 숙소가 제대로 보입니다.
-        <small>알베르게 159 · 성당 33 · 포토존 18 · 맛집 6 · 고개 5 — DAY 12 가 36곳으로 가장 많습니다</small>
+        <small>알베르게 147 · 성당 35 · 포토존 28 · 맛집 6 · 고개 5 — DAY 12 가 36곳으로 가장 많습니다</small>
       </div>
       <div class="jc">
         <b>노면 정보는 들어 있지 않습니다</b>
@@ -1674,7 +1698,7 @@
     </div>
 
     <div class="note">출처 santiago.nl (OSM · ODbL) · 고도 EU-DEM/Copernicus ·
-    우회 cycle.travel (OSM) · 원본 2026-06-16판 · 2026-08-22 생성.
+    우회 cycle.travel (OSM) · 원본 2026-06-16판 · 2026-08-23 생성.
     재배포 시 출처 표기가 필요합니다.</div>
   </div>
 </section>
@@ -5901,9 +5925,12 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     var box=a.querySelector(".gpxthumb");
     var sub=a.querySelector(".gpxlab small");
     fetch(a.getAttribute("href"),{cache:"force-cache"})
-      .then(function(r){ if(!r.ok) throw 0; return r.text(); })
+      .then(function(r){ if(!r.ok) throw 0; return r.blob(); })
+      .then(function(b){
+        a._blob=b;                                   /* 눌렀을 때 바로 쓰려고 보관 */
+        return b.text().then(function(t){ a._text=t; return t; });
+      })
       .then(function(t){
-        a._text=t;                                   /* 눌렀을 때 바로 쓰려고 보관 */
         var pts=parse(t);
         if(pts.length<2) throw 0;
         draw(box,pts);
@@ -5925,18 +5952,27 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
   /* ── 내려받기 / 공유 ──
      아이폰 사파리는 download 속성을 무시하고 .gpx 를 글자로 펼쳐 보여 줍니다.
      휴대폰에서는 공유 시트를 띄워 "파일에 저장" 하거나 내비 앱으로 바로 보내게 합니다. */
-  var MIME="application/gpx+xml";
-
-  function fileOf(a){
-    if(!a._text) return null;
-    var name=a.getAttribute("download")||"route.gpx";
-    try{ return new File([a._text], name, {type:MIME}); }catch(e){ return null; }
+  /* 파일은 반드시 Blob 그대로 다뤄야 합니다.
+     텍스트로 읽었다가 되돌리면 ZIP 같은 바이너리는 깨집니다. */
+  function mimeOf(name){
+    if(/\.zip$/i.test(name)) return "application/zip";
+    if(/\.tcx$/i.test(name)) return "application/vnd.garmin.tcx+xml";
+    return "application/gpx+xml";
   }
-  function saveBlob(a,txt){
-    var name=a.getAttribute("download")||"route.gpx";
-    var url=URL.createObjectURL(new Blob([txt],{type:"application/octet-stream"}));
+  function nameOf(a){
+    return a.getAttribute("download")
+        || (a.getAttribute("href")||"file").split("/").pop().split("?")[0];
+  }
+  function fileOf(a){
+    if(!a._blob) return null;
+    var n=nameOf(a);
+    try{ return new File([a._blob], n, {type:mimeOf(n)}); }catch(e){ return null; }
+  }
+  function saveBlob(a, blob){
+    var n=nameOf(a);
+    var url=URL.createObjectURL(blob);
     var t=document.createElement("a");
-    t.href=url; t.download=name; t.rel="noopener";
+    t.href=url; t.download=n; t.rel="noopener";
     document.body.appendChild(t); t.click();
     setTimeout(function(){ document.body.removeChild(t); URL.revokeObjectURL(url); },1500);
   }
@@ -5950,38 +5986,39 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
 
   function onClick(e){
     var a=e.currentTarget;
+    var n=nameOf(a);
+
+    /* 압축 파일은 브라우저 기본 내려받기에 맡깁니다 — 가장 안전합니다 */
+    if(/\.zip$/i.test(n) && !(navigator.canShare && navigator.share)) return;
+
     var f=fileOf(a);
 
-    /* ① 파일 공유가 되는 기기(아이폰·안드로이드) — 손짓이 살아 있을 때 곧바로 호출 */
+    /* ① 파일 공유가 되는 기기 — 손짓이 살아 있을 때 곧바로 호출 */
     if(f && navigator.canShare && navigator.canShare({files:[f]}) && navigator.share){
       e.preventDefault();
-      navigator.share({files:[f], title:a.getAttribute("download")})
+      navigator.share({files:[f], title:n})
         .catch(function(err){
-          if(err && err.name==="AbortError") return;   /* 사용자가 닫은 것 */
-          saveBlob(a,a._text);
+          if(err && err.name==="AbortError") return;
+          saveBlob(a, a._blob);
         });
       return;
     }
 
-    /* ② 내용을 이미 갖고 있으면 Blob 으로 저장 (사파리도 이 방식은 잘 받습니다) */
-    if(a._text){
-      e.preventDefault();
-      saveBlob(a,a._text);
-      return;
-    }
+    /* ② 이미 받아 둔 것이 있으면 그대로 저장 */
+    if(a._blob){ e.preventDefault(); saveBlob(a, a._blob); return; }
 
-    /* ③ 아직 못 읽었으면 받아서 처리 — 실패하면 원래 링크 동작으로 */
+    /* ③ 아직 없으면 받아서 처리 — 실패하면 원래 링크 동작으로 */
     e.preventDefault();
-    note(a,"준비 중…",6000);
+    note(a,"준비 중…",8000);
     fetch(a.getAttribute("href"),{cache:"force-cache"})
-      .then(function(r){ if(!r.ok) throw 0; return r.text(); })
-      .then(function(t){
-        a._text=t;
+      .then(function(r){ if(!r.ok) throw 0; return r.blob(); })
+      .then(function(b){
+        a._blob=b;
         var f2=fileOf(a);
         if(f2 && navigator.canShare && navigator.canShare({files:[f2]}) && navigator.share)
-          return navigator.share({files:[f2], title:a.getAttribute("download")})
-            .catch(function(err){ if(!(err&&err.name==="AbortError")) saveBlob(a,t); });
-        saveBlob(a,t);
+          return navigator.share({files:[f2], title:n})
+            .catch(function(err){ if(!(err&&err.name==="AbortError")) saveBlob(a,b); });
+        saveBlob(a,b);
       })
       .catch(function(){ location.href=a.getAttribute("href"); });
   }
@@ -6189,7 +6226,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260823-1113";
+  var BUILD="20260823-2317";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
