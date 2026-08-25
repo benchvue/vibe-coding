@@ -668,6 +668,20 @@
     border-radius:50%;background:var(--blue);color:#fff;font-size:10.5px;font-weight:700;
     display:flex;align-items:center;justify-content:center}
   .exrl b{color:var(--ink)}
+
+  /* PDF 영수증 */
+  .exthumb.pdf{display:flex;align-items:center;justify-content:center;background:#FBEDE6;
+    border-color:#E3C9B8;color:#8E2C3A;font-size:11px;font-weight:700;letter-spacing:.04em}
+  .exthumb.pdf:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
+  .exed-pdf{display:flex;align-items:center;gap:12px;text-decoration:none;margin-bottom:12px;
+    border:1px solid #E3C9B8;background:#FBEDE6;border-radius:11px;padding:13px 15px}
+  .exed-pdf b{flex:0 0 auto;background:#8E2C3A;color:#fff;border-radius:7px;padding:7px 11px;
+    font-size:12px;letter-spacing:.04em}
+  .exed-pdf span{flex:1;min-width:0;font-size:13px;color:var(--ink)}
+  .exed-pdf em{display:block;font-style:normal;font-size:11px;color:var(--muted);margin-top:2px;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .exed-pdf i{flex:0 0 auto;font-style:normal;font-size:12px;color:var(--blue);white-space:nowrap}
+  .exed-pdf:hover{border-color:var(--flecha);background:#FFFBEE}
 </style>
 </head>
 <body>
@@ -773,9 +787,10 @@
       <span class="st" id="exStatus"></span>
     </div>
     <p class="tdhint">
-      영수증을 찍어 올리고 <b>금액과 분류</b>만 넣으면 됩니다. 나머지는 기본값
+      영수증을 찍거나 <b>PDF 를 열어</b> 올리고 <b>금액과 분류</b>만 넣으면 됩니다. 나머지는 기본값
       (<b>내가 결제 · 반반 · EUR</b>)으로 채워지니 대개 두 번만 누르면 끝납니다.
-      사진은 <b>2400px 고화질</b>로 저장되어 잔글씨가 남습니다 — 종이는 버리셔도 됩니다.<br>
+      사진은 <b>2400px 고화질</b>로 저장되어 잔글씨가 남습니다 — 종이는 버리셔도 됩니다.
+      항공권·보험증서처럼 메일로 받은 <b>PDF 는 변환 없이 원본 그대로</b> 보관됩니다.<br>
       연결이 없으면 폰에 잠시 담아 두었다가 <b>자동으로</b> 올립니다.
       자세한 내용은 이 화면 <b>맨 아래 기록 규칙</b>을 보세요.
     </p>
@@ -2839,7 +2854,7 @@ const pgOnSignedIn=()=>{
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260823-1113";
+  var BUILD="20260825-2243";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
@@ -2935,7 +2950,7 @@ const exNorm = (raw) => {
     cat:x.cat||"etc", sub:x.sub||"", payer:x.payer||"bin", split:x.split||"half",
     settle:(x.settle===undefined?true:!!x.settle),
     day:(x.day===undefined?0:+x.day), date:x.date||"", place:x.place||"",
-    memo:x.memo||"", fileId:x.fileId||"", del:!!x.del, ts:+x.ts||0
+    memo:x.memo||"", fileId:x.fileId||"", mime:x.mime||"", del:!!x.del, ts:+x.ts||0
   }));
   return d;
 };
@@ -3068,8 +3083,23 @@ const exTotals = () => {
 };
 
 /* ══════════ 영수증 업로드 ══════════ */
+const exIsPdf = (f) => !!f && (f.type==="application/pdf" || /\.pdf$/i.test(f.name||""));
+
 const exUpload = async(file) => {
   const k=exWho; if(!k){ toast("담당이 지정된 계정으로 로그인해야 합니다"); return null; }
+
+  /* PDF 는 변환하지 않고 그대로 올립니다 — 전자 영수증·항공권·보험증서 */
+  if(exIsPdf(file)){
+    try{
+      const name=k+"-receipt-"+Date.now().toString(36)+".pdf";
+      toast("PDF 올리는 중…");
+      const res=await uploadFile(name,"application/pdf",file,exFolderId,
+        p=>toast("업로드 "+Math.round(p*100)+"%"));
+      return {fileId:res.id, name:name, mime:"application/pdf",
+              orig:(file.name||"").replace(/\.pdf$/i,"")};
+    }catch(e){ toast("⚠ "+e.message); return null; }
+  }
+
   const oldD=CONFIG.webpMaxDim, oldQ=CONFIG.webpQuality;
   CONFIG.webpMaxDim=EX.maxDim; CONFIG.webpQuality=EX.quality;
   try{
@@ -3079,7 +3109,7 @@ const exUpload = async(file) => {
     toast("영수증 올리는 중…");
     const res=await uploadFile(name,"image/webp",blob,exFolderId,
       p=>toast("업로드 "+Math.round(p*100)+"%"));
-    return {fileId:res.id, name:name, gps:gps, taken:gps&&gps.taken};
+    return {fileId:res.id, name:name, mime:"image/webp", gps:gps, taken:gps&&gps.taken};
   }catch(e){ toast("⚠ "+e.message); return null; }
   finally{ CONFIG.webpMaxDim=oldD; CONFIG.webpQuality=oldQ; }
 };
@@ -3117,6 +3147,7 @@ const exRender = () => {
       + '<label class="exbig">📷 영수증 찍어 올리기'
       + '<input type="file" accept="image/*" capture="environment" id="exCam" hidden></label>'
       + '<label class="exsm">🖼 앨범에서<input type="file" accept="image/*" id="exPick" hidden></label>'
+      + '<label class="exsm">📄 PDF·파일<input type="file" accept="application/pdf,image/*" id="exPdf" hidden></label>'
       + '<button type="button" class="exsm" id="exNoPhoto">✎ 사진 없이</button>'
       + '<span class="exq" id="exQn"></span>'
       + '</div>';
@@ -3145,8 +3176,10 @@ const exRender = () => {
       const c=exCat(x.cat), mine=exCan(x.payer);
       h+='<div class="exrow'+(mine?" mine":"")+'" data-id="'+x.id+'" data-o="'+x.payer+'">'
         + (x.fileId
-            ? '<button type="button" class="exthumb" style="background-image:url(\''
-              +"https://lh3.googleusercontent.com/d/"+x.fileId+"=w300"+'\')" data-f="'+x.fileId+'"></button>'
+            ? (x.mime==="application/pdf"
+                ? '<button type="button" class="exthumb pdf" data-f="'+x.fileId+'" data-pdf="1">PDF</button>'
+                : '<button type="button" class="exthumb" style="background-image:url(\''
+                  +"https://lh3.googleusercontent.com/d/"+x.fileId+"=w300"+'\')" data-f="'+x.fileId+'"></button>')
             : '<span class="exthumb none">'+c.icon+'</span>')
         + '<div class="exinfo">'
           + '<b>'+c.icon+' '+exEsc(c.n)+(x.sub?' · '+exEsc(x.sub):'')+'</b>'
@@ -3193,7 +3226,11 @@ const exForm = (rec) => {
       +'<button type="button" class="exed-x">닫기 ✕</button></div>'
     +'<div class="exed-body">'
       + (rec.fileId
-          ? '<div class="exed-img"><img src="https://lh3.googleusercontent.com/d/'+rec.fileId+'=w900" alt="영수증"></div>'
+          ? (rec.mime==="application/pdf"
+              ? '<a class="exed-pdf" href="https://drive.google.com/file/d/'+rec.fileId+'/view" '
+                +'target="_blank" rel="noopener"><b>PDF</b><span>영수증 파일이 올라갔습니다<em>'
+                +exEsc(rec.orig||rec.name||"")+'</em></span><i>열기 ↗</i></a>'
+              : '<div class="exed-img"><img src="https://lh3.googleusercontent.com/d/'+rec.fileId+'=w900" alt="영수증"></div>')
           : '')
       +'<label class="exl">금액'
         +'<div class="exrow2">'
@@ -3350,7 +3387,7 @@ const exFormBind = (cat, sub) => {
       settle:$("exSettle").checked,
       day:+$("exDay").value, date:$("exDate").value,
       place:$("exPlace").value.trim(), memo:$("exMemo").value.trim(),
-      fileId:rec.fileId||"", del:false, ts:Date.now()
+      fileId:rec.fileId||"", mime:rec.mime||"", del:false, ts:Date.now()
     };
     if(!exLoaded || !exWho){
       exQAdd({owner:exWho||"bin", item:item});
@@ -3369,16 +3406,18 @@ const exClose = () => { $("exEditor").classList.remove("show");
   document.body.style.overflow=""; exPending=null; };
 
 const exBind = () => {
-  const cam=$("exCam"), pick=$("exPick"), no=$("exNoPhoto");
+  const cam=$("exCam"), pick=$("exPick"), pdf=$("exPdf"), no=$("exNoPhoto");
   const shot=async(e)=>{
     const f=e.target.files[0]; e.target.value="";
     if(!f) return;
     const up=await exUpload(f);
-    exForm(up ? {fileId:up.fileId, taken:up.taken,
-                 place:(up.gps&&up.gps.place)||""} : {});
+    exForm(up ? {fileId:up.fileId, mime:up.mime, orig:up.orig, taken:up.taken,
+                 place:(up.gps&&up.gps.place)||"",
+                 memo:up.orig||""} : {});
   };
   if(cam) cam.addEventListener("change",shot);
   if(pick) pick.addEventListener("change",shot);
+  if(pdf) pdf.addEventListener("change",shot);
   if(no) no.addEventListener("click",()=>exForm({}));
 
   document.querySelectorAll(".exrow .exed").forEach(b=>b.addEventListener("click",()=>{
@@ -3387,7 +3426,9 @@ const exBind = () => {
     if(it) exForm(Object.assign({},it));
   }));
   document.querySelectorAll(".exthumb[data-f]").forEach(b=>b.addEventListener("click",()=>{
-    window.open("https://lh3.googleusercontent.com/d/"+b.dataset.f+"=w2000","_blank");
+    window.open(b.dataset.pdf
+      ? "https://drive.google.com/file/d/"+b.dataset.f+"/view"
+      : "https://lh3.googleusercontent.com/d/"+b.dataset.f+"=w2000", "_blank");
   }));
 };
 
@@ -3406,7 +3447,7 @@ const exRules = () => (
   +'<li><b>출발 전 지출도 넣습니다.</b> 자전거 예약금, Jin 의 침낭·운송비처럼 '
     +'둘이 함께 쓸 것은 <b>출발 전 · 반반</b> 으로 기록하면 마지막 정산에 자동으로 반영됩니다.</li>'
   +'<li><b>서로의 내역을 볼 수 있습니다.</b> 고치고 지우는 것은 자기가 올린 것만 됩니다.</li>'
-  +'<li><b>영수증은 2400px 고화질로 저장됩니다.</b> 잔글씨가 남으니 종이는 버리셔도 됩니다. '
+  +'<li><b>PDF 도 그대로 올릴 수 있습니다.</b> 항공권·보험증서·숙소 확인서처럼 메일로 받은 전자 영수증은 <b>📄 PDF·파일</b> 로 올리면 변환 없이 원본이 보관됩니다. 금액과 분류를 넣는 방법은 사진과 똑같습니다.</li><li><b>사진 영수증은 2400px 고화질로 저장됩니다.</b> 잔글씨가 남으니 종이는 버리셔도 됩니다. '
     +'다만 세금 환급이나 카드 분쟁이 걸릴 만한 <b>큰 금액</b>(자전거 렌트·항공권)은 원본을 챙겨 두세요.</li>'
   +'<li><b>지우면 되돌리기 어렵습니다.</b> 사진은 Drive 휴지통으로 가니 복구는 가능하지만, '
     +'종이를 이미 버렸다면 그것뿐입니다. 삭제 전에 한 번 더 확인하세요.</li>'
