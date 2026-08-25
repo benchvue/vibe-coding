@@ -897,6 +897,45 @@
   .tcxlink small{font-weight:400;color:var(--ink-soft);font-size:.56rem}
   .tcxlink:hover{border-color:var(--flecha);background:#FFFBEE}
 
+  /* ── 항공 예약 정보 · 수하물 ── */
+  .bkgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:6px}
+  @media(max-width:760px){ .bkgrid{grid-template-columns:1fr 1fr} }
+  .bk{border:1px solid var(--line);border-radius:11px;background:#fff;padding:10px 12px}
+  .bk small{display:block;font-size:.66rem;color:var(--ink-soft)}
+  .bk b{display:block;font-size:.92rem;color:var(--ink);margin-top:3px;word-break:break-all}
+  .bk b.mono{font-family:'IBM Plex Mono',ui-monospace,monospace;letter-spacing:.04em;
+    color:var(--camino-blue)}
+
+  .bgh{font-family:'Gowun Batang',serif;font-size:.92rem;color:var(--camino-blue);
+    margin:16px 0 9px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+  .bgrow{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  @media(max-width:700px){ .bgrow{grid-template-columns:1fr} }
+  .bg{border:1px solid var(--line);border-radius:12px;background:#fff;padding:12px 14px}
+  .bg.out{border-color:#C7D6EE;background:#FAFCFF}
+  .bg.ret{border-color:#E7D9A8;background:#FFFBEE}
+  .bgh2{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;font-size:.84rem;font-weight:700;
+    color:var(--camino-blue);margin-bottom:8px;padding-bottom:7px;border-bottom:1px solid var(--line)}
+  .bgh2 span{font-weight:400;font-size:.7rem;color:var(--ink-soft)}
+  .bgh2 i{margin-left:auto;font-style:normal;font-size:.62rem;font-weight:600;color:#8A7F63;
+    background:#F4F2EA;border-radius:999px;padding:2px 8px}
+  .bg ul{list-style:none;padding:0;margin:0}
+  .bg li{position:relative;padding:5px 0 5px 16px;font-size:.79rem;line-height:1.65;
+    color:var(--ink-soft)}
+  .bg li::before{content:"";position:absolute;left:2px;top:13px;width:5px;height:5px;
+    border-radius:50%;background:var(--camino-blue)}
+  .bg.ret li::before{background:#C9A227}
+  .bg li.warn::before{background:var(--err)}
+  .bg li b{color:var(--ink)}
+  .bg li em{font-style:normal;font-weight:700;color:var(--rioja);font-variant-numeric:tabular-nums}
+  .bg li small{color:#A79E86;font-size:.7rem;margin-left:4px}
+
+  .bgnote{margin-top:11px;padding:10px 13px;background:#FBF7E9;border:1px solid #E7D9A8;
+    border-radius:10px;font-size:.78rem;line-height:1.8;color:var(--ink-soft)}
+  .bgnote b{color:#8A6A12}
+  .bgwarn{margin-top:9px;padding:11px 13px;background:#FDF3F3;border:1px solid #E3B7B7;
+    border-radius:10px;font-size:.78rem;line-height:1.8;color:#6B4A4A}
+  .bgwarn b{display:block;color:var(--err);margin-bottom:3px}
+
   /* ── DAY별 날씨 카드 ───────────────────────────── */
   .dwx{padding:2px 14px 14px}
   .dwx h4{font-size:.8rem;color:var(--camino-blue);font-weight:700;margin-bottom:8px;
@@ -2250,19 +2289,64 @@ until we check in?</pre>
         <tbody>
           <tr>
             <td><b>AY4808</b> 핀에어 공동운항<br><small style="color:var(--ink-soft)">운항: Air Nostrum(이베리아) · CRJ-1000</small></td>
-            <td><b>SCQ</b> 산티아고<br><small>5/22 토 13:40 CEST</small></td>
+            <td><b>SCQ</b> 산티아고<br><small>5/22 토 13:40 CEST · 단일 터미널</small></td>
             <td><b>MAD</b> 마드리드 T4<br><small>5/22 토 15:00 CEST</small></td>
             <td class="km">1h 20m</td>
           </tr>
           <tr style="background:#F3F6EC"><td colspan="4" style="font-size:.8rem">🔁 <b>마드리드 환승 4h 35m</b> — T4 → T4S (셔틀 열차 이동 + 여권심사) · 여유 충분</td></tr>
           <tr>
-            <td><b>AY5372</b> 핀에어 공동운항<br><small style="color:var(--ink-soft)">운항: 이베리아 · A321</small></td>
+            <td><b>0327</b> 항공권 표시<br><small style="color:var(--ink-soft)">운항: 이베리아 · A321neo/XLR<br>공동운항 AY5372</small></td>
             <td><b>MAD</b> 마드리드 T4S<br><small>5/22 토 19:35 CEST</small></td>
             <td><b>EWR</b> 뉴어크 T B<br><small>5/22 토 22:25 EDT</small></td>
             <td class="km">8h 50m</td>
           </tr>
         </tbody>
       </table>
+      </div>
+    </div>
+
+    <!-- Bin 예약 정보 · 수하물 -->
+    <div class="flow" style="margin-bottom:14px">
+      <h3>예약 정보<span class="who bin">BIN</span> <span class="chip">에어프랑스</span></h3>
+      <div class="bkgrid">
+        <div class="bk"><small>예약번호</small><b class="mono">YMES5F</b></div>
+        <div class="bk"><small>승객명</small><b>JONGBIN YM</b></div>
+        <div class="bk"><small>항공권 번호</small><b class="mono">057 2363473770</b></div>
+        <div class="bk"><small>운임</small><b>Economy Optimal</b></div>
+      </div>
+      <div class="note" style="margin-top:10px">항공사 앱이나
+      <a href="https://wwws.airfrance.us" target="_blank" rel="noopener">airfrance.us</a> 에서
+      <b>예약번호 + 성(YM)</b> 으로 조회됩니다. 좌석 지정과 여권 정보 입력을 미리 해 두세요.</div>
+
+      <h4 class="bgh">기내 수하물 — 구간마다 다릅니다</h4>
+      <div class="bgrow">
+        <div class="bg out">
+          <div class="bgh2">가는 길 <span>5/6 · EWR → CDG</span><i>에어프랑스</i></div>
+          <ul>
+            <li><b>기내 가방</b> 55 × 25 × 35 cm <small>손잡이·바퀴 포함</small></li>
+            <li><b>소지품 가방</b> 40 × 30 × 15 cm <small>앞좌석 아래</small></li>
+            <li><b>무게 합계</b> <em>12 kg</em> 까지</li>
+          </ul>
+        </div>
+        <div class="bg ret">
+          <div class="bgh2">귀국 <span>5/22 · SCQ → MAD → EWR</span><i>이베리아 운항</i></div>
+          <ul>
+            <li><b>기내 가방</b> 56 × 40 × 25 cm <small>규격은 더 큼</small></li>
+            <li><b>소지품 가방</b> 40 × 30 × 15 cm <small>앞좌석 아래</small></li>
+            <li class="warn"><b>무게</b> <em>10 kg</em> 까지 <small>14 kg 옵션 사용 불가</small></li>
+          </ul>
+        </div>
+      </div>
+      <div class="bgnote">
+        <b>귀국편 무게 기준이 더 빡빡합니다.</b> 가는 길은 12 kg 인데 귀국은 <b>10 kg</b> 이고,
+        14 kg 짜리 기내 수하물 옵션은 아예 쓸 수 없습니다.
+        산티아고에서 기념품이 늘기 쉬우니 <b>돌아올 때 2 kg 여유</b>를 미리 잡아 두세요.
+      </div>
+      <div class="bgwarn">
+        <b>확인이 필요합니다 — 위탁 수하물</b>
+        예약 화면에 기내 수하물만 나와 있습니다. 패니어와 장비를 부칠 <b>위탁 수하물이 포함되어 있는지</b>,
+        없다면 몇 개까지 얼마에 추가할 수 있는지 출발 전에 확인하세요.
+        자전거는 생장에서 빌리므로 자전거 자체를 부칠 일은 없습니다.
       </div>
     </div>
 
@@ -6232,7 +6316,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260824-0059";
+  var BUILD="20260825-2339";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
