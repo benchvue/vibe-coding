@@ -950,6 +950,19 @@
   .seatbox svg{display:block;max-width:230px;margin:0 auto}
   .seatn{margin-top:8px;font-size:.74rem;color:var(--ink-soft);line-height:1.75}
   .seatn b{color:var(--ink)}
+  .seatrow.three{grid-template-columns:repeat(3,1fr)}
+  @media(max-width:900px){ .seatrow.three{grid-template-columns:1fr 1fr} }
+  @media(max-width:640px){ .seatrow.three{grid-template-columns:1fr} }
+
+  /* 체크인 안내 */
+  .ckrow{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:6px}
+  @media(max-width:700px){ .ckrow{grid-template-columns:1fr} }
+  .ck{border:1px solid var(--line);border-radius:11px;background:#fff;padding:11px 13px;
+    font-size:.77rem;color:var(--ink-soft);line-height:1.7}
+  .ck b{display:block;font-size:.8rem;color:var(--camino-blue);margin-bottom:3px}
+  .ck em{font-style:normal;font-weight:700;color:var(--rioja)}
+  .ck.warn{border-color:#E7D9A8;background:#FFFBEE}
+  .ck.warn b{color:#8A6A12}
 
   /* ── DAY별 날씨 카드 ───────────────────────────── */
   .dwx{padding:2px 14px 14px}
@@ -1838,7 +1851,7 @@
       <div class="jday">
         <div class="jd-h"><b>5/6</b><span>목</span></div>
         <ul class="jlist">
-          <li><i class="who bin">BIN</i><b>17:00</b> 뉴어크 EWR 출발 <small>AF0071 · A350-900</small></li>
+          <li><i class="who bin">BIN</i><b>17:00</b> 뉴어크 EWR 출발 <small>AF071 · A350-900</small></li>
         </ul>
       </div>
 
@@ -2258,7 +2271,7 @@ until we check in?</pre>
         <thead><tr><th>편명 · 기종</th><th>출발</th><th>도착</th><th style="text-align:right">소요</th></tr></thead>
         <tbody>
           <tr>
-            <td><b>AF0071</b> 에어프랑스<br><small style="color:var(--ink-soft)">A350-900</small></td>
+            <td><b>AF071</b> 에어프랑스<br><small style="color:var(--ink-soft)">A350-900<br>좌석 <b>22D</b> 통로</small></td>
             <td><b>EWR</b> 뉴어크<br><small>5/6 목 17:00 EDT</small></td>
             <td><b>CDG</b> 파리<br><small>5/7 금 06:10 CEST</small></td>
             <td class="km">7h 10m</td>
@@ -2335,8 +2348,25 @@ until we check in?</pre>
       <a href="https://wwws.airfrance.us" target="_blank" rel="noopener">airfrance.us</a> 에서
       예약번호와 성으로 조회됩니다. 좌석 지정과 여권 정보 입력을 미리 해 두세요.</div>
 
+      <h4 class="bgh">체크인</h4>
+      <div class="ckrow">
+        <div class="ck"><b>온라인 체크인</b><em>출발 30시간 전</em>부터 열립니다</div>
+        <div class="ck"><b>미국 출도착편</b><em>24시간 전</em>부터 (EWR 출발·도착편)</div>
+        <div class="ck warn"><b>마감</b><em>출발 1시간 전</em> — 늦으면 좌석이 풀립니다</div>
+      </div>
+      <div class="note" style="margin-top:9px">가는 길(5/6 EWR)과 귀국(5/22 SCQ) 모두
+      <b>전날 저녁에 미리</b> 체크인해 두세요. 순례 중에는 인터넷이 불안정할 수 있으니
+      귀국편은 아르수아나 산티아고에서 와이파이가 될 때 해 두는 편이 안전합니다.</div>
+
       <h4 class="bgh">좌석</h4>
-      <div class="seatrow">
+      <div class="seatrow three">
+        <div class="seatbox">
+          <div class="seath"><b>22D</b> <span>통로</span><i>AF071 · EWR → CDG</i></div>
+          <svg viewBox="0 0 290 190" width="100%" role="img" aria-label="A350-900 좌석 배치 · 22D"><title>EWR → CDG · A350-900 · 좌석 22D</title><path d="M18 6 Q145 -12 272 6 L272 184 L18 184 Z" fill="#F7F5EE" stroke="#D8CFBB"/><text class="sc" x="39" y="24">A</text><text class="sc" x="63" y="24">B</text><text class="sc" x="87" y="24">C</text><text class="sc" x="127" y="24">D</text><text class="sc" x="151" y="24">E</text><text class="sc" x="175" y="24">H</text><text class="sc" x="215" y="24">J</text><text class="sc" x="239" y="24">K</text><text class="sc" x="263" y="24">L</text><text class="sr" x="98" y="47">21</text><text class="sr" x="186" y="47">21</text><rect class="sx" x="30" y="32" width="18" height="22" rx="3"/><rect class="sx" x="54" y="32" width="18" height="22" rx="3"/><rect class="sx" x="78" y="32" width="18" height="22" rx="3"/><rect class="sx" x="118" y="32" width="18" height="22" rx="3"/><rect class="sx" x="142" y="32" width="18" height="22" rx="3"/><rect class="sx" x="166" y="32" width="18" height="22" rx="3"/><rect class="sx" x="206" y="32" width="18" height="22" rx="3"/><rect class="sx" x="230" y="32" width="18" height="22" rx="3"/><rect class="sx" x="254" y="32" width="18" height="22" rx="3"/><text class="sr" x="98" y="77">22</text><text class="sr" x="186" y="77">22</text><rect class="so" x="30" y="62" width="18" height="22" rx="3"/><rect class="so" x="54" y="62" width="18" height="22" rx="3"/><rect class="so" x="78" y="62" width="18" height="22" rx="3"/><rect class="sm" x="118" y="62" width="18" height="22" rx="3"/><text class="stm" x="127" y="76">22D</text><rect class="so" x="142" y="62" width="18" height="22" rx="3"/><rect class="so" x="166" y="62" width="18" height="22" rx="3"/><rect class="so" x="206" y="62" width="18" height="22" rx="3"/><rect class="so" x="230" y="62" width="18" height="22" rx="3"/><rect class="so" x="254" y="62" width="18" height="22" rx="3"/><text class="sr" x="98" y="107">23</text><text class="sr" x="186" y="107">23</text><rect class="so" x="30" y="92" width="18" height="22" rx="3"/><rect class="so" x="54" y="92" width="18" height="22" rx="3"/><rect class="so" x="78" y="92" width="18" height="22" rx="3"/><rect class="so" x="118" y="92" width="18" height="22" rx="3"/><rect class="so" x="142" y="92" width="18" height="22" rx="3"/><rect class="so" x="166" y="92" width="18" height="22" rx="3"/><rect class="so" x="206" y="92" width="18" height="22" rx="3"/><rect class="so" x="230" y="92" width="18" height="22" rx="3"/><rect class="so" x="254" y="92" width="18" height="22" rx="3"/><text class="sr" x="98" y="137">24</text><text class="sr" x="186" y="137">24</text><rect class="so" x="30" y="122" width="18" height="22" rx="3"/><rect class="so" x="54" y="122" width="18" height="22" rx="3"/><rect class="so" x="78" y="122" width="18" height="22" rx="3"/><rect class="so" x="118" y="122" width="18" height="22" rx="3"/><rect class="so" x="142" y="122" width="18" height="22" rx="3"/><rect class="so" x="166" y="122" width="18" height="22" rx="3"/><rect class="so" x="206" y="122" width="18" height="22" rx="3"/><rect class="so" x="230" y="122" width="18" height="22" rx="3"/><rect class="so" x="254" y="122" width="18" height="22" rx="3"/><text class="sn" x="145" y="180">앞 ↑ · 3-3-3 배열 · D 는 가운데 블록 왼쪽 통로</text><style>.so{fill:#fff;stroke:#C9C2AE;stroke-width:1.2}.sx{fill:#EFEDE3;stroke:#D8CFBB;stroke-width:1.2}.sm{fill:#1E3A6E;stroke:#152A55;stroke-width:1.6}.stm{font-family:"IBM Plex Sans KR",sans-serif;font-size:7.5px;font-weight:700;fill:#fff;text-anchor:middle}.sc{font-family:"IBM Plex Sans KR",sans-serif;font-size:9px;fill:#8A8578;text-anchor:middle}.sr{font-family:"IBM Plex Sans KR",sans-serif;font-size:9px;fill:#6B6B66;text-anchor:middle}.sn{font-family:"IBM Plex Sans KR",sans-serif;font-size:8.5px;fill:#A79E86;text-anchor:middle}</style></svg>
+          <p class="seatn"><b>D 는 가운데 블록의 왼쪽 통로</b>입니다.
+          밤 비행 7시간 10분에 옆 사람을 넘지 않고 드나들 수 있습니다.
+          창가는 아니지만 잠자기에는 통로가 낫습니다.</p>
+        </div>
         <div class="seatbox">
           <div class="seath"><b>11A</b> <span>창가</span><i>IB1136 · SCQ → MAD</i></div>
           <svg viewBox="0 0 210 200" width="100%" role="img" aria-label="CRJ-1000 좌석 배치 · 11A"><title>SCQ → MAD · CRJ-1000 · 좌석 11A</title><path d="M28 6 Q105 -14 182 6 L182 194 L28 194 Z" fill="#F7F5EE" stroke="#D8CFBB"/><text class="sc" x="55" y="24">A</text><text class="sc" x="87" y="24">C</text><text class="sc" x="135" y="24">D</text><text class="sc" x="167" y="24">F</text><text class="sr" x="105" y="46">8</text><rect class="sx" x="42" y="32" width="26" height="18" rx="3"/><path class="sxl2" d="M47 37 L63 45 M63 37 L47 45"/><rect class="sx" x="74" y="32" width="26" height="18" rx="3"/><path class="sxl2" d="M79 37 L95 45 M95 37 L79 45"/><rect class="so" x="122" y="32" width="26" height="18" rx="3"/><rect class="so" x="154" y="32" width="26" height="18" rx="3"/><text class="sr" x="105" y="69">9</text><rect class="sx" x="42" y="55" width="26" height="18" rx="3"/><path class="sxl2" d="M47 60 L63 68 M63 60 L47 68"/><rect class="so" x="74" y="55" width="26" height="18" rx="3"/><rect class="so" x="122" y="55" width="26" height="18" rx="3"/><rect class="so" x="154" y="55" width="26" height="18" rx="3"/><text class="sr" x="105" y="92">10</text><rect class="sx" x="42" y="78" width="26" height="18" rx="3"/><path class="sxl2" d="M47 83 L63 91 M63 83 L47 91"/><rect class="so" x="74" y="78" width="26" height="18" rx="3"/><rect class="so" x="122" y="78" width="26" height="18" rx="3"/><rect class="so" x="154" y="78" width="26" height="18" rx="3"/><text class="sr" x="105" y="115">11</text><rect class="sm" x="42" y="101" width="26" height="18" rx="3"/><text class="stm" x="55" y="113">11A</text><rect class="so" x="74" y="101" width="26" height="18" rx="3"/><rect class="so" x="122" y="101" width="26" height="18" rx="3"/><rect class="so" x="154" y="101" width="26" height="18" rx="3"/><text class="sr" x="105" y="138">12</text><rect class="so" x="42" y="124" width="26" height="18" rx="3"/><rect class="so" x="74" y="124" width="26" height="18" rx="3"/><rect class="so" x="122" y="124" width="26" height="18" rx="3"/><rect class="so" x="154" y="124" width="26" height="18" rx="3"/><text class="sr" x="105" y="161">14</text><rect class="so" x="42" y="147" width="26" height="18" rx="3"/><rect class="so" x="74" y="147" width="26" height="18" rx="3"/><rect class="so" x="122" y="147" width="26" height="18" rx="3"/><rect class="so" x="154" y="147" width="26" height="18" rx="3"/><text class="sr" x="105" y="184">15</text><rect class="so" x="42" y="170" width="26" height="18" rx="3"/><rect class="so" x="74" y="170" width="26" height="18" rx="3"/><rect class="so" x="122" y="170" width="26" height="18" rx="3"/><rect class="so" x="154" y="170" width="26" height="18" rx="3"/><text class="sn" x="105" y="192">앞 ↑ · 2-2 배열</text><style>.so{fill:#fff;stroke:#C9C2AE;stroke-width:1.2}.sx{fill:#EFEDE3;stroke:#D8CFBB;stroke-width:1.2}.sxl{fill:#FFF6D8;stroke:#E0B94A;stroke-width:1.2}.sxl2{stroke:#BDB6A4;stroke-width:1.6;fill:none}.sm{fill:#1E3A6E;stroke:#152A55;stroke-width:1.6}.stm{font-family:"IBM Plex Sans KR",sans-serif;font-size:9px;font-weight:700;fill:#fff;text-anchor:middle}.stx{font-family:"IBM Plex Sans KR",sans-serif;font-size:8px;font-weight:700;fill:#B08400;text-anchor:middle}.sc{font-family:"IBM Plex Sans KR",sans-serif;font-size:9px;fill:#8A8578;text-anchor:middle}.sr{font-family:"IBM Plex Sans KR",sans-serif;font-size:9px;fill:#6B6B66;text-anchor:middle}.sn{font-family:"IBM Plex Sans KR",sans-serif;font-size:8.5px;fill:#A79E86;text-anchor:middle}</style></svg>
@@ -2496,7 +2526,7 @@ until we check in?</pre>
       <p style="font-size:.85rem;margin-bottom:8px">각 편의 출발·도착 현지시각을 UTC로 환산해 소요시간과 대조했습니다
       (EDT=UTC−4 · CEST=UTC+2 · KST=UTC+9). <b>다섯 개 일정 모두 계산이 정확히 맞습니다:</b></p>
       <ul style="list-style:none;font-size:.83rem;line-height:1.9">
-        <li>✔ AF0071: 17:00 EDT +7h10 = 06:10 CEST 익일 — 일치</li>
+        <li>✔ AF071: 17:00 EDT +7h10 = 06:10 CEST 익일 — 일치</li>
         <li>✔ KE901: 11:20 KST +14h10 = 18:30 CEST 당일 — 일치</li>
         <li>✔ IB0327 (Bin): 19:35 CEST +8h50 = 22:25 EDT 당일(5/22) 도착 — 일치, 날짜 안 넘어감</li>
         <li>✔ VY1623 (Jin): 11:20 +1h40 = 13:00 CEST — 일치</li>
@@ -2824,7 +2854,7 @@ until we check in?</pre>
     <div class="flow" style="margin-bottom:14px">
       <h3>① 여행 가기 전</h3>
       <ul class="todo" data-td="pre">
-        <li><label><input type="checkbox"> 항공권 발권 — Bin(AF0071 · IB1136/IB0327 <b>발권 완료</b>) · Jin(KE901 + 귀국편, <b>VY1623 2027/5/22 운항 예매 오픈 시 확정</b> · BCN→ICN은 KE 통합 발권)</label></li>
+        <li><label><input type="checkbox"> 항공권 발권 — Bin(AF071 · IB1136/IB0327 <b>발권 완료</b>) · Jin(KE901 + 귀국편, <b>VY1623 2027/5/22 운항 예매 오픈 시 확정</b> · BCN→ICN은 KE 통합 발권)</label></li>
         <li><label><input type="checkbox"> TGV 예약 — 5/8(토) 몽파르나스 10:05 → 바욘 (예매 오픈 약 4개월 전, SNCF Connect)</label></li>
         <li><label><input type="checkbox"> 자전거 원웨이 렌탈 2대 예약 (생장 수령 → 산티아고 반납) — 패니어·헬멧·수리 키트 포함 확인</label></li>
         <li><label><input type="checkbox"> 숙소 예약 — <b>산티아고 최종 호텔부터 확정</b> (아래 캐리어 직송의 수령지) → 파리 → 경유지 순</label></li>
@@ -6352,7 +6382,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260827-0928";
+  var BUILD="20260827-0943";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
