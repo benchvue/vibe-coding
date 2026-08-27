@@ -936,6 +936,21 @@
     border-radius:10px;font-size:.78rem;line-height:1.8;color:#6B4A4A}
   .bgwarn b{display:block;color:var(--err);margin-bottom:3px}
 
+  /* 좌석 그림 */
+  .seatrow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
+  @media(max-width:700px){ .seatrow{grid-template-columns:1fr} }
+  .seatbox{border:1px solid var(--line);border-radius:12px;background:#fff;padding:12px 14px}
+  .seath{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;margin-bottom:8px;
+    padding-bottom:7px;border-bottom:1px solid var(--line)}
+  .seath b{font-family:'Gowun Batang',serif;font-size:1.25rem;color:var(--camino-blue);
+    letter-spacing:.02em}
+  .seath span{font-size:.7rem;font-weight:700;color:#fff;background:var(--camino-blue);
+    border-radius:999px;padding:2px 9px}
+  .seath i{margin-left:auto;font-style:normal;font-size:.66rem;color:var(--ink-soft)}
+  .seatbox svg{display:block;max-width:230px;margin:0 auto}
+  .seatn{margin-top:8px;font-size:.74rem;color:var(--ink-soft);line-height:1.75}
+  .seatn b{color:var(--ink)}
+
   /* ── DAY별 날씨 카드 ───────────────────────────── */
   .dwx{padding:2px 14px 14px}
   .dwx h4{font-size:.8rem;color:var(--camino-blue);font-weight:700;margin-bottom:8px;
@@ -2288,14 +2303,14 @@ until we check in?</pre>
         <thead><tr><th>편명 · 기종</th><th>출발</th><th>도착</th><th style="text-align:right">소요</th></tr></thead>
         <tbody>
           <tr>
-            <td><b>AY4808</b> 핀에어 공동운항<br><small style="color:var(--ink-soft)">운항: Air Nostrum(이베리아) · CRJ-1000</small></td>
+            <td><b>IB1136</b> 이베리아<br><small style="color:var(--ink-soft)">운항: Air Nostrum · CRJ-1000<br>좌석 <b>11A</b> 창가</small></td>
             <td><b>SCQ</b> 산티아고<br><small>5/22 토 13:40 CEST · 단일 터미널</small></td>
-            <td><b>MAD</b> 마드리드 T4<br><small>5/22 토 15:00 CEST</small></td>
+            <td><b>MAD</b> 마드리드 <b>T4</b><br><small>5/22 토 15:00 CEST</small></td>
             <td class="km">1h 20m</td>
           </tr>
           <tr style="background:#F3F6EC"><td colspan="4" style="font-size:.8rem">🔁 <b>마드리드 환승 4h 35m</b> — T4 → T4S (셔틀 열차 이동 + 여권심사) · 여유 충분</td></tr>
           <tr>
-            <td><b>0327</b> 항공권 표시<br><small style="color:var(--ink-soft)">운항: 이베리아 · A321neo/XLR<br>공동운항 AY5372</small></td>
+            <td><b>IB0327</b> 이베리아<br><small style="color:var(--ink-soft)">A321neo/XLR<br>좌석 <b>22C</b> 통로</small></td>
             <td><b>MAD</b> 마드리드 T4S<br><small>5/22 토 19:35 CEST</small></td>
             <td><b>EWR</b> 뉴어크 T B<br><small>5/22 토 22:25 EDT</small></td>
             <td class="km">8h 50m</td>
@@ -2319,6 +2334,25 @@ until we check in?</pre>
       전체 번호는 각자 휴대폰이나 메일에서 확인하세요.
       <a href="https://wwws.airfrance.us" target="_blank" rel="noopener">airfrance.us</a> 에서
       예약번호와 성으로 조회됩니다. 좌석 지정과 여권 정보 입력을 미리 해 두세요.</div>
+
+      <h4 class="bgh">좌석</h4>
+      <div class="seatrow">
+        <div class="seatbox">
+          <div class="seath"><b>11A</b> <span>창가</span><i>IB1136 · SCQ → MAD</i></div>
+          <svg viewBox="0 0 210 200" width="100%" role="img" aria-label="CRJ-1000 좌석 배치 · 11A"><title>SCQ → MAD · CRJ-1000 · 좌석 11A</title><path d="M28 6 Q105 -14 182 6 L182 194 L28 194 Z" fill="#F7F5EE" stroke="#D8CFBB"/><text class="sc" x="55" y="24">A</text><text class="sc" x="87" y="24">C</text><text class="sc" x="135" y="24">D</text><text class="sc" x="167" y="24">F</text><text class="sr" x="105" y="46">8</text><rect class="sx" x="42" y="32" width="26" height="18" rx="3"/><path class="sxl2" d="M47 37 L63 45 M63 37 L47 45"/><rect class="sx" x="74" y="32" width="26" height="18" rx="3"/><path class="sxl2" d="M79 37 L95 45 M95 37 L79 45"/><rect class="so" x="122" y="32" width="26" height="18" rx="3"/><rect class="so" x="154" y="32" width="26" height="18" rx="3"/><text class="sr" x="105" y="69">9</text><rect class="sx" x="42" y="55" width="26" height="18" rx="3"/><path class="sxl2" d="M47 60 L63 68 M63 60 L47 68"/><rect class="so" x="74" y="55" width="26" height="18" rx="3"/><rect class="so" x="122" y="55" width="26" height="18" rx="3"/><rect class="so" x="154" y="55" width="26" height="18" rx="3"/><text class="sr" x="105" y="92">10</text><rect class="sx" x="42" y="78" width="26" height="18" rx="3"/><path class="sxl2" d="M47 83 L63 91 M63 83 L47 91"/><rect class="so" x="74" y="78" width="26" height="18" rx="3"/><rect class="so" x="122" y="78" width="26" height="18" rx="3"/><rect class="so" x="154" y="78" width="26" height="18" rx="3"/><text class="sr" x="105" y="115">11</text><rect class="sm" x="42" y="101" width="26" height="18" rx="3"/><text class="stm" x="55" y="113">11A</text><rect class="so" x="74" y="101" width="26" height="18" rx="3"/><rect class="so" x="122" y="101" width="26" height="18" rx="3"/><rect class="so" x="154" y="101" width="26" height="18" rx="3"/><text class="sr" x="105" y="138">12</text><rect class="so" x="42" y="124" width="26" height="18" rx="3"/><rect class="so" x="74" y="124" width="26" height="18" rx="3"/><rect class="so" x="122" y="124" width="26" height="18" rx="3"/><rect class="so" x="154" y="124" width="26" height="18" rx="3"/><text class="sr" x="105" y="161">14</text><rect class="so" x="42" y="147" width="26" height="18" rx="3"/><rect class="so" x="74" y="147" width="26" height="18" rx="3"/><rect class="so" x="122" y="147" width="26" height="18" rx="3"/><rect class="so" x="154" y="147" width="26" height="18" rx="3"/><text class="sr" x="105" y="184">15</text><rect class="so" x="42" y="170" width="26" height="18" rx="3"/><rect class="so" x="74" y="170" width="26" height="18" rx="3"/><rect class="so" x="122" y="170" width="26" height="18" rx="3"/><rect class="so" x="154" y="170" width="26" height="18" rx="3"/><text class="sn" x="105" y="192">앞 ↑ · 2-2 배열</text><style>.so{fill:#fff;stroke:#C9C2AE;stroke-width:1.2}.sx{fill:#EFEDE3;stroke:#D8CFBB;stroke-width:1.2}.sxl{fill:#FFF6D8;stroke:#E0B94A;stroke-width:1.2}.sxl2{stroke:#BDB6A4;stroke-width:1.6;fill:none}.sm{fill:#1E3A6E;stroke:#152A55;stroke-width:1.6}.stm{font-family:"IBM Plex Sans KR",sans-serif;font-size:9px;font-weight:700;fill:#fff;text-anchor:middle}.stx{font-family:"IBM Plex Sans KR",sans-serif;font-size:8px;font-weight:700;fill:#B08400;text-anchor:middle}.sc{font-family:"IBM Plex Sans KR",sans-serif;font-size:9px;fill:#8A8578;text-anchor:middle}.sr{font-family:"IBM Plex Sans KR",sans-serif;font-size:9px;fill:#6B6B66;text-anchor:middle}.sn{font-family:"IBM Plex Sans KR",sans-serif;font-size:8.5px;fill:#A79E86;text-anchor:middle}</style></svg>
+          <p class="seatn">CRJ-1000 은 좌우 2석씩입니다. <b>A 는 왼쪽 창가</b>이고
+          1시간 20분 구간이라 어느 자리든 큰 차이는 없습니다.</p>
+        </div>
+        <div class="seatbox">
+          <div class="seath"><b>22C</b> <span>통로</span><i>IB0327 · MAD → EWR</i></div>
+          <svg viewBox="0 0 250 200" width="100%" role="img" aria-label="A321neo 좌석 배치 · 22C"><title>MAD → EWR · A321neo · 좌석 22C</title><path d="M22 6 Q125 -14 228 6 L228 194 L22 194 Z" fill="#F7F5EE" stroke="#D8CFBB"/><text class="sc" x="45" y="24">A</text><text class="sc" x="73" y="24">B</text><text class="sc" x="101" y="24">C</text><text class="sc" x="149" y="24">D</text><text class="sc" x="177" y="24">E</text><text class="sc" x="205" y="24">F</text><text class="sr" x="125" y="46">21</text><rect class="sxl" x="34" y="32" width="22" height="20" rx="3"/><text class="stx" x="45" y="45">XL</text><rect class="sxl" x="62" y="32" width="22" height="20" rx="3"/><text class="stx" x="73" y="45">XL</text><rect class="sxl" x="90" y="32" width="22" height="20" rx="3"/><text class="stx" x="101" y="45">XL</text><rect class="sxl" x="138" y="32" width="22" height="20" rx="3"/><text class="stx" x="149" y="45">XL</text><rect class="sx" x="166" y="32" width="22" height="20" rx="3"/><path class="sxl2" d="M171 37 L183 47 M183 37 L171 47"/><rect class="sxl" x="194" y="32" width="22" height="20" rx="3"/><text class="stx" x="205" y="45">XL</text><text class="sr" x="125" y="73">22</text><rect class="so" x="34" y="59" width="22" height="20" rx="3"/><rect class="so" x="62" y="59" width="22" height="20" rx="3"/><rect class="sm" x="90" y="59" width="22" height="20" rx="3"/><text class="stm" x="101" y="72">22C</text><rect class="so" x="138" y="59" width="22" height="20" rx="3"/><rect class="so" x="166" y="59" width="22" height="20" rx="3"/><rect class="so" x="194" y="59" width="22" height="20" rx="3"/><text class="sr" x="125" y="100">23</text><rect class="so" x="34" y="86" width="22" height="20" rx="3"/><rect class="so" x="62" y="86" width="22" height="20" rx="3"/><rect class="so" x="90" y="86" width="22" height="20" rx="3"/><rect class="so" x="138" y="86" width="22" height="20" rx="3"/><rect class="so" x="166" y="86" width="22" height="20" rx="3"/><rect class="so" x="194" y="86" width="22" height="20" rx="3"/><text class="sr" x="125" y="127">24</text><rect class="so" x="34" y="113" width="22" height="20" rx="3"/><rect class="so" x="62" y="113" width="22" height="20" rx="3"/><rect class="so" x="90" y="113" width="22" height="20" rx="3"/><rect class="so" x="138" y="113" width="22" height="20" rx="3"/><rect class="so" x="166" y="113" width="22" height="20" rx="3"/><rect class="so" x="194" y="113" width="22" height="20" rx="3"/><text class="sr" x="125" y="154">25</text><rect class="so" x="34" y="140" width="22" height="20" rx="3"/><rect class="so" x="62" y="140" width="22" height="20" rx="3"/><rect class="so" x="90" y="140" width="22" height="20" rx="3"/><rect class="so" x="138" y="140" width="22" height="20" rx="3"/><rect class="so" x="166" y="140" width="22" height="20" rx="3"/><rect class="so" x="194" y="140" width="22" height="20" rx="3"/><text class="sn" x="125" y="192">앞 ↑ · 3-3 배열 · 21열은 넓은 좌석(XL)</text><style>.so{fill:#fff;stroke:#C9C2AE;stroke-width:1.2}.sx{fill:#EFEDE3;stroke:#D8CFBB;stroke-width:1.2}.sxl{fill:#FFF6D8;stroke:#E0B94A;stroke-width:1.2}.sxl2{stroke:#BDB6A4;stroke-width:1.6;fill:none}.sm{fill:#1E3A6E;stroke:#152A55;stroke-width:1.6}.stm{font-family:"IBM Plex Sans KR",sans-serif;font-size:9px;font-weight:700;fill:#fff;text-anchor:middle}.stx{font-family:"IBM Plex Sans KR",sans-serif;font-size:8px;font-weight:700;fill:#B08400;text-anchor:middle}.sc{font-family:"IBM Plex Sans KR",sans-serif;font-size:9px;fill:#8A8578;text-anchor:middle}.sr{font-family:"IBM Plex Sans KR",sans-serif;font-size:9px;fill:#6B6B66;text-anchor:middle}.sn{font-family:"IBM Plex Sans KR",sans-serif;font-size:8.5px;fill:#A79E86;text-anchor:middle}</style></svg>
+          <p class="seatn"><b>C 는 왼쪽 블록의 통로</b>입니다. 8시간 50분 비행에
+          화장실 오가기 편한 자리입니다. 앞의 21열은 다리 공간이 넓은 XL 열이라
+          앞이 트여 보이지만, 22열 자체는 일반 간격입니다.</p>
+        </div>
+      </div>
+      <div class="note" style="margin-top:9px">좌석은 예약 조회에서 바꿀 수 있습니다.
+      두 사람이 붙어 앉으려면 Jin 의 좌석과 함께 조정하세요.</div>
 
       <h4 class="bgh">기내 수하물 — 구간마다 다릅니다</h4>
       <div class="bgrow">
@@ -2384,8 +2418,8 @@ until we check in?</pre>
 
         <!-- 구간 라벨 -->
         <g font-family="IBM Plex Sans KR,sans-serif" font-size="11" fill="#3E4B66">
-          <text x="120" y="338">✈ AY4808 13:40발 · 1h20 <tspan font-weight="700" fill="#3E7BD6">BIN</tspan></text>
-          <text x="40" y="447">✈ AY5372 19:35발 · 8h50 → EWR 뉴어크 <tspan font-weight="700" fill="#3E7BD6">BIN</tspan></text>
+          <text x="120" y="338">✈ IB1136 13:40발 · 1h20 <tspan font-weight="700" fill="#3E7BD6">BIN</tspan></text>
+          <text x="40" y="447">✈ IB0327 19:35발 · 8h50 → EWR 뉴어크 <tspan font-weight="700" fill="#3E7BD6">BIN</tspan></text>
           <text x="205" y="283">✈ VY1623 11:20발 · 1h40 <tspan font-weight="700" fill="#E0A800">JIN</tspan></text>
           <text x="487" y="250">✈ KE6472/AF1649 15:50발 · 1h55 <tspan font-weight="700" fill="#E0A800">JIN</tspan></text>
           <text x="700" y="38" font-weight="600">✈ KE902 20:35발 · 12h15 → ICN 인천 <tspan fill="#E0A800">JIN</tspan></text>
@@ -2464,7 +2498,7 @@ until we check in?</pre>
       <ul style="list-style:none;font-size:.83rem;line-height:1.9">
         <li>✔ AF0071: 17:00 EDT +7h10 = 06:10 CEST 익일 — 일치</li>
         <li>✔ KE901: 11:20 KST +14h10 = 18:30 CEST 당일 — 일치</li>
-        <li>✔ AY5372 (Bin): 19:35 CEST +8h50 = 22:25 EDT 당일(5/22) 도착 — 일치, 날짜 안 넘어감</li>
+        <li>✔ IB0327 (Bin): 19:35 CEST +8h50 = 22:25 EDT 당일(5/22) 도착 — 일치, 날짜 안 넘어감</li>
         <li>✔ VY1623 (Jin): 11:20 +1h40 = 13:00 CEST — 일치</li>
         <li>✔ KE6472/AF1649 (Jin): 15:50 +1h55 = 17:45 CEST — 일치</li>
         <li>✔ KE902 (Jin): 20:35 CEST +12h15 = 15:50 KST 익일(5/23 일) — 일치</li>
@@ -2790,7 +2824,7 @@ until we check in?</pre>
     <div class="flow" style="margin-bottom:14px">
       <h3>① 여행 가기 전</h3>
       <ul class="todo" data-td="pre">
-        <li><label><input type="checkbox"> 항공권 발권 — Bin(AF0071·AY4808/5372) · Jin(KE901 + 귀국편, <b>VY1623 2027/5/22 운항 예매 오픈 시 확정</b> · BCN→ICN은 KE 통합 발권)</label></li>
+        <li><label><input type="checkbox"> 항공권 발권 — Bin(AF0071 · IB1136/IB0327 <b>발권 완료</b>) · Jin(KE901 + 귀국편, <b>VY1623 2027/5/22 운항 예매 오픈 시 확정</b> · BCN→ICN은 KE 통합 발권)</label></li>
         <li><label><input type="checkbox"> TGV 예약 — 5/8(토) 몽파르나스 10:05 → 바욘 (예매 오픈 약 4개월 전, SNCF Connect)</label></li>
         <li><label><input type="checkbox"> 자전거 원웨이 렌탈 2대 예약 (생장 수령 → 산티아고 반납) — 패니어·헬멧·수리 키트 포함 확인</label></li>
         <li><label><input type="checkbox"> 숙소 예약 — <b>산티아고 최종 호텔부터 확정</b> (아래 캐리어 직송의 수령지) → 파리 → 경유지 순</label></li>
@@ -6318,7 +6352,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260825-2343";
+  var BUILD="20260827-0928";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){

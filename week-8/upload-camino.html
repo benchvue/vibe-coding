@@ -682,6 +682,12 @@
     overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .exed-pdf i{flex:0 0 auto;font-style:normal;font-size:12px;color:var(--blue);white-space:nowrap}
   .exed-pdf:hover{border-color:var(--flecha);background:#FFFBEE}
+
+  .exbtns{display:flex;gap:4px;justify-content:flex-end;margin-top:4px}
+  .exdl{border:1px solid var(--line);background:#fff;color:var(--err);border-radius:7px;
+    padding:3px 9px;font-size:13px;line-height:1;font-family:inherit}
+  .exdl:hover{background:var(--err);color:#fff;border-color:var(--err)}
+  .exdl[disabled]{opacity:.5}
 </style>
 </head>
 <body>
@@ -2854,7 +2860,7 @@ const pgOnSignedIn=()=>{
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260825-2243";
+  var BUILD="20260827-0928";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
@@ -3193,7 +3199,9 @@ const exRender = () => {
         + '</div>'
         + '<div class="examt"><b>'+exEur(x.eur)+'</b>'
           + (x.cur!=="EUR"?'<small>'+exMoney(x.amt,x.cur)+'</small>':'')
-          + (mine?'<button type="button" class="exed">✎</button>':'')
+          + (mine?'<span class="exbtns">'
+              +'<button type="button" class="exed" title="고치기">✎</button>'
+              +'<button type="button" class="exdl" title="지우기">×</button></span>':'')
         + '</div></div>';
     });
     h+='</div>';
@@ -3424,6 +3432,26 @@ const exBind = () => {
     const id=b.closest(".exrow").dataset.id;
     const it=(exData[exWho]||{items:[]}).items.find(x=>x.id===id);
     if(it) exForm(Object.assign({},it));
+  }));
+  /* 목록에서 바로 지우기 */
+  document.querySelectorAll(".exrow .exdl").forEach(b=>b.addEventListener("click",async()=>{
+    const row=b.closest(".exrow"), id=row.dataset.id;
+    const it=(exData[exWho]||{items:[]}).items.find(x=>x.id===id);
+    if(!it) return;
+    const c=exCat(it.cat);
+    if(!confirm("이 비용을 지울까요?\n\n"
+      +c.n+(it.sub?" · "+it.sub:"")+"  "+exEur(it.eur)+"\n"+exDayName(it.day)
+      +(it.place?" · "+it.place:"")
+      +(it.fileId?"\n\n영수증 "+(it.mime==="application/pdf"?"PDF":"사진")
+        +"도 Drive 휴지통으로 들어갑니다.":""))) return;
+    b.disabled=true; b.textContent="…";
+    try{
+      if(it.fileId) await driveTrash(it.fileId).catch(()=>toast("⚠ 파일 삭제 실패 — 기록만 지웁니다"));
+      it.del=true; it.ts=Date.now();
+      await exSave(exWho);
+      exRender();
+      toast("지웠습니다");
+    }catch(e){ toast("⚠ "+e.message); b.disabled=false; b.textContent="×"; }
   }));
   document.querySelectorAll(".exthumb[data-f]").forEach(b=>b.addEventListener("click",()=>{
     window.open(b.dataset.pdf
