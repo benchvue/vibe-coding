@@ -688,6 +688,8 @@
     padding:3px 9px;font-size:13px;line-height:1;font-family:inherit}
   .exdl:hover{background:var(--err);color:#fff;border-color:var(--err)}
   .exdl[disabled]{opacity:.5}
+
+  .exrate em a{color:var(--blue);font-size:11px;margin-left:5px}
 </style>
 </head>
 <body>
@@ -2860,7 +2862,7 @@ const pgOnSignedIn=()=>{
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260827-0928";
+  var BUILD="20260827-0958";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
@@ -3053,12 +3055,41 @@ const exFlush = () => {
 };
 
 /* ══════════ 환율 ══════════ */
+/* 환율 — 1 EUR 가 몇 <cur> 인지
+   · 미래 날짜는 조회할 수 없으므로 오늘까지로 자릅니다 (여행 날짜가 2027년이므로 중요)
+   · 제공처가 바뀌거나 막힐 때를 대비해 네 곳을 차례로 시도합니다 */
 const exRate = (cur, date) => {
   if(cur==="EUR") return Promise.resolve(1);
-  const d=(date||"").slice(0,10);
-  const url="https://api.frankfurter.app/"+(d||"latest")+"?from=EUR&to="+cur;
-  return fetch(url).then(r=>{ if(!r.ok) throw 0; return r.json(); })
-    .then(j=>{ const v=j&&j.rates&&j.rates[cur]; if(!v) throw 0; return v; });
+
+  const today = new Date().toISOString().slice(0,10);
+  let d = (date||"").slice(0,10);
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(d) || d > today) d = "";   /* 미래·빈값 → 최신 */
+
+  const srcs = [
+    { url:"https://api.frankfurter.dev/v2/rate/EUR/"+cur+(d?"?date="+d:""),
+      pick:j=>j&&(j.rate!=null?j.rate:(j.rates&&j.rates[cur])) },
+    { url:"https://api.frankfurter.dev/"+(d||"latest")+"?base=EUR&symbols="+cur,
+      pick:j=>j&&j.rates&&j.rates[cur] },
+    { url:"https://api.frankfurter.app/"+(d||"latest")+"?from=EUR&to="+cur,
+      pick:j=>j&&j.rates&&j.rates[cur] },
+    { url:"https://open.er-api.com/v6/latest/EUR",
+      pick:j=>j&&j.rates&&j.rates[cur] }
+  ];
+
+  const tryOne = (i) => {
+    if(i>=srcs.length) return Promise.reject(new Error("환율을 가져오지 못했습니다"));
+    const ac = ("AbortController" in window) ? new AbortController() : null;
+    const to = ac ? setTimeout(()=>ac.abort(), 7000) : null;
+    return fetch(srcs[i].url, ac?{signal:ac.signal}:{})
+      .then(r=>{ if(to)clearTimeout(to); if(!r.ok) throw 0; return r.json(); })
+      .then(j=>{
+        const v = srcs[i].pick(j);
+        if(!v || !isFinite(v) || v<=0) throw 0;
+        return +v;
+      })
+      .catch(()=>{ if(to)clearTimeout(to); return tryOne(i+1); });
+  };
+  return tryOne(0);
 };
 
 /* ══════════ 계산 ══════════ */
@@ -3354,8 +3385,13 @@ const exFormBind = (cat, sub) => {
   const getRate=()=>{
     const c=cur.value; if(c==="EUR") return;
     re.textContent="가져오는 중…";
-    exRate(c, $("exDate").value).then(v=>{ rv.value=v; calc(); })
-      .catch(()=>{ re.textContent="가져오지 못했습니다 — 직접 넣어 주세요"; });
+    exRate(c, $("exDate").value)
+      .then(v=>{ rv.value=(Math.round(v*10000)/10000); calc(); })
+      .catch(()=>{
+        re.innerHTML='가져오지 못했습니다 — 직접 넣어 주세요 '
+          +'<a href="https://www.google.com/search?q=1+EUR+to+'+c
+          +'" target="_blank" rel="noopener">환율 찾아보기 ↗</a>';
+      });
   };
   $("exRateGet").addEventListener("click",getRate);
   showRate();
