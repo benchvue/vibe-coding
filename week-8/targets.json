@@ -1,0 +1,80 @@
+{
+  "_설명": [
+    "2027년 예약이 가능한지 지켜볼 페이지 목록입니다.",
+    "",
+    "mode 는 두 가지입니다.",
+    "  text : 페이지 내용이 바뀌었는지 · 특정 낱말이 새로 나타났는지만 봅니다.",
+    "         달력이 JS 로 그려져 날짜를 넣을 칸이 없는 곳에 씁니다.",
+    "  form : 날짜 칸을 찾아 실제로 채우고 조회 버튼을 눌러,",
+    "         '예약 가능' 신호가 나오는지 봅니다. 훨씬 정확합니다.",
+    "",
+    "form 모드는 선택자를 적지 않아도 됩니다.",
+    "  input[type=date] 를 먼저 찾고, 없으면 이름·placeholder 에",
+    "  fecha / entrada / salida / checkin / arrival 같은 말이 든 칸을 찾습니다.",
+    "  날짜 형식도 YYYY-MM-DD → DD/MM/YYYY → DD-MM-YYYY 순으로 시도합니다.",
+    "",
+    "hit  : 이 말이 보이면 '자리가 있다' 로 봅니다",
+    "miss : 이 말이 보이면 '없다' 로 봅니다 (miss 가 hit 보다 우선)",
+    "off  : true 로 두면 쉽니다. 예약을 마쳤으면 이렇게 하세요."
+  ],
+
+  "targets": [
+    {
+      "id": "zubiri-suseia",
+      "name": "Albergue Suseia",
+      "city": "Zubiri",
+      "date": "2027-05-09",
+      "url": "https://alberguesuseia.com/reservas/",
+      "mode": "text",
+      "wait": 9000,
+      "sel": "",
+      "keys": ["2027", "Enero 2027", "Mayo 2027"],
+      "note": "2인 개인실 + 전용욕실 단 1실. 달력이 JS 로 그려져 날짜를 넣을 칸이 없습니다."
+    },
+    {
+      "id": "rabanal-casa-indie",
+      "name": "Hotel Rural Casa Indie",
+      "city": "Rabanal del Camino",
+      "date": "2027-05-17",
+      "url": "https://casaindie.com/reservas/",
+      "mode": "form",
+      "wait": 6000,
+      "checkin": "2027-05-17",
+      "checkout": "2027-05-18",
+      "guests": 2,
+      "hit": ["disponible", "reservar", "seleccionar", "habitaci", "€"],
+      "miss": ["no hay disponibilidad", "sin disponibilidad", "no disponible",
+               "no encontramos", "sin resultados", "no hay habitaciones"],
+      "keys": ["2027"],
+      "note": "공식 예약 페이지에 Fecha de entrada / salida 칸이 있어 가장 정확하게 볼 수 있습니다."
+    },
+    {
+      "id": "vega-casa-polin",
+      "name": "Casa Polín (Las Herrerías)",
+      "city": "Vega de Valcarce",
+      "date": "2027-05-18",
+      "url": "https://casapolin.com/",
+      "mode": "form",
+      "wait": 9000,
+      "checkin": "2027-05-18",
+      "checkout": "2027-05-19",
+      "guests": 2,
+      "hit": ["disponible", "reservar", "seleccionar", "habitaci", "€"],
+      "miss": ["no hay disponibilidad", "sin disponibilidad", "no disponible"],
+      "keys": ["2027", "Reservar"],
+      "note": "홈페이지의 Reservar 를 누르면 예약 시스템으로 넘어갑니다. 2 single beds + 전용욕실 객실이 있습니다."
+    },
+    {
+      "id": "arzua-puerta",
+      "name": "Hotel La Puerta de Arzúa",
+      "city": "Arzúa",
+      "date": "2027-05-20",
+      "url": "https://lapuertadearzua.es/",
+      "mode": "text",
+      "wait": 6000,
+      "sel": "",
+      "keys": ["2027", "Reserva", "Habitaciones"],
+      "note": "15객실 · 전용욕실. 지금은 전화·왓츠앱·메일 문의 중심이라 날짜 칸이 없을 수 있습니다. 직접 연락이 더 빠릅니다."
+    }
+  ]
+}
