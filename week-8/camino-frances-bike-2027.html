@@ -1367,6 +1367,94 @@
   .xdl{font-size:.6rem;color:var(--ink-soft);font-variant-numeric:tabular-nums}
   .xdnote{margin-top:7px;font-size:.7rem;color:var(--ink-soft)}
 
+
+  /* ══════════════ 자전거 대여 ══════════════ */
+  .btab td{vertical-align:top;font-size:.75rem}
+  .btab td b{font-size:.82rem;color:var(--ink)}
+  .btab td small{display:block;font-size:.66rem;color:var(--ink-soft);margin-top:2px}
+  .btab td.c{text-align:center;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .btab td.gr{font-family:'Gowun Batang',serif;font-size:1.05rem;font-weight:700;color:var(--ink-soft)}
+  .btab td.gr.hi{color:var(--ok)}
+  .btab tr.pick{background:#FFF9E8}
+  .btab tr.alt{background:#F7FBFD}
+  .btab tr.low{background:#FBF3F3}
+  .btag{display:inline-block;margin-left:6px;font-size:.58rem;font-weight:700;border-radius:999px;
+    padding:1px 7px;vertical-align:2px}
+  .btag.best{background:var(--flecha);color:#3B2E00}
+  .btag.alt{background:#DCE9F5;color:#1B4E80}
+  .btag.warn{background:#F6DDD6;color:#8E3A0F}
+
+  .gearbox{margin:14px 0 4px;border:1px solid var(--line);border-radius:13px;background:#fff;
+    padding:14px 16px}
+  .gearbox > b{display:block;font-size:.86rem;color:var(--camino-blue);margin-bottom:5px}
+  .gearbox p{font-size:.78rem;color:var(--ink-soft);line-height:1.8}
+  .gbar{margin:11px 0}
+  .gb{display:flex;align-items:center;gap:9px;margin-bottom:6px;font-size:.74rem}
+  .gb span{flex:0 0 74px;font-family:'Gowun Batang',serif;font-size:1rem;font-weight:700;
+    color:var(--ok);text-align:right;font-variant-numeric:tabular-nums}
+  .gb i{flex:1;height:9px;border-radius:5px;background:var(--ok);opacity:.85}
+  .gb em{flex:0 0 auto;font-style:normal;color:var(--ink-soft);font-size:.72rem}
+  .gb.warn span{color:var(--rioja)} .gb.warn i{background:var(--rioja)}
+  .gsub{margin-top:9px;padding:10px 12px;background:#FBF3F3;border:1px solid #E8CFCF;
+    border-radius:10px;font-size:.77rem;line-height:1.8;color:#6B4A4A}
+  .gsub b{color:var(--err)}
+
+  .vendrow{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  @media(max-width:700px){ .vendrow{grid-template-columns:1fr} }
+  .vend{border:1px solid var(--line);border-radius:12px;background:#fff;padding:12px 14px}
+  .vh{display:flex;align-items:center;gap:8px;margin-bottom:8px;padding-bottom:7px;
+    border-bottom:1px solid var(--line)}
+  .vh b{font-family:'Gowun Batang',serif;font-size:1rem;color:var(--camino-blue)}
+  .vt{margin-left:auto;font-size:.62rem;font-weight:700;color:#3B2E00;background:var(--flecha);
+    border-radius:999px;padding:2px 9px}
+  .vt.alt{background:#DCE9F5;color:#1B4E80}
+  .vl{list-style:none;padding:0;margin:0}
+  .vl li{position:relative;padding:5px 0 5px 16px;font-size:.78rem;line-height:1.65;
+    color:var(--ink-soft)}
+  .vl li::before{content:"";position:absolute;left:2px;top:13px;width:5px;height:5px;
+    border-radius:50%;background:var(--flecha)}
+  .vl b{color:var(--ink)}
+
+  .qa{display:flex;flex-direction:column;gap:6px}
+  .qi{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);
+    border-radius:10px;background:#fff;padding:10px 13px}
+  .qi > b{flex:0 0 86px;font-size:.78rem;color:var(--camino-blue)}
+  .qi > span{flex:1;min-width:0;font-size:.78rem;line-height:1.75;color:var(--ink-soft)}
+  .qi.warn{background:#FFFBEE;border-color:#E7D9A8}
+  .qi.ok{background:#F2FAF5;border-color:#A9CFB8}
+
+  .qtab td{font-size:.79rem}
+  .qtab td small{display:block;font-size:.66rem;color:var(--ink-soft);margin-top:1px}
+  .qtab tr.sub td{background:#F4F2EA;border-top:1px solid var(--line)}
+  .qtab tr.dis td{color:var(--ok)}
+  .qtab tr.fin td{background:#EDF2FA}
+  .qtab tr.tot td{background:var(--camino-blue);color:#fff;font-size:.92rem}
+  .qtab tr.tot td b{color:var(--flecha)}
+  .free{font-size:.62rem;font-weight:700;color:#fff;background:var(--ok);border-radius:999px;
+    padding:1px 7px;margin-left:5px}
+
+  .optrow{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+  @media(max-width:640px){ .optrow{grid-template-columns:1fr} }
+  .opt{border:1px dashed var(--line);border-radius:11px;background:#FBFAF5;padding:11px 13px;
+    text-align:center}
+  .opt b{display:block;font-family:'Gowun Batang',serif;font-size:1.2rem;color:var(--ink-soft)}
+  .opt span{display:block;font-size:.76rem;color:var(--ink);margin-top:2px}
+  .opt small{display:block;font-size:.66rem;color:#A79E86;margin-top:2px}
+  .opt.pick{border-style:solid;border-color:#A9CFB8;background:#F2FAF5}
+
+  .twobox{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+  @media(max-width:760px){ .twobox{grid-template-columns:1fr 1fr} }
+  .tw{border:1px solid var(--line);border-radius:12px;background:#fff;padding:11px 13px}
+  .tw small{display:block;font-size:.66rem;color:var(--ink-soft)}
+  .tw b{display:block;font-family:'Gowun Batang',serif;font-size:1.15rem;color:var(--camino-blue);
+    margin-top:2px;font-variant-numeric:tabular-nums}
+  .tw i{display:block;font-style:normal;font-size:.64rem;color:#A79E86;margin-top:1px}
+  .tw.big{background:var(--camino-blue)}
+  .tw.big small,.tw.big i{color:#B9C7DF}
+  .tw.big b{color:var(--flecha);font-size:1.3rem}
+
+  .stab td.sv2{font-size:.73rem;color:var(--ink-soft)}
+  .stab tr.bike td{background:#F4FAF6}
 </style>
 
 <!-- ══════════════════════════════════════════════════════════════════════
@@ -1586,6 +1674,168 @@
 <div id="daysHost" data-src="camino-days.html">
   <p class="loadnote" id="daysLoadNote">날짜별 카드를 불러오는 중… <small>camino-days.html</small></p>
 </div>
+  </div>
+</section>
+
+<!-- ───────── 자전거 대여 ───────── -->
+<section id="secB" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="no">Alquiler</div>
+      <h2>자전거 대여</h2>
+      <p>생장에서 빌려 산티아고에서 반납합니다. 짐을 싣고 피레네를 넘어야 하니
+      <b>가벼움보다 기어비</b>가 중요합니다. 아래 표에서 <b>최저 기어비</b>만 봐도 판단이 섭니다.</p>
+    </div>
+
+    <h3 class="gh3">모델 비교</h3>
+    <div class="sched-wrap">
+      <table class="sched btab" style="min-width:900px">
+        <thead><tr>
+          <th>모델</th><th>프레임</th><th>무게</th><th>구동계</th>
+          <th>최저 기어비</th><th>타이어 · 포크</th><th>랙</th><th>점수</th>
+        </tr></thead>
+        <tbody>
+          <tr class="pick"><td><b>MMR Zen 00</b><span class="btag best">추천</span><small>MMR Bikes · MTB 하드테일 XC</small></td><td class="c">Aluminum 6061</td><td class="c">12~13 kg</td><td>Shimano XT 1×12<small>32T / 10-51T</small></td><td class="c gr hi">0.63</td><td>29×2.10"<small>FOX Rhythm 15 Boost 100mm</small></td><td class="c">포함</td><td class="c">9.5</td></tr>
+          <tr class=""><td><b>BH UltimateRC Carbono XT Recon</b><small>BH Bikes · MTB 하드테일 XC</small></td><td class="c">Carbon</td><td class="c">11~12 kg</td><td>Shimano XT 1×12<small>32T / 10-51T</small></td><td class="c gr hi">0.63</td><td>29×2.20"<small>RockShox Recon RL 100mm</small></td><td class="c">선택</td><td class="c">9.5</td></tr>
+          <tr class=""><td><b>BH Expert Alu XT 12v Recon</b><small>BH Bikes · MTB 하드테일 XC</small></td><td class="c">Aluminum</td><td class="c">12.6 kg</td><td>Shimano XT 1×12<small>32T / 10-51T</small></td><td class="c gr hi">0.63</td><td>29×2.20"<small>RockShox Recon RL 100mm</small></td><td class="c">포함</td><td class="c">9.0</td></tr>
+          <tr class="alt"><td><b>Cannondale Trail SL 2</b><span class="btag alt">이메일 확인</span><small>Bicigrino · MTB 하드테일</small></td><td class="c">Aluminum</td><td class="c">12.0 kg</td><td>1×12<small>32T / 10-50T</small></td><td class="c gr">0.64</td><td>29er<small>서스펜션 포크</small></td><td class="c">포함</td><td class="c"><span style="color:#A79E86">—</span></td></tr>
+          <tr class="low"><td><b>BH GravelX Alloy Disc</b><span class="btag warn">기어 주의</span><small>BH Bikes · 그래블</small></td><td class="c">Aluminum 7005</td><td class="c">10~11 kg</td><td>Shimano GRX 810 11단<small>40T 또는 46/30T / 11-42T 또는 11-34T</small></td><td class="c gr">0.71~0.95</td><td>700×38~40<small>카본 리지드</small></td><td class="c">포함</td><td class="c">8.0</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="gearbox">
+      <b>최저 기어비란</b>
+      <p>앞 체인링 이빨 수 ÷ 뒤 카세트 최대 이빨 수입니다. <b>작을수록 가파른 길을 오르기 쉽습니다.</b>
+      MTB 세 대의 <b>32T ÷ 51T = 0.63</b> 은 패니어를 달고 피레네·오 세브레이로를 오르기에 넉넉합니다.</p>
+      <div class="gbar">
+        <div class="gb"><span>0.63</span><i style="width:100%"></i><em>MTB · 32T/51T</em></div>
+        <div class="gb"><span>0.64</span><i style="width:98%"></i><em>Cannondale · 32T/50T</em></div>
+        <div class="gb warn"><span>0.71~0.95</span><i style="width:70%"></i><em>그래블 · 조합에 따라</em></div>
+      </div>
+      <p class="gsub"><b>그래블은 권하지 않습니다.</b> 가볍고 포장길에서 빠르지만,
+      최저 기어비가 MTB보다 12~50% 무겁습니다. DAY 1 의 <b>28% 오르막</b>과
+      DAY 11 오 세브레이로에서 짐을 실은 채로는 끌고 올라가는 구간이 늘어납니다.
+      대여 자전거의 실제 크랭크·카세트 조합은 연식에 따라 다르니 예약 전에 확인하세요.</p>
+    </div>
+
+    <h3 class="gh3">업체 두 곳</h3>
+    <div class="vendrow">
+      <div class="vend">
+        <div class="vh"><b>Tournride</b><span class="vt">견적 받음</span></div>
+        <ul class="vl">
+          <li>MMR Zen 00 · BH 시리즈</li>
+          <li>생장 배송 · 산티아고 반납</li>
+          <li>장비를 <b>일당으로</b> 골라 붙이는 방식</li>
+          <li>짐 운송 서비스 연계</li>
+        </ul>
+      </div>
+      <div class="vend">
+        <div class="vh"><b>Bicigrino</b><span class="vt alt">문의 답변</span></div>
+        <ul class="vl">
+          <li>Cannondale Trail SL 2</li>
+          <li>패니어 <b>20 L × 2 = 40 L</b> 완전 방수 포함</li>
+          <li>하이브리드 페달 (평페달 ↔ SPD 양면)</li>
+          <li>쿠폰 <b>BICIGRINO2027</b> 로 10% 할인</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 class="gh3">Bicigrino 문의 답변</h3>
+    <div class="qa">
+      <div class="qi"><b>무게</b><span>랙을 단 상태로 약 <b>12 kg</b></span></div>
+      <div class="qi"><b>구동계</b><span>앞 32T · 뒤 <b>10-50T</b> 12단 — 오 세브레이로와 크루스 데 페로를
+        짐 싣고도 오를 수 있는 범위</span></div>
+      <div class="qi"><b>패니어</b><span><b>20 L 씩 두 개 = 40 L</b> · 완전 방수.
+        자급자족 순례에 충분합니다</span></div>
+      <div class="qi"><b>프레임 가방</b><span>휴대폰을 넣는 작은 주머니일 뿐,
+        <b>짐 용량은 늘어나지 않습니다</b></span></div>
+      <div class="qi"><b>페달</b><span>한쪽 평페달 · 한쪽 SPD 인 <b>하이브리드</b>.
+        평소 신발로 그냥 타면 되니 따로 챙길 필요 없습니다</span></div>
+      <div class="qi warn"><b>가민 거치대</b><span><b>기본 제공 안 됨.</b>
+        본인 것을 가져가면 핸들바에 달아 줍니다 — <b>꼭 챙기세요</b></span></div>
+      <div class="qi ok"><b>내 안장 쓰기</b><span>가능합니다. <b>안장 없이</b> 보내 줄 수 있으니,
+        발송 전에 <b>이메일로 회신해 확인</b>해야 정비사가 그렇게 준비합니다</span></div>
+    </div>
+    <div class="bgwarn" style="margin-top:11px">
+      <b>2027년은 성년(Año Xacobeo)입니다</b>
+      순례자가 몰리는 해라 대여 수요가 크게 오릅니다. 업체도 <b>가능한 한 일찍 확정</b>하라고 권했습니다.
+      자전거는 <a href="#sec4">생장 숙소로 미리 배달받는 계획</a>과 함께 잡으세요.
+    </div>
+
+    <h3 class="gh3">Tournride 견적 — 1인 기준</h3>
+    <p class="jp">MMR Zen 00 (size M) · <b>2027-05-09 → 05-21 · 13일</b> ·
+    생장 수령 → 산티아고 반납. 화면에 나온 값 그대로입니다.</p>
+    <div class="sched-wrap">
+      <table class="sched qtab" style="min-width:520px">
+        <thead><tr><th>항목</th><th style="text-align:right">일당</th>
+          <th style="text-align:right">13일</th></tr></thead>
+        <tbody>
+          <tr><td><b>MMR Zen 00</b> 자전거</td><td class="km">17.50</td><td class="km">227.50</td></tr>
+          <tr><td>오틀립 패니어</td><td class="km">5.00</td><td class="km">65.00</td></tr>
+          <tr><td>핸들바 백</td><td class="km">3.50</td><td class="km">45.50</td></tr>
+          <tr><td>헬멧</td><td class="km">1.50</td><td class="km">19.50</td></tr>
+          <tr><td>젤 안장 커버</td><td class="km">1.00</td><td class="km">13.00</td></tr>
+          <tr><td>물통</td><td class="km">—</td><td class="km">0.50</td></tr>
+          <tr><td>생장 배송</td><td class="km">—</td><td class="km">79.00</td></tr>
+          <tr><td>산티아고 반납</td><td class="km">—</td><td class="km">15.00</td></tr>
+          <tr class="sub"><td><b>소계</b></td><td class="km"></td><td class="km"><b>465.00</b></td></tr>
+          <tr class="dis"><td>수요 조정 (Demand Adjustment)</td><td class="km"></td>
+            <td class="km">−22.75</td></tr>
+          <tr class="fin"><td><b>1인 자전거 · 장비</b></td><td class="km"></td>
+            <td class="km"><b>442.25</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="gh3">예약 전체 합계</h3>
+    <div class="sched-wrap">
+      <table class="sched qtab" style="min-width:520px">
+        <tbody>
+          <tr><td>자전거 · 장비 (1인)</td><td class="km">442.25</td></tr>
+          <tr><td>Tournride Full Assistance <small>고장 시 교체·수리</small></td>
+            <td class="km">34.95 <span class="free">무료</span></td></tr>
+          <tr><td>취소 보험 <b>Cancellation Plus</b>
+            <small>None 0 · Basic 37.75 중 선택</small></td><td class="km">64.71</td></tr>
+          <tr><td>짐 운송 <small>1개 10 kg · Hostel 20 Ramuntcho 출발 · <b>인원당 아님</b></small></td>
+            <td class="km">97.00</td></tr>
+          <tr class="sub"><td><b>소계</b></td><td class="km"><b>664.39</b></td></tr>
+          <tr class="dis"><td>Evergreen TFA</td><td class="km">−34.95</td></tr>
+          <tr class="dis"><td>Occupancy discount</td><td class="km">−22.75</td></tr>
+          <tr class="tot"><td><b>결제 금액</b></td><td class="km"><b>606.69 €</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="bgnote">
+      <b>확인해 보실 것 — 2.73 €</b>
+      화면의 소계 <b>664.39 €</b> 는 위 네 줄의 단순 합(465.00 + 34.95 + 64.71 + 97.00 = 661.66)보다
+      <b>2.73 € 큽니다.</b> 취소 보험이 다른 기준으로 계산되었거나 표시되지 않은 수수료가 있을 수 있습니다.
+      결제 전에 한 번 물어보세요. 최종 합계와 할인 계산은 정확합니다.
+    </div>
+
+    <h3 class="gh3">고르지 않은 장비</h3>
+    <div class="optrow">
+      <div class="opt"><b>3.00 €</b><span>패니어 (일반)</span><small>오틀립 대신 선택</small></div>
+      <div class="opt pick"><b>1.50 €</b><span>자전거 폰 거치대</span><small>가민 쓸 거면 불필요</small></div>
+      <div class="opt"><b>1.95 €</b><span>SPD MTB 페달</span><small>클릿 신발이 있을 때만</small></div>
+    </div>
+    <p class="jp" style="margin-top:8px">모두 <b>일당</b>이라 13일이면 각각 39.00 · 19.50 · 25.35 € 입니다.
+    안장과 페달은 기본 포함이라 따로 고르지 않아도 됩니다.</p>
+
+    <h3 class="gh3">두 사람이면</h3>
+    <div class="twobox">
+      <div class="tw"><small>자전거 · 장비</small><b>884.50 €</b><i>442.25 × 2</i></div>
+      <div class="tw"><small>짐 운송</small><b>97.00 €</b><i>둘이 나눠 냄</i></div>
+      <div class="tw"><small>취소 보험</small><b>129 € 안팎</b><i>1인당 64.71 기준 추정</i></div>
+      <div class="tw big"><small>대략</small><b>1,110 € 안팎</b><i>1인 약 555 €</i></div>
+    </div>
+    <div class="note">두 번째 사람의 수요 조정·할인이 다르게 붙을 수 있으니 <b>정확한 값은 2인으로 다시 견적</b>을 내 보세요.
+    Bicigrino 는 쿠폰 <b>BICIGRINO2027</b> 로 10% 가 빠지므로, 두 업체를 같은 조건으로 비교해 보시길 권합니다.</div>
+
+    <div class="note">짐 운송은 <b>매일 다음 숙소로 배낭을 보내 주는</b> 서비스입니다.
+    자전거에 실을 짐이 줄어 오르막이 훨씬 수월해지지만, 그날 묵을 곳을 미리 정해 두어야 합니다.
+    비용은 예약 전체에 한 번 붙습니다.</div>
   </div>
 </section>
 
@@ -2005,126 +2255,48 @@
       </ol>
     </div>
 
-    <h3 class="jh3">생장 호텔 후보와 마을 배치</h3>
-    <p class="jp">생장 구시가는 <b>한 덩어리</b>라 구시가 안이면 순례자 사무소까지 걸어서 몇 분입니다.
-    그래서 위치보다 <b>자전거를 미리 받아 보관해 줄 수 있는지</b>가 훨씬 중요합니다.</p>
-
-    <figure class="jfig hmap">
-      <img src="images/Saint-Jean-Hotel-Map.png" alt="생장피에드포르 호텔 후보 위치" loading="lazy">
-      <figcaption>생장 호텔 후보 위치 — 눌러서 크게 볼 수 있습니다</figcaption>
-    </figure>
+    <h3 class="jh3">생장 숙소 후보와 마을 배치</h3>
+    <p class="jp">생장 구시가는 <b>한 덩어리</b>라 어느 숙소에 묵어도 순례자 사무소까지 걸어서 몇 분입니다.
+    그래서 위치보다 <b>2인 개인실</b>과 <b>자전거 2대를 안전하게 둘 곳</b>이 훨씬 중요합니다.</p>
 
     <div class="smapwrap">
-      <div class="smap"><svg viewBox="0 0 660 380" width="100%" role="img" aria-label="생장피에드포르 역·순례자 사무소·호텔 위치 모식도">
-<title>Saint-Jean-Pied-de-Port — 역, 순례자 사무소, 호텔 후보</title>
-<defs>
-  <marker id="smk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
-    <path d="M1 1L9 5L1 9Z" fill="#152A55"/></marker>
-</defs>
-
-<rect x="0" y="0" width="660" height="380" fill="#F7F5EE"/>
-
-<path d="M92 300 C170 296 214 268 244 224 C272 184 290 150 300 96"
-      fill="none" stroke="#9FC3DE" stroke-width="13" stroke-linecap="round" opacity=".55"/>
-<text class="riv" x="132" y="290" transform="rotate(-12 132 290)">La Nive</text>
-
-<path d="M436 62 L436 330" stroke="#D8CFBB" stroke-width="26" stroke-linecap="round"/>
-<text class="st" x="436" y="128" transform="rotate(-90 436 128)">rue de la Citadelle</text>
-<text class="st" x="436" y="286" transform="rotate(-90 436 286)">rue d&#8217;Espagne</text>
-
-<path d="M300 96 L436 96" stroke="#D8CFBB" stroke-width="11" stroke-linecap="round"/>
-<path d="M244 224 L436 224" stroke="#D8CFBB" stroke-width="11" stroke-linecap="round"/>
-
-<path d="M96 138 L112 128 L128 138 L128 162 L96 162 Z" fill="#E4DFCE" stroke="#C0B79F"/>
-<text class="lb" x="112" y="182" text-anchor="middle">생장 역</text>
-<text class="sm" x="112" y="195" text-anchor="middle">Gare SNCF</text>
-<circle cx="112" cy="150" r="6" fill="#152A55"/>
-
-<path d="M126 156 C210 176 260 176 320 168" fill="none" stroke="#152A55" stroke-width="2.2"
-      stroke-dasharray="6 4" marker-end="url(#smk)"/>
-<text class="wk" x="228" y="146" text-anchor="middle">도보 8~10분 · 약 650 m</text>
-
-<g><rect x="512" y="30" width="118" height="40" rx="9" fill="#EDE7D6" stroke="#C9BF9F"/>
-<text class="lb" x="571" y="47" text-anchor="middle">시타델</text>
-<text class="sm" x="571" y="61" text-anchor="middle">Citadelle</text></g>
-
-<circle cx="436" cy="96" r="8" fill="#fff" stroke="#8A7F63" stroke-width="2.5"/>
-<text class="gt" x="452" y="93">Porte St-Jacques</text>
-<text class="sm" x="452" y="106">순례길 입구</text>
-
-<circle cx="436" cy="330" r="8" fill="#fff" stroke="#8A7F63" stroke-width="2.5"/>
-<text class="gt" x="452" y="327">Porte d&#8217;Espagne</text>
-<text class="sm" x="452" y="340">5/9 출발 방향 →</text>
-
-<circle cx="436" cy="150" r="12" fill="#1E7A46"/>
-<circle cx="436" cy="150" r="19" fill="none" stroke="#1E7A46" stroke-width="1.6" opacity=".45"/>
-<text class="of" x="412" y="146" text-anchor="end">순례자 사무소</text>
-<text class="og" x="412" y="160" text-anchor="end">39 rue de la Citadelle</text>
-
-<g class="h"><circle cx="392" cy="224" r="9" fill="#152A55"/>
-<text class="hn" x="392" y="228" text-anchor="middle">1</text>
-<text class="hl" x="376" y="212" text-anchor="end">Ramuntcho</text></g>
-
-<g class="h"><circle cx="86" cy="70" r="9" fill="#152A55"/>
-<text class="hn" x="86" y="74" text-anchor="middle">2</text>
-<text class="hl" x="102" y="66">아파트 (Ispoure)</text>
-<text class="sm" x="102" y="79">정원 · 자전거 보관</text></g>
-<path d="M92 82 C96 106 100 126 104 140" fill="none" stroke="#152A55" stroke-width="1.8" stroke-dasharray="4 3"/>
-<text class="wk2" x="60" y="116">역까지 8분</text>
-
-<g class="h"><circle cx="470" cy="272" r="9" fill="#152A55"/>
-<text class="hn" x="470" y="276" text-anchor="middle">3</text>
-<text class="hl" x="486" y="276">Les Pyrénées</text></g>
-
-<g class="h"><circle cx="392" cy="180" r="9" fill="#152A55"/>
-<text class="hn" x="392" y="184" text-anchor="middle">4</text>
-<text class="hl" x="376" y="184" text-anchor="end">des Remparts</text></g>
-
-<text class="cap" x="20" y="352">※ 위 지도를 단순하게 다시 그린 모식도 — 축척이 아니라 위치 관계와 걷는 시간을 보기 위한 그림</text>
-<text class="cap" x="20" y="368">구시가는 한 덩어리라 어느 호텔이든 사무소까지 도보 2~5분입니다</text>
-
-<style>
- .lb{font-family:"IBM Plex Sans KR",sans-serif;font-size:12px;font-weight:700;fill:#2B2B29}
- .sm{font-family:"IBM Plex Sans KR",sans-serif;font-size:9.5px;fill:#6B6B66}
- .st{font-family:"IBM Plex Sans KR",sans-serif;font-size:10px;fill:#8A7F63;text-anchor:middle;letter-spacing:.06em}
- .riv{font-family:"IBM Plex Sans KR",sans-serif;font-size:10px;fill:#4D7E9E}
- .wk{font-family:"IBM Plex Sans KR",sans-serif;font-size:10.5px;font-weight:700;fill:#152A55;
-     paint-order:stroke;stroke:#F7F5EE;stroke-width:3px}
- .wk2{font-family:"IBM Plex Sans KR",sans-serif;font-size:9.5px;fill:#5B6270;
-     paint-order:stroke;stroke:#F7F5EE;stroke-width:3px}
- .gt{font-family:"IBM Plex Sans KR",sans-serif;font-size:11px;font-weight:700;fill:#8A6A12}
- .of{font-family:"IBM Plex Sans KR",sans-serif;font-size:12.5px;font-weight:700;fill:#1E7A46;
-     paint-order:stroke;stroke:#F7F5EE;stroke-width:3px}
- .og{font-family:"IBM Plex Sans KR",sans-serif;font-size:9.5px;fill:#3F7A5A}
- .hn{font-family:"IBM Plex Sans KR",sans-serif;font-size:10px;font-weight:700;fill:#fff}
- .hl{font-family:"IBM Plex Sans KR",sans-serif;font-size:11px;font-weight:700;fill:#152A55;
-     paint-order:stroke;stroke:#F7F5EE;stroke-width:3px}
- .cap{font-family:"IBM Plex Sans KR",sans-serif;font-size:9.5px;fill:#A79E86}
-</style></svg></div>
+      <div class="smap"><svg viewBox="0 0 660 420" width="100%" role="img" aria-label="생장피에드포르 숙소 11곳 위치 모식도"><title>생장 숙소 후보 배치</title><rect x="0" y="0" width="660" height="420" fill="#F7F5EE"/><path d="M92 300 C170 296 214 268 244 224 C272 184 290 150 300 96" fill="none" stroke="#9FC3DE" stroke-width="13" stroke-linecap="round" opacity=".5"/><text class="riv" x="128" y="288" transform="rotate(-12 128 288)">La Nive</text><path d="M430 70 L430 340" stroke="#D8CFBB" stroke-width="26" stroke-linecap="round"/><text class="st" x="430" y="130" transform="rotate(-90 430 130)">rue de la Citadelle</text><text class="st" x="430" y="318" transform="rotate(-90 430 318)">rue d’Espagne</text><path d="M340 252 L430 252" stroke="#D8CFBB" stroke-width="10" stroke-linecap="round"/><text class="st2" x="372" y="240">rue de France</text><path d="M330 182 L430 182" stroke="#E4DFCE" stroke-width="8" stroke-linecap="round"/><text class="st2" x="356" y="172">Av. Renaud</text><path d="M300 332 L430 316" stroke="#E4DFCE" stroke-width="8" stroke-linecap="round"/><text class="st2" x="326" y="352">Rte d’Arneguy</text><path d="M430 296 L548 296" stroke="#E4DFCE" stroke-width="8" stroke-linecap="round"/><text class="st2" x="472" y="286">Ch. de Portaleburu</text><path d="M96 138 L112 128 L128 138 L128 162 L96 162 Z" fill="#E4DFCE" stroke="#C0B79F"/><circle cx="112" cy="150" r="6" fill="#152A55"/><text class="lb" x="112" y="182" text-anchor="middle">생장 역</text><path d="M126 156 C230 178 300 190 340 200" fill="none" stroke="#152A55" stroke-width="2" stroke-dasharray="6 4"/><text class="wk" x="236" y="150" text-anchor="middle">도보 8~10분</text><circle cx="430" cy="70" r="8" fill="#fff" stroke="#8A7F63" stroke-width="2.5"/><text class="gt" x="446" y="67">Porte St-Jacques</text><circle cx="430" cy="340" r="8" fill="#fff" stroke="#8A7F63" stroke-width="2.5"/><text class="gt" x="446" y="344">Porte d’Espagne →</text><circle cx="430" cy="140" r="11" fill="#1E7A46"/><circle cx="430" cy="140" r="18" fill="none" stroke="#1E7A46" stroke-width="1.5" opacity=".4"/><text class="of" x="408" y="136" text-anchor="end">순례자 사무소</text><text class="og" x="408" y="149" text-anchor="end">39 rue de la Citadelle</text><circle cx="430" cy="246" r="11" fill="#152A55" stroke="#fff" stroke-width="2"/><text class="hn" x="430" y="250">1</text><circle cx="430" cy="196" r="11" fill="#152A55" stroke="#fff" stroke-width="2"/><text class="hn" x="430" y="200">2</text><circle cx="430" cy="156" r="11" fill="#152A55" stroke="#fff" stroke-width="2"/><text class="hn" x="430" y="160">3</text><circle cx="548" cy="296" r="11" fill="#152A55" stroke="#fff" stroke-width="2"/><text class="hn" x="548" y="300">4</text><circle cx="430" cy="296" r="11" fill="#152A55" stroke="#fff" stroke-width="2"/><text class="hn" x="430" y="300">5</text><circle cx="300" cy="332" r="11" fill="#1E7A46" stroke="#fff" stroke-width="2"/><text class="hn" x="300" y="336">6</text><circle cx="430" cy="112" r="11" fill="#152A55" stroke="#fff" stroke-width="2"/><text class="hn" x="430" y="116">7</text><circle cx="332" cy="182" r="11" fill="#1E7A46" stroke="#fff" stroke-width="2"/><text class="hn" x="332" y="186">8</text><circle cx="352" cy="252" r="11" fill="#152A55" stroke="#fff" stroke-width="2"/><text class="hn" x="352" y="256">9</text><circle cx="168" cy="366" r="11" fill="#1E7A46" stroke="#fff" stroke-width="2"/><text class="hn" x="168" y="370">10</text><circle cx="466" cy="246" r="11" fill="#152A55" stroke="#fff" stroke-width="2"/><text class="hn" x="466" y="250">11</text><text class="cap" x="18" y="396">※ 축척이 아닌 모식도 — 번호는 아래 표와 같습니다</text><text class="cap" x="18" y="410"><tspan fill="#1E7A46">초록</tspan> 자전거 보관이 확인된 곳 · <tspan fill="#152A55">남색</tspan> 문의 필요</text><style>.lb{font-family:"IBM Plex Sans KR",sans-serif;font-size:12px;font-weight:700;fill:#2B2B29}.st{font-family:"IBM Plex Sans KR",sans-serif;font-size:10px;fill:#8A7F63;text-anchor:middle;letter-spacing:.06em}.st2{font-family:"IBM Plex Sans KR",sans-serif;font-size:9px;fill:#A2977C}.riv{font-family:"IBM Plex Sans KR",sans-serif;font-size:10px;fill:#4D7E9E}.wk{font-family:"IBM Plex Sans KR",sans-serif;font-size:10px;font-weight:700;fill:#152A55;paint-order:stroke;stroke:#F7F5EE;stroke-width:3px}.gt{font-family:"IBM Plex Sans KR",sans-serif;font-size:10.5px;font-weight:700;fill:#8A6A12}.of{font-family:"IBM Plex Sans KR",sans-serif;font-size:12px;font-weight:700;fill:#1E7A46;paint-order:stroke;stroke:#F7F5EE;stroke-width:3px}.og{font-family:"IBM Plex Sans KR",sans-serif;font-size:9px;fill:#3F7A5A}.hn{font-family:"IBM Plex Sans KR",sans-serif;font-size:11px;font-weight:700;fill:#fff;text-anchor:middle}.cap{font-family:"IBM Plex Sans KR",sans-serif;font-size:9.5px;fill:#A79E86}</style></svg></div>
       <div class="soff">
         <h4>순례자 사무소</h4>
         <div class="soff-a"><b>39 rue de la Citadelle</b><br>Maison Laborde · 64220 Saint-Jean-Pied-de-Port</div>
         <ul class="soff-l">
           <li><em>전화</em>+33 5 59 37 05 09</li>
           <li><em>5/8 토</em><b>07:45–12:00 · 14:00–20:15</b></li>
-          <li><em>받는 것</em>크레덴시알 · 생장 출발 도장 · 구간 안내</li>
-          <li><em>물어볼 것</em>피레네 <b>날씨와 노선 상태</b> —
-            나폴레옹 길이 열렸는지, 발카를로스로 돌아야 하는지</li>
+          <li><em>받는 것</em>크레덴시알 · 생장 출발 도장</li>
+          <li><em>물어볼 것</em>피레네 <b>날씨와 노선 상태</b></li>
         </ul>
         <div class="soff-w">15:26 도착이면 <b>사무소가 열려 있습니다.</b>
-        다만 자전거 점검을 마친 뒤 바로 가세요 — 20:15에 닫고,
-        저녁에는 다음 날 출발하는 순례자가 몰립니다.</div>
+        자전거 점검을 마친 뒤 바로 가세요 — 20:15에 닫습니다.</div>
       </div>
     </div>
 
+    <div class="bgnote" style="margin-bottom:12px">
+      <b>절대조건으로 잡으면 세 곳이 남습니다.</b>
+      &ldquo;2인 개인실 + 자전거 2대 안전 보관&rdquo;이 웹에서 확실히 확인되는 곳은
+      <b>Gîte Compostella</b> · <b>Gîte Izaxulo</b> · <b>Hôtel Camou</b> 입니다.
+      나머지는 개인실은 되지만 자전거 보관을 직접 물어봐야 합니다.
+    </div>
+
     <div class="sched-wrap">
-      <table class="sched stab" style="min-width:660px">
-        <thead><tr><th></th><th>호텔</th><th>역에서</th><th>사무소까지</th><th>특징</th><th>판단</th></tr></thead>
+      <table class="sched stab" style="min-width:700px">
+        <thead><tr><th></th><th>숙소</th><th>2인 개인실</th><th>자전거 보관</th><th>비고</th></tr></thead>
         <tbody>
-          <tr class="best"><td class="sno">1</td><td><b>Hôtel Ramuntcho</b><small>1 rue de France</small></td><td class="sd">약 650 m · 도보 8분</td><td class="sd">도보 2분</td><td><ul class="stag"><li>구시가 성벽 아래</li><li>자전거 여행객 환영</li><li>레스토랑 · 테라스</li><li>무료 주차</li></ul></td><td class="sv">순례 출발점으로 가장 무난</td></tr>
-          <tr class="bike"><td class="sno">2</td><td><b><a class="hlink" href="https://www.booking.com/hotel/fr/appartement-avec-jardin-a-2-min-de-st-jean-pied-de-port.html" target="_blank" rel="noopener">Appartement avec jardin</a></b><small>265 Rue Ibai Ondoa, 64220 Ispoure · 생장 바로 북쪽 마을</small></td><td class="sd">약 600 m · 도보 8분</td><td class="sd">도보 13~15분</td><td><ul class="stag"><li>정원 있는 아파트</li><li>자전거 둘 공간</li><li>주방</li><li>조용함</li><li>니브 강변</li></ul></td><td class="sv">정원에 자전거 보관</td></tr>
-          <tr><td class="sno">3</td><td><b>Hôtel Les Pyrénées</b><small>19 place Charles de Gaulle</small></td><td class="sd">약 700 m · 도보 9분</td><td class="sd">도보 4분</td><td><ul class="stag"><li>4성급</li><li>옛 역참 여관</li><li>수영장 · 레스토랑</li></ul></td><td class="sv">조금 더 좋은 숙소</td></tr>
-          <tr><td class="sno">4</td><td><b>Hôtel des Remparts</b><small>16 place Floquet</small></td><td class="sd">약 700 m · 도보 9분</td><td class="sd">도보 3분</td><td><ul class="stag"><li>성벽 바로 옆</li><li>중심가</li><li>실속형</li></ul></td><td class="sv">비용 절약형</td></tr>
+          <tr><td class="sno">1</td><td><b>Central Hôtel</b><small>1 Place Charles de Gaulle · 64220</small></td><td class="sd">Double / Twin</td><td class="sd"><span style="color:#A79E86">문의 필요</span></td><td class="sv2">일반 호텔 · 전용 욕실</td></tr>
+          <tr><td class="sno">2</td><td><b>Chambres à louer Simonenia</b><small>12 Rue de la Citadelle · 64220</small></td><td class="sd">Private room</td><td class="sd"><span style="color:#A79E86">문의 필요</span></td><td class="sv2">구시가 중심</td></tr>
+          <tr><td class="sno">3</td><td><b>Plan B — Chambres & Studios</b><small>28 Rue de la Citadelle · 64220</small></td><td class="sd">Studio 2인</td><td class="sd"><span style="color:#A79E86">문의 필요</span></td><td class="sv2">2인 Standard Studio</td></tr>
+          <tr><td class="sno">4</td><td><b>Chambres Zazpiak</b><small>235 Chemin de Portaleburu · 64220</small></td><td class="sd">Double / Twin</td><td class="sd"><span style="color:#A79E86">문의 필요</span></td><td class="sv2">전용 욕실 · 출발 방향</td></tr>
+          <tr><td class="sno">5</td><td><b>Gîte BIDEAN</b><small>11 Rue d'Espagne · 64220</small></td><td class="sd">Private room</td><td class="sd"><span style="color:#A79E86">문의 필요</span></td><td class="sv2">순례자 숙소</td></tr>
+          <tr class="bike"><td class="sno">6</td><td><b>Gîte Compostella</b><small>6 Route d'Arneguy · 64220</small></td><td class="sd">2인실</td><td class="sd"><b style="color:var(--ok)">확인됨</b></td><td class="sv2">Secure bicycle garage</td></tr>
+          <tr><td class="sno">7</td><td><b>Gîte de la Porte Saint Jacques</b><small>51 Rue de la Citadelle · 64220</small></td><td class="sd">Double private</td><td class="sd"><span style="color:#A79E86">문의 필요</span></td><td class="sv2">순례길 출발점 바로 옆</td></tr>
+          <tr class="bike"><td class="sno">8</td><td><b>Gîte Izaxulo</b><small>2 Avenue Renaud · 64220</small></td><td class="sd">Twin / Double ×3</td><td class="sd"><b style="color:var(--ok)">확인됨</b></td><td class="sv2">Bicycle garage</td></tr>
+          <tr><td class="sno">9</td><td><b>Hostel 20 Ramuntcho</b><small>1 Rue de France · 64220</small></td><td class="sd">Double / Twin</td><td class="sd"><span style="color:#A79E86">문의 필요</span></td><td class="sv2">렌털 자전거 배송지로 견적됨</td></tr>
+          <tr class="bike"><td class="sno">10</td><td><b>Hôtel Camou</b><small>Route de Lasse, Uhart-Cize · 64220</small></td><td class="sd">Hotel room</td><td class="sd"><b style="color:var(--ok)">확인됨</b></td><td class="sv2">자전거 순례자 시설 좋음</td></tr>
+          <tr><td class="sno">11</td><td><b>Hôtel des Pyrénées</b><small>19 Place Charles de Gaulle · 64220</small></td><td class="sd">Hotel room</td><td class="sd"><span style="color:#A79E86">문의 필요</span></td><td class="sv2">4성급</td></tr>
         </tbody>
       </table>
     </div>
@@ -2132,16 +2304,17 @@
     <div class="hnote">
       <b>예약할 때 확인할 것</b>
       <ul class="hchk">
-        <li><b>자전거를 미리 받아 보관해 줄 수 있는지</b> — 이것이 가장 중요합니다.
-          렌트 업체가 5/8 오후에 배달할 예정이라고 함께 알려 주세요</li>
-        <li>밤새 <b>자전거를 둘 실내 공간</b>이 있는지 (창고 · 안뜰 · 차고).
-          생장의 오래된 건물은 계단이 좁아 객실까지 들고 올라가기 어렵습니다</li>
-        <li>5/9 아침 <b>이른 출발</b>이 가능한지 — 6시대에 나가려면 열쇠 반납 방법을 미리 정해 두세요</li>
+        <li><b>자전거 2대를 밤새 실내에 둘 수 있는지</b> — 이것이 첫 번째 조건입니다.
+          구시가 건물은 계단이 좁아 객실까지 들고 올라가기 어렵습니다</li>
+        <li><b>렌털 자전거를 미리 받아 보관해 줄 수 있는지</b> — 5/8 오후 배송 예정임을 함께 알려 주세요.
+          현재 견적은 <b>Hostel 20 Ramuntcho</b>(9번) 배송으로 잡혀 있습니다</li>
+        <li>5/9 아침 <b>이른 출발</b>이 가능한지 — 열쇠 반납 방법을 미리 정해 두세요</li>
         <li>아침 식사 시각 — 대개 07:30부터라 그보다 일찍 나가려면 전날 밤 간식을 챙겨야 합니다</li>
-        <li><b>아파트를 고른다면</b> — 프런트가 없어 <b>자전거를 받아 줄 사람이 없습니다</b>. 호스트와 렌트 업체의 배달 시간을 미리 맞춰 두거나, 체크인 뒤에 받도록 하세요. 셀프 체크인 방식과 열쇠 받는 곳도 미리 확인합니다</li>
+        <li><b>10번 Hôtel Camou 는 Uhart-Cize</b> 로 생장 바깥 마을입니다.
+          자전거 시설은 좋지만 사무소까지 거리가 있으니 이동 시간을 감안하세요</li>
       </ul>
-      <p class="hcaveat">성급·주소·도보 시간은 대략값입니다. 예약 화면과 지도에서 다시 확인하세요.
-      5월은 순례 성수기라 <b>일찍 예약</b>해야 합니다.</p>
+      <p class="hcaveat">2027년은 성년(Año Xacobeo)이라 예약이 일찍 찹니다.
+      주소·객실 구성은 예약 화면에서 다시 확인하세요.</p>
     </div>
 
     <h3 class="jh3">자전거는 미리 예약하고 호텔로 받기</h3>
@@ -2987,6 +3160,7 @@ until we check in?</pre>
     <a href="#sec1">Ⅰ · 고도 프로필</a>
     <a href="#sec2">Ⅱ · 일정 한눈에</a>
     <a href="#sec3">Ⅲ · 날짜별 카드 (D1~D13)</a>
+    <a href="#secB">자전거 대여</a>
     <a href="#secG">GPS 기기에 넣기 (Edge · Connect)</a>
     <a href="#secX">💶 비용 (Gastos)</a>
     <a href="#secP">📕 디지털 순례자 여권</a>
@@ -6451,7 +6625,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260829-1206";
+  var BUILD="20260831-0109";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
