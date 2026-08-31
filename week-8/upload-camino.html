@@ -690,6 +690,55 @@
   .exdl[disabled]{opacity:.5}
 
   .exrate em a{color:var(--blue);font-size:11px;margin-left:5px}
+
+  /* ══════════════ 🛏 숙소 ══════════════ */
+  .lgsum{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+  @media(max-width:700px){ .lgsum{grid-template-columns:1fr 1fr} }
+  .lgc2{border:1px solid var(--line);border-radius:11px;background:#fff;padding:9px 12px}
+  .lgc2 small{display:block;font-size:11px;color:var(--muted)}
+  .lgc2 b{display:block;font-family:'Gowun Batang',serif;font-size:19px;color:var(--blue);margin-top:2px}
+  .lgc2 i{display:block;font-style:normal;font-size:10.5px;color:#A7A296;margin-top:1px}
+  .lgc2.ok b{color:var(--ok)} .lgc2.wa b{color:#8A6A12} .lgc2.no b{color:#A7A296}
+
+  .lgn{border:1px solid var(--line);border-radius:12px;background:#fff;margin-bottom:8px;
+    overflow:hidden}
+  .lgn.none{border-left:4px solid #E3B7B7}
+  .lgn.asked{border-left:4px solid var(--flecha)}
+  .lgn.waiting{border-left:4px solid #7FA8C4}
+  .lgn.booked,.lgn.paid{border-left:4px solid var(--ok)}
+  .lgn.cancel{border-left:4px solid #C3BFB2;opacity:.65}
+  .lgh{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:9px 12px;
+    background:#F4F2EA;border-bottom:1px solid var(--line)}
+  .lgh b{font-family:'Gowun Batang',serif;font-size:16px;color:var(--blue)}
+  .lgh span{font-size:11px;color:var(--muted)}
+  .lgh em{font-style:normal;font-size:10px;color:#fff;background:var(--blue);
+    border-radius:999px;padding:2px 8px}
+  .lgc{font-style:normal;font-size:13px;font-weight:600;color:var(--ink)}
+  .lgb{margin-left:auto;font-size:10.5px;font-weight:700;border-radius:999px;padding:3px 10px}
+  .lgb.none{background:#F6DDD6;color:#B03A2E}
+  .lgb.asked{background:#F6EEDC;color:#8A6A12}
+  .lgb.waiting{background:#DCEAF3;color:#2C5F80}
+  .lgb.booked{background:#E6F3EA;color:var(--ok)}
+  .lgb.paid{background:var(--ok);color:#fff}
+  .lgb.cancel{background:#EFEDE5;color:#8A8578}
+  .lgb2{padding:10px 12px 12px}
+  .lgseg{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:9px}
+  @media(max-width:560px){ .lgseg{grid-template-columns:1fr 1fr} }
+  .lgseg button{border:1px solid var(--line);background:#fff;color:var(--muted);
+    border-radius:8px;padding:8px 4px;font-size:11.5px;font-family:inherit}
+  .lgseg button.on{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:600}
+  .lgrow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  @media(max-width:560px){ .lgrow{grid-template-columns:1fr} }
+  .lgn label{display:block;font-size:11px;color:var(--muted);margin-bottom:8px}
+  .lgn label.lgw{display:block}
+  .lgn input{display:block;width:100%;margin-top:3px;border:1px solid var(--line);
+    border-radius:8px;padding:9px;font-size:16px;font-family:inherit;background:#fff;color:var(--ink)}
+  .lgn input:focus{outline:none;border-color:var(--flecha);box-shadow:0 0 0 2px rgba(245,185,23,.3)}
+  .lgwho{display:flex;gap:5px;margin-top:3px}
+  .lgwho button{flex:1;border:1px solid var(--line);background:#fff;color:var(--muted);
+    border-radius:8px;padding:9px 4px;font-size:12px;font-family:inherit;font-weight:600}
+  .lgwho button.on.bin{background:var(--blue);border-color:var(--blue);color:#fff}
+  .lgwho button.on.jin{background:var(--err);border-color:var(--err);color:#fff}
 </style>
 </head>
 <body>
@@ -728,6 +777,7 @@
     <button id="viewPassBtn">📕 여권 (Credencial)</button>
     <button id="viewTodoBtn">✅ 할 일 (To-Do)</button>
     <button id="viewExBtn">💶 비용 (Gastos)</button>
+    <button id="viewLgBtn">🛏 숙소 (Alojamiento)</button>
   </div>
 
   <div id="photoView">
@@ -805,6 +855,22 @@
     <div id="exRoot"></div>
   </div>
 
+  <!-- 숙소 -->
+  <div id="lodgeView" style="display:none">
+    <div class="tdtop">
+      <span class="me" id="lgMe"></span>
+      <button class="mini2" id="lgReloadBtn">다시 불러오기</button>
+      <span class="st" id="lgStatus"></span>
+    </div>
+    <p class="tdhint">
+      파리 1박 · 생장 1박 · 카미노 13박, 모두 <b>15박</b>입니다.
+      상태 단추를 누르고 숙소 이름·예약번호·예약한 사람을 넣으면
+      사이트의 <b>숙소 → 예약 현황</b>에 바로 나타납니다.<br>
+      Bin·Jin 둘 다 고칠 수 있고, 동시에 고쳐도 서로 덮어쓰지 않습니다.
+    </p>
+    <div id="lgRoot"></div>
+  </div>
+
 </div>
 
 <div class="exed-w" id="exEditor"></div>
@@ -865,7 +931,7 @@ const initAuth=()=>{
         $("lockScreen").style.display="none";$("panel").style.display="block";
         $("whoAmI").innerHTML="로그인: <b>"+myEmail+"</b>";
         $("tdSaveBtn").style.display="";
-        tdOnSignedIn(); pgOnSignedIn(); exOnSignedIn();
+        tdOnSignedIn(); pgOnSignedIn(); exOnSignedIn(); lgOnSignedIn();
         loadAll();
       }).catch(()=>toast("계정 정보를 가져오지 못했습니다"));
     }
@@ -1841,13 +1907,16 @@ const showView = (which) => {
   $("todoView") .style.display = which==="todo"  ? "" : "none";
   $("passView") .style.display = which==="pass"  ? "" : "none";
   $("exView")   .style.display = which==="ex"    ? "" : "none";
+  $("lodgeView").style.display = which==="lodge" ? "" : "none";
   $("viewPhotoBtn").classList.toggle("on", which==="photo");
   $("viewTodoBtn") .classList.toggle("on", which==="todo");
   $("viewPassBtn") .classList.toggle("on", which==="pass");
   $("viewExBtn")   .classList.toggle("on", which==="ex");
+  $("viewLgBtn")   .classList.toggle("on", which==="lodge");
   if(which==="todo" && !tdLoaded) tdLoad();
   if(which==="pass" && !pgLoaded)  pgLoad();
   if(which==="ex"   && !exLoaded)  exLoad();
+  if(which==="lodge"&& !lgLoaded)  lgLoad();
 };
 $("viewPhotoBtn").addEventListener("click",()=>showView("photo"));
 $("viewTodoBtn") .addEventListener("click",()=>showView("todo"));
@@ -2862,7 +2931,7 @@ const pgOnSignedIn=()=>{
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260827-0958";
+  var BUILD="20260831-1221";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
@@ -3533,6 +3602,203 @@ const exOnSignedIn = () => {
 $("viewExBtn").addEventListener("click",()=>showView("ex"));
 $("exReloadBtn").addEventListener("click",()=>{ exLoaded=false; exLoad(); });
 window.addEventListener("online",()=>{ if(exLoaded) exFlush(); });
+
+
+/* ══════════════════════════════════════════════════════════════════════
+   🛏 숙소 — 15박의 예약 현황을 함께 관리합니다
+   저장: db/lodging.json  (Bin·Jin 둘 다 고칠 수 있습니다)
+   ══════════════════════════════════════════════════════════════════════ */
+
+const LG_FILE = "lodging.json";
+const LG_PLAN = [
+  ["2027-05-07", -1, "파리",            "몽파르나스 도보권"],
+  ["2027-05-08",  0, "생장피에드포르",   "자전거 배송지"],
+  ["2027-05-09",  1, "수비리",          "Zubiri"],
+  ["2027-05-10",  2, "에스테야",        "Estella"],
+  ["2027-05-11",  3, "나바레테",        "Navarrete"],
+  ["2027-05-12",  4, "벨로라도",        "Belorado"],
+  ["2027-05-13",  5, "카스트로헤리스",   "Castrojeriz"],
+  ["2027-05-14",  6, "사아군",          "Sahagún"],
+  ["2027-05-15",  7, "레온",            "León"],
+  ["2027-05-16",  8, "레온 (휴식)",      "같은 숙소 2박 권장"],
+  ["2027-05-17",  9, "라바날 델 카미노", "Rabanal"],
+  ["2027-05-18", 10, "베가 데 발카르세", "Las Herrerías"],
+  ["2027-05-19", 11, "사리아",          "Sarria"],
+  ["2027-05-20", 12, "아르수아",        "Arzúa"],
+  ["2027-05-21", 13, "산티아고",        "완주 기념"]
+];
+const LG_ST = [
+  {k:"none",    n:"미예약",   i:"·"},
+  {k:"asked",   n:"문의 발송", i:"✉"},
+  {k:"waiting", n:"오픈 대기", i:"⏳"},
+  {k:"booked",  n:"예약 완료", i:"✓"},
+  {k:"paid",    n:"결제 완료", i:"✓✓"},
+  {k:"cancel",  n:"취소됨",   i:"✕"}
+];
+
+let lgLoaded=false, lgData={nights:[]}, lgMeta=null, lgTimer=null;
+
+const lgEsc = t => String(t==null?"":t)
+  .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+const lgDow = iso => ["일","월","화","수","목","금","토"][new Date(iso+"T12:00:00").getDay()];
+const lgMd  = iso => (+iso.slice(5,7))+"/"+(+iso.slice(8,10));
+const lgGet = iso => lgData.nights.find(x=>x.date===iso) || null;
+
+const lgNorm = (raw) => {
+  const out={nights:[]};
+  if(raw && Array.isArray(raw.nights)){
+    raw.nights.forEach(n=>{
+      if(!n||!n.date) return;
+      out.nights.push({date:n.date, city:n.city||"", name:n.name||"",
+        status:n.status||"none", ref:n.ref||"", by:n.by||"", price:n.price||"",
+        url:n.url||"", memo:n.memo||"", ts:+n.ts||0});
+    });
+  }
+  return out;
+};
+const lgPack = () => ({ver:1, updatedAt:new Date().toISOString(),
+  updatedBy:myEmail, nights:lgData.nights});
+
+const lgLoad = () => {
+  lgStatus("불러오는 중…");
+  return tdEnsureFolder().then(fid=>{ dbFolderId=fid; return listFolder(fid); })
+    .then(files=>{
+      const f=files.find(x=>x.name===LG_FILE);
+      if(!f){
+        lgData={nights:[]};
+        return driveCreateJson(LG_FILE, lgPack(), dbFolderId)
+          .then(r=>{ lgMeta={id:r.id, modifiedTime:r.modifiedTime}; });
+      }
+      return driveDownload(f.id).then(t=>{
+        let raw=null; try{ raw=JSON.parse(t); }catch(e){}
+        lgData=lgNorm(raw);
+        return driveGetMeta(f.id).then(m=>{ lgMeta={id:f.id, modifiedTime:m.modifiedTime}; });
+      });
+    })
+    .then(()=>{ lgLoaded=true; lgRender(); lgStatus("불러오기 완료","sav"); })
+    .catch(e=>{ lgStatus(e.message,"err");
+      $("lgRoot").innerHTML='<div class="tdhint" style="color:var(--err)">⚠ '+lgEsc(e.message)+'</div>'; });
+};
+
+const lgMerge = (remote, local) => {
+  const m=new Map();
+  (remote.nights||[]).forEach(x=>m.set(x.date,x));
+  (local.nights||[]).forEach(x=>{ const r=m.get(x.date);
+    if(!r||(x.ts||0)>=(r.ts||0)) m.set(x.date,x); });
+  return {nights:[...m.values()].sort((a,b)=>a.date<b.date?-1:1)};
+};
+const lgSave = () => {
+  if(!lgMeta) return Promise.resolve();
+  lgStatus("저장 중…");
+  return driveGetMeta(lgMeta.id).then(m=>{
+    if(m.modifiedTime!==lgMeta.modifiedTime)
+      return driveDownload(lgMeta.id).then(t=>{
+        let raw=null; try{ raw=JSON.parse(t); }catch(e){}
+        lgData=lgMerge(lgNorm(raw), lgData);
+      });
+  }).then(()=>driveUpdateJson(lgMeta.id, lgPack()))
+    .then(r=>{ lgMeta.modifiedTime=r.modifiedTime;
+      lgStatus("저장됨 · "+new Date().toLocaleTimeString("ko-KR",
+        {hour:"2-digit",minute:"2-digit"}),"sav"); })
+    .catch(e=>{ lgStatus("⚠ "+e.message,"err"); toast("⚠ "+e.message); });
+};
+const lgQueue = () => { lgStatus("변경됨 — 곧 저장합니다…");
+  clearTimeout(lgTimer); lgTimer=setTimeout(lgSave,1200); };
+const lgStatus = (m,c) => { const el=$("lgStatus");
+  if(el){ el.textContent=m; el.className="st"+(c?" "+c:""); } };
+
+const lgSet = (iso, field, value) => {
+  let n=lgGet(iso);
+  if(!n){
+    const p=LG_PLAN.find(x=>x[0]===iso);
+    n={date:iso, city:p?p[2]:"", name:"", status:"none", ref:"", by:"",
+       price:"", url:"", memo:"", ts:0};
+    lgData.nights.push(n);
+    lgData.nights.sort((a,b)=>a.date<b.date?-1:1);
+  }
+  n[field]=value; n.ts=Date.now();
+  lgQueue();
+};
+
+const lgRender = () => {
+  const root=$("lgRoot"); if(!root) return;
+  if(!lgLoaded){ root.innerHTML='<p class="wxload">숙소 자료를 불러오는 중…</p>'; return; }
+
+  const cnt={};
+  LG_PLAN.forEach(p=>{ const n=lgGet(p[0])||{status:"none"};
+    cnt[n.status]=(cnt[n.status]||0)+1; });
+
+  let h='<div class="lgsum">'
+    + lgCard("전체", LG_PLAN.length+"박", "5/7 ~ 5/21")
+    + lgCard("예약 완료", ((cnt.booked||0)+(cnt.paid||0))+"곳", "결제 포함", "ok")
+    + lgCard("문의 · 대기", ((cnt.asked||0)+(cnt.waiting||0))+"곳", "답 기다리는 중", "wa")
+    + lgCard("미예약", (cnt.none||0)+"곳", "아직 손대지 않음", "no")
+    + '</div>';
+
+  LG_PLAN.forEach(p=>{
+    const iso=p[0], n=lgGet(iso) || {status:"none"};
+    const s=LG_ST.find(x=>x.k===(n.status||"none")) || LG_ST[0];
+    h+='<div class="lgn '+s.k+'" data-d="'+iso+'">'
+      +'<div class="lgh"><b>'+lgMd(iso)+'</b><span>'+lgDow(iso)+'</span>'
+        +(p[1]>0?'<em>DAY '+p[1]+'</em>':(p[1]===0?'<em>생장</em>':'<em>파리</em>'))
+        +'<i class="lgc">'+lgEsc(p[2])+'</i>'
+        +'<span class="lgb '+s.k+'">'+s.i+' '+s.n+'</span></div>'
+      +'<div class="lgb2">'
+        +'<div class="lgseg">'+LG_ST.map(x=>'<button type="button" data-s="'+x.k+'"'
+          +(x.k===(n.status||"none")?' class="on"':'')+'>'+x.i+' '+x.n+'</button>').join("")+'</div>'
+        +'<div class="lgrow">'
+          +'<label>숙소 이름<input type="text" data-f="name" value="'+lgEsc(n.name||"")
+            +'" placeholder="'+lgEsc(p[3])+'"></label>'
+          +'<label>예약번호<input type="text" data-f="ref" value="'+lgEsc(n.ref||"")
+            +'" placeholder="선택"></label>'
+        +'</div>'
+        +'<div class="lgrow">'
+          +'<label>예약한 사람<div class="lgwho">'
+            +['bin','jin'].map(w=>'<button type="button" data-w="'+w+'"'
+              +(n.by===w?' class="on '+w+'"':'')+'>'+w.toUpperCase()+'</button>').join("")
+            +'<button type="button" data-w="">-</button></div></label>'
+          +'<label>1박 요금<input type="text" data-f="price" value="'+lgEsc(n.price||"")
+            +'" placeholder="예: €62"></label>'
+        +'</div>'
+        +'<label class="lgw">메모<input type="text" data-f="memo" value="'+lgEsc(n.memo||"")
+          +'" placeholder="답장 내용 · 확인할 것"></label>'
+        +'<label class="lgw">링크<input type="text" data-f="url" value="'+lgEsc(n.url||"")
+          +'" placeholder="예약 페이지 주소"></label>'
+      +'</div></div>';
+  });
+
+  root.innerHTML=h;
+  lgBind();
+};
+const lgCard = (n,v,s,c) =>
+  '<div class="lgc2'+(c?" "+c:"")+'"><small>'+n+'</small><b>'+v+'</b><i>'+(s||"")+'</i></div>';
+
+const lgBind = () => {
+  document.querySelectorAll(".lgn").forEach(box=>{
+    const iso=box.dataset.d;
+    box.querySelectorAll(".lgseg button").forEach(b=>b.addEventListener("click",()=>{
+      lgSet(iso,"status",b.dataset.s); lgRender();
+    }));
+    box.querySelectorAll(".lgwho button").forEach(b=>b.addEventListener("click",()=>{
+      lgSet(iso,"by",b.dataset.w); lgRender();
+    }));
+    box.querySelectorAll("input[data-f]").forEach(inp=>{
+      const go=()=>lgSet(iso, inp.dataset.f, inp.value.trim());
+      inp.addEventListener("change",go);
+      inp.addEventListener("blur",go);
+    });
+  });
+};
+
+const lgOnSignedIn = () => {
+  const me=$("lgMe");
+  if(me) me.innerHTML = CONFIG.owners[myEmail]
+    ? '로그인: <b>'+CONFIG.owners[myEmail].toUpperCase()+'</b> — 둘 다 함께 고칠 수 있습니다.'
+    : '담당이 지정되지 않은 계정이라 <b>보기만</b> 가능합니다.';
+};
+
+$("viewLgBtn").addEventListener("click",()=>showView("lodge"));
+$("lgReloadBtn").addEventListener("click",()=>{ lgLoaded=false; lgLoad(); });
 
 </script>
 </body>

@@ -1583,6 +1583,78 @@
   .bizt{display:inline-block;font-size:.58rem;font-weight:700;color:#1B4E80;background:#DCE9F5;
     border-radius:999px;padding:1px 7px;margin-left:3px}
   .jc i{font-style:italic;color:var(--ink)}
+
+  /* ══════════════ 숙소 예약 현황 ══════════════ */
+  .lsum{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:13px}
+  @media(max-width:700px){ .lsum{grid-template-columns:1fr 1fr} }
+  .lsc{border:1px solid var(--line);border-radius:12px;background:#fff;padding:10px 13px}
+  .lsc small{display:block;font-size:.66rem;color:var(--ink-soft)}
+  .lsc b{display:block;font-family:'Gowun Batang',serif;font-size:1.35rem;margin-top:2px;
+    color:var(--camino-blue);font-variant-numeric:tabular-nums}
+  .lsc i{display:block;font-style:normal;font-size:.63rem;color:#A79E86;margin-top:1px}
+  .lsc.book b{color:var(--ok)} .lsc.asked b{color:#8A6A12} .lsc.none b{color:#A79E86}
+
+  /* 달력 — 넓은 화면 */
+  .lcal{border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden;
+    margin-bottom:14px}
+  .lcal-h{padding:10px 14px;background:var(--camino-blue);color:#fff;
+    font-family:'Gowun Batang',serif;font-size:.95rem}
+  .lcal-g{display:grid;grid-template-columns:repeat(7,1fr)}
+  .lcw{padding:7px 4px;text-align:center;font-size:.68rem;font-weight:700;color:var(--ink-soft);
+    background:#F1EEE4;border-bottom:1px solid var(--line)}
+  .lcd{min-height:88px;padding:6px 7px;border-right:1px solid var(--line2);
+    border-bottom:1px solid var(--line2);display:flex;flex-direction:column;gap:2px}
+  .lcd:nth-child(7n){border-right:none}
+  .lcd.off,.lcd.out{background:#FBFAF5}
+  .lcn{font-size:.72rem;font-weight:700;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+  .lct{font-size:.72rem;font-weight:600;color:var(--ink);line-height:1.3}
+  .lcs{font-size:.62rem;font-weight:700}
+  .lcm{font-size:.6rem;color:var(--ink-soft);line-height:1.35;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .lcd.none{background:#FDF6F5} .lcd.none .lcs{color:#B06A6A}
+  .lcd.asked{background:#FFFBEE} .lcd.asked .lcs{color:#8A6A12}
+  .lcd.wait{background:#F5F9FC} .lcd.wait .lcs{color:#2C5F80}
+  .lcd.book{background:#F2FAF5} .lcd.book .lcs{color:var(--ok)}
+  .lcd.paid{background:#E6F3EA} .lcd.paid .lcs{color:var(--ok)}
+  .lcd.canc{background:#F4F2EA} .lcd.canc .lcs{color:#A79E86}
+
+  /* 세로 목록 — 좁은 화면 */
+  .llist{display:none;flex-direction:column;gap:7px;margin-bottom:14px}
+  .lrow{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);
+    border-radius:11px;background:#fff;padding:10px 12px}
+  .lrow.none{border-left:4px solid #E3B7B7}
+  .lrow.asked{border-left:4px solid var(--flecha)}
+  .lrow.wait{border-left:4px solid #7FA8C4}
+  .lrow.book,.lrow.paid{border-left:4px solid var(--ok)}
+  .lrow.canc{border-left:4px solid #C3BFB2;opacity:.6}
+  .ld{flex:0 0 62px;text-align:center}
+  .ld b{display:block;font-family:'Gowun Batang',serif;font-size:1.05rem;color:var(--camino-blue);
+    font-variant-numeric:tabular-nums}
+  .ld span{display:block;font-size:.64rem;color:var(--ink-soft)}
+  .ld em{display:inline-block;font-style:normal;font-size:.56rem;color:#fff;
+    background:var(--camino-blue);border-radius:999px;padding:1px 7px;margin-top:3px}
+  .li{flex:1;min-width:0}
+  .li b{display:block;font-size:.86rem;color:var(--ink)}
+  .li span{display:block;font-size:.74rem;color:var(--ink-soft);margin-top:1px}
+  .li span.dim{color:#B9B3A4}
+  .li small{display:block;font-size:.68rem;color:#A79E86;margin-top:2px;line-height:1.5}
+  .lz{flex:0 0 auto;text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+  .lz code{font-family:'IBM Plex Mono',monospace;font-size:.66rem;background:#F1EEE4;
+    border-radius:5px;padding:1px 7px;color:var(--ink)}
+  .lz em{font-style:normal;font-size:.72rem;font-weight:700;color:var(--rioja)}
+  .lst{font-size:.62rem;font-weight:700;border-radius:999px;padding:2px 9px;white-space:nowrap}
+  .lst.none{background:#F6DDD6;color:#B03A2E}
+  .lst.asked{background:#F6EEDC;color:#8A6A12}
+  .lst.wait{background:#DCEAF3;color:#2C5F80}
+  .lst.book{background:#E6F3EA;color:var(--ok)}
+  .lst.paid{background:var(--ok);color:#fff}
+  .lst.canc{background:#EFEDE5;color:#8A8578}
+  .lleg{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+
+  @media(max-width:820px){
+    .lcal{display:none}
+    .llist{display:flex}
+  }
 </style>
 
 <!-- ══════════════════════════════════════════════════════════════════════
@@ -1805,17 +1877,89 @@
   </div>
 </section>
 
-<!-- ───────── 급한 예약 · 감시 ───────── -->
-<section id="secW" style="padding-top:0">
+<!-- ───────── 숙소 ───────── -->
+<section id="secL" style="padding-top:0">
   <div class="wrap">
     <div class="sec-head">
-      <div class="no">Reserva</div>
-      <h2>급한 예약과 자동 감시</h2>
-      <p>2027년은 성년이라 방이 일찍 찹니다. 그런데 <b>많은 숙소가 2027년 예약창을 아직 열지 않았습니다.</b>
-      기다리지 말고 <b>직접 연락</b>하는 편이 빠릅니다 — 작은 알베르게는 달력이 열리기 전에도
-      메일이나 왓츠앱으로 받아 주는 곳이 많습니다.<br>
-      <b>2026-08-31 현재 세 곳에 왓츠앱을 보냈고, Casa Polín 한 곳이 남았습니다.</b></p>
+      <div class="no">Alojamiento</div>
+      <h2>숙소</h2>
+      <p>파리 1박, 생장 1박, 카미노 13박 — 모두 <b>15박</b>입니다.
+      조건은 두 가지입니다 — <b>2인 개인실</b>과 <b>자전거 2대를 안전하게 둘 곳</b>.
+      아래에 예약 현황, 날짜별 후보, 연락 문구를 한데 모았습니다.</p>
     </div>
+
+    <h3 class="gh3">예약 현황</h3>
+    <div id="lodgeRoot"></div>
+
+    <div class="pribox">
+      <b>예약 순서 — 급한 곳부터</b>
+      <div class="prirow">
+        <div class="pc hot"><i>①</i><span>지금 바로</span>
+          <small>Zubiri · Rabanal · Vega de Valcarce · Arzúa</small>
+          <em>작은 마을이라 방이 몇 개 없습니다</em></div>
+        <div class="pc warm"><i>②</i><span>이른 편</span>
+          <small>Navarrete · Castrojeriz · Sarria</small>
+          <em>사리아는 100 km 지점이라 순례자가 몰립니다</em></div>
+        <div class="pc mid"><i>③</i><span>보통</span>
+          <small>Estella · Belorado · Santiago</small>
+          <em>선택지가 어느 정도 있습니다</em></div>
+        <div class="pc cool"><i>④</i><span>여유</span>
+          <small>Sahagún</small><em>숙소가 넉넉한 편</em></div>
+        <div class="pc calm"><i>⑤</i><span>가장 여유</span>
+          <small>León (2박)</small><em>도시라 언제든 잡힙니다</em></div>
+      </div>
+    </div>
+
+    <div class="bgwarn">
+      <b>2027년 요금은 아직 대부분 열리지 않았습니다</b>
+      아래 가격은 <b>2026년 기준 시작가</b>이거나 최근 공개된 값입니다. 2027년 5월 판매가 열리면 달라집니다.
+      취소 조건도 요금제마다 다르고 확인되지 않은 곳이 많아, <b>무료 취소라고 적지 않았습니다.</b>
+      예약할 때 각자 확인하세요. 2027년은 성년(Año Xacobeo)이라 방이 일찍 찹니다.
+    </div>
+
+    <div class="nights">
+      <div class="nb"><div class="nh"><b>5/9</b><span>DAY 1</span><em>Zubiri</em><i class="pr hot">① 지금 바로</i></div><ul class="nl"><li class="top"><span class="r">1</span><span class="n"><b>El Palo de Avellano</b> <i class="star">추천</i></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€62</span></li><li><span class="r">2</span><span class="n"><b>Albergue Suseia</b></span><span class="rm">Twin</span><span class="bk ok">보관 확인</span><span class="pz">€45</span></li><li><span class="r">3</span><span class="n"><b>Pensión USOA</b><small>Secure storage</small></span><span class="rm">Double</span><span class="bk ok">보관 확인</span><span class="pz">€55+</span></li></ul></div>
+      <div class="nb"><div class="nh"><b>5/10</b><span>DAY 2</span><em>Estella</em><i class="pr mid">③ 보통</i></div><ul class="nl"><li class="top"><span class="r">1</span><span class="n"><b>Hospedería Chapitel</b> <i class="star">추천</i><small>전용 자전거 garage</small></span><span class="rm">Ensuite</span><span class="bk ok">보관 확인</span><span class="pz">중상급</span></li><li><span class="r">2</span><span class="n"><b>Alda Estella Hostel</b></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€52+</span></li><li><span class="r">3</span><span class="n"><b>Agora Hostel Estella</b></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">약 €60+</span></li></ul></div>
+      <div class="nb"><div class="nh"><b>5/11</b><span>DAY 3</span><em>Navarrete</em><i class="pr warm">② 이른 편</i></div><ul class="nl"><li class="top"><span class="r">1</span><span class="n"><b>A la Sombra del Laurel</b></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€40+</span></li><li><span class="r">2</span><span class="n"><b>El Cántaro</b></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€30+</span></li><li><span class="r">3</span><span class="n"><b>Buen Camino / Villa de Navarrete</b></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€30~35+</span></li></ul></div>
+      <div class="nb"><div class="nh"><b>5/12</b><span>DAY 4</span><em>Belorado</em><i class="pr mid">③ 보통</i></div><ul class="nl"><li class="top"><span class="r">1</span><span class="n"><b>Hostel B / Cuatro Cantones</b></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€40+</span></li><li><span class="r">2</span><span class="n"><b>A Santiago</b></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€32+</span></li><li><span class="r">3</span><span class="n"><b>Caminante</b></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€40+</span></li></ul></div>
+      <div class="nb"><div class="nh"><b>5/13</b><span>DAY 5</span><em>Castrojeriz</em><i class="pr warm">② 이른 편</i></div><ul class="nl"><li class="top"><span class="r">1</span><span class="n"><b>A Cien Leguas</b> <i class="star">추천</i></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€42+</span></li><li><span class="r">2</span><span class="n"><b>Albergue Orión</b></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€45+</span></li><li><span class="r">3</span><span class="n"><b>Albergue Ultreia</b></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€40+</span></li></ul></div>
+      <div class="nb"><div class="nh"><b>5/14</b><span>DAY 6</span><em>Sahagún</em><i class="pr cool">④ 여유</i></div><ul class="nl"><li class="top"><span class="r">1</span><span class="n"><b>Hostal Sahagún</b> <i class="star">추천</i></span><span class="rm">Double/Twin + 욕실</span><span class="bk ok">보관 확인</span><span class="pz">€59+</span></li><li><span class="r">2</span><span class="n"><b>Domus Viatoris</b></span><span class="rm">Double/Twin</span><span class="bk ok">보관 확인</span><span class="pz">€59~75</span></li><li><span class="r">3</span><span class="n"><b>Hostal San Juan</b><small>Secure + 전기자전거 충전</small></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">확인 필요</span></li></ul></div>
+      <div class="nb"><div class="nh"><b>5/15</b><span>DAY 7</span><em>León</em><i class="pr calm">⑤ 가장 여유</i></div><ul class="nl"><li class="top"><span class="r">1</span><span class="n"><b>Alda Vía León</b> <i class="star">추천</i><small>보관 명시</small></span><span class="rm">Ensuite</span><span class="bk ok">보관 확인</span><span class="pz">확인 필요</span></li><li><span class="r">2</span><span class="n"><b>Hotel Spa QH Centro León</b><small>잠금식 자전거 구역</small></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">확인 필요</span></li><li><span class="r">3</span><span class="n"><b>Hostal Quevedo</b><small>보관은 문의 권장</small></span><span class="rm">Ensuite</span><span class="bk ask">문의 필요</span><span class="pz">확인 필요</span></li></ul></div>
+      <div class="nb rest"><div class="nh"><b>5/16</b><span>DAY 8</span><em>León 휴식</em><i class="pr calm">⑤ 가장 여유</i></div><div class="nx">레온에서 <b>같은 숙소에 2박</b>을 권합니다 — 5/15·5/16 을 이어서 잡으세요.<br>중간에 옮기면 짐과 자전거를 두 번 옮겨야 하고, 쉬는 날의 의미가 줄어듭니다. 특히 <b>Alda Vía León</b> 을 추천합니다.</div></div>
+      <div class="nb"><div class="nh"><b>5/17</b><span>DAY 9</span><em>Rabanal del Camino</em><i class="pr hot">① 지금 바로</i></div><ul class="nl"><li class="top"><span class="r">1</span><span class="n"><b>Hotel Rural Casa Indie</b> <i class="star">추천</i></span><span class="rm">Double/Twin + 욕실</span><span class="bk ok">보관 확인</span><span class="pz">€57~70</span></li><li><span class="r">2</span><span class="n"><b>Albergue La Senda</b><small>Bicycle parking</small></span><span class="rm">전용 욕실</span><span class="bk ok">보관 확인</span><span class="pz">저가~중가</span></li><li><span class="r">3</span><span class="n"><b>El Refugio Hostería</b><small>자전거 보관 사전 문의</small></span><span class="rm">2인 개인실</span><span class="bk ask">문의 필요</span><span class="pz">약 €60+</span></li></ul></div>
+      <div class="nb"><div class="nh"><b>5/18</b><span>DAY 10</span><em>Vega de Valcarce</em><i class="pr hot">① 지금 바로</i></div><ul class="nl"><li class="top"><span class="r">1</span><span class="n"><b>Albergue El Paso</b></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">문의</span></li><li><span class="r">2</span><span class="n"><b>Casa Polín, Las Herrerías</b> <i class="star">추천</i></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€38+</span></li><li><span class="r">3</span><span class="n"><b>Casa Lixa, Las Herrerías</b></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€45+</span></li></ul></div>
+      <div class="nb"><div class="nh"><b>5/19</b><span>DAY 11</span><em>Sarria</em><i class="pr warm">② 이른 편</i></div><ul class="nl"><li class="top"><span class="r">1</span><span class="n"><b>Hotel Alfonso IX</b> <i class="star">추천</i><small>전용 자전거 보관실</small></span><span class="rm">호텔룸</span><span class="bk ok">보관 확인</span><span class="pz">중상급</span></li><li><span class="r">2</span><span class="n"><b>Casa Matías</b><small>전용 자전거 주차</small></span><span class="rm">Ensuite</span><span class="bk ok">보관 확인</span><span class="pz">중가</span></li><li><span class="r">3</span><span class="n"><b>Pensión Baixo a Lua</b></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€50+</span></li></ul></div>
+      <div class="nb"><div class="nh"><b>5/20</b><span>DAY 12</span><em>Arzúa</em><i class="pr hot">① 지금 바로</i></div><ul class="nl"><li class="top"><span class="r">1</span><span class="n"><b>Hotel La Puerta de Arzúa</b> <i class="star">추천</i></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€60+</span></li><li><span class="r">2</span><span class="n"><b>Albergue Miraiso</b></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€52+</span></li><li><span class="r">3</span><span class="n"><b>De Camino Albergue</b><small>객실 구성 확인 필요</small></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€160+*</span></li></ul></div>
+      <div class="nb"><div class="nh"><b>5/21</b><span>DAY 13</span><em>Santiago</em><i class="pr mid">③ 보통</i></div><ul class="nl"><li class="top"><span class="r">1</span><span class="n"><b>Hostal/Pensión Artilleiro</b> <i class="star">추천</i><small>Bicycle storage</small></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">확인 필요</span></li><li><span class="r">2</span><span class="n"><b>Hostal Giadás</b><small>Bicycle storage</small></span><span class="rm">Ensuite</span><span class="bk ok">보관 확인</span><span class="pz">확인 필요</span></li><li><span class="r">3</span><span class="n"><b>Parador de Santiago</b><small>완주 기념</small></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€288+</span></li></ul></div>
+    </div>
+
+    <h3 class="gh3">예약할 때 물어볼 것</h3>
+    <div class="jchk">
+      <div class="jc">
+        <b>자전거 2대를 실내에 둘 수 있나요</b>
+        &ldquo;Do you have a secure indoor place for two bicycles overnight?&rdquo;
+        마당이나 창고라도 <b>잠기는 곳</b>인지 확인하세요.
+      </div>
+      <div class="jc">
+        <b>2인 개인실인지</b>
+        Double(더블 하나)과 Twin(싱글 둘)은 다릅니다. 알베르게는 같은 이름으로
+        <b>공동 침실</b>을 파는 곳도 있으니 <b>private room</b> 인지 확인하세요.
+      </div>
+      <div class="jc">
+        <b>이른 출발이 되나요</b>
+        6~7시에 나가려면 열쇠 반납 방법을 미리 정해야 합니다.
+        아침 식사는 대개 07:30 부터라 그전에 나가면 못 먹습니다.
+      </div>
+      <div class="jc warn">
+        <b>취소 조건</b>
+        1년 전 예약이라 일정이 바뀔 수 있습니다. 가능하면 <b>무료 취소</b> 요금제를 고르고,
+        조금 비싸더라도 그 차액이 보험이라고 생각하세요.
+      </div>
+    </div>
+
+    <div class="note">숙소 이름과 가격은 참고용입니다. 실제 예약 화면에서 위치·객실 구성·취소 조건을 다시 확인하세요.
+    생장(5/8) 숙소는 <a href="#sec4">Ⅳ 파리 → 생장</a> 항목에 따로 정리되어 있습니다.</div>
+  
 
     <h3 class="gh3">지금 바로 연락할 네 곳</h3>
     <div class="ucrow"><div class="uc"><div class="uh"><b>Zubiri</b><span>5/9</span></div><div class="un">Albergue Suseia</div><div class="uct">WhatsApp +34 679 667 603</div><p>2인 개인실이 <b>단 1실</b>입니다. 홈페이지에 왓츠앱 번호를 직접 안내하고 있으니 여기가 가장 빠릅니다.</p><a href="https://alberguesuseia.com/reservas/" target="_blank" rel="noopener">예약 페이지 ↗</a></div><div class="uc"><div class="uh"><b>Rabanal del Camino</b><span>5/17</span></div><div class="un">Hotel Rural Casa Indie</div><div class="uct">숙소 홈페이지 · Booking 메시지</div><p>마을이 아주 작아 숙소 수가 적습니다. 대안인 Albergue La Senda 도 함께 물어보세요.</p><span class="nolink">주소 확인 필요</span></div><div class="uc"><div class="uh"><b>Vega de Valcarce</b><span>5/18</span></div><div class="un">Albergue El Paso · Casa Polín</div><div class="uct">숙소 홈페이지 · Booking 메시지</div><p>Las Herrerías 쪽 두 곳이 대안입니다. 세 곳에 같은 문의를 한꺼번에 보내세요.</p><span class="nolink">주소 확인 필요</span></div><div class="uc"><div class="uh"><b>Arzúa</b><span>5/20</span></div><div class="un">Hotel La Puerta de Arzúa</div><div class="uct">숙소 홈페이지 · Booking 메시지</div><p>산티아고 직전 마지막 밤이라 경쟁이 심합니다.</p><span class="nolink">주소 확인 필요</span></div></div>
@@ -2081,90 +2225,11 @@ Gracias! Buen Camino!</pre>
 
     <div class="note">더 간단한 대안으로 <b>Distill.io</b> 브라우저 확장이 있습니다.
     화면에 그려진 그대로를 감시하지만 브라우저를 켜 두어야 합니다.</div>
+  
   </div>
 </section>
 
-<!-- ───────── 날짜별 숙박 ───────── -->
-<section id="secH" style="padding-top:0">
-  <div class="wrap">
-    <div class="sec-head">
-      <div class="no">Alojamiento</div>
-      <h2>날짜별 숙박</h2>
-      <p>조건은 두 가지입니다 — <b>2인 개인실</b>과 <b>자전거 2대를 안전하게 둘 곳</b>.
-      알베르게 공동 침실은 자전거를 밖에 두어야 하는 곳이 많아 뺐습니다.
-      날마다 세 곳씩, 첫 번째가 가장 권할 만한 곳입니다.</p>
-    </div>
 
-    <div class="pribox">
-      <b>예약 순서 — 급한 곳부터</b>
-      <div class="prirow">
-        <div class="pc hot"><i>①</i><span>지금 바로</span>
-          <small>Zubiri · Rabanal · Vega de Valcarce · Arzúa</small>
-          <em>작은 마을이라 방이 몇 개 없습니다</em></div>
-        <div class="pc warm"><i>②</i><span>이른 편</span>
-          <small>Navarrete · Castrojeriz · Sarria</small>
-          <em>사리아는 100 km 지점이라 순례자가 몰립니다</em></div>
-        <div class="pc mid"><i>③</i><span>보통</span>
-          <small>Estella · Belorado · Santiago</small>
-          <em>선택지가 어느 정도 있습니다</em></div>
-        <div class="pc cool"><i>④</i><span>여유</span>
-          <small>Sahagún</small><em>숙소가 넉넉한 편</em></div>
-        <div class="pc calm"><i>⑤</i><span>가장 여유</span>
-          <small>León (2박)</small><em>도시라 언제든 잡힙니다</em></div>
-      </div>
-    </div>
-
-    <div class="bgwarn">
-      <b>2027년 요금은 아직 대부분 열리지 않았습니다</b>
-      아래 가격은 <b>2026년 기준 시작가</b>이거나 최근 공개된 값입니다. 2027년 5월 판매가 열리면 달라집니다.
-      취소 조건도 요금제마다 다르고 확인되지 않은 곳이 많아, <b>무료 취소라고 적지 않았습니다.</b>
-      예약할 때 각자 확인하세요. 2027년은 성년(Año Xacobeo)이라 방이 일찍 찹니다.
-    </div>
-
-    <div class="nights">
-      <div class="nb"><div class="nh"><b>5/9</b><span>DAY 1</span><em>Zubiri</em><i class="pr hot">① 지금 바로</i></div><ul class="nl"><li class="top"><span class="r">1</span><span class="n"><b>El Palo de Avellano</b> <i class="star">추천</i></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€62</span></li><li><span class="r">2</span><span class="n"><b>Albergue Suseia</b></span><span class="rm">Twin</span><span class="bk ok">보관 확인</span><span class="pz">€45</span></li><li><span class="r">3</span><span class="n"><b>Pensión USOA</b><small>Secure storage</small></span><span class="rm">Double</span><span class="bk ok">보관 확인</span><span class="pz">€55+</span></li></ul></div>
-      <div class="nb"><div class="nh"><b>5/10</b><span>DAY 2</span><em>Estella</em><i class="pr mid">③ 보통</i></div><ul class="nl"><li class="top"><span class="r">1</span><span class="n"><b>Hospedería Chapitel</b> <i class="star">추천</i><small>전용 자전거 garage</small></span><span class="rm">Ensuite</span><span class="bk ok">보관 확인</span><span class="pz">중상급</span></li><li><span class="r">2</span><span class="n"><b>Alda Estella Hostel</b></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€52+</span></li><li><span class="r">3</span><span class="n"><b>Agora Hostel Estella</b></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">약 €60+</span></li></ul></div>
-      <div class="nb"><div class="nh"><b>5/11</b><span>DAY 3</span><em>Navarrete</em><i class="pr warm">② 이른 편</i></div><ul class="nl"><li class="top"><span class="r">1</span><span class="n"><b>A la Sombra del Laurel</b></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€40+</span></li><li><span class="r">2</span><span class="n"><b>El Cántaro</b></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€30+</span></li><li><span class="r">3</span><span class="n"><b>Buen Camino / Villa de Navarrete</b></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€30~35+</span></li></ul></div>
-      <div class="nb"><div class="nh"><b>5/12</b><span>DAY 4</span><em>Belorado</em><i class="pr mid">③ 보통</i></div><ul class="nl"><li class="top"><span class="r">1</span><span class="n"><b>Hostel B / Cuatro Cantones</b></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€40+</span></li><li><span class="r">2</span><span class="n"><b>A Santiago</b></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€32+</span></li><li><span class="r">3</span><span class="n"><b>Caminante</b></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€40+</span></li></ul></div>
-      <div class="nb"><div class="nh"><b>5/13</b><span>DAY 5</span><em>Castrojeriz</em><i class="pr warm">② 이른 편</i></div><ul class="nl"><li class="top"><span class="r">1</span><span class="n"><b>A Cien Leguas</b> <i class="star">추천</i></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€42+</span></li><li><span class="r">2</span><span class="n"><b>Albergue Orión</b></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€45+</span></li><li><span class="r">3</span><span class="n"><b>Albergue Ultreia</b></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€40+</span></li></ul></div>
-      <div class="nb"><div class="nh"><b>5/14</b><span>DAY 6</span><em>Sahagún</em><i class="pr cool">④ 여유</i></div><ul class="nl"><li class="top"><span class="r">1</span><span class="n"><b>Hostal Sahagún</b> <i class="star">추천</i></span><span class="rm">Double/Twin + 욕실</span><span class="bk ok">보관 확인</span><span class="pz">€59+</span></li><li><span class="r">2</span><span class="n"><b>Domus Viatoris</b></span><span class="rm">Double/Twin</span><span class="bk ok">보관 확인</span><span class="pz">€59~75</span></li><li><span class="r">3</span><span class="n"><b>Hostal San Juan</b><small>Secure + 전기자전거 충전</small></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">확인 필요</span></li></ul></div>
-      <div class="nb"><div class="nh"><b>5/15</b><span>DAY 7</span><em>León</em><i class="pr calm">⑤ 가장 여유</i></div><ul class="nl"><li class="top"><span class="r">1</span><span class="n"><b>Alda Vía León</b> <i class="star">추천</i><small>보관 명시</small></span><span class="rm">Ensuite</span><span class="bk ok">보관 확인</span><span class="pz">확인 필요</span></li><li><span class="r">2</span><span class="n"><b>Hotel Spa QH Centro León</b><small>잠금식 자전거 구역</small></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">확인 필요</span></li><li><span class="r">3</span><span class="n"><b>Hostal Quevedo</b><small>보관은 문의 권장</small></span><span class="rm">Ensuite</span><span class="bk ask">문의 필요</span><span class="pz">확인 필요</span></li></ul></div>
-      <div class="nb rest"><div class="nh"><b>5/16</b><span>DAY 8</span><em>León 휴식</em><i class="pr calm">⑤ 가장 여유</i></div><div class="nx">레온에서 <b>같은 숙소에 2박</b>을 권합니다 — 5/15·5/16 을 이어서 잡으세요.<br>중간에 옮기면 짐과 자전거를 두 번 옮겨야 하고, 쉬는 날의 의미가 줄어듭니다. 특히 <b>Alda Vía León</b> 을 추천합니다.</div></div>
-      <div class="nb"><div class="nh"><b>5/17</b><span>DAY 9</span><em>Rabanal del Camino</em><i class="pr hot">① 지금 바로</i></div><ul class="nl"><li class="top"><span class="r">1</span><span class="n"><b>Hotel Rural Casa Indie</b> <i class="star">추천</i></span><span class="rm">Double/Twin + 욕실</span><span class="bk ok">보관 확인</span><span class="pz">€57~70</span></li><li><span class="r">2</span><span class="n"><b>Albergue La Senda</b><small>Bicycle parking</small></span><span class="rm">전용 욕실</span><span class="bk ok">보관 확인</span><span class="pz">저가~중가</span></li><li><span class="r">3</span><span class="n"><b>El Refugio Hostería</b><small>자전거 보관 사전 문의</small></span><span class="rm">2인 개인실</span><span class="bk ask">문의 필요</span><span class="pz">약 €60+</span></li></ul></div>
-      <div class="nb"><div class="nh"><b>5/18</b><span>DAY 10</span><em>Vega de Valcarce</em><i class="pr hot">① 지금 바로</i></div><ul class="nl"><li class="top"><span class="r">1</span><span class="n"><b>Albergue El Paso</b></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">문의</span></li><li><span class="r">2</span><span class="n"><b>Casa Polín, Las Herrerías</b> <i class="star">추천</i></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€38+</span></li><li><span class="r">3</span><span class="n"><b>Casa Lixa, Las Herrerías</b></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€45+</span></li></ul></div>
-      <div class="nb"><div class="nh"><b>5/19</b><span>DAY 11</span><em>Sarria</em><i class="pr warm">② 이른 편</i></div><ul class="nl"><li class="top"><span class="r">1</span><span class="n"><b>Hotel Alfonso IX</b> <i class="star">추천</i><small>전용 자전거 보관실</small></span><span class="rm">호텔룸</span><span class="bk ok">보관 확인</span><span class="pz">중상급</span></li><li><span class="r">2</span><span class="n"><b>Casa Matías</b><small>전용 자전거 주차</small></span><span class="rm">Ensuite</span><span class="bk ok">보관 확인</span><span class="pz">중가</span></li><li><span class="r">3</span><span class="n"><b>Pensión Baixo a Lua</b></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€50+</span></li></ul></div>
-      <div class="nb"><div class="nh"><b>5/20</b><span>DAY 12</span><em>Arzúa</em><i class="pr hot">① 지금 바로</i></div><ul class="nl"><li class="top"><span class="r">1</span><span class="n"><b>Hotel La Puerta de Arzúa</b> <i class="star">추천</i></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€60+</span></li><li><span class="r">2</span><span class="n"><b>Albergue Miraiso</b></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€52+</span></li><li><span class="r">3</span><span class="n"><b>De Camino Albergue</b><small>객실 구성 확인 필요</small></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€160+*</span></li></ul></div>
-      <div class="nb"><div class="nh"><b>5/21</b><span>DAY 13</span><em>Santiago</em><i class="pr mid">③ 보통</i></div><ul class="nl"><li class="top"><span class="r">1</span><span class="n"><b>Hostal/Pensión Artilleiro</b> <i class="star">추천</i><small>Bicycle storage</small></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">확인 필요</span></li><li><span class="r">2</span><span class="n"><b>Hostal Giadás</b><small>Bicycle storage</small></span><span class="rm">Ensuite</span><span class="bk ok">보관 확인</span><span class="pz">확인 필요</span></li><li><span class="r">3</span><span class="n"><b>Parador de Santiago</b><small>완주 기념</small></span><span class="rm">2인 개인실</span><span class="bk ok">보관 확인</span><span class="pz">€288+</span></li></ul></div>
-    </div>
-
-    <h3 class="gh3">예약할 때 물어볼 것</h3>
-    <div class="jchk">
-      <div class="jc">
-        <b>자전거 2대를 실내에 둘 수 있나요</b>
-        &ldquo;Do you have a secure indoor place for two bicycles overnight?&rdquo;
-        마당이나 창고라도 <b>잠기는 곳</b>인지 확인하세요.
-      </div>
-      <div class="jc">
-        <b>2인 개인실인지</b>
-        Double(더블 하나)과 Twin(싱글 둘)은 다릅니다. 알베르게는 같은 이름으로
-        <b>공동 침실</b>을 파는 곳도 있으니 <b>private room</b> 인지 확인하세요.
-      </div>
-      <div class="jc">
-        <b>이른 출발이 되나요</b>
-        6~7시에 나가려면 열쇠 반납 방법을 미리 정해야 합니다.
-        아침 식사는 대개 07:30 부터라 그전에 나가면 못 먹습니다.
-      </div>
-      <div class="jc warn">
-        <b>취소 조건</b>
-        1년 전 예약이라 일정이 바뀔 수 있습니다. 가능하면 <b>무료 취소</b> 요금제를 고르고,
-        조금 비싸더라도 그 차액이 보험이라고 생각하세요.
-      </div>
-    </div>
-
-    <div class="note">숙소 이름과 가격은 참고용입니다. 실제 예약 화면에서 위치·객실 구성·취소 조건을 다시 확인하세요.
-    생장(5/8) 숙소는 <a href="#sec4">Ⅳ 파리 → 생장</a> 항목에 따로 정리되어 있습니다.</div>
-  </div>
-</section>
 
 <!-- ───────── 자전거 대여 ───────── -->
 <section id="secB" style="padding-top:0">
@@ -3649,8 +3714,7 @@ until we check in?</pre>
     <a href="#sec1">Ⅰ · 고도 프로필</a>
     <a href="#sec2">Ⅱ · 일정 한눈에</a>
     <a href="#sec3">Ⅲ · 날짜별 카드 (D1~D13)</a>
-    <a href="#secW">급한 예약과 자동 감시</a>
-    <a href="#secH">날짜별 숙박</a>
+    <a href="#secL">숙소 · 예약 현황</a>
     <a href="#secB">자전거 대여</a>
     <a href="#secG">GPS 기기에 넣기 (Edge · Connect)</a>
     <a href="#secX">💶 비용 (Gastos)</a>
@@ -7116,7 +7180,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260831-0259";
+  var BUILD="20260831-1221";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
@@ -7129,6 +7193,164 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",paint);
   else paint();
 })();
+</script>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   숙소 예약 현황 — Drive db/lodging.json 을 읽어 보여 줍니다
+   · 넓은 화면: 2027년 5월 달력
+   · 좁은 화면: 날짜별 카드로 세로 나열
+   기록은 upload-camino.html 의 🛏 숙소 탭에서 합니다.
+   ══════════════════════════════════════════════════════════════════════ */
+(function(){
+  "use strict";
+
+  var FILE = "lodging.json";
+  var ST = {
+    none   : {n:"미예약",    c:"none",  i:"·"},
+    asked  : {n:"문의 발송",  c:"asked", i:"✉"},
+    waiting: {n:"오픈 대기",  c:"wait",  i:"⏳"},
+    booked : {n:"예약 완료",  c:"book",  i:"✓"},
+    paid   : {n:"결제 완료",  c:"paid",  i:"✓✓"},
+    cancel : {n:"취소됨",     c:"canc",  i:"✕"}
+  };
+  /* 기본 일정 — 자료가 없어도 뼈대는 보입니다 */
+  var PLAN = [
+    ["2027-05-07", -1, "파리",              "몽파르나스 인근"],
+    ["2027-05-08",  0, "생장피에드포르",     ""],
+    ["2027-05-09",  1, "수비리",            "Zubiri"],
+    ["2027-05-10",  2, "에스테야",          "Estella"],
+    ["2027-05-11",  3, "나바레테",          "Navarrete"],
+    ["2027-05-12",  4, "벨로라도",          "Belorado"],
+    ["2027-05-13",  5, "카스트로헤리스",     "Castrojeriz"],
+    ["2027-05-14",  6, "사아군",            "Sahagún"],
+    ["2027-05-15",  7, "레온",              "León"],
+    ["2027-05-16",  8, "레온 (휴식)",        "León"],
+    ["2027-05-17",  9, "라바날 델 카미노",   "Rabanal"],
+    ["2027-05-18", 10, "베가 데 발카르세",   "Las Herrerías"],
+    ["2027-05-19", 11, "사리아",            "Sarria"],
+    ["2027-05-20", 12, "아르수아",          "Arzúa"],
+    ["2027-05-21", 13, "산티아고",          "Santiago"]
+  ];
+  var DATA = {}, state = "load";
+
+  function esc(t){ return String(t==null?"":t)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+  function st(k){ return ST[k] || ST.none; }
+  function dow(iso){
+    var d=new Date(iso+"T12:00:00");
+    return ["일","월","화","수","목","금","토"][d.getDay()];
+  }
+  function md(iso){ return (+iso.slice(5,7))+"/"+(+iso.slice(8,10)); }
+
+  function load(){
+    if(!window.CAMINO_DRIVE) return Promise.reject(new Error("Drive 설정이 없습니다"));
+    return window.CAMINO_DRIVE.files().then(function(files){
+      var f=files.filter(function(x){ return x.name===FILE; })[0];
+      if(!f) return null;
+      return window.CAMINO_DRIVE.text(f.id).then(function(t){
+        var j=null; try{ j=JSON.parse(t); }catch(e){}
+        if(j && j.nights) j.nights.forEach(function(n){ if(n && n.date) DATA[n.date]=n; });
+      });
+    });
+  }
+
+  function row(iso){
+    var p = PLAN.filter(function(x){ return x[0]===iso; })[0];
+    var d = DATA[iso] || {};
+    return {
+      iso:iso, day:p?p[1]:null, city:d.city || (p?p[2]:""), area:p?p[3]:"",
+      name:d.name||"", status:d.status||"none", ref:d.ref||"",
+      by:d.by||"", price:d.price||"", memo:d.memo||"", url:d.url||""
+    };
+  }
+
+  function render(){
+    var root=document.getElementById("lodgeRoot"); if(!root) return;
+    if(state==="load"){ root.innerHTML='<p class="tsload">예약 현황을 불러오는 중…</p>'; return; }
+
+    var rows = PLAN.map(function(p){ return row(p[0]); });
+    var cnt = {};
+    rows.forEach(function(r){ cnt[r.status]=(cnt[r.status]||0)+1; });
+
+    var h = '<div class="lsum">'
+      + lc("전체", rows.length+"박", "5/7 ~ 5/21")
+      + lc("예약 완료", (cnt.booked||0)+(cnt.paid||0)+"곳", "결제 포함", "book")
+      + lc("문의 · 대기", (cnt.asked||0)+(cnt.waiting||0)+"곳", "답을 기다리는 중", "asked")
+      + lc("미예약", (cnt.none||0)+"곳", "아직 손대지 않음", "none")
+      + '</div>';
+
+    if(state==="err"){
+      h += '<p class="tsload">현황 자료를 불러오지 못했습니다 — 아래는 기본 일정입니다.<br>'
+        + '<b>upload-camino.html → 🛏 숙소</b> 탭에서 기록하면 여기에 나타납니다.</p>';
+    }
+
+    /* ── 넓은 화면: 5월 달력 ── */
+    h += '<div class="lcal"><div class="lcal-h">2027년 5월</div><div class="lcal-g">';
+    ["월","화","수","목","금","토","일"].forEach(function(w){
+      h += '<div class="lcw">'+w+'</div>';
+    });
+    /* 5/1 은 토요일 → 월요일 시작 격자에서 5칸 비움 */
+    for(var b=0;b<5;b++) h += '<div class="lcd off"></div>';
+    for(var day=1; day<=31; day++){
+      var iso = "2027-05-" + (day<10?"0":"") + day;
+      var r = rows.filter(function(x){ return x.iso===iso; })[0];
+      if(!r){
+        h += '<div class="lcd out"><span class="lcn">'+day+'</span></div>';
+        continue;
+      }
+      var s = st(r.status);
+      h += '<div class="lcd '+s.c+'" title="'+esc(r.city+" · "+s.n)+'">'
+        + '<span class="lcn">'+day+'</span>'
+        + '<span class="lct">'+esc(r.city)+'</span>'
+        + '<span class="lcs">'+s.i+' '+s.n+'</span>'
+        + (r.name?'<span class="lcm">'+esc(r.name)+'</span>':'')
+        + '</div>';
+    }
+    h += '</div></div>';
+
+    /* ── 좁은 화면: 세로 카드 ── */
+    h += '<div class="llist">';
+    rows.forEach(function(r){
+      var s = st(r.status);
+      h += '<div class="lrow '+s.c+'">'
+        + '<div class="ld"><b>'+md(r.iso)+'</b><span>'+dow(r.iso)+'</span>'
+          + (r.day>0?'<em>DAY '+r.day+'</em>':(r.day===0?'<em>생장</em>':'<em>파리</em>'))+'</div>'
+        + '<div class="li"><b>'+esc(r.city)+'</b>'
+          + (r.name?'<span>'+esc(r.name)+'</span>':'<span class="dim">숙소 미정</span>')
+          + (r.memo?'<small>'+esc(r.memo)+'</small>':'')
+          + '</div>'
+        + '<div class="lz"><span class="lst '+s.c+'">'+s.i+' '+s.n+'</span>'
+          + (r.ref?'<code>'+esc(r.ref)+'</code>':'')
+          + (r.by?'<i class="who '+r.by+'">'+r.by.toUpperCase()+'</i>':'')
+          + (r.price?'<em>'+esc(r.price)+'</em>':'')
+          + '</div>'
+        + '</div>';
+    });
+    h += '</div>';
+
+    h += '<div class="lleg">'
+      + Object.keys(ST).map(function(k){
+          return '<span class="lst '+ST[k].c+'">'+ST[k].i+' '+ST[k].n+'</span>'; }).join("")
+      + '</div>'
+      + '<p class="tsfoot">기록은 <b>upload-camino.html → 🛏 숙소</b> 탭에서 합니다. '
+      + 'Bin·Jin 둘 다 고칠 수 있고, 누가 예약했는지도 함께 남깁니다.</p>';
+
+    root.innerHTML = h;
+  }
+  function lc(n,v,s,c){
+    return '<div class="lsc'+(c?" "+c:"")+'"><small>'+n+'</small><b>'+v+'</b><i>'+(s||"")+'</i></div>';
+  }
+
+  function boot(){
+    render();
+    load().then(function(){ state="ok"; render(); })
+          .catch(function(){ state="err"; render(); });
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",boot);
+  else boot();
+})();
+
 </script>
 </body>
 
