@@ -1,16 +1,14 @@
-« 이 파일은 저장소의 .github/workflows/watch-lodging.yml 로 넣으세요 »
-
 name: 숙소 예약창 확인
 
 on:
   schedule:
     # 매일 한국시간 오전 9시 (UTC 00:00)
     - cron: "0 0 * * *"
-  workflow_dispatch:        # 버튼으로 직접 돌릴 수도 있습니다
+  workflow_dispatch:
 
 permissions:
-  contents: write           # state.json 을 저장소에 다시 저장
-  issues: write             # 바뀌면 이슈로 알림
+  contents: write
+  issues: write
 
 jobs:
   check:
@@ -30,33 +28,30 @@ jobs:
       - name: 확인
         id: run
         continue-on-error: true
-        run: python week-8/watch/check.py 
+        run: python week-8/watch/check.py
 
       - name: 결과 저장
         run: |
           git config user.name  "camino-watch"
           git config user.email "actions@github.com"
-          git add watch/state.json watch/report.md watch/snap 2>/dev/null || true
+          git add week-8/watch/state.json week-8/watch/report.md week-8/watch/snap || true
           git diff --cached --quiet || git commit -m "숙소 확인 $(date +%F)"
           git push || true
 
       - name: 화면 갈무리 보관
-        if: steps.run.outcome == 'failure'
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: snapshots
-          path: watch/snap/
+          path: week-8/watch/snap/
           retention-days: 30
+          if-no-files-found: ignore
 
       - name: 바뀌었으면 이슈로 알리기
         if: steps.run.outcome == 'failure'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh issue create \
-            --title "숙소 예약창에 변화 — $(date +%F)" \
-            --body-file week-8/watch/report.md \
-            --label "숙소" || \
           gh issue create \
             --title "숙소 예약창에 변화 — $(date +%F)" \
             --body-file week-8/watch/report.md
