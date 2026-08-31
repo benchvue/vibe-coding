@@ -1,0 +1,38 @@
+{
+  "zubiri-suseia": {
+    "hash": "2027e62a55ccd5d6",
+    "found": [],
+    "say": "—",
+    "checked": "2026-08-31",
+    "url": "https://alberguesuseia.com/reservas/",
+    "mode": "text"
+  },
+  "rabanal-casa-indie": {
+    "hash": "2027e62a55ccd5d6",
+    "found": [],
+    "say": "판단 못 함",
+    "checked": "2026-08-31",
+    "url": "https://casaindie.com/reservas/",
+    "mode": "form"
+  },
+  "vega-casa-polin": {
+    "hash": "30afcca3b3afb9ed",
+    "found": [
+      "Reservar"
+    ],
+    "say": "있을 수 있음",
+    "checked": "2026-08-31",
+    "url": "https://casapolin.com/",
+    "mode": "form"
+  },
+  "arzua-puerta": {
+    "hash": "1b683845ac04e19b",
+    "found": [
+      "Habitaciones"
+    ],
+    "say": "—",
+    "checked": "2026-08-31",
+    "url": "https://lapuertadearzua.es/",
+    "mode": "text"
+  }
+}
