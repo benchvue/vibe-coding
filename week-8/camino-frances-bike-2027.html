@@ -1517,7 +1517,6 @@
     background:#F2FAF5}
   .nb.rest .nx b{color:var(--ok)}
 
-  /* ══════════════ 급한 예약 · 감시 ══════════════ */
   .ucrow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:6px}
   @media(max-width:900px){ .ucrow{grid-template-columns:1fr 1fr} }
   @media(max-width:560px){ .ucrow{grid-template-columns:1fr} }
@@ -1533,17 +1532,6 @@
   .uc a:hover{color:var(--rioja);border-bottom-color:var(--rioja)}
   .nolink{display:inline-block;margin-top:7px;font-size:.7rem;color:#A79E86}
 
-  .wflow{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:10px 0 14px}
-  @media(max-width:820px){ .wflow{grid-template-columns:1fr 1fr} }
-  .wf{border:1px solid var(--line);border-radius:12px;background:#fff;padding:11px 13px;
-    position:relative}
-  .wf i{display:inline-block;font-style:normal;width:21px;height:21px;line-height:21px;
-    text-align:center;border-radius:50%;background:var(--camino-blue);color:#fff;
-    font-size:.66rem;font-weight:700}
-  .wf b{display:block;font-size:.8rem;color:var(--ink);margin-top:6px}
-  .wf small{display:block;font-size:.68rem;color:var(--ink-soft);margin-top:2px;line-height:1.6}
-  .wf.ok{background:#F2FAF5;border-color:#A9CFB8}
-  .wf.ok i{background:var(--ok)}
   .jc code,.ftab code{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.72rem;
     background:#F1EEE4;border-radius:4px;padding:1px 5px}
 
@@ -2157,75 +2145,6 @@ Su calendario todavia no muestra 2027. Podemos reservar ya? Cuando se abren las 
 Gracias! Buen Camino!</pre>
     </div>
 
-    <h3 class="gh3">나머지는 자동으로 지켜보기</h3>
-    <p class="jp">숙소 달력은 대부분 <b>자바스크립트로 나중에 그려집니다.</b>
-    그래서 보통의 웹 감시 도구로는 아무것도 못 봅니다.
-    실제 브라우저를 띄워 확인하는 방식이 필요합니다.</p>
-
-    <div class="wflow">
-      <div class="wf"><i>1</i><b>매일 정해진 시각</b><small>GitHub Actions 가 스스로 실행</small></div>
-      <div class="wf"><i>2</i><b>브라우저로 열기</b><small>쿠키 배너를 닫고 달력이 그려질 때까지 대기</small></div>
-      <div class="wf"><i>3</i><b>날짜를 넣어 조회</b><small>2027-05-17 처럼 실제로 채우고 버튼을 누름</small></div>
-      <div class="wf ok"><i>4</i><b>자리가 보이면 알림</b><small>GitHub 이슈 → 메일 도착</small></div>
-    </div>
-
-    <div class="bgnote" style="margin-bottom:12px">
-      <b>두 가지 방식으로 봅니다.</b>
-      <b>form</b> 은 <b>Fecha de entrada / salida</b> 칸을 찾아 날짜를 실제로 넣고 조회한 뒤
-      <i>disponible</i> 같은 말이 나오는지 봅니다 — 훨씬 정확합니다.
-      <b>text</b> 는 페이지 내용과 낱말 변화만 봅니다. 날짜 칸이 없는 곳에 씁니다.
-      <br>Casa Indie 는 예약 폼이 뚜렷해 <b>form</b>, Suseia 와 La Puerta de Arzúa 는
-      날짜 칸이 없어 <b>text</b> 로 잡았습니다.
-      선택자를 적을 필요는 없고, <i>fecha · entrada · salida · checkin · arrival</i> 같은 말이 든 칸을
-      스스로 찾아 <b>다섯 가지 날짜 표기</b>를 차례로 시도합니다.
-    </div>
-
-    <div class="sched-wrap">
-      <table class="sched ftab" style="min-width:560px">
-        <thead><tr><th>파일</th><th>넣을 위치</th><th>하는 일</th></tr></thead>
-        <tbody>
-          <tr class="pick"><td><b>watch-lodging.yml</b></td>
-            <td><code>.github/workflows/</code></td>
-            <td>매일 한국시간 오전 9시에 실행 · 버튼으로도 실행 가능</td></tr>
-          <tr><td><b>check.py</b></td><td><code>watch/</code></td>
-            <td>브라우저로 열어 내용을 비교</td></tr>
-          <tr><td><b>targets.json</b></td><td><code>watch/</code></td>
-            <td>감시할 숙소 목록 — 여기에 주소를 채웁니다</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="jchk">
-      <div class="jc">
-        <b>공식 페이지를 넣으세요</b>
-        Booking.com 같은 중개 사이트보다 <b>숙소 공식 예약 페이지</b>가 정확합니다.
-        네 곳은 이미 넣어 두었습니다. 새 숙소는 <code>targets.json</code> 에 항목을 복사해 추가하세요.
-      </div>
-      <div class="jc">
-        <b>판정이 애매하면</b>
-        결과에 <code>판단 못 함</code> 이 계속 나오면 그 사이트에는 <code>hit</code> ·
-        <code>miss</code> 낱말이 맞지 않는 것입니다. 화면 갈무리를 보고 실제 문구로 고치세요.
-        갈무리는 <code>watch/snap/</code> 에 날마다 쌓입니다.
-      </div>
-      <div class="jc">
-        <b>예약을 마친 곳은</b>
-        해당 항목에 <code>"off": true</code> 를 넣으면 더 이상 보지 않습니다.
-      </div>
-      <div class="jc warn">
-        <b>하루 한 번입니다</b>
-        인기 있는 방은 그 사이에 나갈 수 있습니다. 이 도구는
-        &ldquo;2027년 창이 열렸다&rdquo;를 놓치지 않기 위한 <b>그물</b>이지, 예약을 대신해 주지 않습니다.
-      </div>
-      <div class="jc">
-        <b>사이트가 바뀌면</b>
-        구조가 달라지면 헛알림이 나거나 못 볼 수 있습니다.
-        알림이 와도 반드시 <b>직접 열어 확인</b>하세요.
-      </div>
-    </div>
-
-    <div class="note">더 간단한 대안으로 <b>Distill.io</b> 브라우저 확장이 있습니다.
-    화면에 그려진 그대로를 감시하지만 브라우저를 켜 두어야 합니다.</div>
-  
   </div>
 </section>
 
@@ -7180,7 +7099,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260831-1221";
+  var BUILD="20260831-1247";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
