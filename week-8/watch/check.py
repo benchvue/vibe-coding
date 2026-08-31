@@ -54,6 +54,36 @@ GO = re.compile(r"(buscar|consultar|comprobar|ver disponibilidad|disponibilidad|
                 r"reservar|search|check|book)", re.I)
 
 
+# 웹방화벽(Sucuri 등)이 잠시 붙잡아 두는 화면
+WALL = re.compile(
+    r"(verifica su solicitud|verificando|checking your browser|"
+    r"just a moment|please wait while|ddos|cloudflare|sucuri|"
+    r"attention required|access denied|acceso denegado)", re.I)
+
+
+def wait_wall(page, log, tries=6):
+    """방화벽 대기 화면이면 통과할 때까지 기다립니다."""
+    for i in range(tries):
+        try:
+            body = page.inner_text("body")
+        except Exception:
+            body = ""
+        if len(body.strip()) > 400 and not WALL.search(body[:400]):
+            if i:
+                log.append("방화벽 통과 (%d초 기다림)" % (i * 5))
+            return True
+        if i == 0:
+            log.append("방화벽 대기 화면 — 기다려 봅니다")
+        page.wait_for_timeout(5000)
+        try:
+            if i == 3:
+                page.reload(wait_until="domcontentloaded", timeout=45000)
+        except Exception:
+            pass
+    log.append("방화벽을 통과하지 못했습니다 (%d초 기다림)" % (tries * 5))
+    return False
+
+
 def norm(text):
     """매번 달라지는 것들을 걷어냅니다 — 시각, 세션 토큰, 공백."""
     t = text or ""
@@ -109,8 +139,52 @@ def describe(el):
     return " ".join(bits)[:120]
 
 
+def survey(page, log):
+    """페이지에 뭐가 있는지 적어 둡니다 — 왜 못 찾았는지 알려면 이게 필요합니다."""
+    try:
+        n_in = len(page.query_selector_all("input"))
+        n_vis = len([e for e in page.query_selector_all("input") if _vis(e)])
+        n_ifr = len(page.frames) - 1
+        log.append("입력칸 %d개(보이는 것 %d개) · iframe %d개" % (n_in, n_vis, n_ifr))
+        names = []
+        for e in page.query_selector_all("input")[:25]:
+            b = describe(e)
+            if b:
+                names.append(b[:40])
+        if names:
+            log.append("칸 목록: " + " | ".join(names[:6]))
+        for i, f in enumerate(page.frames[1:][:5]):
+            log.append("iframe%d: %s" % (i + 1, (f.url or "")[:70]))
+    except Exception as e:
+        log.append("살펴보기 실패: %s" % e)
+
+
+def _vis(el):
+    try:
+        return el.is_visible()
+    except Exception:
+        return False
+
+
+def open_booking(page, log):
+    """예약 폼이 버튼 뒤에 숨어 있는 곳이 있습니다. 한 번 눌러 봅니다."""
+    pat = re.compile(r"(reservar|reserva|book now|reserve|disponibilidad|check availability)", re.I)
+    for sel in ["a", "button"]:
+        for el in page.query_selector_all(sel)[:60]:
+            try:
+                txt = (el.inner_text() or "").strip()
+                if txt and pat.search(txt) and len(txt) < 30 and el.is_visible():
+                    el.click(timeout=3000)
+                    page.wait_for_timeout(3500)
+                    log.append("예약 버튼 눌러 봄: %s" % txt)
+                    return True
+            except Exception:
+                continue
+    return False
+
+
 def find_date_inputs(page):
-    """날짜 칸 두 개(입실·퇴실)를 찾아 돌려줍니다."""
+    """날짜 칸 두 개(입실·퇴실)를 찾아 돌려줍니다. iframe 안까지 봅니다."""
     dates = page.query_selector_all("input[type=date]")
     if len(dates) >= 2:
         return dates[0], dates[1], "input[type=date] 두 개"
@@ -130,6 +204,22 @@ def find_date_inputs(page):
         blob = describe(el)
         if DATE_HINT.search(blob) or IN_HINT.search(blob) or OUT_HINT.search(blob):
             cands.append((el, blob))
+
+    # 본문에서 못 찾으면 iframe 안을 봅니다 (예약 엔진을 끼워 넣은 곳이 많습니다)
+    if not cands:
+        for fr in page.frames[1:]:
+            try:
+                fd = fr.query_selector_all("input[type=date]")
+                if len(fd) >= 2:
+                    return fd[0], fd[1], "iframe 안 input[type=date] 두 개"
+                for el in fr.query_selector_all("input"):
+                    blob = describe(el)
+                    if DATE_HINT.search(blob) or IN_HINT.search(blob) or OUT_HINT.search(blob):
+                        cands.append((el, blob))
+                if cands:
+                    break
+            except Exception:
+                continue
 
     a = next((e for e, b in cands if IN_HINT.search(b)), None)
     b = next((e for e, bb in cands if OUT_HINT.search(bb) and e is not a), None)
@@ -178,8 +268,15 @@ def click_go(page):
 
 
 def probe_form(page, t, log):
-    """날짜를 넣고 조회한 뒤 결과 문구를 돌려줍니다."""
+    """날짜를 넣고 조회한 뒤 결과 문구를 돌려줍니다.
+    조회에 성공했을 때만 내용을 돌려줍니다 — 그래야 '자리 있음' 판정을 믿을 수 있습니다."""
+    survey(page, log)
     a, b, how = find_date_inputs(page)
+    if a is None:
+        # 폼이 버튼 뒤에 숨어 있을 수 있습니다
+        if open_booking(page, log):
+            survey(page, log)
+            a, b, how = find_date_inputs(page)
     log.append("날짜 칸: %s" % how)
     if a is None:
         log.append("날짜 칸을 찾지 못했습니다 — 내용 비교로 대신합니다")
@@ -253,13 +350,15 @@ def main():
                     page.wait_for_load_state("networkidle", timeout=25000)
                 except Exception:
                     pass
+                passed = wait_wall(page, log)
                 close_cookies(page)
                 page.wait_for_timeout(int(t.get("wait", 6000)))
 
                 mode = t.get("mode", "text")
-                body = None
+                body, probed = None, False
                 if mode == "form":
                     body = probe_form(page, t, log)
+                    probed = body is not None
                 if body is None:
                     sel = (t.get("sel") or "").strip()
                     if sel:
@@ -271,16 +370,22 @@ def main():
                 clean = norm(body)
                 digest = hashlib.sha256(clean.encode("utf-8")).hexdigest()[:16]
                 found = [k for k in (t.get("keys") or []) if k.lower() in clean.lower()]
-                say, why = verdict(clean, t) if mode == "form" else ("—", [])
+                # 날짜를 실제로 넣고 조회했을 때만 자리 유무를 판정합니다.
+                # 그러지 않으면 페이지에 늘 있는 Reservar 버튼 글자에 속습니다.
+                say, why = verdict(clean, t) if probed else ("조회 못 함", [])
 
                 prev = state.get(tid, {})
                 ph, pf, ps = prev.get("hash"), prev.get("found", []), prev.get("say")
                 fresh = [k for k in found if k not in pf]
 
-                if ph is None:
+                if not passed:
+                    lines.append("- 🚧 **%s**\n  - 사이트가 자동 접속을 막고 있습니다 "
+                                 "(방화벽 확인 화면).\n  - 직접 열어 확인하세요: %s"
+                                 % (label, t["url"]))
+                elif ph is None:
                     lines.append("- **%s**\n  - 처음 확인했습니다. 다음부터 변화를 알립니다."
                                  % label)
-                elif mode == "form" and say == "있을 수 있음" and ps != "있을 수 있음":
+                elif probed and say == "있을 수 있음" and ps != "있을 수 있음":
                     changed.append(tid)
                     lines.append("- 🔴 **%s**\n  - **자리가 있을 수 있습니다** — %s\n  - %s"
                                  % (label, ", ".join(why), t["url"]))
@@ -295,21 +400,40 @@ def main():
                 else:
                     lines.append("- %s — 그대로 (%s)" % (label, say))
 
+                if len(clean) < 400:
+                    lines.append("  - ⚠ 받은 내용이 너무 짧습니다 (%d자) — 차단되었거나 "
+                                 "자바스크립트가 안 돌았을 수 있습니다" % len(clean))
+                head160 = clean[:160].replace("`", "'")
+                lines.append("  - 받은 내용: `%s%s`" % (head160, "…" if len(clean) > 160 else ""))
+                lines.append("  - 길이 %d자 · 해시 %s" % (len(clean), digest))
                 if log:
                     lines.append("  - `%s`" % " / ".join(log))
 
                 try:
-                    page.screenshot(path=str(SNAP / ("%s-%s.png" % (tid, today))))
+                    page.screenshot(path=str(SNAP / ("%s-%s.png" % (tid, today))), full_page=True)
                 except Exception:
                     pass
 
-                state[tid] = {"hash": digest, "found": found, "say": say,
-                              "checked": today, "url": t["url"], "mode": mode}
+                if passed:
+                    state[tid] = {"hash": digest, "found": found, "say": say,
+                                  "checked": today, "url": t["url"], "mode": mode}
+                else:
+                    lines.append("  - 기준값을 저장하지 않았습니다 — 다음에 다시 시도합니다")
             except Exception as e:
                 lines.append("- ⚠ **%s**\n  - 열지 못했습니다: %s" % (label, e))
             finally:
                 page.close()
         browser.close()
+
+    # 서로 다른 사이트가 같은 내용을 냈다면 둘 다 제대로 못 받은 것입니다
+    seen = {}
+    for k, v in state.items():
+        seen.setdefault(v.get("hash"), []).append(k)
+    for h, ids in seen.items():
+        if len(ids) > 1:
+            lines.append("- ⚠ **같은 내용을 받았습니다**: %s\n"
+                         "  - 서로 다른 사이트인데 내용이 같습니다. 차단 화면이나 오류일 수 있습니다.\n"
+                         "  - `watch/snap/` 의 갈무리를 확인하세요." % ", ".join(ids))
 
     STATE.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
