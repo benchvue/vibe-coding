@@ -30,7 +30,7 @@ jobs:
       - name: 확인
         id: run
         continue-on-error: true
-        run: python watch/check.py
+        run: python week-8/watch/check.py 
 
       - name: 결과 저장
         run: |
@@ -55,8 +55,8 @@ jobs:
         run: |
           gh issue create \
             --title "숙소 예약창에 변화 — $(date +%F)" \
-            --body-file watch/report.md \
+            --body-file week-8/watch/report.md \
             --label "숙소" || \
           gh issue create \
             --title "숙소 예약창에 변화 — $(date +%F)" \
-            --body-file watch/report.md
+            --body-file week-8/watch/report.md
