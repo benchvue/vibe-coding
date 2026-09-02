@@ -1668,6 +1668,82 @@
   .nl.gpx .tel{color:var(--camino-blue);text-decoration:none;font-weight:600;
     border-bottom:1px dotted var(--camino-blue)}
   .nl.gpx .tel:hover{color:var(--rioja);border-bottom-color:var(--rioja)}
+
+  /* ══════════════ 자전거 둘 중 하나 ══════════════ */
+  .mism{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+  @media(max-width:600px){ .mism{grid-template-columns:1fr} }
+  .mi{border:1px solid var(--line);border-radius:10px;background:#fff;padding:8px 11px}
+  .mi span{display:block;font-size:.66rem;color:var(--ink-soft)}
+  .mi b{display:block;font-family:'IBM Plex Mono',monospace;font-size:.92rem;color:var(--ink);
+    margin-top:2px}
+  .mi em{display:block;font-style:normal;font-size:.7rem;color:#A79E86;margin-top:1px}
+  .mi.ok{border-color:#A9CFB8;background:#F2FAF5} .mi.ok b{color:var(--ok)}
+  .mi.err{border-color:#E3B7B7;background:#FDF3F3} .mi.err b{color:var(--err)}
+
+  .vtab td{vertical-align:top;font-size:.78rem}
+  .vtab td small{display:block;font-size:.66rem;color:var(--ink-soft);margin-top:2px}
+  .vtab th.w1{background:#EDF2FA;color:var(--camino-blue)}
+  .vtab th.w2{background:#FBEDE6;color:var(--rioja)}
+  .vtab th small{display:block;font-size:.64rem;font-weight:400;opacity:.75;margin-top:1px}
+  .vtab td.win{background:#F4FAF6;position:relative}
+  .vtab td.win::after{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+    background:var(--ok)}
+  .vtab tr.hi td{background:#FFF9E8}
+  .vtab tr.hi td.win{background:#EAF6EE}
+  .vtab tr td:first-child{font-weight:600;color:var(--camino-blue);white-space:nowrap}
+
+  .kcal-sum{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:6px 0 14px}
+  @media(max-width:700px){ .kcal-sum{grid-template-columns:1fr 1fr} }
+  .kc{border:1px solid var(--line);border-radius:12px;background:#fff;padding:11px 13px}
+  .kc small{display:block;font-size:.66rem;color:var(--ink-soft)}
+  .kc b{display:block;font-family:'Gowun Batang',serif;font-size:1.3rem;color:var(--camino-blue);
+    margin-top:2px;font-variant-numeric:tabular-nums}
+  .kc i{display:block;font-style:normal;font-size:.63rem;color:#A79E86;margin-top:1px}
+  .kc.big{background:var(--camino-blue)}
+  .kc.big small,.kc.big i{color:#B9C7DF} .kc.big b{color:var(--flecha);font-size:1.45rem}
+
+  .ktab td{font-size:.76rem}
+  .ktab tr.hard td{background:#FDF3F3}
+  .ktab tr.easy td{background:#F4FAF6}
+  .ktab tr.rest td{background:#F4F2EA;color:var(--ink-soft)}
+
+  .fuel{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  @media(max-width:760px){ .fuel{grid-template-columns:1fr} }
+  .fu{border:1px solid var(--line);border-radius:12px;background:#fff;padding:12px 14px}
+  .fu b{font-size:.88rem;color:var(--camino-blue)}
+  .fu em{float:right;font-style:normal;font-size:.75rem;font-weight:700;color:var(--rioja)}
+  .fu span{display:block;font-size:.77rem;color:var(--ink-soft);line-height:1.8;margin-top:7px;
+    clear:both}
+  .fu.hi{border-color:#E7D9A8;background:#FFFBEE}
+
+  .nutri{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:12px}
+  @media(max-width:820px){ .nutri{grid-template-columns:1fr 1fr} }
+  .nu{border:1px solid var(--line);border-radius:11px;background:#FBFAF5;padding:10px 12px}
+  .nu b{display:block;font-size:.76rem;color:var(--camino-blue)}
+  .nu em{display:block;font-style:normal;font-size:.86rem;font-weight:700;color:var(--ink);
+    margin-top:3px}
+  .nu small{display:block;font-size:.65rem;color:var(--ink-soft);margin-top:3px;line-height:1.55}
+
+  .verdict{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:12px}
+  @media(max-width:760px){ .verdict{grid-template-columns:1fr} }
+  .vd{border:1px solid var(--line);border-radius:13px;background:#fff;padding:13px 15px}
+  .vd.win{border-color:#A9CFB8;background:#F7FCF9}
+  .vh2{display:flex;align-items:center;gap:8px;margin-bottom:9px;padding-bottom:8px;
+    border-bottom:1px solid var(--line)}
+  .vh2 b{font-family:'Gowun Batang',serif;font-size:1.02rem;color:var(--camino-blue)}
+  .vh2 span{margin-left:auto;font-size:.62rem;font-weight:700;color:#fff;background:var(--ok);
+    border-radius:999px;padding:2px 10px}
+  .vh2 span.alt{background:#B8A97A;color:#3B2E00}
+  .vd ul{list-style:none;padding:0;margin:0}
+  .vd li{position:relative;padding:5px 0 5px 17px;font-size:.78rem;line-height:1.7;
+    color:var(--ink-soft)}
+  .vd li::before{content:"";position:absolute;left:2px;top:13px;width:5px;height:5px;
+    border-radius:50%;background:var(--ok)}
+  .vd li.bad::before{background:var(--err)}
+  .vd li.bad{color:#7A4A4A}
+  .vd li b{color:var(--ink)}
+  .vn{margin-top:9px;padding-top:8px;border-top:1px dashed var(--line);font-size:.73rem;
+    color:var(--ink-soft)}
 </style>
 
 <!-- ══════════════════════════════════════════════════════════════════════
@@ -2278,6 +2354,234 @@ Gracias! Buen Camino!</pre>
 </section>
 
 
+
+<!-- ───────── 자전거 두 대 비교 ───────── -->
+<section id="secC" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="no">Elección</div>
+      <h2>둘 중 하나</h2>
+      <p>업체 두 곳에서 온 답변과 <b>제조사 공식 사양</b>을 대조했습니다.
+      두 곳 모두 실제 사양과 다르게 알려 준 부분이 있어, 예약 전에 확인이 필요합니다.</p>
+    </div>
+
+    <div class="bgwarn">
+      <b>업체 설명과 공식 사양이 다릅니다 — 반드시 확인하세요</b>
+      <div class="mism">
+        <div class="mi"><span>Bicigrino 가 말한 것</span><b>32T / 10-50</b><em>기어비 0.64</em></div>
+        <div class="mi ok"><span>Cannondale 공식</span><b>30T / 10-51</b><em>기어비 0.588</em></div>
+      </div>
+      <div class="mism">
+        <div class="mi"><span>Tournride 표에 있던 것</span><b>XT 1×12 · 32T / 10-51</b><em>기어비 0.63</em></div>
+        <div class="mi err"><span>MMR 공식</span><b>Deore · 34T / 11-50</b><em>기어비 0.68</em></div>
+      </div>
+      <p style="margin-top:8px">MMR 은 구동계 등급도 다릅니다 —
+      <b>XT 가 아니라 Deore</b> 이고 브레이크는 <b>MT-200</b>(입문급)입니다.
+      두 업체에 <b>실제 대여 차량의 앞니·뒤 카세트 이빨 수</b>를 다시 물어보세요.
+      연식에 따라 다를 수 있습니다.</p>
+    </div>
+
+    <h3 class="gh3">공식 사양 맞대결</h3>
+    <div class="sched-wrap">
+      <table class="sched vtab" style="min-width:640px">
+        <thead><tr><th></th>
+          <th class="w1">Cannondale Trail SL 2<small>Bicigrino</small></th>
+          <th class="w2">MMR Zen 00<small>Tournride</small></th></tr></thead>
+        <tbody>
+          <tr class="hi"><td>최저 기어비</td>
+            <td class="win"><b>0.588</b><small>30T ÷ 51T · 17.0인치</small></td>
+            <td><b>0.680</b><small>34T ÷ 50T · 19.5인치</small></td></tr>
+          <tr><td>프레임</td><td>SmartForm C2 알루미늄<small>드롭 시트스테이</small></td>
+            <td>G2 Alloy Concept Lite<small>6061 하이드로폼 버티드</small></td></tr>
+          <tr><td>포크</td><td>RockShox Judy Gold RL 100mm<small>원격 잠금</small></td>
+            <td class="win">Fox 32 Rhythm 100mm<small>한 등급 위</small></td></tr>
+          <tr><td>뒤 변속기</td><td class="win">Shimano <b>SLX</b> 12단<small>레버는 Deore</small></td>
+            <td>Shimano <b>Deore</b> 12단</td></tr>
+          <tr><td>카세트</td><td class="win">Shimano Deore 10-51T</td>
+            <td>Sunrace 11-50T<small>비순정</small></td></tr>
+          <tr><td>브레이크</td><td class="win">Shimano MT400<small>180 / 160 mm 로터</small></td>
+            <td>Shimano MT-200<small>입문급</small></td></tr>
+          <tr><td>타이어</td><td>Schwalbe 29×2.25"<small>접지 넓음</small></td>
+            <td class="win">Hutchinson Cobra 29×2.10"<small>포장길에서 가벼움</small></td></tr>
+          <tr><td>림</td><td class="win">WTB STX i23 튜브리스 레디</td><td>Shimano MT-500 HG</td></tr>
+          <tr><td>헤드 각도</td><td>68.0°<small>내리막이 안정적</small></td>
+            <td>69.5°<small>오르막에서 민첩</small></td></tr>
+          <tr><td>무게 (랙 포함)</td><td>약 <b>12 kg</b></td>
+            <td class="win">약 <b>10 kg</b></td></tr>
+          <tr><td>사이즈 M 적정 신장</td><td>163 ~ 173 cm</td>
+            <td class="win">163 ~ 177 cm<small>안쪽 다리 76~85 cm</small></td></tr>
+          <tr><td>패니어</td><td class="win">20 L × 2 = <b>40 L</b> 완전 방수<small>기본 포함</small></td>
+            <td>Ortlieb 20 L 별도 5 €/일<small>일반형은 3 €/일 · 방수 아님</small></td></tr>
+          <tr><td>페달</td><td class="win">하이브리드<small>평페달 ↔ SPD 양면</small></td>
+            <td>평페달<small>SPD 는 1.95 €/일</small></td></tr>
+          <tr><td>내 안장 장착</td><td class="win">가능<small>메일 회신으로 확인</small></td>
+            <td class="win">가능<small>안장 없이 요청</small></td></tr>
+          <tr><td>수리 킷</td><td>기본 제공<small>구성 미확인</small></td>
+            <td class="win">튜브·자물쇠·멀티툴<br>체인링크·육각렌치·펌프</td></tr>
+          <tr><td>반납</td><td>산티아고</td>
+            <td>산티아고 <b>사무실</b><small>호텔 반납은 대당 15 € 추가</small></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="gh3">BIN 이 실제로 밀어야 하는 힘</h3>
+    <p class="jp">168 cm · 130 lb(59 kg) 기준입니다. 자전거와 짐을 더하면
+    <b>총 79~81 kg</b>을 끌고 오릅니다 — 몸무게의 <b>1.4배</b>입니다.
+    아래는 케이던스 65 rpm(편안한 회전수)으로 오를 때 필요한 값입니다.</p>
+
+    <div class="sched-wrap">
+      <table class="sched vtab" style="min-width:600px">
+        <thead><tr><th>경사</th><th>어디</th>
+          <th class="w1">Cannondale</th><th class="w2">MMR</th></tr></thead>
+        <tbody>
+          <tr><td><b>8%</b></td><td class="sd">일반적인 오르막</td>
+            <td class="win">105 W · 페달 <b>18 kg</b></td><td>117 W · 페달 <b>20 kg</b></td></tr>
+          <tr><td><b>12%</b></td><td class="sd">오 세브레이로 · 크루스 데 페로</td>
+            <td class="win">152 W · 페달 <b>26 kg</b></td><td>170 W · 페달 <b>29 kg</b></td></tr>
+          <tr class="hi"><td><b>18%</b></td><td class="sd">DAY 1 피레네 급경사</td>
+            <td class="win">222 W · 페달 <b>38 kg</b></td><td>248 W · 페달 <b>42 kg</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="gearbox">
+      <b>이 숫자가 뜻하는 것</b>
+      <p>18% 구간에서 MMR 은 페달을 <b>42 kg</b> 힘으로 눌러야 합니다.
+      BIN 의 몸무게가 59 kg 이니 <b>체중의 71%</b> 입니다 — 앉아서 낼 수 있는 한계에 가깝습니다.
+      Cannondale 은 38 kg(체중의 64%)으로, 같은 언덕이 눈에 띄게 수월합니다.</p>
+      <div class="gbar">
+        <div class="gb"><span>0.588</span><i style="width:100%"></i><em>Cannondale · 30T/51T</em></div>
+        <div class="gb warn"><span>0.680</span><i style="width:86%"></i><em>MMR · 34T/50T</em></div>
+      </div>
+      <p class="gsub"><b>기어비 차이가 15.6% 입니다.</b> 카탈로그에서는 작아 보이지만,
+      13일 내내 <b>11,432 m</b>를 오르는 여정에서는 누적으로 크게 벌어집니다.
+      가벼운 체중일수록 기어비가 더 중요합니다 — 몸무게로 페달을 누를 여력이 적기 때문입니다.</p>
+    </div>
+
+    <h3 class="gh3">하루에 얼마나 먹어야 하나</h3>
+    <p class="jp">59 kg · 62세 기준 기초대사량은 <b>1,335 kcal</b>,
+    걸어다니는 활동까지 더한 휴식 소모가 <b>1,669 kcal</b> 입니다.
+    여기에 주행 소모를 더한 값입니다.</p>
+
+    <div class="kcal-sum">
+      <div class="kc"><small>13일 합계</small><b>41,700 kcal</b><i>주행 + 생활</i></div>
+      <div class="kc big"><small>하루 평균</small><b>3,200 kcal</b><i>평소의 약 1.9배</i></div>
+      <div class="kc"><small>가장 힘든 날</small><b>3,850 kcal</b><i>DAY 5 · 90 km</i></div>
+      <div class="kc"><small>휴식일</small><b>1,870 kcal</b><i>DAY 8 레온</i></div>
+    </div>
+
+    <div class="sched-wrap">
+      <table class="sched ktab" style="min-width:620px">
+        <thead><tr><th>DAY</th><th>거리 · 고도</th><th>주행</th><th>주행 소모</th>
+          <th>하루 총</th><th>주행 중 탄수화물</th></tr></thead>
+        <tbody>
+          <tr class="hard"><td><b>1</b></td><td class="sd">45.8 km · 1,911 m</td><td class="km">3.3 h</td>
+            <td class="km">2,040</td><td class="km"><b>3,710</b></td><td class="km">280 g</td></tr>
+          <tr><td><b>2</b></td><td class="sd">68.9 km · 1,006 m</td><td class="km">4.2 h</td>
+            <td class="km">1,717</td><td class="km">3,390</td><td class="km">236 g</td></tr>
+          <tr><td><b>3</b></td><td class="sd">61.3 km · 972 m</td><td class="km">3.7 h</td>
+            <td class="km">1,589</td><td class="km">3,260</td><td class="km">219 g</td></tr>
+          <tr><td><b>4</b></td><td class="sd">58.7 km · 868 m</td><td class="km">3.5 h</td>
+            <td class="km">1,472</td><td class="km">3,140</td><td class="km">202 g</td></tr>
+          <tr class="hard"><td><b>5</b></td><td class="sd">90.0 km · 979 m</td><td class="km">4.7 h</td>
+            <td class="km">2,182</td><td class="km"><b>3,850</b></td><td class="km">300 g</td></tr>
+          <tr><td><b>6</b></td><td class="sd">82.3 km · 546 m</td><td class="km">4.3 h</td>
+            <td class="km">1,718</td><td class="km">3,390</td><td class="km">236 g</td></tr>
+          <tr class="easy"><td><b>7</b></td><td class="sd">54.7 km · 279 m</td><td class="km">2.9 h</td>
+            <td class="km">1,075</td><td class="km">2,740</td><td class="km">148 g</td></tr>
+          <tr class="rest"><td><b>8</b></td><td class="sd">레온 휴식</td><td class="km">—</td>
+            <td class="km">—</td><td class="km">1,870</td><td class="km">평소대로</td></tr>
+          <tr><td><b>9</b></td><td class="sd">68.9 km · 703 m</td><td class="km">3.6 h</td>
+            <td class="km">1,633</td><td class="km">3,300</td><td class="km">225 g</td></tr>
+          <tr><td><b>10</b></td><td class="sd">74.3 km · 972 m</td><td class="km">4.5 h</td>
+            <td class="km">1,762</td><td class="km">3,430</td><td class="km">242 g</td></tr>
+          <tr><td><b>11</b></td><td class="sd">62.3 km · 1,141 m</td><td class="km">4.4 h</td>
+            <td class="km">1,615</td><td class="km">3,280</td><td class="km">222 g</td></tr>
+          <tr class="hard"><td><b>12</b></td><td class="sd">76.3 km · 1,394 m</td><td class="km">5.4 h</td>
+            <td class="km">1,975</td><td class="km"><b>3,640</b></td><td class="km">272 g</td></tr>
+          <tr class="easy"><td><b>13</b></td><td class="sd">38.9 km · 661 m</td><td class="km">2.3 h</td>
+            <td class="km">1,044</td><td class="km">2,710</td><td class="km">143 g</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="gh3">어떻게 채우나</h3>
+    <div class="fuel">
+      <div class="fu"><b>아침</b><em>700~800 kcal</em>
+        <span>토스트·잼·오믈렛·요거트·과일·카페 콘 레체.
+        스페인 아침은 가볍습니다. 빵만으로는 모자라니 <b>계란이나 하몽</b>을 꼭 더하세요.</span></div>
+      <div class="fu hi"><b>주행 중</b><em>시간당 45~60 g 탄수화물</em>
+        <span>가장 중요합니다. 배고픔을 느끼기 <b>전에</b> 먹어야 합니다 —
+        느끼면 이미 늦습니다. 바나나 1개 25 g · 에너지바 1개 30 g ·
+        보카디요 반쪽 40 g. <b>40~50분마다 한 입</b>씩.</span></div>
+      <div class="fu"><b>점심</b><em>800~900 kcal</em>
+        <span>보카디요(하몽·토르티야)가 가장 실속 있습니다.
+        무거운 정식은 오후 주행을 망칩니다 — 도착 후로 미루세요.</span></div>
+      <div class="fu"><b>저녁</b><em>1,000~1,200 kcal</em>
+        <span>순례자 메뉴(Menú del peregrino)가 10~15 €에 전채·주요리·후식·와인입니다.
+        <b>단백질을 챙기세요</b> — 생선·고기·계란 요리를 고르세요.</span></div>
+    </div>
+
+    <div class="nutri">
+      <div class="nu"><b>단백질</b><em>94 ~ 106 g/일</em>
+        <small>1.6~1.8 g/kg · 62세는 근손실이 빨라 상향</small></div>
+      <div class="nu"><b>수분</b><em>시간당 500~750 ml</em>
+        <small>하루 3.5~5 L · 마을 샘(fuente)에서 보충</small></div>
+      <div class="nu"><b>나트륨</b><em>땀 1 L당 500~800 mg</em>
+        <small>올리브·하몽·수프로 충분 · 더우면 전해질 정제</small></div>
+      <div class="nu"><b>회복</b><em>도착 30분 안에</em>
+        <small>탄수화물 60 g + 단백질 20 g · 우유나 요거트면 됩니다</small></div>
+    </div>
+
+    <div class="bgwarn">
+      <b>BIN 은 체중 여유가 거의 없습니다</b>
+      BMI 20.9 로 마른 편입니다. 하루 3,200 kcal 을 쓰는데 2,500 만 먹으면
+      13일에 <b>1 kg 가까이 빠집니다.</b> 근육이 먼저 빠지고, 뒤로 갈수록 오르막에서
+      힘이 급격히 떨어집니다. 특히 <b>DAY 12(1,394 m)가 뒤쪽에 있다</b>는 점이 위험합니다 —
+      그때 이미 지쳐 있으면 가장 힘든 날을 가장 나쁜 상태로 맞게 됩니다.
+      <b>배가 고프지 않아도 정해진 양을 드세요.</b>
+    </div>
+
+    <h3 class="gh3">그래서 어느 쪽인가</h3>
+    <div class="verdict">
+      <div class="vd win">
+        <div class="vh2"><b>Cannondale Trail SL 2</b><span>추천</span></div>
+        <ul>
+          <li><b>기어비 0.588</b> — 15.6% 가볍습니다. 59 kg 체중에는 이게 결정적입니다</li>
+          <li>브레이크 <b>MT400 · 180 mm</b> — 짐 싣고 내려올 때 여유가 다릅니다</li>
+          <li>뒤 변속기 <b>SLX</b> · 카세트 순정 <b>10-51</b></li>
+          <li><b>방수 패니어 40 L 기본 포함</b> — 추가 비용 없음</li>
+          <li>하이브리드 페달 — 신발을 따로 챙길 필요 없음</li>
+          <li>쿠폰 <b>BICIGRINO2027</b> 로 10% 할인</li>
+        </ul>
+        <div class="vn">사이즈 M 이 163~173 cm — <b>168 cm 는 정중앙</b>입니다.</div>
+      </div>
+      <div class="vd">
+        <div class="vh2"><b>MMR Zen 00</b><span class="alt">2 kg 가벼움</span></div>
+        <ul>
+          <li><b>10 kg</b> — 2 kg 가볍습니다. 다만 짐 10 kg 을 더하면 차이는 2.5%</li>
+          <li>포크 <b>Fox 32 Rhythm</b> — 한 등급 위</li>
+          <li class="bad">기어비 <b>0.680</b> — 18% 구간에서 페달 힘이 체중의 71%</li>
+          <li class="bad">브레이크 <b>MT-200</b> 입문급</li>
+          <li class="bad">패니어·SPD 페달 <b>모두 유료</b> · 호텔 반납 시 대당 15 €</li>
+          <li>수리 킷 구성이 명확합니다</li>
+        </ul>
+        <div class="vn">사이즈 M 이 163~177 cm — 168 cm 는 아래쪽입니다.</div>
+      </div>
+    </div>
+
+    <div class="bgnote">
+      <b>결론</b>
+      가벼운 자전거보다 <b>가벼운 기어</b>가 낫습니다.
+      2 kg 차이는 전체 79~81 kg 중 2.5% 에 불과하지만, 기어비 차이는 <b>15.6%</b> 입니다.
+      게다가 Cannondale 은 방수 패니어와 하이브리드 페달이 기본이라
+      MMR 에서 그것들을 더하면 <b>13일에 100 € 이상</b> 벌어집니다.
+      <b>다만 예약 전에 반드시 실제 차량의 앞니·카세트를 확인하세요</b> —
+      Bicigrino 가 32T/10-50 이라고 했으니, 그게 맞으면 이점이 0.64 로 줄어
+      MMR 과의 차이가 6% 로 좁아집니다.
+    </div>
+  </div>
+</section>
 
 <!-- ───────── 자전거 대여 ───────── -->
 <section id="secB" style="padding-top:0">
@@ -3676,6 +3980,7 @@ until we check in?</pre>
     <a href="#sec2">Ⅱ · 일정 한눈에</a>
     <a href="#sec3">Ⅲ · 날짜별 카드 (D1~D13)</a>
     <a href="#secL">숙소 · 예약 현황</a>
+    <a href="#secC">자전거 둘 중 하나</a>
     <a href="#secB">자전거 대여</a>
     <a href="#secG">GPS 기기에 넣기 (Edge · Connect)</a>
     <a href="#secX">💶 비용 (Gastos)</a>
@@ -7141,7 +7446,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260901-2311";
+  var BUILD="20260902-2045";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
