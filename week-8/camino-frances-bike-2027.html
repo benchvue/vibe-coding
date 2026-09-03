@@ -1744,6 +1744,34 @@
   .vd li b{color:var(--ink)}
   .vn{margin-top:9px;padding-top:8px;border-top:1px dashed var(--line);font-size:.73rem;
     color:var(--ink-soft)}
+
+  /* ══════════════ 날짜별 실제 경로 지도 ══════════════ */
+  .dmapreal{margin:0;border:1px solid #D4DFF2;border-radius:12px;background:#EFF4FC;
+    overflow:hidden;cursor:zoom-in}
+  .dmapreal img{display:block;width:100%;height:auto;background:#fff}
+  .dmapreal figcaption{display:flex;align-items:baseline;gap:8px;padding:7px 11px;
+    font-size:.72rem;font-weight:600;color:var(--camino-blue);
+    border-top:1px solid #D4DFF2;background:#fff}
+  .dmapreal figcaption span{margin-left:auto;font-weight:400;font-size:.66rem;
+    color:var(--ink-soft)}
+  .dmapreal:hover{border-color:var(--flecha)}
+  .dmapreal:hover figcaption{background:#FFFBEE}
+
+  /* 넓은 화면 — 경로 띠 아래에 지도, QR 은 오른쪽 */
+  @media (min-width:521px){
+    .dbody{flex-wrap:wrap;align-items:flex-start}
+    .droute-wrap{flex:1 1 100%;align-items:flex-start}
+    .dmapreal{flex:1 1 0;min-width:0;order:1}
+    .dqr{order:2;align-self:flex-start}
+    .dcard.restday .dbody{align-items:flex-start}
+    .dcard.restday .restinfo{flex:1 1 380px;min-width:0}
+    .dcard.restday .dmapreal{flex:1 1 320px}
+  }
+  /* 좁은 화면 — 경로 · 지도 · QR 순서로 세로 */
+  @media (max-width:520px){
+    .dmapreal{order:1;width:100%}
+    .dqr{order:2}
+  }
 </style>
 
 <!-- ══════════════════════════════════════════════════════════════════════
@@ -5387,6 +5415,23 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     vImg.removeAttribute("src");
   }
 
+  /* 날짜 카드의 실제 경로 지도 — 같은 확대 뷰어로 엽니다 */
+  function bindRealMaps(){
+    document.querySelectorAll("figure.dmapreal").forEach(function(fig){
+      if(fig._bound) return; fig._bound=true;
+      fig.addEventListener("click",function(){
+        var img=fig.querySelector("img"); if(!img) return;
+        var cap=fig.querySelector("figcaption");
+        var t=cap?cap.childNodes[0].nodeValue.trim():"경로 지도";
+        openViewer([{img:img.getAttribute("src"), big:img.getAttribute("src"),
+                     t:t, s:"손가락이나 휠로 확대할 수 있습니다"}],0);
+      });
+    });
+  }
+  if(window.onCaminoDays) window.onCaminoDays(bindRealMaps);
+  else if(document.readyState!=="loading") bindRealMaps();
+  else document.addEventListener("DOMContentLoaded",bindRealMaps);
+
   vw.querySelector(".cv-x").addEventListener("click",closeViewer);
   vPrev.addEventListener("click",function(e){ e.stopPropagation(); go(idx-1,true); });
   vNext.addEventListener("click",function(e){ e.stopPropagation(); go(idx+1,true); });
@@ -7446,7 +7491,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260902-2045";
+  var BUILD="20260903-2243";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
