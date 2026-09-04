@@ -846,8 +846,7 @@
     🎬 <b>동영상(MP4·MOV, 아이폰 기본 H.264)</b>도 각 날짜에 올릴 수 있습니다 — 원본 그대로 업로드되고,
     위치 정보가 있으면 지명이 함께 저장되어 사이트에서 사진처럼 표시됩니다.
     동영상도 위치를 살리려면 Files 앱(Choose Files)으로 올리세요.
-    🗺 <b>가민 주행 기록(GPX)</b>도 날짜별로 올릴 수 있습니다 — Garmin Connect에서 활동 열기 → ⚙ →
-    <b>"GPX로 내보내기(Export to GPX)"</b>로 받은 파일을 올리면, 사이트에서 지도+고도 동시 재생으로 그날 주행을 볼 수 있습니다.</p>
+      🗺 <b>주행 기록(GPX)</b>은 <b>🚴 주행 기록</b> 탭에서 올립니다.</p>
   <div id="daysRoot"></div>
   </div><!-- /photoView -->
 
@@ -933,8 +932,10 @@
     <p class="tdhint">
       그날 주행한 <b>GPX</b> 를 올리면 실제 거리·획득고도를 재고,
       계획 노선에 맞춰 <b>어디까지 갔는지</b> 찾아 둡니다.
-      원본은 Drive 의 <b>track</b> 폴더에, 기록은 <b>db/progress.json</b> 에 남습니다.<br>
-      사이트의 <b>Ⅰ 고도 프로필</b>에 BIN·JIN 이 각각 다른 색으로 표시됩니다.
+      원본은 사진과 같은 <b>dayN</b> 폴더에 <b>track_N.gpx</b> 로 올라갑니다.<br>
+      그래서 <b>한 번만 올리면</b> 두 가지가 함께 됩니다 —
+      날짜 카드의 <b>지도 + 고도 재생</b>, 그리고 <b>Ⅰ 고도 프로필</b>의 위치 표시
+      (BIN 파랑 · JIN 빨강).
     </p>
     <div id="rdRoot"></div>
   </div>
@@ -1332,7 +1333,7 @@ const renderDay=(d)=>{
       +'첫 사진/영상을 올리면 자동으로 만들어집니다.</p>'
       +'<div class="pgrid"><button class="addtile" data-day="'+d+'"><b>＋</b>사진 추가</button>'
       +'<button class="addtile" data-vday="'+d+'"><b>🎬</b>동영상 추가</button>'
-      +'<button class="addtile" data-tday="'+d+'"><b>🗺</b>주행 기록(GPX)</button></div>';
+      +'</div>';
   }else{
     const cards=sortFiles(files).map(f=>{
       return '<div class="pcard frame" data-fid="'+f.id+'">'
@@ -1370,7 +1371,7 @@ const renderDay=(d)=>{
         +'<div class="pbtns">'
         +'<button class="up-btn danger" data-act="del" data-day="'+d+'" data-fid="'+f.id+'" data-name="'+f.name+'">삭제</button>'
         +'</div></div>').join("")
-      +'<button class="addtile" data-tday="'+d+'"><b>🗺</b>주행 기록 추가<br><small>Garmin GPX</small></button></div>';
+      +'</div>';
     sec.querySelectorAll(".pimg:not(.vid) img").forEach(img=>{
       setDriveImg(img,img.dataset.id,300,img.dataset.tl);
       img.addEventListener("click",()=>openLb(img.dataset.id));
@@ -1384,7 +1385,6 @@ const renderDay=(d)=>{
   }
   sec.querySelectorAll(".addtile[data-day]").forEach(b=>b.addEventListener("click",()=>pickFiles(d)));
   sec.querySelectorAll(".addtile[data-vday]").forEach(b=>b.addEventListener("click",()=>pickVids(d)));
-  sec.querySelectorAll(".addtile[data-tday]").forEach(b=>b.addEventListener("click",()=>pickTrks(d)));
   sec.querySelectorAll("[data-act]").forEach(b=>b.addEventListener("click",onAction));
 };
 
@@ -1467,29 +1467,7 @@ const pickVids=(d)=>hiddenInput(true,async files=>{
   }catch(e){toast("⚠ "+e.message);}
 },"vid");
 
-/* GPX 업로드: 내용 검증(트랙포인트 존재) 후 원본 업로드 */
-const pickTrks=(d)=>hiddenInput(true,async files=>{
-  if(!files.length)return;
-  const bad=files.find(f=>!TRK_RE.test(f.name));
-  if(bad){toast("⚠ GPX 파일만 올릴 수 있습니다: "+bad.name);return;}
-  try{
-    if(dayFiles[d]===null){
-      toast("day"+d+" 폴더 생성 중…");
-      const nf=await createFolder("day"+d,CONFIG.parentFolder);
-      dayFolders[d]=nf.id;dayFiles[d]=[];
-    }
-    const nums=nextNumbers(d,files.length,"trk");
-    for(let i=0;i<files.length;i++){
-      const txt=await files[i].text();
-      if(txt.indexOf("<trkpt")<0){toast("⚠ "+files[i].name+": 트랙포인트가 없는 GPX입니다 — Garmin Connect에서 'GPX로 내보내기'한 파일인지 확인하세요");continue;}
-      await uploadFile("track_"+nums[i]+".gpx","application/gpx+xml",
-        new Blob([txt],{type:"application/gpx+xml"}),dayFolders[d],
-        p=>toast("DAY "+d+" 주행 "+(i+1)+"/"+files.length+" 업로드 "+Math.round(p*100)+"%"));
-    }
-    toast("완료! 주행 기록 업로드됨");
-    await reloadDay(d);
-  }catch(e){toast("⚠ "+e.message);}
-},"trk");
+
 
 const onAction=(ev)=>{
   const b=ev.currentTarget;
@@ -3002,7 +2980,7 @@ const pgOnSignedIn=()=>{
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260904-0243";
+  var BUILD="20260904-0254";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
@@ -3879,7 +3857,6 @@ $("lgReloadBtn").addEventListener("click",()=>{ lgLoaded=false; lgLoad(); });
    ══════════════════════════════════════════════════════════════════════ */
 
 const RD_FILE = "progress.json";
-const RD_FOLDER = "track";
 const RD_DAYS = [
   [1,"2027-05-09","생장 → 수비리",45.8,0.0],
   [2,"2027-05-10","수비리 → 에스테야",68.9,45.8],
@@ -3895,7 +3872,7 @@ const RD_DAYS = [
   [13,"2027-05-21","아르수아 → 산티아고",38.9,743.5]
 ];
 
-let rdLoaded=false, rdData={rides:[]}, rdMeta=null, rdFolderId=null, rdTimer=null;
+let rdLoaded=false, rdData={rides:[]}, rdMeta=null, rdTimer=null;
 
 const rdEsc = t => String(t==null?"":t)
   .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
@@ -3977,13 +3954,6 @@ const rdNorm = (raw) => {
 const rdPack = () => ({ver:1, updatedAt:new Date().toISOString(),
   updatedBy:myEmail, rides:rdData.rides});
 
-const rdEnsureFolder = () =>
-  listFolder(CONFIG.parentFolder).then(items=>{
-    const f=items.find(x=>x.mimeType==="application/vnd.google-apps.folder"
-                       && x.name.toLowerCase()===RD_FOLDER);
-    return f ? f.id : createFolder(RD_FOLDER, CONFIG.parentFolder).then(x=>x.id);
-  });
-
 const rdLoad = () => {
   rdStatus("불러오는 중…");
   return tdEnsureFolder().then(fid=>{ dbFolderId=fid; return listFolder(fid); })
@@ -4000,7 +3970,24 @@ const rdLoad = () => {
         return driveGetMeta(f.id).then(m=>{ rdMeta={id:f.id, modifiedTime:m.modifiedTime}; });
       });
     })
-    .then(()=>rdEnsureFolder()).then(id=>{ rdFolderId=id; })
+    .then(()=>{
+      if(Object.keys(dayFolders).length) return;
+      /* 사진 탭을 아직 안 열었으면 dayN 폴더 목록을 여기서 읽어 둡니다 */
+      return listFolder(CONFIG.parentFolder).then(items=>{
+        items.forEach(f=>{
+          if(f.mimeType==="application/vnd.google-apps.folder"){
+            const m=f.name.match(/^day\s*(\d{1,2})$/i);
+            if(m) dayFolders[parseInt(m[1],10)]=f.id;
+          }});
+        const jobs=[];
+        Object.keys(dayFolders).forEach(d=>{
+          jobs.push(listFolder(dayFolders[d])
+            .then(fs=>{ dayFiles[d]=fs.filter(x=>MEDIA_RE.test(x.name)); })
+            .catch(()=>{ dayFiles[d]=[]; }));
+        });
+        return Promise.all(jobs);
+      }).catch(()=>{});
+    })
     .then(()=>{ rdLoaded=true; rdRender(); rdStatus("불러오기 완료","sav"); })
     .catch(e=>{ rdStatus(e.message,"err");
       $("rdRoot").innerHTML='<div class="tdhint" style="color:var(--err)">⚠ '+rdEsc(e.message)+'</div>'; });
@@ -4057,14 +4044,23 @@ const rdUpload = async (file, day) => {
   try{ mt=await rdMatch(st.last, day); }
   catch(e){ set("⚠ "+rdEsc(e.message),"err"); return; }
 
+  /* 사진과 같은 dayN 폴더에 track_N.gpx 로 올립니다.
+     그래야 사이트 날짜 카드의 '지도+고도 재생'이 그대로 동작합니다. */
   set("Drive 에 올리는 중…");
   let fileId="", name="";
   try{
-    name = who+"-day"+String(day).padStart(2,"0")+"-"+Date.now().toString(36)+".gpx";
+    if(!dayFolders[day]){
+      set("day"+day+" 폴더를 만드는 중…");
+      const nf=await createFolder("day"+day, CONFIG.parentFolder);
+      dayFolders[day]=nf.id; dayFiles[day]=[];
+    }
+    const nums=nextNumbers(day,1,"trk");
+    name = "track_"+nums[0]+".gpx";
     const blob=new Blob([txt],{type:"application/gpx+xml"});
-    const res=await uploadFile(name,"application/gpx+xml",blob,rdFolderId,
+    const res=await uploadFile(name,"application/gpx+xml",blob,dayFolders[day],
       p=>set("올리는 중 "+Math.round(p*100)+"%"));
     fileId=res.id;
+    if(Array.isArray(dayFiles[day])) dayFiles[day].push({id:res.id, name:name});
   }catch(e){ set("⚠ 올리지 못했습니다: "+rdEsc(e.message),"err"); return; }
 
   /* 같은 사람·같은 날 기록은 갈아 끼웁니다 */
@@ -4119,9 +4115,9 @@ const rdRender = () => {
         +'<input type="file" id="rdGpx" accept=".gpx,application/gpx+xml">'
         +'<span>파일 고르기</span></label>'
       +'</div>'
-      +'<p class="rdmsg" id="rdMsg">가민이나 스트라바에서 내려받은 <b>그날 GPX</b>를 고르세요. '
-      +'실제 주행 거리·획득고도를 재고, 계획 노선에 맞춰 <b>어디까지 갔는지</b> 찾아 '
-      +'사이트 고도 프로파일에 표시합니다.<br>'
+      +'<p class="rdmsg" id="rdMsg">가민 Connect 에서 활동 열기 → ⚙ → '
+      +'<b>GPX로 내보내기</b> 한 파일을 고르세요.<br>'
+      +'실제 거리·획득고도를 재고, 계획 노선에 맞춰 <b>어디까지 갔는지</b> 찾습니다. '
       +'같은 날을 다시 올리면 <b>이전 기록을 갈아 끼웁니다.</b></p>';
   }else{
     h+='<p class="tdhint">담당이 지정되지 않은 계정이라 <b>보기만</b> 가능합니다.</p>';
