@@ -1884,6 +1884,12 @@
     color:var(--ink-soft);line-height:1.7}
   .an b{color:var(--ink)}
   .sched tr.hi td{background:#FFF9E8}
+
+  .townmap img{display:block;width:100%;height:auto}
+  .parisrow{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:10px 0 4px}
+  @media(max-width:760px){ .parisrow{grid-template-columns:1fr} }
+  .pcol{border:1px solid var(--line);border-radius:13px;background:#fff;padding:13px 15px}
+  .pcol.warn2{border-color:#E3B7B7;background:#FDF9F9}
 </style>
 
 <!-- ══════════════════════════════════════════════════════════════════════
@@ -3300,6 +3306,57 @@ Gracias! Buen Camino!</pre>
 
     <div class="note" style="margin-bottom:16px"><b>몽파르나스 호텔 후보</b>도
     <a href="#secL">숙소</a> 항목으로 옮겼습니다.</div>
+
+    <h3 class="jh3">5/7 금요일 · BIN 파리 하루 코스</h3>
+    <p class="jp">BIN 은 아침 06:10 에 도착하고 JIN 은 저녁 18:30 에 옵니다.
+    그 사이 <b>열 시간</b>이 비는데, 호텔 체크인은 보통 15시라 어차피 방에 들어갈 수 없습니다.
+    짐만 맡기고 걸어 다니는 편이 낫습니다.</p>
+
+    <figure class="townmap">
+      <img src="images/paris-tour-map.webp"
+           alt="몽파르나스에서 시작하는 파리 하루 여행 코스 · 2027년 5월 7일"
+           loading="lazy"
+           onerror="if(!this.dataset.f){this.dataset.f=1;this.src='images/paris-tour-map.png'}">
+    </figure>
+
+    <div class="parisrow">
+      <div class="pcol">
+        <div class="ph2"><b>동선</b><span>14곳 · 도보 중심</span></div>
+        <ul class="pl2">
+          <li><b>몽파르나스 → 노트르담 → 루브르 → 콩코르드 → 개선문</b>
+            <small>오전, 센강 북쪽을 서쪽으로</small></li>
+          <li>점심 뒤 <b>지하철 6호선</b>으로 트로카데로<small>에펠탑 사진 명소</small></li>
+          <li><b>에펠탑 → 샹 드 마르스 → 앵발리드 → 오르세</b>
+            <small>오후, 센강 남쪽을 동쪽으로</small></li>
+          <li>17:50 몽파르나스 복귀<small>JIN 합류 준비</small></li>
+        </ul>
+        <div class="an">지하철은 세 번만 탑니다. 나머지는 걷기라
+        <b>편한 신발</b>이 필수입니다.</div>
+      </div>
+      <div class="pcol warn2">
+        <div class="ph2"><b>미리 확인할 것</b><span class="alt">중요</span></div>
+        <ul class="pl2">
+          <li class="bad"><b>08:00 출발은 빠듯합니다.</b> 06:10 착륙 뒤 입국심사·수하물에
+            40~60분, Uber 로 45~75분이면 호텔 도착이 <b>07:30~08:30</b> 입니다</li>
+          <li class="bad"><b>노트르담</b>은 재개관 뒤 <b>무료 시간 예약제</b>로 운영될 수 있습니다 —
+            출발 전에 예약 여부를 확인하세요</li>
+          <li><b>오르세</b> 마지막 입장 <b>17:00</b> · 월요일 휴관<small>5/7은 금요일이라 엽니다</small></li>
+          <li><b>루브르</b> 화요일 휴관 · 금요일은 야간 개장<small>내부까지 보려면 시간을 더 잡으세요</small></li>
+          <li>지하철은 <b>Navigo Easy</b> 카드에 티켓을 충전해 쓰면 편합니다</li>
+        </ul>
+        <div class="an"><b>무리하지 마세요.</b> 이튿날 아침 10:05 TGV 를 타고,
+        그다음 날부터 <b>13일 주행</b>이 시작됩니다. 첫날 다리를 쓰는 만큼
+        DAY 1 피레네가 힘들어집니다.</div>
+      </div>
+    </div>
+
+    <div class="bgnote">
+      <b>짐을 어디에 두나</b>
+      몽파르나스 호텔에 <b>얼리 체크인</b>이 되는지 예약할 때 물어보세요.
+      안 되면 대부분 <b>짐 보관(bagagerie)</b>은 해 줍니다.
+      그것도 어려우면 Gare Montparnasse 의 유인 물품보관소를 쓰면 됩니다.
+      <b>자전거 짐은 아직 없으니</b> 배낭 하나만 맡기면 됩니다.
+    </div>
 
     <h3 class="jh3">5/8 다른 시간대 후보</h3>
 <div class="sched-wrap">
@@ -7690,7 +7747,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260904-2144";
+  var BUILD="20260904-2316";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
