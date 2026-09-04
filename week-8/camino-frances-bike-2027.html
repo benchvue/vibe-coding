@@ -7560,7 +7560,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260904-1454";
+  var BUILD="20260904-1505";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
@@ -7828,8 +7828,9 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       var r=L[w]; if(!r) return;
       var m=WHO[w];
       var tag = r.live && window.CAMINO_LIVE && !window.CAMINO_LIVE.isStale(r) ? " ●" : "";
+      /* 가까이 있으면 BIN 을 위로 올립니다 */
       h+=marker(r.cumKm, m.c, m.d,
-        m.n+" "+r.cumKm.toFixed(1)+" km"+tag, close && i===1 ? 118 : 0);
+        m.n+" "+r.cumKm.toFixed(1)+" km"+tag, close && i===0 ? 118 : 0);
     });
 
     if(preview!=null){
@@ -8144,8 +8145,10 @@ window.CAMINO_LIVE = (function(){
     var close=both && Math.abs(L.bin.cumKm-L.jin.cumKm)<40;
     ["bin","jin"].forEach(function(w,i){
       var r=L[w]; if(!r) return;
+      /* 가까이 있으면 BIN 을 한 칸 위로 올리고 JIN 은 제자리 —
+         이름표 높이만큼 벌어져 겹치지 않습니다 */
       var top=P.leader_top_px-P.label_h_px;
-      if(close && i===1) top-=P.stack_gap_px;
+      if(close && i===0) top-=P.label_h_px+4;
       var stale=r.live && window.CAMINO_LIVE && window.CAMINO_LIVE.isStale(r);
       h+=pin(r.cumKm, WHO[w].c, WHO[w].n+" "+r.cumKm.toFixed(1)+" km", top, r.live, stale);
     });
