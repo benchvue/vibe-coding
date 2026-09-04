@@ -1828,6 +1828,13 @@
   #pgRl{border:1px solid var(--line);background:#fff;color:var(--camino-blue);border-radius:9px;
     padding:10px 15px;font-size:.78rem;font-family:inherit;white-space:nowrap}
   #pgRl:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
+
+  /* 전체 노선 지도 위 주행 핀 */
+  .mpwrap{position:relative;display:block}
+  .mpwrap img{display:block;width:100%;height:auto}
+  .mpwrap svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  .mpnote{margin-top:9px;font-size:.76rem;color:#9FB0CE;text-align:right;line-height:1.6}
+  .mpnote b{font-weight:700}
 </style>
 
 <!-- ══════════════════════════════════════════════════════════════════════
@@ -7550,7 +7557,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260904-0254";
+  var BUILD="20260904-0321";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
@@ -7926,6 +7933,179 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",boot);
   else boot();
 })();
+</script>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   전체 노선 지도 위 주행 핀 — BIN · JIN
+   · tool/detail-v2-map-positions.json  노드 좌표 · 루트 폴리라인
+   · Drive db/progress.json             실제 주행 기록
+   원본 이미지는 그대로 두고 같은 크기의 SVG 를 덮습니다.
+   ══════════════════════════════════════════════════════════════════════ */
+(function(){
+  "use strict";
+
+  var MAP=null, RIDES=[], svg=null;
+  var WHO={ bin:{n:"BIN", c:"#1E5FB4"}, jin:{n:"JIN", c:"#C92A2A"} };
+
+  var $=function(id){ return document.getElementById(id); };
+  var esc=function(t){ return String(t==null?"":t)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); };
+
+  /* 누적 km → 지도 좌표 (도식형이라 구간별 보간) */
+  function pos(km){
+    var ns=MAP.nodes.filter(function(n){ return !n.skip_for_interp; });
+    var x;
+    if(km<=ns[0].cum_km) x=ns[0].x_px;
+    else if(km>=ns[ns.length-1].cum_km) x=ns[ns.length-1].x_px;
+    else{
+      for(var i=1;i<ns.length;i++){
+        if(km<=ns[i].cum_km){
+          var a=ns[i-1], b=ns[i], t=(km-a.cum_km)/((b.cum_km-a.cum_km)||1);
+          x=a.x_px+(b.x_px-a.x_px)*t; break;
+        }
+      }
+    }
+    return {x:x, y:yOn(x)};
+  }
+  function yOn(x){
+    var p=MAP.route_line.polyline;
+    if(x<=p[0][0]) return p[0][1];
+    if(x>=p[p.length-1][0]) return p[p.length-1][1];
+    for(var i=1;i<p.length;i++){
+      if(x<=p[i][0]){
+        var a=p[i-1], b=p[i], t=(x-a[0])/((b[0]-a[0])||1);
+        return a[1]+(b[1]-a[1])*t;
+      }
+    }
+    return p[p.length-1][1];
+  }
+
+  function latest(){
+    var out={};
+    RIDES.forEach(function(r){
+      if(r.del) return;
+      var w=r.owner||"bin";
+      if(!out[w] || r.cumKm>out[w].cumKm) out[w]=r;
+    });
+    return out;
+  }
+
+  function pin(km, col, label, top){
+    var p=pos(km), P=MAP.pin;
+    var h=P.label_h_px, w=label.length*11+30;
+    var lx=Math.min(Math.max(p.x-w/2, 8), MAP.image.width_px-w-8);
+    return ''
+      /* 노드까지 내려가는 선 */
+      +'<line x1="'+p.x+'" y1="'+(top+h)+'" x2="'+p.x+'" y2="'+(p.y-9)+'" '
+        +'stroke="'+col+'" stroke-width="3" opacity="0.85"/>'
+      /* 지도 위 점 */
+      +'<circle cx="'+p.x+'" cy="'+p.y+'" r="9" fill="#FFFFFF" stroke="'+col+'" stroke-width="4"/>'
+      +'<circle cx="'+p.x+'" cy="'+p.y+'" r="3.4" fill="'+col+'"/>'
+      /* 이름표 */
+      +'<rect x="'+lx+'" y="'+top+'" width="'+w+'" height="'+h+'" rx="'+(h/2)+'" '
+        +'fill="'+col+'"/>'
+      +'<path d="M'+(p.x-6)+' '+(top+h)+' L'+(p.x+6)+' '+(top+h)+' L'+p.x+' '+(top+h+9)+' Z" '
+        +'fill="'+col+'"/>'
+      +'<text x="'+(lx+w/2)+'" y="'+(top+h/2+6)+'" text-anchor="middle" '
+        +'font-family="IBM Plex Sans KR, sans-serif" font-size="17" font-weight="700" '
+        +'fill="#FFFFFF">'+esc(label)+'</text>';
+  }
+
+  function draw(){
+    if(!MAP||!svg) return;
+    var L=latest(), P=MAP.pin, h='';
+    var any=L.bin||L.jin;
+
+    /* 지나온 구간을 굵게 덧그림 */
+    var far=Math.max(L.bin?L.bin.cumKm:0, L.jin?L.jin.cumKm:0);
+    if(far>0){
+      var p=MAP.route_line.polyline, d='', started=false, end=pos(far).x;
+      for(var i=0;i<p.length;i++){
+        if(p[i][0]>end) break;
+        d+=(started?'L':'M')+p[i][0]+' '+p[i][1]+' '; started=true;
+      }
+      d+='L'+end+' '+yOn(end);
+      h+='<path d="'+d+'" fill="none" stroke="#1E7A46" stroke-width="7" '
+        +'stroke-linecap="round" opacity="0.55"/>';
+    }
+    /* 지나온 노드에 초록 표시 */
+    MAP.nodes.forEach(function(n){
+      if(n.day===0 || n.rest) return;
+      if(n.cum_km<=far+0.05)
+        h+='<circle cx="'+n.x_px+'" cy="'+n.y_px+'" r="6" fill="#1E7A46" '
+          +'stroke="#FFFFFF" stroke-width="2"/>';
+    });
+
+    var both=L.bin&&L.jin;
+    var close=both && Math.abs(L.bin.cumKm-L.jin.cumKm)<40;
+    ["bin","jin"].forEach(function(w,i){
+      var r=L[w]; if(!r) return;
+      var top=P.leader_top_px-P.label_h_px;
+      if(close && i===1) top-=P.stack_gap_px;
+      h+=pin(r.cumKm, WHO[w].c, WHO[w].n+" "+r.cumKm.toFixed(1)+" km", top);
+    });
+
+    svg.innerHTML=h;
+    var note=$("mpNote");
+    if(note){
+      if(!any) note.innerHTML='주행 기록을 올리면 여기에 <b>BIN</b>·<b>JIN</b> 위치가 표시됩니다.';
+      else{
+        var t=[];
+        ["bin","jin"].forEach(function(w){
+          if(L[w]) t.push('<b style="color:'+WHO[w].c+'">'+WHO[w].n+'</b> DAY '+L[w].day
+            +' · '+L[w].cumKm.toFixed(1)+' km');
+        });
+        note.innerHTML=t.join(' &nbsp;·&nbsp; ');
+      }
+    }
+  }
+
+  function loadRides(){
+    if(!window.CAMINO_DRIVE) return Promise.resolve();
+    return window.CAMINO_DRIVE.files().then(function(files){
+      var f=files.filter(function(x){ return x.name==="progress.json"; })[0];
+      if(!f){ RIDES=[]; return; }
+      return window.CAMINO_DRIVE.text(f.id).then(function(t){
+        var j=null; try{ j=JSON.parse(t); }catch(e){}
+        RIDES=(j&&j.rides)||[];
+      });
+    }).catch(function(){ RIDES=[]; });
+  }
+
+  function boot(){
+    var fig=document.querySelector("figure.detail-map");
+    if(!fig) return;
+    var img=fig.querySelector("img"); if(!img) return;
+
+    fetch("tool/detail-v2-map-positions.json",{cache:"no-cache"})
+      .then(function(r){ if(!r.ok) throw new Error("좌표 파일 없음"); return r.json(); })
+      .then(function(j){
+        MAP=j;
+        var wrap=document.createElement("div");
+        wrap.className="mpwrap";
+        img.parentNode.insertBefore(wrap, img);
+        wrap.appendChild(img);
+        var s=document.createElementNS("http://www.w3.org/2000/svg","svg");
+        s.setAttribute("viewBox","0 0 "+MAP.image.width_px+" "+MAP.image.height_px);
+        s.setAttribute("preserveAspectRatio","xMidYMid meet");
+        s.setAttribute("aria-hidden","true");
+        s.id="mpSvg";
+        wrap.appendChild(s);
+        svg=s;
+        var n=document.createElement("p");
+        n.className="mpnote"; n.id="mpNote";
+        fig.insertBefore(n, fig.querySelector("figcaption"));
+        draw();
+        return loadRides();
+      })
+      .then(function(){ draw(); })
+      .catch(function(){ /* 좌표 파일이 없으면 지도만 그대로 */ });
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",boot);
+  else boot();
+})();
+
 </script>
 </body>
 
