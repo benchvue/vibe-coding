@@ -1835,6 +1835,9 @@
   .mpwrap svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
   .mpnote{margin-top:9px;font-size:.76rem;color:#9FB0CE;text-align:right;line-height:1.6}
   .mpnote b{font-weight:700}
+
+  .tst{display:inline-block;font-size:.72rem;color:#8A6A12;background:#FFFBEE;
+    border:1px solid #E7D9A8;border-radius:999px;padding:2px 10px;margin-left:6px}
 </style>
 
 <!-- ══════════════════════════════════════════════════════════════════════
@@ -7557,7 +7560,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260904-1250";
+  var BUILD="20260904-1454";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
@@ -7741,7 +7744,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
 (function(){
   "use strict";
 
-  var CAL=null, LUT=null, RIDES=[], svg=null;
+  var CAL=null, LUT=null, RIDES=[], svg=null, TESTING={};
   var WHO={ bin:{n:"BIN", c:"#1E5FB4", d:"#12407D"},
             jin:{n:"JIN", c:"#C92A2A", d:"#8E1F1F"} };
   var preview=null;                       /* 손으로 고른 미리보기 위치 */
@@ -7794,9 +7797,12 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     if(!CAL||!svg) return;
     var L=latest(), h='', vl=CAL.vertical_line;
     var LV=(window.CAMINO_LIVE?window.CAMINO_LIVE.get().riders:null)||{};
+    TESTING={};
     ["bin","jin"].forEach(function(w){
       var v=LV[w];
-      if(v && typeof v.km==="number" && (!L[w] || v.km>L[w].cumKm))
+      if(!v || typeof v.km!=="number") return;
+      if(v.test){ TESTING[w]=v; return; }      /* 시험 신호는 표시하지 않습니다 */
+      if(!L[w] || v.km>L[w].cumKm)
         L[w]={cumKm:v.km, day:null, live:true, at:v.at, ele:v.ele, dist:0, asc:0};
     });
     var far=Math.max(preview!=null?preview:0,
@@ -7842,6 +7848,13 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       var r=L[w], m=WHO[w];
       var km=r?r.cumKm:0, pct=total?km/total*100:0;
       var mine=RIDES.filter(function(x){ return !x.del && x.owner===w; });
+      var t=TESTING[w];
+      if(!r && t){
+        h+='<div class="pgs '+w+'"><small>'+m.n+'</small><b>시험 중</b>'
+          +'<i>노선에서 '+(t.off>1000?Math.round(t.off/1000)+" km":Math.round(t.off)+" m")+' 떨어짐</i>'
+          +'<u>'+(window.CAMINO_LIVE?window.CAMINO_LIVE.ago(t):'')+' · 위치는 표시하지 않습니다</u></div>';
+        return;
+      }
       var liveTail = r&&r.live&&window.CAMINO_LIVE
         ? (window.CAMINO_LIVE.isStale(r)?"마지막 "+window.CAMINO_LIVE.ago(r)
                                         :"실시간 "+window.CAMINO_LIVE.ago(r)) : "";
@@ -7891,7 +7904,9 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       +'<p class="pgmsg" id="pgMsg">주행 기록은 <b>upload-camino.html → 🚴 주행 기록</b> 에서 '
         +'그날 GPX 를 올리면 채워집니다. BIN 은 파랑, JIN 은 빨강입니다.<br>'
         +'달리는 동안에는 <b>●</b> 표시와 함께 <b>실시간 위치</b>가 앞서 나갑니다 — '
-        +'1분마다 새로 읽습니다.</p>';
+        +'1분마다 새로 읽습니다.<br>'
+        +'<small>스페인 노선 밖에서 보낸 신호는 <b>시험 중</b>으로만 알리고 '
+        +'위치는 찍지 않습니다 — 엉뚱한 자리에 표시되는 것을 막기 위해서입니다.</small></p>';
     svg=$("pgSvg");
     $("pgDay").addEventListener("change",function(){
       preview = this.value==="" ? null : +this.value;
@@ -8093,9 +8108,14 @@ window.CAMINO_LIVE = (function(){
     var L=latest(), P=MAP.pin, h='';
     /* 실시간 위치가 더 앞서면 그것을 씁니다 */
     var LV=(window.CAMINO_LIVE?window.CAMINO_LIVE.get().riders:null)||{};
+    var TESTED={};
     ["bin","jin"].forEach(function(w){
       var v=LV[w];
-      if(v && typeof v.km==="number" && (!L[w] || v.km>L[w].cumKm))
+      if(!v || typeof v.km!=="number") return;
+      /* 노선 밖에서 보낸 시험 신호는 핀을 찍지 않습니다 —
+         km 가 0 이라 생장에 서 버려 거짓말이 됩니다 */
+      if(v.test){ TESTED[w]=v; return; }
+      if(!L[w] || v.km>L[w].cumKm)
         L[w]={cumKm:v.km, day:null, live:true, at:v.at, ele:v.ele};
     });
     var any=L.bin||L.jin;
@@ -8133,7 +8153,16 @@ window.CAMINO_LIVE = (function(){
     svg.innerHTML=h;
     var note=$("mpNote");
     if(note){
-      if(!any) note.innerHTML='주행 기록을 올리면 여기에 <b>BIN</b>·<b>JIN</b> 위치가 표시됩니다.';
+      var testMsg="";
+      ["bin","jin"].forEach(function(w){
+        var v=TESTED[w]; if(!v) return;
+        var far=v.off>1000 ? Math.round(v.off/1000)+" km" : Math.round(v.off)+" m";
+        testMsg+='<span class="tst"><b style="color:'+WHO[w].c+'">'+WHO[w].n+'</b> 시험 중'
+          +' · 노선에서 '+far+' 떨어짐'
+          +(window.CAMINO_LIVE?' · '+window.CAMINO_LIVE.ago(v):'')+'</span>';
+      });
+      if(!any) note.innerHTML = testMsg
+        || '주행 기록을 올리면 여기에 <b>BIN</b>·<b>JIN</b> 위치가 표시됩니다.';
       else{
         var t=[];
         ["bin","jin"].forEach(function(w){
@@ -8147,7 +8176,7 @@ window.CAMINO_LIVE = (function(){
           t.push('<b style="color:'+WHO[w].c+'">'+WHO[w].n+'</b> '
             +r.cumKm.toFixed(1)+' km'+(tail?' · '+tail:''));
         });
-        note.innerHTML=t.join(' &nbsp;·&nbsp; ');
+        note.innerHTML=t.join(' &nbsp;·&nbsp; ')+(testMsg?'<br>'+testMsg:'');
       }
     }
   }
