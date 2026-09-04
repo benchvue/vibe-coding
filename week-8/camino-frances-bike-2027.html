@@ -1814,6 +1814,20 @@
   .pgmsg{margin-top:9px;padding:9px 12px;background:#FBFAF5;border:1px solid var(--line);
     border-radius:10px;font-size:.76rem;line-height:1.75;color:var(--ink-soft)}
   .pgmsg b{color:var(--ink)}
+
+  .pgstat{grid-template-columns:repeat(3,1fr)}
+  @media(max-width:760px){ .pgstat{grid-template-columns:1fr} }
+  .pgs.bin{border-left:4px solid #1E5FB4} .pgs.bin b{color:#1E5FB4}
+  .pgs.jin{border-left:4px solid #C92A2A} .pgs.jin b{color:#C92A2A}
+  .pgs.sum{border-left:4px solid var(--ok)} .pgs.sum b{color:var(--ok)}
+  .pgs .pgbar{height:7px;border-radius:4px;background:#EFEDE5;overflow:hidden;margin:7px 0 5px}
+  .pgs .pgbar span{display:block;height:100%;border-radius:4px;transition:width .35s}
+  .pgs u{display:block;text-decoration:none;font-size:.66rem;color:#A79E86;line-height:1.5}
+  .pgctl{grid-template-columns:1fr auto}
+  .pgctl label small{font-weight:400;color:#A79E86}
+  #pgRl{border:1px solid var(--line);background:#fff;color:var(--camino-blue);border-radius:9px;
+    padding:10px 15px;font-size:.78rem;font-family:inherit;white-space:nowrap}
+  #pgRl:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
 </style>
 
 <!-- ══════════════════════════════════════════════════════════════════════
@@ -7536,7 +7550,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260904-0228";
+  var BUILD="20260904-0243";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
@@ -7711,35 +7725,28 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
 
 <script>
 /* ══════════════════════════════════════════════════════════════════════
-   고도 프로파일 위 주행 표시
+   고도 프로파일 위 주행 표시 — BIN · JIN 따로
    · tool/camino-2027-profile-positions.json  픽셀 캘리브레이션
    · tool/camino-2027-profile-lut.json        누적 km → 고도
-   · route/camino-2027-dayNN.gpx              그날 계획 노선 (GPX 맞춤용)
-   그림은 4840×2530 이고, SVG 를 같은 viewBox 로 덮어 자동으로 배율을 맞춥니다.
+   · Drive db/progress.json                   실제 주행 기록
+   그림은 4840×2530 이고, SVG 를 같은 viewBox 로 덮어 배율을 자동으로 맞춥니다.
    ══════════════════════════════════════════════════════════════════════ */
 (function(){
   "use strict";
 
-  var CAL=null, LUT=null, KEY="caminoProgress-v1";
-  var box=null, svg=null, panel=null;
-  var state={mode:"day", day:0, km:0, note:""};   /* day 0 = 아직 출발 전 */
+  var CAL=null, LUT=null, RIDES=[], svg=null;
+  var WHO={ bin:{n:"BIN", c:"#1E5FB4", d:"#12407D"},
+            jin:{n:"JIN", c:"#C92A2A", d:"#8E1F1F"} };
+  var preview=null;                       /* 손으로 고른 미리보기 위치 */
 
   var $=function(id){ return document.getElementById(id); };
   var esc=function(t){ return String(t==null?"":t)
     .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); };
 
-  function load(){
-    try{ var v=JSON.parse(localStorage.getItem(KEY)); if(v) state=v; }catch(e){}
-  }
-  function save(){
-    try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
-  }
-
-  /* ── 좌표 계산 ── */
   function xOf(km){ return CAL.x_axis.km_0_px + km*CAL.x_axis.px_per_km; }
   function yOf(ele){ return CAL.y_axis.ele_0_px - ele*CAL.y_axis.px_per_m; }
   function eleAt(km){
-    if(!LUT || !LUT.length) return 0;
+    if(!LUT||!LUT.length) return 0;
     var lo=0, hi=LUT.length-1;
     if(km<=LUT[0][0]) return LUT[0][1];
     if(km>=LUT[hi][0]) return LUT[hi][1];
@@ -7747,132 +7754,105 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     var a=LUT[lo], b=LUT[hi], t=(km-a[0])/((b[0]-a[0])||1);
     return a[1]+(b[1]-a[1])*t;
   }
-  function curKm(){
-    if(state.mode==="km") return Math.max(0, Math.min(CAL.x_axis.km_total, +state.km||0));
-    var d=CAL.days.filter(function(x){ return x.day===+state.day; })[0];
-    return d ? d.cum_km_end : 0;
-  }
 
-  /* ── 그리기 ── */
-  function draw(){
-    if(!CAL || !svg) return;
-    var km=curKm(), ele=eleAt(km);
-    var x=xOf(km), y=yOf(ele);
-    var vl=CAL.vertical_line;
-    var done = km>0;
-
-    var h='';
-    /* 지나온 구간을 옅게 덮어 표시 */
-    if(done){
-      h+='<rect x="'+CAL.x_axis.km_0_px+'" y="'+vl.y_min_px+'" '
-        +'width="'+(x-CAL.x_axis.km_0_px)+'" height="'+(vl.y_max_px_incl_bars-vl.y_min_px)+'" '
-        +'fill="#1E7A46" opacity="0.09"/>';
-    }
-    /* 날짜별 도착점 — 지나온 곳은 채우고 남은 곳은 비움 */
-    CAL.days.forEach(function(d){
-      if(d.rest) return;
-      var passed = d.cum_km_end <= km+0.05;
-      h+='<circle cx="'+d.end.x_px+'" cy="'+d.end.y_px+'" r="13" '
-        +'fill="'+(passed?"#1E7A46":"#FFFFFF")+'" stroke="'+(passed?"#14512B":"#B9B3A4")+'" '
-        +'stroke-width="5"/>';
+  /* 사람별 가장 멀리 간 지점 */
+  function latest(){
+    var out={};
+    RIDES.forEach(function(r){
+      if(r.del) return;
+      var w=r.owner||"bin";
+      if(!out[w] || r.cumKm>out[w].cumKm) out[w]=r;
     });
-    if(done){
-      /* 수직선 + 현재 위치 */
-      h+='<line x1="'+x+'" y1="'+vl.y_min_px+'" x2="'+x+'" y2="'+vl.y_max_px_incl_bars+'" '
-        +'stroke="#C92A2A" stroke-width="7" opacity="0.9"/>';
-      h+='<circle cx="'+x+'" cy="'+y+'" r="34" fill="#FFFFFF" stroke="#C92A2A" stroke-width="11"/>';
-      h+='<circle cx="'+x+'" cy="'+y+'" r="11" fill="#C92A2A"/>';
-      /* 말풍선 */
-      var lab=km.toFixed(1)+" km · "+Math.round(ele)+" m";
-      var w=lab.length*29+56, lx=Math.min(Math.max(x-w/2, 20), 4840-w-20), ly=vl.y_min_px-96;
-      h+='<rect x="'+lx+'" y="'+ly+'" width="'+w+'" height="76" rx="18" fill="#C92A2A"/>';
-      h+='<text x="'+(lx+w/2)+'" y="'+(ly+52)+'" text-anchor="middle" '
-        +'font-family="IBM Plex Sans KR, sans-serif" font-size="46" font-weight="700" '
-        +'fill="#FFFFFF">'+esc(lab)+'</text>';
-    }
-    svg.innerHTML=h;
-    paintPanel(km, ele);
-  }
-
-  function paintPanel(km, ele){
-    var el=$("pgStat"); if(!el) return;
-    var total=CAL.x_axis.km_total;
-    var pct = total? km/total*100 : 0;
-    var left = total-km;
-    var d=CAL.days.filter(function(x){ return Math.abs(x.cum_km_end-km)<0.05 && !x.rest; })[0];
-    el.innerHTML =
-       '<div class="pgs"><small>지나온 거리</small><b>'+km.toFixed(1)+' km</b>'
-      +'<i>'+pct.toFixed(1)+'%</i></div>'
-      +'<div class="pgs"><small>남은 거리</small><b>'+left.toFixed(1)+' km</b>'
-      +'<i>'+(13-(d?d.day:0))+'일 남음</i></div>'
-      +'<div class="pgs"><small>그 자리 고도</small><b>'+Math.round(ele)+' m</b>'
-      +'<i>'+(d?esc(d.to):'구간 중간')+'</i></div>'
-      +'<div class="pgbar"><i style="width:'+pct.toFixed(2)+'%"></i></div>';
-  }
-
-  /* ── GPX 에서 위치 찾기 ── */
-  function hav(a,b){
-    var R=6371000, r=Math.PI/180;
-    var dla=(b[0]-a[0])*r, dlo=(b[1]-a[1])*r;
-    var h=Math.sin(dla/2)*Math.sin(dla/2)
-        + Math.cos(a[0]*r)*Math.cos(b[0]*r)*Math.sin(dlo/2)*Math.sin(dlo/2);
-    return 2*R*Math.asin(Math.min(1,Math.sqrt(h)));
-  }
-  function parsePts(txt){
-    var doc=new DOMParser().parseFromString(txt,"application/xml");
-    var n=doc.getElementsByTagName("trkpt"), out=[];
-    for(var i=0;i<n.length;i++){
-      var la=parseFloat(n[i].getAttribute("lat")), lo=parseFloat(n[i].getAttribute("lon"));
-      if(!isNaN(la)&&!isNaN(lo)) out.push([la,lo]);
-    }
     return out;
   }
-  function matchGpx(file, day){
-    var msg=$("pgMsg");
-    msg.textContent="읽는 중…";
-    var fr=new FileReader();
-    fr.onload=function(){
-      var ridden;
-      try{ ridden=parsePts(fr.result); }catch(e){ msg.textContent="GPX 를 읽지 못했습니다"; return; }
-      if(!ridden.length){ msg.textContent="트랙이 없는 파일입니다"; return; }
-      var last=ridden[ridden.length-1];
-      var dd=CAL.days.filter(function(x){ return x.day===+day; })[0];
-      if(!dd){ msg.textContent="날짜를 먼저 고르세요"; return; }
-      var url="route/camino-2027-day"+(day<10?"0":"")+day+".gpx";
-      fetch(url,{cache:"no-cache"})
-        .then(function(r){ if(!r.ok) throw new Error(url+" 없음"); return r.text(); })
-        .then(function(t){
-          var plan=parsePts(t);
-          if(!plan.length) throw new Error("계획 노선에 트랙이 없습니다");
-          var acc=0, best=Infinity, bestKm=0;
-          for(var i=0;i<plan.length;i++){
-            if(i) acc+=hav(plan[i-1],plan[i]);
-            var dist=hav(last,plan[i]);
-            if(dist<best){ best=dist; bestKm=acc/1000; }
-          }
-          state.mode="km";
-          state.km=Math.round((dd.cum_km_start+bestKm)*100)/100;
-          state.day=+day;
-          save(); syncInputs(); draw();
-          msg.innerHTML="DAY "+day+" 주행 끝 지점을 찾았습니다 — <b>누적 "
-            +state.km.toFixed(1)+" km</b>"
-            +(best>300?' <span style="color:var(--err)">· 계획 노선에서 '
-              +Math.round(best)+" m 떨어져 있습니다</span>":"");
-        })
-        .catch(function(e){ msg.textContent="⚠ "+e.message; });
-    };
-    fr.readAsText(file);
+
+  function marker(km, col, dark, label, lift){
+    var ele=eleAt(km), x=xOf(km), y=yOf(ele), vl=CAL.vertical_line;
+    var h='<line x1="'+x+'" y1="'+vl.y_min_px+'" x2="'+x+'" y2="'+vl.y_max_px_incl_bars+'" '
+      +'stroke="'+col+'" stroke-width="7" opacity="0.85"/>'
+      +'<circle cx="'+x+'" cy="'+y+'" r="34" fill="#FFFFFF" stroke="'+col+'" stroke-width="11"/>'
+      +'<circle cx="'+x+'" cy="'+y+'" r="11" fill="'+col+'"/>';
+    var w=label.length*27+62, lx=Math.min(Math.max(x-w/2,20), 4840-w-20);
+    var ly=vl.y_min_px-96-(lift||0);
+    h+='<rect x="'+lx+'" y="'+ly+'" width="'+w+'" height="76" rx="18" fill="'+col+'"/>'
+      +'<path d="M'+(x-16)+' '+(ly+76)+' L'+(x+16)+' '+(ly+76)+' L'+x+' '+(ly+104)+' Z" '
+      +'fill="'+col+'"/>'
+      +'<text x="'+(lx+w/2)+'" y="'+(ly+52)+'" text-anchor="middle" '
+      +'font-family="IBM Plex Sans KR, sans-serif" font-size="44" font-weight="700" '
+      +'fill="#FFFFFF">'+esc(label)+'</text>';
+    return h;
   }
 
-  function syncInputs(){
-    var d=$("pgDay"), k=$("pgKm");
-    if(d) d.value=String(state.day||0);
-    if(k) k.value=(state.mode==="km"? (+state.km||0).toFixed(1) : curKm().toFixed(1));
+  function draw(){
+    if(!CAL||!svg) return;
+    var L=latest(), h='', vl=CAL.vertical_line;
+    var far=Math.max(preview!=null?preview:0,
+                     L.bin?L.bin.cumKm:0, L.jin?L.jin.cumKm:0);
+
+    if(far>0){
+      h+='<rect x="'+CAL.x_axis.km_0_px+'" y="'+vl.y_min_px+'" '
+        +'width="'+(xOf(far)-CAL.x_axis.km_0_px)+'" '
+        +'height="'+(vl.y_max_px_incl_bars-vl.y_min_px)+'" fill="#1E7A46" opacity="0.08"/>';
+    }
+    CAL.days.forEach(function(d){
+      if(d.rest) return;
+      var passed=d.cum_km_end<=far+0.05;
+      h+='<circle cx="'+d.end.x_px+'" cy="'+d.end.y_px+'" r="13" '
+        +'fill="'+(passed?"#1E7A46":"#FFFFFF")+'" '
+        +'stroke="'+(passed?"#14512B":"#B9B3A4")+'" stroke-width="5"/>';
+    });
+
+    /* 두 사람이 거의 같은 자리면 말풍선을 위아래로 어긋나게 */
+    var both = L.bin && L.jin;
+    var close = both && Math.abs(L.bin.cumKm-L.jin.cumKm) < 25;
+    ["bin","jin"].forEach(function(w,i){
+      var r=L[w]; if(!r) return;
+      var m=WHO[w];
+      h+=marker(r.cumKm, m.c, m.d,
+        m.n+" "+r.cumKm.toFixed(1)+" km", close && i===1 ? 118 : 0);
+    });
+
+    if(preview!=null){
+      h+='<line x1="'+xOf(preview)+'" y1="'+vl.y_min_px+'" '
+        +'x2="'+xOf(preview)+'" y2="'+vl.y_max_px_incl_bars+'" '
+        +'stroke="#8A7F63" stroke-width="5" stroke-dasharray="26 18" opacity="0.8"/>';
+    }
+    svg.innerHTML=h;
+    paintPanel(L);
   }
 
-  /* ── 화면 ── */
+  function paintPanel(L){
+    var el=$("pgStat"); if(!el) return;
+    var total=CAL.x_axis.km_total, h="";
+    ["bin","jin"].forEach(function(w){
+      var r=L[w], m=WHO[w];
+      var km=r?r.cumKm:0, pct=total?km/total*100:0;
+      var mine=RIDES.filter(function(x){ return !x.del && x.owner===w; });
+      var dist=mine.reduce(function(s,x){ return s+(x.dist||0); },0);
+      var asc =mine.reduce(function(s,x){ return s+(x.asc||0); },0);
+      h+='<div class="pgs '+w+'">'
+        +'<small>'+m.n+'</small>'
+        +'<b>'+km.toFixed(1)+' km</b>'
+        +'<i>'+(r?("DAY "+r.day+" · "+pct.toFixed(1)+"%"):"아직 기록 없음")+'</i>'
+        +'<div class="pgbar"><span style="width:'+pct.toFixed(2)+'%;background:'+m.c+'"></span></div>'
+        +'<u>'+(mine.length?(mine.length+"일 · 실제 "+dist.toFixed(1)+" km · 고도 "
+          +asc.toLocaleString()+" m"):"—")+'</u></div>';
+    });
+    var lead=null;
+    if(L.bin&&L.jin){
+      var gap=Math.abs(L.bin.cumKm-L.jin.cumKm);
+      lead = gap<0.2 ? "나란히 가고 있습니다"
+        : (L.bin.cumKm>L.jin.cumKm?"BIN":"JIN")+" 이 "+gap.toFixed(1)+" km 앞";
+    }
+    h+='<div class="pgs sum"><small>남은 거리</small>'
+      +'<b>'+(total-Math.max(L.bin?L.bin.cumKm:0,L.jin?L.jin.cumKm:0)).toFixed(1)+' km</b>'
+      +'<i>전체 '+total.toFixed(1)+' km</i>'
+      +(lead?'<u>'+esc(lead)+'</u>':'<u>기록을 올리면 나타납니다</u>')+'</div>';
+    el.innerHTML=h;
+  }
+
   function build(){
-    box=$("pgBox"); if(!box) return;
+    var box=$("pgBox"); if(!box) return;
     box.innerHTML=
        '<div class="pgwrap">'
       +'<img src="images/camino-2027-elevation-profile.webp" '
@@ -7880,54 +7860,47 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
         +'onerror="if(!this.dataset.f){this.dataset.f=1;'
         +"this.src='images/camino-2027-elevation-profile.png'}\">"
       +'<svg id="pgSvg" viewBox="0 0 4840 2530" preserveAspectRatio="xMidYMid meet" '
-        +'aria-hidden="true"></svg>'
-      +'</div>'
+        +'aria-hidden="true"></svg></div>'
       +'<div class="pgstat" id="pgStat"></div>'
       +'<div class="pgctl">'
-        +'<label>도착한 날<select id="pgDay">'
-          +'<option value="0">아직 출발 전</option>'
-          +CAL.days.filter(function(d){ return !d.rest; }).map(function(d){
-              return '<option value="'+d.day+'">DAY '+d.day+' · '+esc(d.to)
-                +' ('+d.cum_km_end.toFixed(1)+' km)</option>'; }).join("")
+        +'<label>미리 보기 <small>· 기록과 상관없이 그 자리를 봅니다</small>'
+        +'<select id="pgDay"><option value="">끄기</option>'
+        + CAL.days.filter(function(d){ return !d.rest; }).map(function(d){
+            return '<option value="'+d.cum_km_end+'">DAY '+d.day+' · '+esc(d.to)
+              +' ('+d.cum_km_end.toFixed(1)+' km)</option>'; }).join("")
         +'</select></label>'
-        +'<label>또는 누적 km<input type="number" id="pgKm" step="0.1" min="0" '
-          +'max="'+CAL.x_axis.km_total+'" placeholder="예: 320.5"></label>'
-        +'<label class="pgfile">오늘 주행 GPX'
-          +'<input type="file" id="pgGpx" accept=".gpx,application/gpx+xml">'
-          +'<span>파일 고르기</span></label>'
-        +'<button type="button" id="pgClr">지우기</button>'
+        +'<button type="button" id="pgRl">기록 새로고침</button>'
       +'</div>'
-      +'<p class="pgmsg" id="pgMsg">날짜를 고르거나 누적 km 를 넣으면 그 자리에 표시합니다. '
-        +'오늘 주행한 GPX 를 올리면 <b>계획 노선에 맞춰</b> 실제로 어디까지 갔는지 찾아 줍니다.</p>';
-
+      +'<p class="pgmsg" id="pgMsg">주행 기록은 <b>upload-camino.html → 🚴 주행 기록</b> 에서 '
+        +'그날 GPX 를 올리면 자동으로 채워집니다. BIN 은 파랑, JIN 은 빨강입니다.</p>';
     svg=$("pgSvg");
-    syncInputs();
-
     $("pgDay").addEventListener("change",function(){
-      state.mode="day"; state.day=+this.value; save(); syncInputs(); draw();
-      $("pgMsg").textContent = +this.value ? "DAY "+this.value+" 도착 지점입니다."
-        : "아직 출발 전입니다.";
+      preview = this.value==="" ? null : +this.value;
+      draw();
     });
-    $("pgKm").addEventListener("change",function(){
-      state.mode="km"; state.km=+this.value||0; save(); draw();
-      $("pgMsg").textContent="누적 "+(+this.value||0).toFixed(1)+" km 지점입니다.";
-    });
-    $("pgGpx").addEventListener("change",function(e){
-      var f=e.target.files[0]; e.target.value="";
-      if(!f) return;
-      var day=+$("pgDay").value;
-      if(!day){ $("pgMsg").textContent="어느 날 주행인지 먼저 고르세요."; return; }
-      matchGpx(f, day);
-    });
-    $("pgClr").addEventListener("click",function(){
-      state={mode:"day", day:0, km:0, note:""}; save(); syncInputs(); draw();
-      $("pgMsg").textContent="지웠습니다.";
+    $("pgRl").addEventListener("click",function(){
+      var m=$("pgMsg"); m.textContent="기록을 다시 읽는 중…";
+      loadRides().then(function(){ draw();
+        m.textContent = RIDES.length ? "기록 "+RIDES.filter(function(r){return !r.del;}).length
+          +"건을 읽었습니다." : "아직 올라온 기록이 없습니다."; })
+        .catch(function(e){ m.textContent="⚠ "+e.message; });
     });
     draw();
   }
 
+  function loadRides(){
+    if(!window.CAMINO_DRIVE) return Promise.resolve();
+    return window.CAMINO_DRIVE.files().then(function(files){
+      var f=files.filter(function(x){ return x.name==="progress.json"; })[0];
+      if(!f){ RIDES=[]; return; }
+      return window.CAMINO_DRIVE.text(f.id).then(function(t){
+        var j=null; try{ j=JSON.parse(t); }catch(e){}
+        RIDES=(j&&j.rides)||[];
+      });
+    }).catch(function(){ RIDES=[]; });
+  }
+
   function boot(){
-    load();
     Promise.all([
       fetch("tool/camino-2027-profile-positions.json",{cache:"no-cache"}).then(function(r){
         if(!r.ok) throw new Error("positions.json 을 찾지 못했습니다"); return r.json(); }),
@@ -7936,11 +7909,12 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     ]).then(function(a){
       CAL=a[0]; LUT=(a[1]&&a[1].cum_km_ele)||[];
       build();
-    }).catch(function(e){
+      return loadRides();
+    }).then(function(){ draw(); })
+    .catch(function(e){
       var el=$("pgBox"); if(!el) return;
       el.innerHTML='<figure class="img-card"><img '
-        +'src="images/camino-2027-elevation-profile.webp" '
-        +'alt="고도 프로파일" loading="lazy" '
+        +'src="images/camino-2027-elevation-profile.webp" alt="고도 프로파일" loading="lazy" '
         +'onerror="if(!this.dataset.f){this.dataset.f=1;'
         +"this.src='images/camino-2027-elevation-profile.png'}\"></figure>"
         +'<p class="pgmsg">주행 표시를 켜려면 <b>tool/</b> 폴더에 '
@@ -7952,7 +7926,6 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",boot);
   else boot();
 })();
-
 </script>
 </body>
 

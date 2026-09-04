@@ -739,6 +739,57 @@
     border-radius:8px;padding:9px 4px;font-size:12px;font-family:inherit;font-weight:600}
   .lgwho button.on.bin{background:var(--blue);border-color:var(--blue);color:#fff}
   .lgwho button.on.jin{background:var(--err);border-color:var(--err);color:#fff}
+
+  /* ══════════════ 🚴 주행 기록 ══════════════ */
+  .rdsum{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}
+  .rdc2{border:1px solid var(--line);border-radius:12px;background:#fff;padding:11px 14px}
+  .rdc2.bin{border-left:4px solid var(--blue)}
+  .rdc2.jin{border-left:4px solid var(--err)}
+  .rdc2 small{display:block;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em}
+  .rdc2 b{display:block;font-family:'Gowun Batang',serif;font-size:22px;margin-top:2px;
+    font-variant-numeric:tabular-nums}
+  .rdc2.bin b{color:var(--blue)} .rdc2.jin b{color:var(--err)}
+  .rdc2 i{display:block;font-style:normal;font-size:10.5px;color:#A7A296;margin-top:2px}
+
+  .rdup{display:grid;grid-template-columns:1fr 200px;gap:9px;align-items:end;margin-bottom:9px}
+  @media(max-width:560px){ .rdup{grid-template-columns:1fr} }
+  .rdup label{display:block;font-size:11px;color:var(--muted)}
+  .rdup select{display:block;width:100%;margin-top:4px;border:1px solid var(--line);
+    border-radius:9px;padding:10px;font-size:14px;font-family:inherit;background:#fff;color:var(--ink)}
+  .rdfile{position:relative;cursor:pointer}
+  .rdfile input{position:absolute;inset:0;opacity:0;width:100%;cursor:pointer}
+  .rdfile span{display:block;margin-top:4px;border:1px dashed var(--blue);border-radius:9px;
+    padding:10px;font-size:14px;color:var(--blue);text-align:center;background:#F7FAFF}
+  .rdfile:hover span{border-color:var(--flecha);background:#FFFBEE;color:#3B2E00}
+  .rdmsg{padding:10px 12px;background:#FBFAF5;border:1px solid var(--line);border-radius:10px;
+    font-size:12.5px;line-height:1.75;color:var(--muted);margin-bottom:12px}
+  .rdmsg.ok{background:#F2FAF5;border-color:#A9CFB8;color:#1E5A38}
+  .rdmsg.err{background:#FDF3F3;border-color:#E3B7B7;color:#8E2C3A}
+  .rdmsg b{color:var(--ink)}
+
+  .rdh3{font-family:'Gowun Batang',serif;font-size:16px;color:var(--blue);margin:16px 0 9px;
+    padding-bottom:7px;border-bottom:2px solid var(--flecha)}
+  .rdlist{display:flex;flex-direction:column;gap:8px}
+  .rdd{border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden}
+  .rddh{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;padding:8px 12px;
+    background:#F4F2EA;border-bottom:1px solid var(--line)}
+  .rddh b{font-family:'Gowun Batang',serif;font-size:15px;color:var(--blue)}
+  .rddh span{font-size:11px;color:var(--muted)}
+  .rddh em{font-style:normal;font-size:12.5px;color:var(--ink)}
+  .rddh i{margin-left:auto;font-style:normal;font-size:11px;color:#A7A296}
+  .rdr{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:9px 12px;
+    border-bottom:1px dashed #EFEDE5}
+  .rdr:last-child{border-bottom:none}
+  .rdr.bin{background:#FAFCFF} .rdr.jin{background:#FFFAF8}
+  .rdv{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .rdv b{font-size:15px;color:var(--ink);font-family:'Gowun Batang',serif}
+  .rdv u{text-decoration:none;font-size:10.5px;color:#A7A296;margin-left:3px}
+  .rdc{margin-left:auto;font-size:11.5px;color:var(--blue);background:#EDF2FA;
+    border-radius:999px;padding:3px 10px;font-variant-numeric:tabular-nums}
+  .rdoff{font-size:10.5px;color:var(--err);background:#F6DDD6;border-radius:999px;padding:2px 8px}
+  .rddel{border:1px solid var(--line);background:#fff;color:var(--err);border-radius:7px;
+    padding:2px 9px;font-size:14px;line-height:1.2;font-family:inherit}
+  .rddel:hover{background:var(--err);color:#fff;border-color:var(--err)}
 </style>
 </head>
 <body>
@@ -778,6 +829,7 @@
     <button id="viewTodoBtn">✅ 할 일 (To-Do)</button>
     <button id="viewExBtn">💶 비용 (Gastos)</button>
     <button id="viewLgBtn">🛏 숙소 (Alojamiento)</button>
+    <button id="viewRdBtn">🚴 주행 기록 (Ruta)</button>
   </div>
 
   <div id="photoView">
@@ -871,6 +923,22 @@
     <div id="lgRoot"></div>
   </div>
 
+  <!-- 주행 기록 -->
+  <div id="rideView" style="display:none">
+    <div class="tdtop">
+      <span class="me" id="rdMe"></span>
+      <button class="mini2" id="rdReloadBtn">다시 불러오기</button>
+      <span class="st" id="rdStatus"></span>
+    </div>
+    <p class="tdhint">
+      그날 주행한 <b>GPX</b> 를 올리면 실제 거리·획득고도를 재고,
+      계획 노선에 맞춰 <b>어디까지 갔는지</b> 찾아 둡니다.
+      원본은 Drive 의 <b>track</b> 폴더에, 기록은 <b>db/progress.json</b> 에 남습니다.<br>
+      사이트의 <b>Ⅰ 고도 프로필</b>에 BIN·JIN 이 각각 다른 색으로 표시됩니다.
+    </p>
+    <div id="rdRoot"></div>
+  </div>
+
 </div>
 
 <div class="exed-w" id="exEditor"></div>
@@ -931,7 +999,7 @@ const initAuth=()=>{
         $("lockScreen").style.display="none";$("panel").style.display="block";
         $("whoAmI").innerHTML="로그인: <b>"+myEmail+"</b>";
         $("tdSaveBtn").style.display="";
-        tdOnSignedIn(); pgOnSignedIn(); exOnSignedIn(); lgOnSignedIn();
+        tdOnSignedIn(); pgOnSignedIn(); exOnSignedIn(); lgOnSignedIn(); rdOnSignedIn();
         loadAll();
       }).catch(()=>toast("계정 정보를 가져오지 못했습니다"));
     }
@@ -1908,15 +1976,18 @@ const showView = (which) => {
   $("passView") .style.display = which==="pass"  ? "" : "none";
   $("exView")   .style.display = which==="ex"    ? "" : "none";
   $("lodgeView").style.display = which==="lodge" ? "" : "none";
+  $("rideView") .style.display = which==="ride"  ? "" : "none";
   $("viewPhotoBtn").classList.toggle("on", which==="photo");
   $("viewTodoBtn") .classList.toggle("on", which==="todo");
   $("viewPassBtn") .classList.toggle("on", which==="pass");
   $("viewExBtn")   .classList.toggle("on", which==="ex");
   $("viewLgBtn")   .classList.toggle("on", which==="lodge");
+  $("viewRdBtn")   .classList.toggle("on", which==="ride");
   if(which==="todo" && !tdLoaded) tdLoad();
   if(which==="pass" && !pgLoaded)  pgLoad();
   if(which==="ex"   && !exLoaded)  exLoad();
   if(which==="lodge"&& !lgLoaded)  lgLoad();
+  if(which==="ride" && !rdLoaded)  rdLoad();
 };
 $("viewPhotoBtn").addEventListener("click",()=>showView("photo"));
 $("viewTodoBtn") .addEventListener("click",()=>showView("todo"));
@@ -2931,7 +3002,7 @@ const pgOnSignedIn=()=>{
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260831-1221";
+  var BUILD="20260904-0243";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
@@ -3799,6 +3870,329 @@ const lgOnSignedIn = () => {
 
 $("viewLgBtn").addEventListener("click",()=>showView("lodge"));
 $("lgReloadBtn").addEventListener("click",()=>{ lgLoaded=false; lgLoad(); });
+
+
+/* ══════════════════════════════════════════════════════════════════════
+   🚴 주행 기록 — 그날 GPX 를 올려 어디까지 갔는지 남깁니다
+   GPX 원본 : Drive 의 track/ 폴더
+   기록     : db/progress.json  (Bin·Jin 각각 · 둘 다 볼 수 있습니다)
+   ══════════════════════════════════════════════════════════════════════ */
+
+const RD_FILE = "progress.json";
+const RD_FOLDER = "track";
+const RD_DAYS = [
+  [1,"2027-05-09","생장 → 수비리",45.8,0.0],
+  [2,"2027-05-10","수비리 → 에스테야",68.9,45.8],
+  [3,"2027-05-11","에스테야 → 나바레테",61.3,114.7],
+  [4,"2027-05-12","나바레테 → 벨로라도",58.7,176.1],
+  [5,"2027-05-13","벨로라도 → 카스트로헤리스",90.0,234.8],
+  [6,"2027-05-14","카스트로헤리스 → 사아군",82.3,324.8],
+  [7,"2027-05-15","사아군 → 레온",54.7,407.1],
+  [9,"2027-05-17","레온 → 라바날",68.9,461.8],
+  [10,"2027-05-18","라바날 → 베가 데 발카르세",74.3,530.7],
+  [11,"2027-05-19","베가 데 발카르세 → 사리아",62.3,604.9],
+  [12,"2027-05-20","사리아 → 아르수아",76.3,667.2],
+  [13,"2027-05-21","아르수아 → 산티아고",38.9,743.5]
+];
+
+let rdLoaded=false, rdData={rides:[]}, rdMeta=null, rdFolderId=null, rdTimer=null;
+
+const rdEsc = t => String(t==null?"":t)
+  .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+const rdWho = () => CONFIG.owners[myEmail] || null;
+const rdId  = () => "r"+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+const rdDay = n => RD_DAYS.filter(d=>d[0]===+n)[0];
+
+/* ── 거리·고도 계산 ── */
+const rdHav = (a,b) => {
+  const R=6371000, r=Math.PI/180;
+  const dla=(b[0]-a[0])*r, dlo=(b[1]-a[1])*r;
+  const h=Math.sin(dla/2)**2 + Math.cos(a[0]*r)*Math.cos(b[0]*r)*Math.sin(dlo/2)**2;
+  return 2*R*Math.asin(Math.min(1,Math.sqrt(h)));
+};
+const rdParse = (txt) => {
+  const doc=new DOMParser().parseFromString(txt,"application/xml");
+  if(doc.querySelector("parsererror")) throw new Error("GPX 형식이 아닙니다");
+  const n=doc.getElementsByTagName("trkpt"), pts=[];
+  for(let i=0;i<n.length;i++){
+    const la=parseFloat(n[i].getAttribute("lat")), lo=parseFloat(n[i].getAttribute("lon"));
+    if(isNaN(la)||isNaN(lo)) continue;
+    const e=n[i].getElementsByTagName("ele")[0];
+    const t=n[i].getElementsByTagName("time")[0];
+    pts.push([la,lo, e?parseFloat(e.textContent)||0:0, t?t.textContent.trim():""]);
+  }
+  return pts;
+};
+const rdStats = (pts) => {
+  let dist=0, asc=0, dsc=0, prev=null;
+  const S=5;                               /* 고도 잡음을 줄이려고 5 m 단위로만 셈 */
+  pts.forEach((p,i)=>{
+    if(i) dist+=rdHav(pts[i-1],p);
+    if(prev===null) prev=p[2];
+    else{
+      const d=p[2]-prev;
+      if(Math.abs(d)>=S){ if(d>0) asc+=d; else dsc-=d; prev=p[2]; }
+    }
+  });
+  const t0=pts.find(p=>p[3]), t1=[...pts].reverse().find(p=>p[3]);
+  let hrs=0;
+  if(t0&&t1){ const a=new Date(t0[3]), b=new Date(t1[3]);
+    if(!isNaN(a)&&!isNaN(b)) hrs=(b-a)/3600000; }
+  return {dist:dist/1000, asc:Math.round(asc), dsc:Math.round(dsc), hrs:Math.round(hrs*10)/10,
+          eleEnd:Math.round(pts[pts.length-1][2]), last:pts[pts.length-1]};
+};
+
+/* ── 계획 노선에 맞춰 누적 km 찾기 ── */
+const rdMatch = (last, day) => {
+  const dd=rdDay(day);
+  const url="route/camino-2027-day"+String(day).padStart(2,"0")+".gpx";
+  return fetch(url,{cache:"force-cache"})
+    .then(r=>{ if(!r.ok) throw new Error(url+" 를 찾지 못했습니다"); return r.text(); })
+    .then(t=>{
+      const plan=rdParse(t);
+      if(!plan.length) throw new Error("계획 노선에 트랙이 없습니다");
+      let acc=0, best=Infinity, bestKm=0;
+      for(let i=0;i<plan.length;i++){
+        if(i) acc+=rdHav(plan[i-1],plan[i]);
+        const d=rdHav(last,plan[i]);
+        if(d<best){ best=d; bestKm=acc/1000; }
+      }
+      return {cumKm:Math.round((dd[4]+bestKm)*100)/100, off:Math.round(best)};
+    });
+};
+
+/* ── 저장소 ── */
+const rdNorm = (raw) => {
+  const out={rides:[]};
+  if(raw && Array.isArray(raw.rides)) raw.rides.forEach(x=>{
+    if(!x||!x.id) return;
+    out.rides.push({id:String(x.id), owner:x.owner||"bin", day:+x.day||0,
+      date:x.date||"", cumKm:+x.cumKm||0, dist:+x.dist||0, asc:+x.asc||0,
+      dsc:+x.dsc||0, hrs:+x.hrs||0, ele:+x.ele||0, off:+x.off||0,
+      fileId:x.fileId||"", name:x.name||"", memo:x.memo||"",
+      del:!!x.del, ts:+x.ts||0});
+  });
+  return out;
+};
+const rdPack = () => ({ver:1, updatedAt:new Date().toISOString(),
+  updatedBy:myEmail, rides:rdData.rides});
+
+const rdEnsureFolder = () =>
+  listFolder(CONFIG.parentFolder).then(items=>{
+    const f=items.find(x=>x.mimeType==="application/vnd.google-apps.folder"
+                       && x.name.toLowerCase()===RD_FOLDER);
+    return f ? f.id : createFolder(RD_FOLDER, CONFIG.parentFolder).then(x=>x.id);
+  });
+
+const rdLoad = () => {
+  rdStatus("불러오는 중…");
+  return tdEnsureFolder().then(fid=>{ dbFolderId=fid; return listFolder(fid); })
+    .then(files=>{
+      const f=files.find(x=>x.name===RD_FILE);
+      if(!f){
+        rdData={rides:[]};
+        return driveCreateJson(RD_FILE, rdPack(), dbFolderId)
+          .then(r=>{ rdMeta={id:r.id, modifiedTime:r.modifiedTime}; });
+      }
+      return driveDownload(f.id).then(t=>{
+        let raw=null; try{ raw=JSON.parse(t); }catch(e){}
+        rdData=rdNorm(raw);
+        return driveGetMeta(f.id).then(m=>{ rdMeta={id:f.id, modifiedTime:m.modifiedTime}; });
+      });
+    })
+    .then(()=>rdEnsureFolder()).then(id=>{ rdFolderId=id; })
+    .then(()=>{ rdLoaded=true; rdRender(); rdStatus("불러오기 완료","sav"); })
+    .catch(e=>{ rdStatus(e.message,"err");
+      $("rdRoot").innerHTML='<div class="tdhint" style="color:var(--err)">⚠ '+rdEsc(e.message)+'</div>'; });
+};
+const rdMerge = (remote, local) => {
+  const m=new Map();
+  (remote.rides||[]).forEach(x=>m.set(x.id,x));
+  (local.rides||[]).forEach(x=>{ const r=m.get(x.id);
+    if(!r||(x.ts||0)>=(r.ts||0)) m.set(x.id,x); });
+  return {rides:[...m.values()].sort((a,b)=>a.day-b.day)};
+};
+const rdSave = () => {
+  if(!rdMeta) return Promise.resolve();
+  rdStatus("저장 중…");
+  return driveGetMeta(rdMeta.id).then(m=>{
+    if(m.modifiedTime!==rdMeta.modifiedTime)
+      return driveDownload(rdMeta.id).then(t=>{
+        let raw=null; try{ raw=JSON.parse(t); }catch(e){}
+        rdData=rdMerge(rdNorm(raw), rdData);
+      });
+  }).then(()=>driveUpdateJson(rdMeta.id, rdPack()))
+    .then(r=>{ rdMeta.modifiedTime=r.modifiedTime;
+      rdStatus("저장됨 · "+new Date().toLocaleTimeString("ko-KR",
+        {hour:"2-digit",minute:"2-digit"}),"sav"); })
+    .catch(e=>{ rdStatus("⚠ "+e.message,"err"); toast("⚠ "+e.message); });
+};
+const rdQueue = () => { rdStatus("변경됨 — 곧 저장합니다…");
+  clearTimeout(rdTimer); rdTimer=setTimeout(rdSave,1000); };
+const rdStatus = (m,c) => { const el=$("rdStatus");
+  if(el){ el.textContent=m; el.className="st"+(c?" "+c:""); } };
+
+/* ── 올리기 ── */
+const rdUpload = async (file, day) => {
+  const who=rdWho();
+  if(!who){ toast("담당이 지정된 계정으로 로그인해야 합니다"); return; }
+  const dd=rdDay(day);
+  const msg=$("rdMsg");
+  const set=(t,c)=>{ msg.innerHTML=t; msg.className="rdmsg"+(c?" "+c:""); };
+
+  set("파일을 읽는 중…");
+  let txt;
+  try{ txt=await file.text(); }
+  catch(e){ set("⚠ 파일을 읽지 못했습니다","err"); return; }
+
+  let pts, st;
+  try{
+    pts=rdParse(txt);
+    if(pts.length<2) throw new Error("트랙 포인트가 없습니다");
+    st=rdStats(pts);
+  }catch(e){ set("⚠ "+rdEsc(e.message),"err"); return; }
+
+  set("계획 노선에 맞추는 중… <small>트랙 "+pts.length.toLocaleString()+"점</small>");
+  let mt;
+  try{ mt=await rdMatch(st.last, day); }
+  catch(e){ set("⚠ "+rdEsc(e.message),"err"); return; }
+
+  set("Drive 에 올리는 중…");
+  let fileId="", name="";
+  try{
+    name = who+"-day"+String(day).padStart(2,"0")+"-"+Date.now().toString(36)+".gpx";
+    const blob=new Blob([txt],{type:"application/gpx+xml"});
+    const res=await uploadFile(name,"application/gpx+xml",blob,rdFolderId,
+      p=>set("올리는 중 "+Math.round(p*100)+"%"));
+    fileId=res.id;
+  }catch(e){ set("⚠ 올리지 못했습니다: "+rdEsc(e.message),"err"); return; }
+
+  /* 같은 사람·같은 날 기록은 갈아 끼웁니다 */
+  const old=rdData.rides.find(r=>r.owner===who && r.day===+day && !r.del);
+  if(old){ old.del=true; old.ts=Date.now();
+    if(old.fileId) driveTrash(old.fileId).catch(()=>{}); }
+
+  rdData.rides.push({
+    id:rdId(), owner:who, day:+day, date:dd[1],
+    cumKm:mt.cumKm, dist:Math.round(st.dist*100)/100, asc:st.asc, dsc:st.dsc,
+    hrs:st.hrs, ele:st.eleEnd, off:mt.off,
+    fileId, name, memo:"", del:false, ts:Date.now()
+  });
+  rdQueue(); rdRender();
+
+  const planKm=dd[3], diff=st.dist-planKm;
+  set("<b>DAY "+day+" 기록했습니다.</b> 누적 <b>"+mt.cumKm.toFixed(1)+" km</b> · "
+    +"실제 주행 "+st.dist.toFixed(1)+" km"
+    +(Math.abs(diff)>=0.3 ? " (계획보다 "+(diff>0?"+":"")+diff.toFixed(1)+" km)" : "")
+    +(st.asc?" · 획득고도 "+st.asc.toLocaleString()+" m":"")
+    +(mt.off>300 ? '<br><span style="color:var(--err)">계획 노선에서 '
+      +mt.off+" m 떨어진 곳에서 끝났습니다 — 날짜를 잘못 고르지 않았는지 확인하세요.</span>":""),
+    "ok");
+};
+
+/* ── 화면 ── */
+const rdRender = () => {
+  const root=$("rdRoot"); if(!root) return;
+  if(!rdLoaded){ root.innerHTML='<p class="wxload">주행 기록을 불러오는 중…</p>'; return; }
+
+  const live = rdData.rides.filter(r=>!r.del);
+  const by = w => live.filter(r=>r.owner===w).sort((a,b)=>a.day-b.day);
+  const sum = w => {
+    const a=by(w);
+    return {n:a.length,
+      dist:a.reduce((s,r)=>s+r.dist,0), asc:a.reduce((s,r)=>s+r.asc,0),
+      cum:a.length?Math.max(...a.map(r=>r.cumKm)):0};
+  };
+  const B=sum("bin"), J=sum("jin");
+
+  let h='<div class="rdsum">'
+    + rdCard("BIN", B, "bin") + rdCard("JIN", J, "jin") + '</div>';
+
+  const who=rdWho();
+  if(who){
+    h+='<div class="rdup">'
+      +'<label>어느 날<select id="rdDay">'
+        + RD_DAYS.map(d=>'<option value="'+d[0]+'">DAY '+d[0]+' · '+rdEsc(d[2])
+            +' ('+d[3].toFixed(1)+' km)</option>').join("")
+      +'</select></label>'
+      +'<label class="rdfile">오늘 주행 GPX'
+        +'<input type="file" id="rdGpx" accept=".gpx,application/gpx+xml">'
+        +'<span>파일 고르기</span></label>'
+      +'</div>'
+      +'<p class="rdmsg" id="rdMsg">가민이나 스트라바에서 내려받은 <b>그날 GPX</b>를 고르세요. '
+      +'실제 주행 거리·획득고도를 재고, 계획 노선에 맞춰 <b>어디까지 갔는지</b> 찾아 '
+      +'사이트 고도 프로파일에 표시합니다.<br>'
+      +'같은 날을 다시 올리면 <b>이전 기록을 갈아 끼웁니다.</b></p>';
+  }else{
+    h+='<p class="tdhint">담당이 지정되지 않은 계정이라 <b>보기만</b> 가능합니다.</p>';
+  }
+
+  if(!live.length){
+    h+='<p class="tdhint">아직 올린 주행 기록이 없습니다.</p>';
+  }else{
+    h+='<h3 class="rdh3">기록</h3><div class="rdlist">';
+    RD_DAYS.forEach(d=>{
+      const rows=live.filter(r=>r.day===d[0]);
+      if(!rows.length) return;
+      h+='<div class="rdd"><div class="rddh"><b>DAY '+d[0]+'</b>'
+        +'<span>'+d[1].slice(5).replace("-","/")+'</span>'
+        +'<em>'+rdEsc(d[2])+'</em><i>계획 '+d[3].toFixed(1)+' km</i></div>';
+      rows.sort((a,b)=>a.owner<b.owner?-1:1).forEach(r=>{
+        const diff=r.dist-d[3];
+        const mine=r.owner===who;
+        h+='<div class="rdr '+r.owner+'" data-id="'+r.id+'">'
+          +'<i class="who '+r.owner+'">'+r.owner.toUpperCase()+'</i>'
+          +'<span class="rdv"><b>'+r.dist.toFixed(1)+'</b> km'
+            +(Math.abs(diff)>=0.3?'<u>'+(diff>0?"+":"")+diff.toFixed(1)+'</u>':'')+'</span>'
+          +'<span class="rdv"><b>'+(r.asc||0).toLocaleString()+'</b> m'+'</span>'
+          +(r.hrs?'<span class="rdv"><b>'+r.hrs.toFixed(1)+'</b> h</span>':'')
+          +'<span class="rdc">누적 '+r.cumKm.toFixed(1)+' km</span>'
+          +(r.off>300?'<span class="rdoff">'+r.off+' m 이탈</span>':'')
+          +(mine?'<button type="button" class="rddel" title="지우기">×</button>':'')
+          +'</div>';
+      });
+      h+='</div>';
+    });
+    h+='</div>';
+  }
+
+  root.innerHTML=h;
+  rdBind();
+};
+const rdCard = (n,s,c) =>
+  '<div class="rdc2 '+c+'"><small>'+n+'</small>'
+  +'<b>'+s.cum.toFixed(1)+' km</b>'
+  +'<i>'+s.n+'일 · 실제 '+s.dist.toFixed(1)+' km · 고도 '+s.asc.toLocaleString()+' m</i></div>';
+
+const rdBind = () => {
+  const g=$("rdGpx");
+  if(g) g.addEventListener("change",e=>{
+    const f=e.target.files[0]; e.target.value="";
+    if(f) rdUpload(f, +$("rdDay").value);
+  });
+  document.querySelectorAll(".rddel").forEach(b=>b.addEventListener("click",async()=>{
+    const id=b.closest(".rdr").dataset.id;
+    const r=rdData.rides.find(x=>x.id===id);
+    if(!r) return;
+    if(!confirm("DAY "+r.day+" 주행 기록을 지울까요?\n\n"
+      +r.dist.toFixed(1)+" km · 누적 "+r.cumKm.toFixed(1)+" km"
+      +(r.fileId?"\n\nGPX 파일도 Drive 휴지통으로 들어갑니다.":""))) return;
+    if(r.fileId) await driveTrash(r.fileId).catch(()=>toast("⚠ 파일 삭제 실패"));
+    r.del=true; r.ts=Date.now();
+    await rdSave(); rdRender();
+  }));
+};
+
+const rdOnSignedIn = () => {
+  const me=$("rdMe");
+  if(me) me.innerHTML = rdWho()
+    ? '로그인: <b>'+rdWho().toUpperCase()+'</b> — 올린 기록은 <b>'+rdWho().toUpperCase()
+      +'</b> 이름으로 남습니다.'
+    : '담당이 지정되지 않은 계정이라 <b>보기만</b> 가능합니다.';
+};
+
+$("viewRdBtn").addEventListener("click",()=>showView("ride"));
+$("rdReloadBtn").addEventListener("click",()=>{ rdLoaded=false; rdLoad(); });
 
 </script>
 </body>
