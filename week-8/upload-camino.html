@@ -2980,7 +2980,7 @@ const pgOnSignedIn=()=>{
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260904-0254";
+  var BUILD="20260904-1313";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
@@ -4032,10 +4032,18 @@ const rdUpload = async (file, day) => {
   try{ txt=await file.text(); }
   catch(e){ set("⚠ 파일을 읽지 못했습니다","err"); return; }
 
+  /* 확장자가 아니라 내용으로 판정합니다.
+     iOS 는 .gpx 를 일반 파일로 다루는 일이 많아 이름만 믿을 수 없습니다. */
+  if(txt.indexOf("<trkpt")<0){
+    set("⚠ 이 파일에는 트랙이 없습니다 — <b>"+rdEsc(file.name)+"</b><br>"
+      +"가민 Connect 에서 <b>GPX로 내보내기</b> 한 파일인지 확인하세요. "
+      +"TCX·FIT 파일은 여기서 쓸 수 없습니다.","err");
+    return;
+  }
   let pts, st;
   try{
     pts=rdParse(txt);
-    if(pts.length<2) throw new Error("트랙 포인트가 없습니다");
+    if(pts.length<2) throw new Error("트랙 포인트가 너무 적습니다");
     st=rdStats(pts);
   }catch(e){ set("⚠ "+rdEsc(e.message),"err"); return; }
 
@@ -4112,13 +4120,16 @@ const rdRender = () => {
             +' ('+d[3].toFixed(1)+' km)</option>').join("")
       +'</select></label>'
       +'<label class="rdfile">오늘 주행 GPX'
-        +'<input type="file" id="rdGpx" accept=".gpx,application/gpx+xml">'
+        +'<input type="file" id="rdGpx">'
         +'<span>파일 고르기</span></label>'
       +'</div>'
       +'<p class="rdmsg" id="rdMsg">가민 Connect 에서 활동 열기 → ⚙ → '
-      +'<b>GPX로 내보내기</b> 한 파일을 고르세요.<br>'
-      +'실제 거리·획득고도를 재고, 계획 노선에 맞춰 <b>어디까지 갔는지</b> 찾습니다. '
-      +'같은 날을 다시 올리면 <b>이전 기록을 갈아 끼웁니다.</b></p>';
+      +'<b>GPX로 내보내기</b> 한 파일을 고르세요. '
+      +'파일 이름에 <b>day01</b> 처럼 날짜가 있으면 알아서 맞춥니다.<br>'
+      +'같은 날을 다시 올리면 <b>이전 기록을 갈아 끼웁니다.</b><br>'
+      +'<small>아이폰에서 파일이 <b>회색으로 잠겨 보이면</b> — 카톡·메일로 받은 GPX 는 '
+      +'파일 종류가 뭉개져 그렇습니다. 이 화면은 <b>모든 파일</b>을 고를 수 있게 해 두었으니 '
+      +'그냥 누르면 됩니다. 내용을 보고 GPX 인지 확인합니다.</small></p>';
   }else{
     h+='<p class="tdhint">담당이 지정되지 않은 계정이라 <b>보기만</b> 가능합니다.</p>';
   }
@@ -4160,11 +4171,25 @@ const rdCard = (n,s,c) =>
   +'<b>'+s.cum.toFixed(1)+' km</b>'
   +'<i>'+s.n+'일 · 실제 '+s.dist.toFixed(1)+' km · 고도 '+s.asc.toLocaleString()+' m</i></div>';
 
+/* 파일 이름에서 날짜를 짐작합니다 — 카톡이 TaskFile_ 을 붙여도 찾아냅니다 */
+const rdGuessDay = (name) => {
+  const m=String(name||"").match(/day\s*0?(\d{1,2})/i);
+  if(!m) return null;
+  const d=parseInt(m[1],10);
+  return rdDay(d) ? d : null;
+};
+
 const rdBind = () => {
   const g=$("rdGpx");
   if(g) g.addEventListener("change",e=>{
     const f=e.target.files[0]; e.target.value="";
-    if(f) rdUpload(f, +$("rdDay").value);
+    if(!f) return;
+    const guess=rdGuessDay(f.name);
+    if(guess && guess!==+$("rdDay").value){
+      $("rdDay").value=String(guess);
+      toast("파일 이름을 보고 DAY "+guess+" 로 맞췄습니다");
+    }
+    rdUpload(f, +$("rdDay").value);
   });
   document.querySelectorAll(".rddel").forEach(b=>b.addEventListener("click",async()=>{
     const id=b.closest(".rdr").dataset.id;

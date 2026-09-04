@@ -7557,7 +7557,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260904-0321";
+  var BUILD="20260904-1250";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
@@ -7793,6 +7793,12 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
   function draw(){
     if(!CAL||!svg) return;
     var L=latest(), h='', vl=CAL.vertical_line;
+    var LV=(window.CAMINO_LIVE?window.CAMINO_LIVE.get().riders:null)||{};
+    ["bin","jin"].forEach(function(w){
+      var v=LV[w];
+      if(v && typeof v.km==="number" && (!L[w] || v.km>L[w].cumKm))
+        L[w]={cumKm:v.km, day:null, live:true, at:v.at, ele:v.ele, dist:0, asc:0};
+    });
     var far=Math.max(preview!=null?preview:0,
                      L.bin?L.bin.cumKm:0, L.jin?L.jin.cumKm:0);
 
@@ -7815,8 +7821,9 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     ["bin","jin"].forEach(function(w,i){
       var r=L[w]; if(!r) return;
       var m=WHO[w];
+      var tag = r.live && window.CAMINO_LIVE && !window.CAMINO_LIVE.isStale(r) ? " ●" : "";
       h+=marker(r.cumKm, m.c, m.d,
-        m.n+" "+r.cumKm.toFixed(1)+" km", close && i===1 ? 118 : 0);
+        m.n+" "+r.cumKm.toFixed(1)+" km"+tag, close && i===1 ? 118 : 0);
     });
 
     if(preview!=null){
@@ -7835,12 +7842,15 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       var r=L[w], m=WHO[w];
       var km=r?r.cumKm:0, pct=total?km/total*100:0;
       var mine=RIDES.filter(function(x){ return !x.del && x.owner===w; });
+      var liveTail = r&&r.live&&window.CAMINO_LIVE
+        ? (window.CAMINO_LIVE.isStale(r)?"마지막 "+window.CAMINO_LIVE.ago(r)
+                                        :"실시간 "+window.CAMINO_LIVE.ago(r)) : "";
       var dist=mine.reduce(function(s,x){ return s+(x.dist||0); },0);
       var asc =mine.reduce(function(s,x){ return s+(x.asc||0); },0);
       h+='<div class="pgs '+w+'">'
         +'<small>'+m.n+'</small>'
         +'<b>'+km.toFixed(1)+' km</b>'
-        +'<i>'+(r?("DAY "+r.day+" · "+pct.toFixed(1)+"%"):"아직 기록 없음")+'</i>'
+        +'<i>'+(r?((liveTail||("DAY "+r.day))+" · "+pct.toFixed(1)+"%"):"아직 기록 없음")+'</i>'
         +'<div class="pgbar"><span style="width:'+pct.toFixed(2)+'%;background:'+m.c+'"></span></div>'
         +'<u>'+(mine.length?(mine.length+"일 · 실제 "+dist.toFixed(1)+" km · 고도 "
           +asc.toLocaleString()+" m"):"—")+'</u></div>';
@@ -7879,7 +7889,9 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
         +'<button type="button" id="pgRl">기록 새로고침</button>'
       +'</div>'
       +'<p class="pgmsg" id="pgMsg">주행 기록은 <b>upload-camino.html → 🚴 주행 기록</b> 에서 '
-        +'그날 GPX 를 올리면 자동으로 채워집니다. BIN 은 파랑, JIN 은 빨강입니다.</p>';
+        +'그날 GPX 를 올리면 채워집니다. BIN 은 파랑, JIN 은 빨강입니다.<br>'
+        +'달리는 동안에는 <b>●</b> 표시와 함께 <b>실시간 위치</b>가 앞서 나갑니다 — '
+        +'1분마다 새로 읽습니다.</p>';
     svg=$("pgSvg");
     $("pgDay").addEventListener("change",function(){
       preview = this.value==="" ? null : +this.value;
@@ -7917,7 +7929,10 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       CAL=a[0]; LUT=(a[1]&&a[1].cum_km_ele)||[];
       build();
       return loadRides();
-    }).then(function(){ draw(); })
+    }).then(function(){
+      draw();
+      if(window.CAMINO_LIVE) window.CAMINO_LIVE.on(draw);
+    })
     .catch(function(e){
       var el=$("pgBox"); if(!el) return;
       el.innerHTML='<figure class="img-card"><img '
@@ -7936,6 +7951,62 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
 </script>
 
 <script>
+
+/* ══════════════════════════════════════════════════════════════════════
+   실시간 위치 — db/live.json 을 주기적으로 읽습니다
+   좌표는 담겨 있지 않고 누적 km 만 있습니다.
+   ══════════════════════════════════════════════════════════════════════ */
+window.CAMINO_LIVE = (function(){
+  "use strict";
+  var data={riders:{}}, subs=[], timer=null, POLL=60000, STALE=45*60*1000;
+
+  function fetchOnce(){
+    if(!window.CAMINO_DRIVE) return Promise.resolve(data);
+    return window.CAMINO_DRIVE.files().then(function(files){
+      var f=files.filter(function(x){ return x.name==="live.json"; })[0];
+      if(!f) return data;
+      return window.CAMINO_DRIVE.text(f.id).then(function(t){
+        var j=null; try{ j=JSON.parse(t); }catch(e){}
+        if(j && j.riders) data=j;
+        return data;
+      });
+    }).catch(function(){ return data; });
+  }
+  function age(r){
+    if(!r||!r.at) return Infinity;
+    var t=new Date(r.at).getTime();
+    return isNaN(t)?Infinity:(Date.now()-t);
+  }
+  function tell(){ subs.forEach(function(fn){ try{ fn(data); }catch(e){} }); }
+  function start(){
+    if(timer) return;
+    fetchOnce().then(tell);
+    timer=setInterval(function(){
+      if(document.hidden) return;          /* 탭이 숨으면 쉽니다 */
+      fetchOnce().then(tell);
+    }, POLL);
+    document.addEventListener("visibilitychange",function(){
+      if(!document.hidden) fetchOnce().then(tell);
+    });
+  }
+  return {
+    on:function(fn){ subs.push(fn); if(data.riders) fn(data); start(); },
+    refresh:function(){ return fetchOnce().then(function(d){ tell(); return d; }); },
+    get:function(){ return data; },
+    age:age,
+    isStale:function(r){ return age(r)>STALE; },
+    ago:function(r){
+      var ms=age(r);
+      if(!isFinite(ms)) return "";
+      var m=Math.round(ms/60000);
+      if(m<2) return "방금";
+      if(m<60) return m+"분 전";
+      var h=Math.round(m/60);
+      return h<24 ? h+"시간 전" : Math.round(h/24)+"일 전";
+    }
+  };
+})();
+
 /* ══════════════════════════════════════════════════════════════════════
    전체 노선 지도 위 주행 핀 — BIN · JIN
    · tool/detail-v2-map-positions.json  노드 좌표 · 루트 폴리라인
@@ -7991,7 +8062,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     return out;
   }
 
-  function pin(km, col, label, top){
+  function pin(km, col, label, top, live, stale){
     var p=pos(km), P=MAP.pin;
     var h=P.label_h_px, w=label.length*11+30;
     var lx=Math.min(Math.max(p.x-w/2, 8), MAP.image.width_px-w-8);
@@ -8000,7 +8071,12 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       +'<line x1="'+p.x+'" y1="'+(top+h)+'" x2="'+p.x+'" y2="'+(p.y-9)+'" '
         +'stroke="'+col+'" stroke-width="3" opacity="0.85"/>'
       /* 지도 위 점 */
-      +'<circle cx="'+p.x+'" cy="'+p.y+'" r="9" fill="#FFFFFF" stroke="'+col+'" stroke-width="4"/>'
+      +(live&&!stale ? '<circle cx="'+p.x+'" cy="'+p.y+'" r="17" fill="'+col+'" opacity="0.22">'
+          +'<animate attributeName="r" values="11;20;11" dur="2.2s" repeatCount="indefinite"/>'
+          +'<animate attributeName="opacity" values="0.32;0.05;0.32" dur="2.2s" '
+          +'repeatCount="indefinite"/></circle>' : '')
+      +'<circle cx="'+p.x+'" cy="'+p.y+'" r="9" fill="#FFFFFF" stroke="'+col+'" stroke-width="4"'
+      +(stale?' opacity="0.55"':'')+'/>'
       +'<circle cx="'+p.x+'" cy="'+p.y+'" r="3.4" fill="'+col+'"/>'
       /* 이름표 */
       +'<rect x="'+lx+'" y="'+top+'" width="'+w+'" height="'+h+'" rx="'+(h/2)+'" '
@@ -8015,6 +8091,13 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
   function draw(){
     if(!MAP||!svg) return;
     var L=latest(), P=MAP.pin, h='';
+    /* 실시간 위치가 더 앞서면 그것을 씁니다 */
+    var LV=(window.CAMINO_LIVE?window.CAMINO_LIVE.get().riders:null)||{};
+    ["bin","jin"].forEach(function(w){
+      var v=LV[w];
+      if(v && typeof v.km==="number" && (!L[w] || v.km>L[w].cumKm))
+        L[w]={cumKm:v.km, day:null, live:true, at:v.at, ele:v.ele};
+    });
     var any=L.bin||L.jin;
 
     /* 지나온 구간을 굵게 덧그림 */
@@ -8043,7 +8126,8 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       var r=L[w]; if(!r) return;
       var top=P.leader_top_px-P.label_h_px;
       if(close && i===1) top-=P.stack_gap_px;
-      h+=pin(r.cumKm, WHO[w].c, WHO[w].n+" "+r.cumKm.toFixed(1)+" km", top);
+      var stale=r.live && window.CAMINO_LIVE && window.CAMINO_LIVE.isStale(r);
+      h+=pin(r.cumKm, WHO[w].c, WHO[w].n+" "+r.cumKm.toFixed(1)+" km", top, r.live, stale);
     });
 
     svg.innerHTML=h;
@@ -8053,8 +8137,15 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       else{
         var t=[];
         ["bin","jin"].forEach(function(w){
-          if(L[w]) t.push('<b style="color:'+WHO[w].c+'">'+WHO[w].n+'</b> DAY '+L[w].day
-            +' · '+L[w].cumKm.toFixed(1)+' km');
+          var r=L[w]; if(!r) return;
+          var tail = r.live
+            ? (window.CAMINO_LIVE
+                ? (window.CAMINO_LIVE.isStale(r) ? '마지막 '+window.CAMINO_LIVE.ago(r)
+                                                 : '실시간 · '+window.CAMINO_LIVE.ago(r))
+                : '실시간')
+            : (r.day?'DAY '+r.day:'');
+          t.push('<b style="color:'+WHO[w].c+'">'+WHO[w].n+'</b> '
+            +r.cumKm.toFixed(1)+' km'+(tail?' · '+tail:''));
         });
         note.innerHTML=t.join(' &nbsp;·&nbsp; ');
       }
@@ -8099,7 +8190,10 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
         draw();
         return loadRides();
       })
-      .then(function(){ draw(); })
+      .then(function(){
+        draw();
+        if(window.CAMINO_LIVE) window.CAMINO_LIVE.on(draw);
+      })
       .catch(function(){ /* 좌표 파일이 없으면 지도만 그대로 */ });
   }
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",boot);
