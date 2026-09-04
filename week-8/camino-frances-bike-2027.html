@@ -1838,6 +1838,17 @@
 
   .tst{display:inline-block;font-size:.72rem;color:#8A6A12;background:#FFFBEE;
     border:1px solid #E7D9A8;border-radius:999px;padding:2px 10px;margin-left:6px}
+
+  /* 전체 개요 그림 + 주행 위치 */
+  .overview-map{margin-top:24px}
+  .ovwrap{position:relative;display:block}
+  .ovwrap img{display:block;width:100%;height:auto;border-radius:14px;
+    border:1px solid rgba(255,255,255,.22);box-shadow:0 12px 32px rgba(0,0,0,.35)}
+  .ovwrap svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  .overview-map figcaption{margin-top:9px;font-size:.74rem;color:#9FB0CE;text-align:right}
+  .overview-map figcaption b{color:#fff}
+  .overview-map figcaption small{display:block;font-size:.68rem;color:#7E90AE;margin-top:2px}
+  .ovnote{margin-top:7px;font-size:.78rem;color:#B9C7DF;text-align:right;line-height:1.6}
 </style>
 
 <!-- ══════════════════════════════════════════════════════════════════════
@@ -1935,6 +1946,15 @@
       <div class="stat"><b>90.0 km</b><span>최장 구간 (5일차)</span></div>
       <div class="stat"><b>11,432 m</b><span>총 획득고도</span></div>
     </div>
+    <figure class="overview-map">
+      <img src="images/camino-frances-bike-2027.webp"
+           alt="2027 카미노 프란세스 자전거 루트 · 전체 지도와 고도 프로파일"
+           loading="lazy"
+           onerror="if(!this.dataset.f){this.dataset.f=1;this.src='images/camino-frances-bike-2027.png'}">
+      <figcaption>전체 루트 · 고도 프로파일 · <b>주행 위치</b>
+        <small>오른쪽이 생장, 왼쪽이 산티아고입니다</small></figcaption>
+    </figure>
+
     <figure class="detail-map">
       <img src="images/detail-v2-map.webp"
            alt="카미노 프란세스 자전거 전체 루트 지도, 일정 도표, 고도 프로파일 종합 이미지" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='images/detail-v2-map.png'}">
@@ -7560,7 +7580,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260904-1505";
+  var BUILD="20260904-1534";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
@@ -8227,6 +8247,201 @@ window.CAMINO_LIVE = (function(){
         if(window.CAMINO_LIVE) window.CAMINO_LIVE.on(draw);
       })
       .catch(function(){ /* 좌표 파일이 없으면 지도만 그대로 */ });
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",boot);
+  else boot();
+})();
+
+</script>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   전체 개요 그림(camino-frances-bike-2027.webp) 위 주행 위치
+   · 이 그림은 오른쪽이 생장(0 km), 왼쪽이 산티아고(782.4 km)
+   · 위쪽 지도와 아래쪽 고도 프로파일 두 곳에 함께 찍습니다
+   · 원본 이미지는 손대지 않고 같은 크기의 SVG 를 덮습니다
+   ══════════════════════════════════════════════════════════════════════ */
+(function(){
+  "use strict";
+
+  var CFG=null, svg=null, RIDES=[];
+  var WHO={ bin:{n:"BIN", c:"#1E5FB4"}, jin:{n:"JIN", c:"#C92A2A"} };
+
+  var $=function(id){ return document.getElementById(id); };
+  var esc=function(t){ return String(t==null?"":t)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); };
+
+  /* ── km → 좌표 ── */
+  function mapPos(km){
+    var n=CFG.map.nodes;
+    if(km<=n[0].cum_km) return {x:n[0].x_px, y:n[0].y_px};
+    if(km>=n[n.length-1].cum_km)
+      return {x:n[n.length-1].x_px, y:n[n.length-1].y_px};
+    for(var i=1;i<n.length;i++){
+      if(km<=n[i].cum_km){
+        var a=n[i-1], b=n[i], t=(km-a.cum_km)/((b.cum_km-a.cum_km)||1);
+        return {x:a.x_px+(b.x_px-a.x_px)*t, y:a.y_px+(b.y_px-a.y_px)*t};
+      }
+    }
+    return {x:n[0].x_px, y:n[0].y_px};
+  }
+  function profX(km){ return CFG.profile.km_to_x.a*km + CFG.profile.km_to_x.b; }
+  function profY(x){
+    var p=CFG.profile.ridge;
+    if(x<=p[0][0]) return p[0][1];
+    if(x>=p[p.length-1][0]) return p[p.length-1][1];
+    for(var i=1;i<p.length;i++){
+      if(x<=p[i][0]){
+        var a=p[i-1], b=p[i], t=(x-a[0])/((b[0]-a[0])||1);
+        return a[1]+(b[1]-a[1])*t;
+      }
+    }
+    return CFG.profile.baseline_y_px;
+  }
+
+  /* ── 어디에 찍을지 정하기 ── */
+  function positions(){
+    var out={};
+    var LV=(window.CAMINO_LIVE?window.CAMINO_LIVE.get().riders:null)||{};
+    /* 올려 둔 주행 기록 */
+    RIDES.forEach(function(r){
+      if(r.del) return;
+      var w=r.owner||"bin";
+      if(!out[w] || r.cumKm>out[w].km) out[w]={km:r.cumKm, live:false, day:r.day};
+    });
+    /* 실시간 */
+    ["bin","jin"].forEach(function(w){
+      var v=LV[w]; if(!v || typeof v.km!=="number") return;
+      if(v.test){
+        /* 시험 중 — 대륙에 따라 양 끝에 세웁니다 */
+        var z=CFG.test_zone_km[v.zone];
+        if(z===undefined) return;
+        out[w]={km:z, live:true, test:true, at:v.at, zone:v.zone};
+      }else if(!out[w] || v.km>out[w].km){
+        out[w]={km:v.km, live:true, at:v.at, ele:v.ele};
+      }
+    });
+    return out;
+  }
+
+  function chip(x, y, col, text, small){
+    var fs = small ? 21 : 25;
+    var w = text.length*(small?12:14)+26, h = small?30:36;
+    var lx=Math.min(Math.max(x-w/2, 6), CFG.image.width_px-w-6);
+    return '<rect x="'+lx+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="'+(h/2)+'" '
+      +'fill="'+col+'"/>'
+      +'<path d="M'+(x-6)+' '+(y+h)+' L'+(x+6)+' '+(y+h)+' L'+x+' '+(y+h+9)+' Z" '
+      +'fill="'+col+'"/>'
+      +'<text x="'+(lx+w/2)+'" y="'+(y+h/2+fs*0.36)+'" text-anchor="middle" '
+      +'font-family="IBM Plex Sans KR, sans-serif" font-size="'+fs+'" font-weight="700" '
+      +'fill="#FFFFFF">'+esc(text)+'</text>';
+  }
+
+  function draw(){
+    if(!CFG||!svg) return;
+    var P=positions(), h='';
+    var order=["bin","jin"], any=false;
+
+    order.forEach(function(w,i){
+      var p=P[w]; if(!p) return;
+      any=true;
+      var m=WHO[w], col=m.c;
+      var stale = p.live && window.CAMINO_LIVE && window.CAMINO_LIVE.isStale(p);
+      var op = stale ? 0.5 : 1;
+
+      /* ── 위 지도 ── */
+      var mp=mapPos(p.km);
+      var chipY = mp.y - CFG.map.chip_dy_px - 36 - (i===0 ? 44 : 0);
+      h+='<g opacity="'+op+'">'
+        +'<line x1="'+mp.x+'" y1="'+(chipY+36+9)+'" x2="'+mp.x+'" y2="'+(mp.y-11)+'" '
+          +'stroke="'+col+'" stroke-width="4"/>'
+        + (p.live && !stale
+            ? '<circle cx="'+mp.x+'" cy="'+mp.y+'" r="16" fill="'+col+'" opacity="0.25">'
+              +'<animate attributeName="r" values="11;22;11" dur="2.2s" repeatCount="indefinite"/>'
+              +'<animate attributeName="opacity" values="0.35;0.05;0.35" dur="2.2s" '
+              +'repeatCount="indefinite"/></circle>' : '')
+        +'<circle cx="'+mp.x+'" cy="'+mp.y+'" r="11" fill="#FFFFFF" stroke="'+col+'" stroke-width="5"/>'
+        +'<circle cx="'+mp.x+'" cy="'+mp.y+'" r="4" fill="'+col+'"/>'
+        + chip(mp.x, chipY, col, m.n + (p.test ? " 시험" : ""), true)
+        +'</g>';
+
+      /* ── 아래 고도 프로파일 ── */
+      var px=profX(p.km), py=profY(px);
+      var lab = m.n+" "+p.km.toFixed(1)+" km";
+      var cy = CFG.profile.label_y_px - (i===0 ? 44 : 0);
+      h+='<g opacity="'+op+'">'
+        +'<line x1="'+px+'" y1="'+(cy+36+9)+'" x2="'+px+'" y2="'+CFG.profile.baseline_y_px+'" '
+          +'stroke="'+col+'" stroke-width="4" opacity="0.85"/>'
+        +'<circle cx="'+px+'" cy="'+py+'" r="10" fill="#FFFFFF" stroke="'+col+'" stroke-width="5"/>'
+        +'<circle cx="'+px+'" cy="'+py+'" r="3.5" fill="'+col+'"/>'
+        + chip(px, cy, col, lab, false)
+        +'</g>';
+    });
+
+    svg.innerHTML=h;
+
+    var note=$("ovNote");
+    if(note){
+      if(!any){ note.innerHTML='주행 기록을 올리거나 실시간 위치가 들어오면 '
+        +'<b>BIN</b>·<b>JIN</b> 이 여기에 표시됩니다.'; return; }
+      var t=[];
+      order.forEach(function(w){
+        var p=P[w]; if(!p) return;
+        var tail = p.test
+          ? "시험 중 · " + (p.zone==="am" ? "아메리카" : p.zone==="as" ? "아시아" : "유럽")
+          : (p.live
+              ? (window.CAMINO_LIVE
+                  ? (window.CAMINO_LIVE.isStale(p) ? "마지막 "+window.CAMINO_LIVE.ago(p)
+                                                   : "실시간 "+window.CAMINO_LIVE.ago(p))
+                  : "실시간")
+              : (p.day ? "DAY "+p.day : ""));
+        t.push('<b style="color:'+WHO[w].c+'">'+WHO[w].n+'</b> '
+          +p.km.toFixed(1)+' km'+(tail?' · '+tail:''));
+      });
+      note.innerHTML=t.join(' &nbsp;·&nbsp; ');
+    }
+  }
+
+  function loadRides(){
+    if(!window.CAMINO_DRIVE) return Promise.resolve();
+    return window.CAMINO_DRIVE.files().then(function(files){
+      var f=files.filter(function(x){ return x.name==="progress.json"; })[0];
+      if(!f) return;
+      return window.CAMINO_DRIVE.text(f.id).then(function(t){
+        var j=null; try{ j=JSON.parse(t); }catch(e){}
+        RIDES=(j&&j.rides)||[];
+      });
+    }).catch(function(){});
+  }
+
+  function boot(){
+    var fig=document.querySelector("figure.overview-map");
+    if(!fig) return;
+    var img=fig.querySelector("img"); if(!img) return;
+    fetch("tool/overview-map-positions.json",{cache:"no-cache"})
+      .then(function(r){ if(!r.ok) throw new Error("좌표 파일 없음"); return r.json(); })
+      .then(function(j){
+        CFG=j;
+        var wrap=document.createElement("div");
+        wrap.className="ovwrap";
+        img.parentNode.insertBefore(wrap, img);
+        wrap.appendChild(img);
+        var s=document.createElementNS("http://www.w3.org/2000/svg","svg");
+        s.setAttribute("viewBox","0 0 "+CFG.image.width_px+" "+CFG.image.height_px);
+        s.setAttribute("preserveAspectRatio","xMidYMid meet");
+        s.setAttribute("aria-hidden","true");
+        s.id="ovSvg"; wrap.appendChild(s); svg=s;
+        var n=document.createElement("p");
+        n.className="ovnote"; n.id="ovNote";
+        fig.appendChild(n);
+        draw();
+        return loadRides();
+      })
+      .then(function(){
+        draw();
+        if(window.CAMINO_LIVE) window.CAMINO_LIVE.on(draw);
+      })
+      .catch(function(){ /* 좌표 파일이 없으면 그림만 그대로 */ });
   }
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",boot);
   else boot();
