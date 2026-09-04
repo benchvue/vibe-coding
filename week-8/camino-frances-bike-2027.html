@@ -1849,6 +1849,41 @@
   .overview-map figcaption b{color:#fff}
   .overview-map figcaption small{display:block;font-size:.68rem;color:#7E90AE;margin-top:2px}
   .ovnote{margin-top:7px;font-size:.78rem;color:#B9C7DF;text-align:right;line-height:1.6}
+
+  /* 시내 지도 · 수령 · 도착 */
+  .townmap{margin:10px 0 4px;border:1px solid var(--line);border-radius:14px;
+    background:#F7F5EE;overflow:hidden}
+  .townmap svg{display:block;width:100%;height:auto}
+
+  .pickrow,.arrrow{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:10px 0 4px}
+  @media(max-width:760px){ .pickrow,.arrrow{grid-template-columns:1fr} }
+  .pick2,.arr2{border:1px solid var(--line);border-radius:13px;background:#fff;padding:13px 15px}
+  .pick2.warn2{border-color:#E3B7B7;background:#FDF9F9}
+  .arr2.red{border-color:#E3B7B7;background:#FDF9F9}
+  .ph2,.ah{display:flex;align-items:center;gap:8px;margin-bottom:9px;padding-bottom:8px;
+    border-bottom:1px solid var(--line)}
+  .ph2 b,.ah b{font-family:'Gowun Batang',serif;font-size:1.02rem;color:var(--camino-blue)}
+  .ph2 span,.ah span{margin-left:auto;font-size:.62rem;font-weight:700;color:#fff;
+    background:var(--ok);border-radius:999px;padding:2px 10px}
+  .ph2 span.alt,.ah span.alt{background:var(--rioja)}
+  .ah i{font-style:normal;width:22px;height:22px;border-radius:50%;background:var(--camino-blue);
+    color:#fff;font-size:.72rem;font-weight:700;display:flex;align-items:center;
+    justify-content:center;flex:0 0 auto}
+  .arr2.red .ah i{background:var(--rioja)}
+  .pl2{list-style:none;padding:0;margin:0}
+  .pl2 li{position:relative;padding:5px 0 5px 17px;font-size:.79rem;line-height:1.7;
+    color:var(--ink-soft)}
+  .pl2 li::before{content:"";position:absolute;left:2px;top:13px;width:5px;height:5px;
+    border-radius:50%;background:var(--flecha)}
+  .pl2 li.bad::before{background:var(--err)}
+  .pl2 li.bad{color:#7A4A4A}
+  .pl2 li.ok2::before{background:var(--ok)}
+  .pl2 li b{color:var(--ink)}
+  .pl2 li small{display:block;font-size:.68rem;color:#A79E86;margin-top:1px}
+  .an{margin-top:9px;padding-top:8px;border-top:1px dashed var(--line);font-size:.74rem;
+    color:var(--ink-soft);line-height:1.7}
+  .an b{color:var(--ink)}
+  .sched tr.hi td{background:#FFF9E8}
 </style>
 
 <!-- ══════════════════════════════════════════════════════════════════════
@@ -2468,6 +2503,64 @@ Gracias! Buen Camino!</pre>
 </section>
 
 
+
+<!-- ───────── 산티아고 도착 ───────── -->
+<section id="secS" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="no">Llegada</div>
+      <h2>산티아고 도착</h2>
+      <p>5/21 금요일, <b>782.4 km</b> 를 마치고 대성당 앞에 섭니다.
+      그날 할 일은 셋입니다 — <b>자전거 반납</b>, <b>순례자 증서 받기</b>, 그리고 쉬기.
+      세 곳 모두 걸어서 5분 안에 있습니다.</p>
+    </div>
+
+    <div class="arrrow">
+      <div class="arr2">
+        <div class="ah"><i>①</i><b>순례자 사무소</b><span>증서 발급</span></div>
+        <ul class="pl2">
+          <li><b>Rúa das Carretas 33</b></li>
+          <li>매일 <b>09:00 – 19:00</b><small>12/25 · 1/1 휴무</small></li>
+          <li><b>콤포스텔라</b> 무료 · 라틴어 이름으로 발급</li>
+          <li><b>거리 증서</b> 3 € · 782.4 km 가 적힙니다</li>
+          <li>도장이 찍힌 <b>크레덴시알</b>을 가져가세요</li>
+        </ul>
+        <div class="an">자전거는 <b>마지막 200 km 부터 하루 두 개</b> 도장이 필요합니다.
+        DAY 10 부터 해당됩니다.</div>
+      </div>
+      <div class="arr2 red">
+        <div class="ah"><i>②</i><b>자전거 반납</b><span class="alt">24시간</span></div>
+        <ul class="pl2">
+          <li><b>Hospedería San Martín Pinario</b></li>
+          <li><b>Praza da Inmaculada, 3</b><small>대성당 바로 뒤</small></li>
+          <li><b>24시간</b> 언제든 됩니다</li>
+          <li>접수처에 말하면 <b>둘 자리를 알려 줍니다</b></li>
+          <li class="ok2">그 자리에서 <b>점검하지 않습니다</b> — 기다림도 서류도 없음</li>
+        </ul>
+        <div class="an">업체가 나중에 가져가 공방에서 점검합니다.
+        <b>패니어와 개인 물건을 먼저 빼세요.</b></div>
+      </div>
+    </div>
+
+    <h3 class="gh3">산티아고 시내 지도</h3>
+    <p class="jp">카미노는 동쪽에서 들어옵니다. 대성당 앞 오브라도이로 광장에 닿은 뒤,
+    <b>사무소 → 반납</b> 순서든 <b>반납 → 사무소</b> 순서든 상관없습니다.
+    다만 짐을 지고 줄 서기보다 <b>자전거를 먼저 두고 가는 편</b>이 편합니다.</p>
+    <figure class="townmap"><svg viewBox="0 0 700 430" width="100%" role="img" aria-label="산티아고 데 콤포스텔라 · 자전거 반납과 순례자 사무소"><title>산티아고 — 자전거 반납 · 순례자 사무소 · 대성당</title><rect width="700" height="430" fill="#F7F5EE"/><path d="M120 300 L560 300" stroke="#D8CFBB" stroke-width="16" stroke-linecap="round"/><path d="M360 300 L360 128" stroke="#D8CFBB" stroke-width="16" stroke-linecap="round"/><path d="M188 300 L188 176" stroke="#E4DFCE" stroke-width="11" stroke-linecap="round"/><text class="st2" x="238" y="322">Rúa de San Francisco</text><text class="st2" x="196" y="200" transform="rotate(-90 196 200)">Rúa das Carretas</text><rect x="300" y="234" width="120" height="66" rx="6" fill="#E4DFCE" stroke="#C0B79F"/><path d="M330 234 L330 214 M390 234 L390 214" stroke="#C0B79F" stroke-width="6"/><text class="cat" x="360" y="266" text-anchor="middle">대성당</text><text class="sm2" x="360" y="284" text-anchor="middle">Catedral</text><text class="sq" x="360" y="336" text-anchor="middle">Praza do Obradoiro</text><rect x="286" y="128" width="148" height="70" rx="9" fill="#8E2C3A"/><text class="ms" x="360" y="152" text-anchor="middle">② 자전거 반납</text><text class="ms2" x="360" y="170" text-anchor="middle">Hospedería San Martín Pinario</text><text class="ms2" x="360" y="186" text-anchor="middle">Praza da Inmaculada, 3 · 24시간</text><text class="sq" x="360" y="216" text-anchor="middle">Praza da Inmaculada</text><circle cx="188" cy="176" r="14" fill="#1E7A46"/><circle cx="188" cy="176" r="22" fill="none" stroke="#1E7A46" stroke-width="1.6" opacity=".4"/><text class="of" x="212" y="170">① 순례자 사무소</text><text class="og" x="212" y="185">Rúa das Carretas 33 · 콤포스텔라 발급</text><path d="M204 186 C250 240 290 250 296 258" fill="none" stroke="#1E7A46" stroke-width="2.2" stroke-dasharray="7 5"/><text class="wk" x="252" y="228" text-anchor="middle">약 350 m · 5분</text><path d="M360 234 L360 204" stroke="#8E2C3A" stroke-width="2.4" stroke-dasharray="7 5"/><text class="wk2" x="440" y="224" text-anchor="middle">대성당 바로 뒤 · 도보 2분</text><path d="M600 300 L568 300" stroke="#F5B917" stroke-width="6" marker-end="url(#a1)"/><defs><marker id="a1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1 L8 5 L2 9" fill="none" stroke="#F5B917" stroke-width="2"/></marker></defs><text class="gt" x="608" y="292">카미노 도착</text><text class="sm2" x="608" y="308">Monte do Gozo 쪽</text><text class="cap" x="18" y="392">※ 축척이 아닌 모식도 · 세 곳 모두 걸어서 5분 안입니다</text><text class="cap" x="18" y="410">반납은 접수처에 말하면 둘 자리를 알려 줍니다 — 점검도 서류도 없습니다</text><style>.sm2{font-family:"IBM Plex Sans KR",sans-serif;font-size:10.5px;fill:#8A7F63}.st2{font-family:"IBM Plex Sans KR",sans-serif;font-size:10px;fill:#A2977C}.cat{font-family:"Gowun Batang",serif;font-size:15px;font-weight:700;fill:#2B2B29}.sq{font-family:"IBM Plex Sans KR",sans-serif;font-size:11px;fill:#8A7F63}.wk{font-family:"IBM Plex Sans KR",sans-serif;font-size:11px;font-weight:700;fill:#1E7A46;paint-order:stroke;stroke:#F7F5EE;stroke-width:3px}.wk2{font-family:"IBM Plex Sans KR",sans-serif;font-size:11px;font-weight:700;fill:#8E2C3A;paint-order:stroke;stroke:#F7F5EE;stroke-width:3px}.gt{font-family:"IBM Plex Sans KR",sans-serif;font-size:11px;font-weight:700;fill:#8A6A12}.of{font-family:"IBM Plex Sans KR",sans-serif;font-size:13px;font-weight:700;fill:#1E7A46}.og{font-family:"IBM Plex Sans KR",sans-serif;font-size:10px;fill:#3F7A5A}.ms{font-family:"IBM Plex Sans KR",sans-serif;font-size:14px;font-weight:700;fill:#fff}.ms2{font-family:"IBM Plex Sans KR",sans-serif;font-size:10.5px;fill:#F3D5D9}.cap{font-family:"IBM Plex Sans KR",sans-serif;font-size:10px;fill:#A79E86}</style></svg></figure>
+
+    <div class="bgnote">
+      <b>추천 순서</b>
+      대성당 앞에서 사진 → <b>San Martín Pinario 에 자전거 반납</b>(바로 뒤, 2분) →
+      짐만 들고 <b>순례자 사무소</b>(350 m) → 증서 받기 → 숙소.
+      사무소는 오후에 줄이 길어질 수 있으니, 일찍 도착하면 순서를 바꾸셔도 됩니다.
+    </div>
+
+    <div class="note">5/22 토요일 출발 —
+      <b>BIN</b> 은 SCQ 13:40, <b>JIN</b> 은 SCQ 11:20 입니다.
+      자전거를 전날 반납해 두면 아침이 훨씬 수월합니다.
+      자세한 항공편은 <a href="#sec5">Ⅴ 항공 · 환승</a> 을 보세요.</div>
+  </div>
+</section>
 
 <!-- ───────── 자전거 두 대 비교 ───────── -->
 <section id="secC" style="padding-top:0">
@@ -3250,55 +3343,71 @@ Gracias! Buen Camino!</pre>
     <a href="#secL">숙소 · 예약 현황</a> 항목에 다른 날짜와 함께 모아 두었습니다 —
     11곳 후보와 마을 배치도, 순례자 사무소 위치가 거기 있습니다.</div>
 
-    <h3 class="jh3">자전거는 미리 예약하고 호텔로 받기</h3>
-    <div class="jbike">
-      <div class="jb-why">
-        <b>왜 현장 대여가 아니라 사전 예약인가</b>
-        <div class="jb-cmp">
-          <div class="jb-bad"><i>현장에서 시작하면</i>
-            렌트점 찾기 → 계약 → 차량 선택 → 사이즈 조절 → 장비 확인 → 호텔 이동
-            <em>오후 시간이 대부분 사라집니다</em></div>
-          <div class="jb-good"><i>호텔로 미리 받으면</i>
-            도착 → 체크인 → 바로 점검·세팅
-            <em>크레덴시알과 저녁 준비까지 여유가 생깁니다</em></div>
-        </div>
-      </div>
+    <h3 class="jh3">자전거 수령 — Maya Sport</h3>
+    <div class="bgwarn">
+      <b>호텔 배달이 아닙니다</b>
+      업체 확인 결과 생장에서는 <b>협력 매장 Maya Sport 에서만</b> 자전거를 받습니다.
+      호텔로 가져다주지 않습니다. 매장 정비사가 <b>운송 중 틀어진 곳을 다시 잡아 준 뒤</b>
+      건네주므로, 오히려 이쪽이 안전합니다.
+      대신 <b>매장 수령 수수료 20 €</b> 를 그 자리에서 냅니다.
+    </div>
 
-      <div class="jb-info">
-        <b>예약할 때 업체에 알려줄 것</b>
-        <ul class="jb-list">
-          <li>이름 (2인)</li>
-          <li>렌트 시작일 <b>5/8</b> · 카미노 출발일 <b>5/9</b></li>
-          <li>자전거 종류와 사이즈 · 키 · (요청 시) 몸무게</li>
-          <li>페달 종류 <small>클릿 사용 여부</small></li>
-          <li>헬멧 · 패니어 · 수리킷 · 자물쇠 필요 여부</li>
-          <li>생장 호텔 이름 · 주소 · 전화번호</li>
-          <li>예상 호텔 도착시간 <b>15:30 전후</b></li>
-          <li><b>호텔 배달 가능 여부</b></li>
+    <div class="pickrow">
+      <div class="pick2">
+        <div class="ph2"><b>Maya Sport</b><span>자전거 수령</span></div>
+        <ul class="pl2">
+          <li><b>18 Avenue du Jaï Alaï</b>, 64220 Saint-Jean-Pied-de-Port</li>
+          <li>전화 <a href="tel:+33559371598">+33 5 59 37 15 98</a></li>
+          <li><b>토요일 09:00–12:00 · 14:00–19:00</b><small>점심시간에 닫습니다</small></li>
+          <li>수령 수수료 <b>20 €</b> · 현장 결제</li>
+          <li>500 m² 아웃도어 매장 · 자전거 정비소 있음</li>
         </ul>
       </div>
-
-      <div class="jb-mail">
-        <div class="jb-m">
-          <div class="jb-mh">렌트 업체에 보낼 문장 <button type="button" class="jcopy" data-c="m1">복사</button></div>
-          <pre id="m1">We will arrive in Saint-Jean-Pied-de-Port at approximately 3:30 PM on May 8.
-We will start our Camino bicycle trip on the morning of May 9.
-
-Could you deliver our rental bicycles to our hotel in Saint-Jean-Pied-de-Port
-before we arrive? We would like to check and adjust the bicycles at the hotel
-on the afternoon of May 8.</pre>
-        </div>
-        <div class="jb-m">
-          <div class="jb-mh">호텔에 보낼 문장 <button type="button" class="jcopy" data-c="m2">복사</button></div>
-          <pre id="m2">We have rental bicycles being delivered to the hotel before our arrival
-on May 8. Could you please receive and store the bicycles for us
-until we check in?</pre>
-        </div>
+      <div class="pick2 warn2">
+        <div class="ph2"><b>거리 문제</b><span class="alt">확인 필요</span></div>
+        <ul class="pl2">
+          <li class="bad">구시가가 아니라 <b>북동쪽 약 2 km</b> 밖입니다</li>
+          <li class="bad">순례자 사무소에서 <b>걸어서 25분</b></li>
+          <li>택시로 5분 — 짐이 있으면 이쪽이 낫습니다</li>
+          <li>자전거를 받으면 <b>타고 돌아오면</b> 됩니다</li>
+          <li>좌표 <b>43.1690, -1.2135</b> — 지도 앱으로 미리 확인하세요</li>
+        </ul>
       </div>
-      <p class="jb-note"><b>양쪽 모두에게 확인을 받아 두세요.</b>
-      업체가 배달하겠다고 해도 호텔이 보관을 거절하면 소용이 없습니다.
-      두 곳의 답장을 휴대폰에 저장해 두면 현장에서 이야기가 빨라집니다.</p>
     </div>
+
+    <h3 class="jh3">5/8 토요일 순서</h3>
+    <div class="sched-wrap">
+      <table class="sched" style="min-width:560px">
+        <thead><tr><th>시각</th><th>할 일</th><th>메모</th></tr></thead>
+        <tbody>
+          <tr><td class="sd"><b>15:26</b></td><td>생장 역 도착</td>
+            <td class="sv2">기차에서 내려 짐 정리</td></tr>
+          <tr><td class="sd">15:40</td><td>숙소 체크인 · 짐 내려놓기</td>
+            <td class="sv2">역에서 구시가까지 도보 6분</td></tr>
+          <tr class="hi"><td class="sd"><b>16:00</b></td><td><b>Maya Sport 로 이동</b></td>
+            <td class="sv2">택시 5분 또는 도보 25분</td></tr>
+          <tr class="hi"><td class="sd">16:15</td><td><b>자전거 수령 · 정비사 점검</b></td>
+            <td class="sv2">20 € 결제 · 안장 높이 조정</td></tr>
+          <tr><td class="sd">17:00</td><td>자전거 타고 구시가로</td>
+            <td class="sv2">내리막이라 금방</td></tr>
+          <tr class="hi"><td class="sd"><b>17:30</b></td><td><b>순례자 사무소</b></td>
+            <td class="sv2">크레덴시알 · 피레네 날씨 확인 · <b>20:15 마감</b></td></tr>
+          <tr><td class="sd">18:30</td><td>저녁 · 장보기</td>
+            <td class="sv2">다음 날 아침 간식</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="bgnote">
+      <b>매장이 19시에 닫습니다.</b> 15:26 도착이면 여유가 있지만,
+      기차가 늦으면 촉박해집니다. 예약할 때 <b>도착 시각을 미리 알려</b>
+      늦어질 경우 어떻게 할지 확인해 두세요.
+      순례자 사무소는 20:15까지라 그다음에 가도 됩니다.
+    </div>
+
+    <h3 class="jh3">생장 시내 지도</h3>
+    <p class="jp">역 · 순례자 사무소 · Maya Sport · 숙소 후보를 한 장에 담았습니다.
+    번호는 <a href="#secL">숙소</a> 항목의 표와 같습니다.</p>
+    <figure class="townmap"><svg viewBox="0 0 700 470" width="100%" role="img" aria-label="생장피에드포르 시내 · 자전거 수령처와 순례자 사무소"><title>생장 시내 — Maya Sport · 순례자 사무소 · 숙소</title><rect width="700" height="470" fill="#F7F5EE"/><path d="M118 44 C150 120 138 200 168 262 C196 320 236 352 262 402" fill="none" stroke="#9FC3DE" stroke-width="12" stroke-linecap="round" opacity=".55"/><text class="riv" x="132" y="150" transform="rotate(72 132 150)">La Nive</text><path d="M262 74 L262 348" stroke="#D8CFBB" stroke-width="24" stroke-linecap="round"/><text class="st" x="262" y="140" transform="rotate(-90 262 140)">rue de la Citadelle</text><text class="st" x="262" y="322" transform="rotate(-90 262 322)">rue d’Espagne</text><path d="M262 214 C360 200 470 176 588 168" fill="none" stroke="#D8CFBB" stroke-width="14" stroke-linecap="round"/><text class="st2" x="410" y="182">D 933 → avenue du Jaï Alaï</text><path d="M86 210 L104 198 L122 210 L122 240 L86 240 Z" fill="#E4DFCE" stroke="#C0B79F"/><circle cx="104" cy="224" r="7" fill="#152A55"/><text class="lb" x="104" y="262" text-anchor="middle">생장 역</text><text class="sm2" x="104" y="276" text-anchor="middle">15:26 도착</text><path d="M124 226 C170 232 214 230 246 226" fill="none" stroke="#152A55" stroke-width="2" stroke-dasharray="6 4"/><text class="wk" x="184" y="216" text-anchor="middle">도보 6분 · 420 m</text><circle cx="262" cy="74" r="8" fill="#fff" stroke="#8A7F63" stroke-width="2.5"/><text class="gt" x="246" y="78" text-anchor="end">Porte St-Jacques</text><circle cx="262" cy="348" r="8" fill="#fff" stroke="#8A7F63" stroke-width="2.5"/><text class="gt" x="246" y="352" text-anchor="end">Porte d’Espagne  →  스페인</text><circle cx="262" cy="150" r="13" fill="#1E7A46"/><circle cx="262" cy="150" r="21" fill="none" stroke="#1E7A46" stroke-width="1.6" opacity=".4"/><text class="of" x="286" y="146">① 순례자 사무소</text><text class="og" x="286" y="160">39 rue de la Citadelle · 크레덴시알</text><rect x="560" y="132" width="118" height="56" rx="9" fill="#8E2C3A"/><text class="ms" x="619" y="154" text-anchor="middle">② Maya Sport</text><text class="ms2" x="619" y="170" text-anchor="middle">자전거 수령</text><circle cx="588" cy="168" r="0" fill="none"/><text class="sm2" x="619" y="202" text-anchor="middle">18 Av. du Jaï Alaï</text><text class="sm2" x="619" y="216" text-anchor="middle">+33 5 59 37 15 98</text><path d="M278 158 C380 190 470 178 556 166" fill="none" stroke="#8E2C3A" stroke-width="2.4" stroke-dasharray="8 5"/><text class="wk2" x="418" y="212" text-anchor="middle">약 2 km · 도보 25분 · 택시 5분</text><circle cx="262" cy="118" r="10" fill="#152A55" stroke="#fff" stroke-width="2"/><text class="hn" x="262" y="122">3</text><circle cx="262" cy="176" r="10" fill="#152A55" stroke="#fff" stroke-width="2"/><text class="hn" x="262" y="180">2</text><circle cx="262" cy="96" r="10" fill="#152A55" stroke="#fff" stroke-width="2"/><text class="hn" x="262" y="100">7</text><circle cx="262" cy="240" r="10" fill="#152A55" stroke="#fff" stroke-width="2"/><text class="hn" x="262" y="244">1</text><circle cx="288" cy="240" r="10" fill="#152A55" stroke="#fff" stroke-width="2"/><text class="hn" x="288" y="244">11</text><circle cx="214" cy="244" r="10" fill="#152A55" stroke="#fff" stroke-width="2"/><text class="hn" x="214" y="248">9</text><circle cx="262" cy="300" r="10" fill="#152A55" stroke="#fff" stroke-width="2"/><text class="hn" x="262" y="304">5</text><circle cx="196" cy="176" r="10" fill="#1E7A46" stroke="#fff" stroke-width="2"/><text class="hn" x="196" y="180">8</text><circle cx="178" cy="330" r="10" fill="#1E7A46" stroke="#fff" stroke-width="2"/><text class="hn" x="178" y="334">6</text><circle cx="340" cy="296" r="10" fill="#152A55" stroke="#fff" stroke-width="2"/><text class="hn" x="340" y="300">4</text><circle cx="108" cy="372" r="10" fill="#1E7A46" stroke="#fff" stroke-width="2"/><text class="hn" x="108" y="376">10</text><text class="cap" x="18" y="428">※ 축척이 아닌 모식도 · 번호는 숙소 표와 같습니다 (<tspan fill="#1E7A46">초록</tspan> 자전거 보관 확인)</text><text class="cap" x="18" y="446">Maya Sport 좌표 43.1690, -1.2135 — 구시가 밖 북동쪽입니다. 출발 전 지도 앱으로 다시 확인하세요.</text><style>.lb{font-family:"IBM Plex Sans KR",sans-serif;font-size:13px;font-weight:700;fill:#2B2B29}.sm2{font-family:"IBM Plex Sans KR",sans-serif;font-size:10.5px;fill:#8A7F63}.st{font-family:"IBM Plex Sans KR",sans-serif;font-size:10px;fill:#8A7F63;text-anchor:middle;letter-spacing:.06em}.st2{font-family:"IBM Plex Sans KR",sans-serif;font-size:10px;fill:#A2977C}.riv{font-family:"IBM Plex Sans KR",sans-serif;font-size:10px;fill:#4D7E9E}.wk{font-family:"IBM Plex Sans KR",sans-serif;font-size:10.5px;font-weight:700;fill:#152A55;paint-order:stroke;stroke:#F7F5EE;stroke-width:3px}.wk2{font-family:"IBM Plex Sans KR",sans-serif;font-size:11.5px;font-weight:700;fill:#8E2C3A;paint-order:stroke;stroke:#F7F5EE;stroke-width:3px}.gt{font-family:"IBM Plex Sans KR",sans-serif;font-size:10.5px;font-weight:700;fill:#8A6A12}.of{font-family:"IBM Plex Sans KR",sans-serif;font-size:13px;font-weight:700;fill:#1E7A46}.og{font-family:"IBM Plex Sans KR",sans-serif;font-size:10px;fill:#3F7A5A}.ms{font-family:"IBM Plex Sans KR",sans-serif;font-size:14px;font-weight:700;fill:#fff}.ms2{font-family:"IBM Plex Sans KR",sans-serif;font-size:11px;fill:#F3D5D9}.hn{font-family:"IBM Plex Sans KR",sans-serif;font-size:10.5px;font-weight:700;fill:#fff;text-anchor:middle}.cap{font-family:"IBM Plex Sans KR",sans-serif;font-size:10px;fill:#A79E86}</style></svg></figure>
 
     <h3 class="jh3">5/8 저녁 최종 점검</h3>
     <div class="jfinal">
@@ -4094,6 +4203,7 @@ until we check in?</pre>
     <a href="#sec2">Ⅱ · 일정 한눈에</a>
     <a href="#sec3">Ⅲ · 날짜별 카드 (D1~D13)</a>
     <a href="#secL">숙소 · 예약 현황</a>
+    <a href="#secS">산티아고 도착</a>
     <a href="#secC">자전거 둘 중 하나</a>
     <a href="#secB">자전거 대여</a>
     <a href="#secG">GPS 기기에 넣기 (Edge · Connect)</a>
@@ -7580,7 +7690,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260904-1534";
+  var BUILD="20260904-2144";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
