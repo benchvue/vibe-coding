@@ -1890,6 +1890,47 @@
   @media(max-width:760px){ .parisrow{grid-template-columns:1fr} }
   .pcol{border:1px solid var(--line);border-radius:13px;background:#fff;padding:13px 15px}
   .pcol.warn2{border-color:#E3B7B7;background:#FDF9F9}
+
+  /* ══════════════ 세요 ══════════════ */
+  .selorule{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:14px}
+  @media(max-width:900px){ .selorule{grid-template-columns:1fr 1fr} }
+  @media(max-width:520px){ .selorule{grid-template-columns:1fr} }
+  .sr{border:1px solid var(--line);border-radius:11px;background:#fff;padding:11px 13px}
+  .sr.hot{border-color:#E7D9A8;background:#FFFBEE}
+  .sr b{display:block;font-size:.78rem;color:var(--camino-blue);margin-bottom:4px}
+  .sr.hot b{color:#8A6A12}
+  .sr span{display:block;font-size:.74rem;color:var(--ink-soft);line-height:1.75}
+  .sr span b{display:inline;color:var(--ink);margin:0}
+
+  .sellodays{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+  @media(max-width:860px){ .sellodays{grid-template-columns:1fr} }
+  .sb{border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden}
+  .sb.twice{border-color:#E7D9A8}
+  .sbh{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:9px 12px;
+    background:#F1EEE4;border-bottom:1px solid var(--line)}
+  .sb.twice .sbh{background:#FBF3DF}
+  .sbh b{font-family:'Gowun Batang',serif;font-size:.96rem;color:var(--camino-blue)}
+  .sbh span{font-size:.66rem;color:#fff;background:var(--camino-blue);border-radius:999px;
+    padding:2px 8px}
+  .sbh em{font-style:normal;font-size:.74rem;color:var(--ink-soft)}
+  .tw2{margin-left:auto;font-style:normal;font-size:.6rem;font-weight:700;color:#8A6A12;
+    background:var(--flecha);border-radius:999px;padding:2px 9px}
+  .sl{list-style:none;padding:6px 10px 9px;margin:0}
+  .sl li{display:flex;align-items:flex-start;gap:9px;padding:7px 3px;
+    border-bottom:1px dashed #F0EDE4}
+  .sl li:last-child{border-bottom:none}
+  .skm{flex:0 0 52px;font-size:.72rem;font-weight:700;color:var(--rioja);
+    font-variant-numeric:tabular-nums;text-align:right;margin-top:2px}
+  .sn2{flex:1;min-width:0}
+  .sn2 b{display:block;font-size:.8rem;color:var(--ink);font-weight:600}
+  .sn2 small{display:block;font-size:.67rem;color:#A79E86;line-height:1.45;margin-top:1px}
+  .smap{flex:0 0 auto;text-align:center;text-decoration:none;border:1px solid var(--line);
+    border-radius:8px;padding:4px 9px;font-size:.68rem;font-weight:700;
+    color:var(--camino-blue);background:#F7FAFF;line-height:1.3}
+  .smap i{display:block;font-style:normal;font-size:.58rem;font-weight:400;color:#A79E86;
+    font-variant-numeric:tabular-nums}
+  .smap:hover{border-color:var(--flecha);background:#FFFBEE;color:#3B2E00}
+  .sbn{padding:10px 12px;font-size:.76rem;color:var(--ink-soft)}
 </style>
 
 <!-- ══════════════════════════════════════════════════════════════════════
@@ -3137,6 +3178,73 @@ Gracias! Buen Camino!</pre>
     <div class="note">출처 santiago.nl (OSM · ODbL) · 고도 EU-DEM/Copernicus ·
     우회 cycle.travel (OSM) · 원본 2026-06-16판 · 2026-08-24 생성.
     재배포 시 출처 표기가 필요합니다.</div>
+  </div>
+</section>
+
+<!-- ───────── 세요 ───────── -->
+<section id="secY" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="no">Sello</div>
+      <h2>세요 · 도장 받는 곳</h2>
+      <p>크레덴시알에 찍는 도장이 <b>세요(sello)</b> 입니다. 이게 있어야 산티아고에서
+      <b>콤포스텔라</b>를 받습니다. 아래는 GPX 경로 위에 있는 <b>성당 30곳</b> —
+      거리는 그날 출발점에서 잰 값이고, 지도 단추를 누르면 정확한 위치가 열립니다.</p>
+    </div>
+
+    <div class="selorule">
+      <div class="sr">
+        <b>어디서 받나</b>
+        <span>성당 · 알베르게 · 순례자 사무소 · 바와 카페 · 관광안내소.
+        도장이 있는 곳에는 대개 <b>가리비 표시</b>가 붙어 있습니다.</span>
+      </div>
+      <div class="sr hot">
+        <b>하루 몇 개</b>
+        <span>보통 <b>하루 하나</b>면 됩니다. 다만 마지막 구간은
+        <b>하루 두 개</b>가 필요합니다 — 자전거는 <b>남은 200 km</b> 부터,
+        즉 <b>DAY 10 중간(누적 582 km)</b> 이후입니다.</span>
+      </div>
+      <div class="sr">
+        <b>날짜가 찍히나</b>
+        <span>대부분 날짜가 함께 찍힙니다. 안 찍히면 <b>직접 적어 두세요</b> —
+        산티아고에서 순서를 확인합니다.</span>
+      </div>
+      <div class="sr">
+        <b>첫 도장</b>
+        <span>생장 순례자 사무소에서 크레덴시알을 받을 때 <b>출발 도장</b>을 찍어 줍니다.
+        5/8 저녁에 받으세요.</span>
+      </div>
+    </div>
+
+    <div class="sellodays">
+      <div class="sb"><div class="sbh"><b>DAY 1</b><span>5/9</span><em>생장 → 수비리</em></div><ul class="sl"><li><span class="skm">24.4 km</span><span class="sn2"><b>산타 마리아 왕립 성당</b><small>Real Colegiata de Santa Maria de Roncesvalles</small></span><a class="smap" href="https://www.google.com/maps/search/?api=1&query=43.00990%2C-1.31948" target="_blank" rel="noopener">지도<i>43.0099, -1.3195</i></a></li></ul></div>
+      <div class="sb"><div class="sbh"><b>DAY 2</b><span>5/10</span><em>수비리 → 에스테야</em></div><ul class="sl"><li><span class="skm">19.6 km</span><span class="sn2"><b>팜플로나 대성당</b><small>Catedral de Santa Maria la Real, Pamplona</small></span><a class="smap" href="https://www.google.com/maps/search/?api=1&query=42.81986%2C-1.64082" target="_blank" rel="noopener">지도<i>42.8199, -1.6408</i></a></li><li><span class="skm">46.9 km</span><span class="sn2"><b>십자가상 성당</b><small>Iglesia del Crucifijo</small></span><a class="smap" href="https://www.google.com/maps/search/?api=1&query=42.67313%2C-1.81073" target="_blank" rel="noopener">지도<i>42.6731, -1.8107</i></a></li><li><span class="skm">68.5 km</span><span class="sn2"><b>산토 세풀크로 성당</b><small>Iglesia del Santo Sepulcro, Estella</small></span><a class="smap" href="https://www.google.com/maps/search/?api=1&query=42.66972%2C-2.02528" target="_blank" rel="noopener">지도<i>42.6697, -2.0253</i></a></li></ul></div>
+      <div class="sb"><div class="sbh"><b>DAY 3</b><span>5/11</span><em>에스테야 → 나바레테</em></div><ul class="sl"><li><span class="skm">21.4 km</span><span class="sn2"><b>로스 아르코스 산타 마리아 성당</b><small>Iglesia de Santa Maria de Los Arcos</small></span><a class="smap" href="https://www.google.com/maps/search/?api=1&query=42.56893%2C-2.19256" target="_blank" rel="noopener">지도<i>42.5689, -2.1926</i></a></li><li><span class="skm">39.6 km</span><span class="sn2"><b>비아나 산타 마리아 성당</b><small>Iglesia de Santa Maria de Viana</small></span><a class="smap" href="https://www.google.com/maps/search/?api=1&query=42.51511%2C-2.37152" target="_blank" rel="noopener">지도<i>42.5151, -2.3715</i></a></li><li><span class="skm">49.1 km</span><span class="sn2"><b>라 레돈다 대성당</b><small>Concatedral de Santa Maria de la Redonda</small></span><a class="smap" href="https://www.google.com/maps/search/?api=1&query=42.46665%2C-2.44551" target="_blank" rel="noopener">지도<i>42.4667, -2.4455</i></a></li><li><span class="skm">49.2 km</span><span class="sn2"><b>산티아고 엘 레알 성당</b><small>Iglesia de Santiago el Real, Logrono</small></span><a class="smap" href="https://www.google.com/maps/search/?api=1&query=42.46788%2C-2.44759" target="_blank" rel="noopener">지도<i>42.4679, -2.4476</i></a></li></ul></div>
+      <div class="sb"><div class="sbh"><b>DAY 4</b><span>5/12</span><em>나바레테 → 벨로라도</em></div><ul class="sl"><li><span class="skm">16.1 km</span><span class="sn2"><b>나헤라 산타 마리아 라 레알 수도원</b><small>Monasterio de Santa Maria la Real, Najera</small></span><a class="smap" href="https://www.google.com/maps/search/?api=1&query=42.41670%2C-2.73551" target="_blank" rel="noopener">지도<i>42.4167, -2.7355</i></a></li><li><span class="skm">36.9 km</span><span class="sn2"><b>산토 도밍고 데 라 칼사다 대성당</b><small>Catedral de Santo Domingo de la Calzada</small></span><a class="smap" href="https://www.google.com/maps/search/?api=1&query=42.44094%2C-2.95362" target="_blank" rel="noopener">지도<i>42.4409, -2.9536</i></a></li></ul></div>
+      <div class="sb"><div class="sbh"><b>DAY 5</b><span>5/13</span><em>벨로라도 → 카스트로헤리스</em></div><ul class="sl"><li><span class="skm">23.3 km</span><span class="sn2"><b>산 후안 데 오르테가 성당</b><small>Iglesia de San Juan de Ortega</small></span><a class="smap" href="https://www.google.com/maps/search/?api=1&query=42.37554%2C-3.43580" target="_blank" rel="noopener">지도<i>42.3755, -3.4358</i></a></li><li><span class="skm">49.6 km</span><span class="sn2"><b>부르고스 대성당</b><small>Catedral de Santa Maria de Burgos</small></span><a class="smap" href="https://www.google.com/maps/search/?api=1&query=42.34086%2C-3.70445" target="_blank" rel="noopener">지도<i>42.3409, -3.7045</i></a></li><li><span class="skm">86.2 km</span><span class="sn2"><b>Convento San Anton, Castrojeriz</b><small>Monasterio de San Anton</small></span><a class="smap" href="https://www.google.com/maps/search/?api=1&query=42.29254%2C-4.09901" target="_blank" rel="noopener">지도<i>42.2925, -4.0990</i></a></li><li><span class="skm">89.4 km</span><span class="sn2"><b>카스트로헤리스 산토 도밍고 성당</b><small>Iglesia de Santo Domingo, Castrojeriz</small></span><a class="smap" href="https://www.google.com/maps/search/?api=1&query=42.28879%2C-4.13532" target="_blank" rel="noopener">지도<i>42.2888, -4.1353</i></a></li></ul></div>
+      <div class="sb"><div class="sbh"><b>DAY 6</b><span>5/14</span><em>카스트로헤리스 → 사아군</em></div><ul class="sl"><li><span class="skm">24.4 km</span><span class="sn2"><b>프로미스타 산 마르틴 성당</b><small>Iglesia de San Martin de Fromista</small></span><a class="smap" href="https://www.google.com/maps/search/?api=1&query=42.26675%2C-4.40679" target="_blank" rel="noopener">지도<i>42.2668, -4.4068</i></a></li><li><span class="skm">43.2 km</span><span class="sn2"><b>산타 마리아 델 카미노 성당</b><small>Iglesia de Santa Maria del Camino, Carrion</small></span><a class="smap" href="https://www.google.com/maps/search/?api=1&query=42.33748%2C-4.60165" target="_blank" rel="noopener">지도<i>42.3375, -4.6017</i></a></li><li><span class="skm">44.3 km</span><span class="sn2"><b>산 소일로 수도원</b><small>Monasterio de San Zoilo</small></span><a class="smap" href="https://www.google.com/maps/search/?api=1&query=42.34064%2C-4.61110" target="_blank" rel="noopener">지도<i>42.3406, -4.6111</i></a></li><li><span class="skm">79.6 km</span><span class="sn2"><b>푸엔테 성모 예배당 · 순례길 중간지점</b><small>Ermita de la Virgen del Puente</small></span><a class="smap" href="https://www.google.com/maps/search/?api=1&query=42.37082%2C-4.99991" target="_blank" rel="noopener">지도<i>42.3708, -4.9999</i></a></li></ul></div>
+      <div class="sb"><div class="sbh"><b>DAY 7</b><span>5/15</span><em>사아군 → 레온</em></div><ul class="sl"><li><span class="skm">54.3 km</span><span class="sn2"><b>Plaza Santa María del Camino 3, León · Tel +34 680 649 289</b><small>Monasterio de Benedictinas (Carbajalas)</small></span><a class="smap" href="https://www.google.com/maps/search/?api=1&query=42.59504%2C-5.56826" target="_blank" rel="noopener">지도<i>42.5950, -5.5683</i></a></li><li><span class="skm">54.7 km</span><span class="sn2"><b>레온 대성당</b><small>Catedral de Santa Maria de Leon</small></span><a class="smap" href="https://www.google.com/maps/search/?api=1&query=42.59944%2C-5.56716" target="_blank" rel="noopener">지도<i>42.5994, -5.5672</i></a></li><li><span class="skm">54.7 km</span><span class="sn2"><b>산 이시도로 성당</b><small>Real Colegiata de San Isidoro de Leon</small></span><a class="smap" href="https://www.google.com/maps/search/?api=1&query=42.60077%2C-5.57079" target="_blank" rel="noopener">지도<i>42.6008, -5.5708</i></a></li></ul></div>
+      <div class="sb"><div class="sbh"><b>DAY 9</b><span>5/17</span><em>레온 → 라바날</em></div><ul class="sl"><li><span class="skm">0.7 km</span><span class="sn2"><b>산 이시도로 성당</b><small>Real Colegiata de San Isidoro de Leon</small></span><a class="smap" href="https://www.google.com/maps/search/?api=1&query=42.60077%2C-5.57079" target="_blank" rel="noopener">지도<i>42.6008, -5.5708</i></a></li><li><span class="skm">49.2 km</span><span class="sn2"><b>아스토르가 대성당</b><small>Catedral de Santa Maria de Astorga</small></span><a class="smap" href="https://www.google.com/maps/search/?api=1&query=42.45767%2C-6.05735" target="_blank" rel="noopener">지도<i>42.4577, -6.0573</i></a></li></ul></div>
+      <div class="sb twice"><div class="sbh"><b>DAY 10</b><span>5/18</span><em>라바날 → 베가 데 발카르세</em><i class="tw2">도장 2개</i></div><ul class="sl"><li><span class="skm">58.1 km</span><span class="sn2"><b>산 니콜라스 성당</b><small>Iglesia de San Nicolas el Real</small></span><a class="smap" href="https://www.google.com/maps/search/?api=1&query=42.60781%2C-6.80842" target="_blank" rel="noopener">지도<i>42.6078, -6.8084</i></a></li></ul></div>
+      <div class="sb twice"><div class="sbh"><b>DAY 11</b><span>5/19</span><em>베가 데 발카르세 → 사리아</em><i class="tw2">도장 2개</i></div><ul class="sl"><li><span class="skm">17.9 km</span><span class="sn2"><b>오 세브레이로 왕립 성당</b><small>Iglesia de Santa Maria la Real, O Cebreiro</small></span><a class="smap" href="https://www.google.com/maps/search/?api=1&query=42.70793%2C-7.04341" target="_blank" rel="noopener">지도<i>42.7079, -7.0434</i></a></li><li><span class="skm">47.2 km</span><span class="sn2"><b>사모스 수도원</b><small>Monasterio de Samos</small></span><a class="smap" href="https://www.google.com/maps/search/?api=1&query=42.73200%2C-7.32617" target="_blank" rel="noopener">지도<i>42.7320, -7.3262</i></a></li></ul></div>
+      <div class="sb twice"><div class="sbh"><b>DAY 12</b><span>5/20</span><em>사리아 → 아르수아</em><i class="tw2">도장 2개</i></div><ul class="sl"><li><span class="skm">23.1 km</span><span class="sn2"><b>산 니콜라스 요새성당</b><small>Igrexa de San Xoan (San Nicolao), Portomarin</small></span><a class="smap" href="https://www.google.com/maps/search/?api=1&query=42.80775%2C-7.61571" target="_blank" rel="noopener">지도<i>42.8077, -7.6157</i></a></li><li><span class="skm">48.0 km</span><span class="sn2"><b>산 티르소 성당</b><small>Iglesia de San Tirso, Palas de Rei</small></span><a class="smap" href="https://www.google.com/maps/search/?api=1&query=42.87243%2C-7.86796" target="_blank" rel="noopener">지도<i>42.8724, -7.8680</i></a></li><li><span class="skm">62.5 km</span><span class="sn2"><b>산 로케 예배당</b><small>Capela de San Roque, Melide</small></span><a class="smap" href="https://www.google.com/maps/search/?api=1&query=42.91377%2C-8.01292" target="_blank" rel="noopener">지도<i>42.9138, -8.0129</i></a></li></ul></div>
+      <div class="sb twice"><div class="sbh"><b>DAY 13</b><span>5/21</span><em>아르수아 → 산티아고</em><i class="tw2">도장 2개</i></div><ul class="sl"><li><span class="skm">38.7 km</span><span class="sn2"><b>산티아고 대성당</b><small>Catedral de Santiago de Compostela</small></span><a class="smap" href="https://www.google.com/maps/search/?api=1&query=42.88069%2C-8.54440" target="_blank" rel="noopener">지도<i>42.8807, -8.5444</i></a></li></ul></div>
+      
+    </div>
+
+    <div class="bgnote">
+      <b>성당이 늘 열려 있지는 않습니다</b>
+      스페인 시골 성당은 <b>미사 시간에만</b> 여는 곳이 많고, 점심시간(14~17시)에는
+      대부분 닫습니다. 닫혀 있으면 옆 <b>바나 알베르게</b>에서 받으면 됩니다 —
+      세요는 어디서 받아도 똑같이 인정됩니다.
+      <br>DAY 10 이후에는 <b>점심 먹은 곳에서 한 번 더</b> 받는 습관을 들이시면
+      두 개를 놓치지 않습니다.
+    </div>
+
+    <div class="note">도장을 찍은 크레덴시알은
+      <a href="#secY">세요 · 도장 받는 곳</a>
+      <a href="#secP">📕 디지털 순례자 여권</a> 에서 사진으로 기록할 수 있습니다.
+      종이를 잃어버려도 기록이 남고, 산티아고에서 순서를 확인할 때도 편합니다.</div>
   </div>
 </section>
 
@@ -7747,7 +7855,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260904-2316";
+  var BUILD="20260904-2352";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
