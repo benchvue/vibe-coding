@@ -1,0 +1,331 @@
+{
+  "image": {
+    "file": "camino-2027-elevation-profile.png",
+    "width_px": 4840,
+    "height_px": 2530,
+    "origin": "top-left"
+  },
+  "x_axis": {
+    "km_0_px": 626.5,
+    "km_total": 782.39,
+    "km_total_px": 4725.5,
+    "px_per_km": 5.2391
+  },
+  "y_axis": {
+    "ele_0_px": 1679.6,
+    "ele_1600_px": 731.2,
+    "px_per_m": 0.5927,
+    "note": "y_px = ele_0_px - ele_m * px_per_m"
+  },
+  "vertical_line": {
+    "y_min_px": 506.0,
+    "y_max_px": 1679.6,
+    "y_max_px_incl_bars": 2021.7
+  },
+  "formula": {
+    "x_px": "km_0_px + cumulative_km * px_per_km",
+    "y_px": "ele_0_px - elevation_m * px_per_m"
+  },
+  "days": [
+    {
+      "day": 1,
+      "from": "생장",
+      "to": "수비리",
+      "km": 45.8,
+      "cum_km_start": 0.0,
+      "cum_km_end": 45.8,
+      "start": {
+        "x_px": 626.5,
+        "y_px": 1577.8,
+        "ele_m": 172
+      },
+      "end": {
+        "x_px": 866.5,
+        "y_px": 1366.8,
+        "ele_m": 528
+      },
+      "vline": {
+        "x_px": 866.5,
+        "y_min_px": 506.0,
+        "y_max_px": 1679.6
+      }
+    },
+    {
+      "day": 2,
+      "from": "수비리",
+      "to": "에스테야",
+      "km": 68.9,
+      "cum_km_start": 45.8,
+      "cum_km_end": 114.7,
+      "start": {
+        "x_px": 866.5,
+        "y_px": 1366.8,
+        "ele_m": 528
+      },
+      "end": {
+        "x_px": 1227.5,
+        "y_px": 1427.1,
+        "ele_m": 426
+      },
+      "vline": {
+        "x_px": 1227.5,
+        "y_min_px": 506.0,
+        "y_max_px": 1679.6
+      }
+    },
+    {
+      "day": 3,
+      "from": "에스테야",
+      "to": "나바레테",
+      "km": 61.3,
+      "cum_km_start": 114.7,
+      "cum_km_end": 176.1,
+      "start": {
+        "x_px": 1227.5,
+        "y_px": 1426.4,
+        "ele_m": 427
+      },
+      "end": {
+        "x_px": 1548.9,
+        "y_px": 1373.6,
+        "ele_m": 516
+      },
+      "vline": {
+        "x_px": 1548.9,
+        "y_min_px": 506.0,
+        "y_max_px": 1679.6
+      }
+    },
+    {
+      "day": 4,
+      "from": "나바레테",
+      "to": "벨로라도",
+      "km": 58.7,
+      "cum_km_start": 176.1,
+      "cum_km_end": 234.8,
+      "start": {
+        "x_px": 1548.9,
+        "y_px": 1373.6,
+        "ele_m": 516
+      },
+      "end": {
+        "x_px": 1856.4,
+        "y_px": 1224.1,
+        "ele_m": 768
+      },
+      "vline": {
+        "x_px": 1856.4,
+        "y_min_px": 506.0,
+        "y_max_px": 1679.6
+      }
+    },
+    {
+      "day": 5,
+      "from": "벨로라도",
+      "to": "카스트로헤리스",
+      "km": 90.0,
+      "cum_km_start": 234.8,
+      "cum_km_end": 324.8,
+      "start": {
+        "x_px": 1856.4,
+        "y_px": 1224.1,
+        "ele_m": 768
+      },
+      "end": {
+        "x_px": 2328.1,
+        "y_px": 1198.7,
+        "ele_m": 811
+      },
+      "vline": {
+        "x_px": 2328.1,
+        "y_min_px": 506.0,
+        "y_max_px": 1679.6
+      }
+    },
+    {
+      "day": 6,
+      "from": "카스트로헤리스",
+      "to": "사아군",
+      "km": 82.3,
+      "cum_km_start": 324.8,
+      "cum_km_end": 407.1,
+      "start": {
+        "x_px": 2328.1,
+        "y_px": 1198.7,
+        "ele_m": 811
+      },
+      "end": {
+        "x_px": 2759.3,
+        "y_px": 1191.5,
+        "ele_m": 823
+      },
+      "vline": {
+        "x_px": 2759.3,
+        "y_min_px": 506.0,
+        "y_max_px": 1679.6
+      }
+    },
+    {
+      "day": 7,
+      "from": "사아군",
+      "to": "레온",
+      "km": 54.7,
+      "cum_km_start": 407.1,
+      "cum_km_end": 461.8,
+      "start": {
+        "x_px": 2759.3,
+        "y_px": 1191.5,
+        "ele_m": 823
+      },
+      "end": {
+        "x_px": 3045.7,
+        "y_px": 1182.3,
+        "ele_m": 839
+      },
+      "vline": {
+        "x_px": 3045.7,
+        "y_min_px": 506.0,
+        "y_max_px": 1679.6
+      }
+    },
+    {
+      "day": 8,
+      "from": "레온",
+      "to": "레온",
+      "km": 0.0,
+      "rest": true,
+      "cum_km_start": 461.8,
+      "cum_km_end": 461.8,
+      "start": {
+        "x_px": 3045.7,
+        "y_px": 1182.3,
+        "ele_m": 839
+      },
+      "end": {
+        "x_px": 3045.7,
+        "y_px": 1182.3,
+        "ele_m": 839
+      },
+      "vline": {
+        "x_px": 3045.7,
+        "y_min_px": 506.0,
+        "y_max_px": 1679.6
+      }
+    },
+    {
+      "day": 9,
+      "from": "레온",
+      "to": "라바날 델 카미노",
+      "km": 68.9,
+      "cum_km_start": 461.8,
+      "cum_km_end": 530.7,
+      "start": {
+        "x_px": 3045.7,
+        "y_px": 1182.3,
+        "ele_m": 839
+      },
+      "end": {
+        "x_px": 3406.6,
+        "y_px": 995.8,
+        "ele_m": 1154
+      },
+      "vline": {
+        "x_px": 3406.6,
+        "y_min_px": 506.0,
+        "y_max_px": 1679.6
+      }
+    },
+    {
+      "day": 10,
+      "from": "라바날 델 카미노",
+      "to": "베가 데 발카르세",
+      "km": 74.3,
+      "cum_km_start": 530.7,
+      "cum_km_end": 604.9,
+      "start": {
+        "x_px": 3406.6,
+        "y_px": 999.0,
+        "ele_m": 1148
+      },
+      "end": {
+        "x_px": 3795.7,
+        "y_px": 1303.2,
+        "ele_m": 635
+      },
+      "vline": {
+        "x_px": 3795.7,
+        "y_min_px": 506.0,
+        "y_max_px": 1679.6
+      }
+    },
+    {
+      "day": 11,
+      "from": "베가 데 발카르세",
+      "to": "사리아",
+      "km": 62.3,
+      "cum_km_start": 604.9,
+      "cum_km_end": 667.2,
+      "start": {
+        "x_px": 3795.7,
+        "y_px": 1302.3,
+        "ele_m": 636
+      },
+      "end": {
+        "x_px": 4122.2,
+        "y_px": 1430.1,
+        "ele_m": 421
+      },
+      "vline": {
+        "x_px": 4122.2,
+        "y_min_px": 506.0,
+        "y_max_px": 1679.6
+      }
+    },
+    {
+      "day": 12,
+      "from": "사리아",
+      "to": "아르수아",
+      "km": 76.3,
+      "cum_km_start": 667.2,
+      "cum_km_end": 743.5,
+      "start": {
+        "x_px": 4122.2,
+        "y_px": 1430.0,
+        "ele_m": 421
+      },
+      "end": {
+        "x_px": 4521.8,
+        "y_px": 1446.0,
+        "ele_m": 394
+      },
+      "vline": {
+        "x_px": 4521.8,
+        "y_min_px": 506.0,
+        "y_max_px": 1679.6
+      }
+    },
+    {
+      "day": 13,
+      "from": "아르수아",
+      "to": "산티아고",
+      "km": 38.9,
+      "cum_km_start": 743.5,
+      "cum_km_end": 782.4,
+      "start": {
+        "x_px": 4521.8,
+        "y_px": 1446.6,
+        "ele_m": 393
+      },
+      "end": {
+        "x_px": 4725.5,
+        "y_px": 1525.7,
+        "ele_m": 260
+      },
+      "vline": {
+        "x_px": 4725.5,
+        "y_min_px": 506.0,
+        "y_max_px": 1679.6
+      }
+    }
+  ]
+}
