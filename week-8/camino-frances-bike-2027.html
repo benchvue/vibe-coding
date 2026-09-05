@@ -2064,14 +2064,15 @@
 
   /* 날짜 카드 고도 프로파일 */
   .dprof{border:1px solid #D4DFF2;border-radius:12px;background:#FBFAF5;
-    overflow:hidden;height:150px;position:relative;min-width:0}
+    overflow:hidden;height:150px;min-height:110px;position:relative;min-width:0}
   /* 넓은 화면 — 지도와 QR 아래 한 줄 전체 */
   @media(min-width:521px){
     .dprof{order:3;flex:1 1 100%;width:100%;margin-top:2px}
   }
-  /* 좁은 화면 — 지도 바로 아래, QR 위 */
+  /* 좁은 화면 — .dbody 가 세로 방향이라 flex-basis 는 높이에 걸립니다.
+     100% 로 두면 줄어들어 선처럼 눌리므로 auto 로 둡니다. */
   @media(max-width:520px){
-    .dprof{order:2;flex:1 1 100%;width:100%}
+    .dprof{order:2;flex:0 0 auto;width:100%;align-self:stretch}
     .dcard .dqr{order:3}
   }
   .dprof svg{display:block}
@@ -8102,7 +8103,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260905-2121";
+  var BUILD="20260905-2126";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
