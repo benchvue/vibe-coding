@@ -8102,7 +8102,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260905-2106";
+  var BUILD="20260905-2121";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
@@ -9060,9 +9060,9 @@ window.CAMINO_LIVE = (function(){
 
   function render(box, d){
     var pts=GPX[d], C=CUM[d], E=ELE[d];
-    if(!pts||!C||!E||E.length!==pts.length){ box.innerHTML=""; return; }
+    if(!pts||!C||!E||E.length!==pts.length){ box.innerHTML=""; return false; }
     var W=box.clientWidth, H=box.clientHeight;
-    if(W<120||H<70) return;
+    if(W<120||H<70) return false;   /* 아직 화면에 크기가 없습니다 */
     var PL=44, PR=12, PT=30, PB=19;
     var iw=W-PL-PR, ih=H-PT-PB, tot=C[C.length-1];
 
@@ -9154,16 +9154,31 @@ window.CAMINO_LIVE = (function(){
     });
     h+='</svg>';
     box.innerHTML=h;
+    box.dataset.drawn="1";
+    return true;
   }
 
   function fill(box){
     var d=+box.dataset.day;
     if(box.dataset.busy) return;
     box.dataset.busy="1";
-    loadGpx(d).then(function(){ box.dataset.busy=""; render(box,d); })
-      .catch(function(){ box.dataset.busy="";
-        box.innerHTML='<p class="dp-none">고도 자료를 읽지 못했습니다</p>'; });
+    loadGpx(d).then(function(){
+      box.dataset.busy=""; box.dataset.ready="1";
+      render(box,d);            /* 폭이 0 이면 그리지 못하지만 자료는 남습니다 */
+    }).catch(function(){ box.dataset.busy="";
+      box.innerHTML='<p class="dp-none">고도 자료를 읽지 못했습니다</p>'; });
   }
+
+  /* 상자에 크기가 생기는 순간 그립니다 — 탭으로 숨어 있다가 나타나는 경우 */
+  var ro = ("ResizeObserver" in window) ? new ResizeObserver(function(ents){
+    ents.forEach(function(en){
+      var b=en.target, w=en.contentRect.width;
+      if(w<120) return;
+      var d=+b.dataset.day;
+      if(!b.dataset.ready){ fill(b); return; }
+      render(b,d);
+    });
+  }) : null;
 
   function boot(){
     var cards=document.querySelectorAll("article.dcard[id^=day]");
@@ -9198,18 +9213,22 @@ window.CAMINO_LIVE = (function(){
       if("IntersectionObserver" in window){
         var io=new IntersectionObserver(function(ents){
           ents.forEach(function(en){
-            if(en.isIntersecting){ fill(en.target); io.unobserve(en.target); }
+            if(!en.isIntersecting) return;
+            var b=en.target;
+            if(b.dataset.drawn){ io.unobserve(b); return; }
+            fill(b);              /* 그려질 때까지 계속 지켜봅니다 */
           });
         },{rootMargin:"300px"});
         Array.prototype.forEach.call(boxes, function(b){ io.observe(b); });
       }else Array.prototype.forEach.call(boxes, fill);
+      if(ro) Array.prototype.forEach.call(boxes, function(b){ ro.observe(b); });
 
       var rz=null;
       window.addEventListener("resize", function(){
         clearTimeout(rz);
         rz=setTimeout(function(){
           Array.prototype.forEach.call(document.querySelectorAll(".dprof"), function(b){
-            if(GPX[+b.dataset.day]) render(b, +b.dataset.day);
+            if(GPX[+b.dataset.day]) render(b, +b.dataset.day); else fill(b);
           });
         }, 250);
       });
