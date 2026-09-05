@@ -168,7 +168,7 @@ const WHO={bin:{n:"BIN",c:"#1E5FB4"}, jin:{n:"JIN",c:"#C92A2A"}};
 const $=id=>document.getElementById(id);
 const esc=t=>String(t==null?"":t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 let map, layer, liveLayer, dayLayer, SEG=null, IDX=null, GPX={}, CUM={}, selected=1;
-let LIVE={}, liveOn=false, sumHtml="";
+let LIVE={}, liveOn=false, sumHtml="", lastPts=null;
 
 function hav(a,b){
   const R=6371000, r=Math.PI/180;
@@ -211,6 +211,21 @@ function stemIcon(text, color, sub, big){
       +'<span class="stem-dot" style="background:'+color+'"></span>'
       +'<span class="stem-lab" style="bottom:'+(h+2)+'px;background:'+color+'">'
       +esc(text)+(sub?'<i>'+esc(sub)+'</i>':'')+'</span>'});
+}
+
+/* 이름표가 조작판이나 화면 밖에 가리지 않도록 여백을 잡아 맞춥니다.
+   이름표는 점보다 약 55px 위에 뜨고, 조작판이 지도 위를 덮습니다. */
+function fitNice(pts){
+  lastPts=pts;
+  const b=L.polyline(pts).getBounds();
+  const p=document.getElementById("panel");
+  const ph=(p ? p.getBoundingClientRect().height : 0);
+  const h=map.getSize().y, w=map.getSize().x;
+  /* 위쪽은 조작판 + 이름표 높이, 아래·좌우는 이름표 폭의 절반쯤 */
+  let top=Math.round(ph+66), side=Math.round(Math.min(70, w*0.12)), bot=42;
+  /* 여백이 화면의 절반을 넘으면 지도가 사라지므로 줄입니다 */
+  if(top > h*0.55) top=Math.round(h*0.55);
+  map.fitBounds(b, {paddingTopLeft:[side, top], paddingBottomRight:[side, bot]});
 }
 
 function tagText(t){
@@ -256,7 +271,7 @@ async function draw(d){
       +"tool/surface-segments.json 에 이 날이 들어 있는지 확인하세요.";
     L.polyline(pts,{color:"#9ca3af",weight:4}).addTo(layer);
     markEnds(d, pts);
-    map.fitBounds(L.polyline(pts).getBounds(),{padding:[46,34]});
+    fitNice(pts);
     foldSub(); return;
   }
   let i=0;
@@ -284,7 +299,7 @@ async function draw(d){
   $("summary").innerHTML=sumHtml;
   markEnds(d, pts);
   $("status").textContent="색칠된 길을 누르면 그 구간의 노면 태그가 나옵니다.";
-  map.fitBounds(L.polyline(pts).getBounds(),{padding:[46,34]});
+  fitNice(pts);
   foldSub();
 }
 
@@ -326,7 +341,7 @@ async function showAll(){
   $("route").textContent="전체 Camino · 생장 → 산티아고 782.4 km";
   $("status").textContent="12일 전체입니다. 표지는 그날 도착 지점입니다. "
     +"날짜 단추를 누르면 그 날만 봅니다.";
-  map.fitBounds(L.polyline(all).getBounds(),{padding:[24,24]});
+  fitNice(all);
   foldSub();
 }
 
@@ -485,12 +500,20 @@ $("fold").addEventListener("click",()=>{
   const p=$("panel"), closed=p.classList.toggle("closed");
   $("fold").setAttribute("aria-expanded", String(!closed));
   foldSub();
-  setTimeout(()=>map.invalidateSize(),220);
+  setTimeout(()=>{
+    map.invalidateSize();
+    if(lastPts) fitNice(lastPts);      /* 여백이 달라졌으니 다시 맞춥니다 */
+  },240);
 });
 if(window.matchMedia("(max-width:650px)").matches){
   $("panel").classList.add("closed");
   $("fold").setAttribute("aria-expanded","false");
 }
+let rz=null;
+window.addEventListener("resize",()=>{
+  clearTimeout(rz);
+  rz=setTimeout(()=>{ map.invalidateSize(); if(lastPts) fitNice(lastPts); },250);
+});
 
 /* ── 시작 ── */
 (async function(){
