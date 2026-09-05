@@ -63,6 +63,16 @@
   .live .none{color:var(--dim)}
   .leaflet-popup-content{font-family:'IBM Plex Sans KR',sans-serif;font-size:12.5px;
     line-height:1.65}
+
+  .stem-wrap{position:relative}
+  .stem{position:absolute;left:-1.5px;bottom:0;width:3px;border-radius:2px;
+    box-shadow:0 0 0 1px rgba(255,255,255,.85)}
+  .stem-dot{position:absolute;left:-5px;bottom:-5px;width:10px;height:10px;border-radius:50%;
+    box-shadow:0 0 0 2.5px #fff}
+  .stem-lab{position:absolute;left:0;transform:translateX(-50%);white-space:nowrap;
+    color:#fff;font-size:11px;font-weight:700;border-radius:7px;padding:3px 9px;
+    box-shadow:0 2px 8px rgba(0,0,0,.28);line-height:1.35;text-align:center}
+  .stem-lab i{display:block;font-style:normal;font-size:9.5px;font-weight:400;opacity:.85}
   @media(max-width:650px){
     .panel{left:7px;right:7px;top:7px;width:auto;padding:10px}
     .title{font-size:15px}
@@ -148,8 +158,8 @@ const WHO={bin:{n:"BIN",c:"#1E5FB4"}, jin:{n:"JIN",c:"#C92A2A"}};
 
 const $=id=>document.getElementById(id);
 const esc=t=>String(t==null?"":t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-let map, layer, liveLayer, SEG=null, IDX=null, GPX={}, CUM={}, selected=1;
-let LIVE={}, liveOn=false;
+let map, layer, liveLayer, dayLayer, SEG=null, IDX=null, GPX={}, CUM={}, selected=1;
+let LIVE={}, liveOn=false, sumHtml="";
 
 function hav(a,b){
   const R=6371000, r=Math.PI/180;
@@ -163,6 +173,7 @@ map=L.map("map",{zoomControl:true}).setView([42.6,-4.5],7);
 L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",
   {maxZoom:19, attribution:"© OpenStreetMap 기여자"}).addTo(map);
 layer=L.layerGroup().addTo(map);
+dayLayer=L.layerGroup().addTo(map);
 liveLayer=L.layerGroup().addTo(map);
 
 async function loadGpx(d){
@@ -183,6 +194,16 @@ async function loadGpx(d){
   return pts;
 }
 
+/* 세로선이 아래로 내려와 지점을 가리키는 표지 */
+function stemIcon(text, color, sub, big){
+  const h = big ? 40 : 30;
+  return L.divIcon({className:"stem-wrap", iconSize:[0,0], iconAnchor:[0,0],
+    html:'<span class="stem" style="height:'+h+'px;background:'+color+'"></span>'
+      +'<span class="stem-dot" style="background:'+color+'"></span>'
+      +'<span class="stem-lab" style="bottom:'+(h+2)+'px;background:'+color+'">'
+      +esc(text)+(sub?'<i>'+esc(sub)+'</i>':'')+'</span>'});
+}
+
 function tagText(t){
   if(!t) return "포장도로";
   const p=[];
@@ -194,10 +215,10 @@ function tagText(t){
 }
 
 async function draw(d){
-  layer.clearLayers();
+  layer.clearLayers(); dayLayer.clearLayers();
   if(d===REST){
     $("route").textContent="DAY 8 · León 휴식일";
-    $("bars").innerHTML=""; $("summary").innerHTML="";
+    $("bars").innerHTML=""; $("summary").innerHTML=""; sumHtml="";
     $("restBox").innerHTML='<div class="rest-box">레온에서 하루 쉽니다. '
       +'대성당과 가우디의 보티네스 저택을 둘러보세요.</div>';
     $("status").textContent="";
@@ -236,9 +257,10 @@ async function draw(d){
     const w=km[k]/tot*100;
     return w>0.4 ? '<i style="width:'+w.toFixed(2)+'%;background:'+COLOR[j]+'"></i>' : "";
   }).join("");
-  $("summary").innerHTML=["paved","compact","rough","difficult","unknown"].map((k,j)=>
+  sumHtml=["paved","compact","rough","difficult","unknown"].map((k,j)=>
     '<span style="color:'+COLOR[j]+'">●</span> '+km[k].toFixed(1)+" km ("
     +(km[k]/tot*100).toFixed(0)+"%)").join(" · ");
+  $("summary").innerHTML=sumHtml;
   $("status").textContent="색칠된 길을 누르면 그 구간의 노면 태그가 나옵니다.";
   map.fitBounds(L.polyline(pts).getBounds(),{padding:[30,30]});
   foldSub();
@@ -251,9 +273,9 @@ function selectDay(d){
 }
 
 async function showAll(){
-  layer.clearLayers();
+  layer.clearLayers(); dayLayer.clearLayers();
   $("status").textContent="전체 경로를 그리는 중…";
-  const all=[];
+  const all=[], ends=[];
   for(const d of DAY_LIST){
     if(d===REST) continue;
     let pts;
@@ -268,9 +290,22 @@ async function showAll(){
       });
     }else L.polyline(pts,{color:"#9ca3af",weight:3}).addTo(layer);
     all.push(...pts);
+    ends.push([d, pts[pts.length-1]]);
+    if(d===1) L.marker(pts[0],{icon:stemIcon("생장","#152A55","0 km",true),
+      zIndexOffset:600}).addTo(dayLayer);
   }
+  /* 날짜마다 도착 지점에 세로선 표지 */
+  const CUMK={1:45.8,2:114.7,3:176.1,4:234.8,5:324.8,6:407.1,7:461.8,
+              9:530.7,10:604.9,11:667.2,12:743.5,13:782.4};
+  ends.forEach(e=>{
+    const d=e[0], p=e[1], last=(d===13);
+    L.marker(p,{icon:stemIcon(last?"산티아고":"DAY "+d,
+      last?"#8E2C3A":"#152A55", CUMK[d].toFixed(1)+" km", last),
+      zIndexOffset:500}).addTo(dayLayer);
+  });
   $("route").textContent="전체 Camino · 생장 → 산티아고 782.4 km";
-  $("status").textContent="12일 전체입니다. 날짜 단추를 누르면 그 날만 봅니다.";
+  $("status").textContent="12일 전체입니다. 표지는 그날 도착 지점입니다. "
+    +"날짜 단추를 누르면 그 날만 봅니다.";
   map.fitBounds(L.polyline(all).getBounds(),{padding:[24,24]});
   foldSub();
 }
@@ -341,33 +376,63 @@ function ago(at){
 function drawLive(){
   liveLayer.clearLayers();
   const box=$("liveBox");
-  const parts=[];
+  const parts=[], far=[];
   ["bin","jin"].forEach(w=>{
     const v=LIVE[w]; if(!v||typeof v.km!=="number") return;
     const m=WHO[w];
+    const hasXY = typeof v.lat==="number" && typeof v.lon==="number";
+
     if(v.test){
       const z=v.zone==="am"?"아메리카":v.zone==="as"?"아시아":"유럽";
-      parts.push('<div><span class="who '+w+'">'+m.n+'</span>시험 중 · '+z
-        +' · '+ago(v.at)+'<br><span class="none">노선 밖이라 지도에 표시하지 않습니다</span></div>');
+      if(hasXY){
+        /* 시험 중에는 실제 좌표를 남기므로 그 자리에 찍습니다 */
+        L.marker([v.lat,v.lon],{icon:stemIcon(m.n, m.c, "시험 중", true),
+          zIndexOffset:900}).addTo(liveLayer);
+        L.circleMarker([v.lat,v.lon],{radius:7,color:"#fff",weight:2.5,
+          fillColor:m.c,fillOpacity:1}).addTo(liveLayer)
+          .bindPopup('<b style="color:'+m.c+'">'+m.n+'</b> · 시험 중 ('+z+')<br>'
+            +v.lat.toFixed(5)+', '+v.lon.toFixed(5)+'<br>'
+            +'노선에서 '+(v.off>1000?Math.round(v.off/1000)+" km":Math.round(v.off)+" m")+' 떨어짐'
+            +'<br><span style="color:#888">'+ago(v.at)+'</span>');
+        far.push([v.lat,v.lon]);
+        parts.push('<div><span class="who '+w+'">'+m.n+'</span>시험 중 · '+z
+          +' · '+ago(v.at)+'<br><span class="none">'+v.lat.toFixed(4)+', '+v.lon.toFixed(4)
+          +' · 노선에서 '+(v.off>1000?Math.round(v.off/1000)+" km":Math.round(v.off)+" m")
+          +' 떨어짐</span></div>');
+      }else{
+        parts.push('<div><span class="who '+w+'">'+m.n+'</span>시험 중 · '+z
+          +' · '+ago(v.at)+'<br><span class="none">좌표가 없어 표시하지 못합니다 — '
+          +'스크립트를 새 판으로 다시 배포하세요</span></div>');
+      }
       return;
     }
-    const ll=kmToLatLon(v.km);
+
+    /* 노선 위 — km 로 자리를 찾습니다 */
+    const ll = kmToLatLon(v.km);
     if(!ll) return;
     const info=whereIs(v.km);
     const surf = info && info.k!=null
       ? '<b style="color:'+COLOR[info.k]+'">'+KNAME[info.k]+'</b> · '+esc(tagText(info.t))
       : "노면 자료 없음";
-    L.circleMarker(ll,{radius:9,color:"#fff",weight:3,fillColor:m.c,fillOpacity:1})
+    L.marker(ll,{icon:stemIcon(m.n, m.c, v.km.toFixed(1)+" km", true),
+      zIndexOffset:900}).addTo(liveLayer);
+    L.circleMarker(ll,{radius:7,color:"#fff",weight:2.5,fillColor:m.c,fillOpacity:1})
       .addTo(liveLayer)
       .bindPopup('<b style="color:'+m.c+'">'+m.n+'</b> · '+v.km.toFixed(1)+' km<br>'
-        +surf+'<br><span style="color:#888">'+ago(v.at)+'</span>')
-      .bindTooltip(m.n, {permanent:true, direction:"top", offset:[0,-8]});
+        +surf+'<br><span style="color:#888">'+ago(v.at)+'</span>');
     parts.push('<div><span class="who '+w+'">'+m.n+'</span>'+v.km.toFixed(1)+' km'
       +(info&&info.day?' · DAY '+info.day:'')+' · '+ago(v.at)
       +'<br>'+surf+'</div>');
   });
   box.innerHTML = parts.length ? parts.join("")
     : '<span class="none">아직 들어온 위치가 없습니다.</span>';
+  /* 시험 중이라 노선 밖에 있으면 그쪽으로 지도를 옮깁니다 */
+  if(far.length){
+    const b=L.latLngBounds(far).pad(0.4);
+    map.fitBounds(b, {maxZoom:11});
+    $("status").innerHTML="시험 중인 위치로 지도를 옮겼습니다. "
+      +"<b>날짜 단추</b>를 누르면 카미노로 돌아갑니다.";
+  }
 }
 
 $("liveBtn").addEventListener("click", async ()=>{
@@ -391,10 +456,10 @@ function foldSub(){
   }
   if(selected===REST){ el.textContent="DAY 8 · León 휴식일 — 눌러서 펼치기"; return; }
   const info=SEG&&SEG.days&&SEG.days[selected];
-  el.textContent = info
-    ? "DAY "+selected+" · "+info.total_km.toFixed(1)+" km · "
-      +$("summary").textContent.trim()+" — 눌러서 펼치기"
-    : "DAY "+selected+" — 눌러서 펼치기";
+  el.innerHTML = info
+    ? "DAY "+selected+" · "+info.total_km.toFixed(1)+" km · "+sumHtml
+      +" <span style='opacity:.65'>— 눌러서 펼치기</span>"
+    : "DAY "+selected+" <span style='opacity:.65'>— 눌러서 펼치기</span>";
 }
 $("fold").addEventListener("click",()=>{
   const p=$("panel"), closed=p.classList.toggle("closed");
