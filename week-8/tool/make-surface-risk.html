@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>노면 자료 만들기 · Camino 2027</title>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;600;700&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#F7F5EE;--card:#fff;--ink:#2B2B29;--soft:#6B6B66;--line:#E3E0D6;
+        --blue:#152A55;--gold:#F5B917;--ok:#1E7A46;--err:#B3261E;--rioja:#8E2C3A}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'IBM Plex Sans KR',system-ui,sans-serif;background:var(--paper);
+       color:var(--ink);padding:24px 18px 60px}
+  .wrap{max-width:880px;margin:0 auto}
+  h1{font-family:'Gowun Batang',serif;font-size:1.5rem;color:var(--blue);margin-bottom:4px}
+  .sub{font-size:.85rem;color:var(--soft);line-height:1.8;margin-bottom:18px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:13px;
+        padding:15px 17px;margin-bottom:12px}
+  .card h2{font-size:.95rem;color:var(--blue);margin-bottom:7px}
+  .card p{font-size:.82rem;color:var(--soft);line-height:1.8}
+  .card.warn{background:#FFFBEE;border-color:#E7D9A8} .card.warn h2{color:#8A6A12}
+  .card.err{background:#FDF3F3;border-color:#E3B7B7} .card.err h2{color:var(--err)}
+  .btnrow{display:flex;gap:9px;flex-wrap:wrap;margin:14px 0}
+  button{font-family:inherit;border:none;border-radius:10px;padding:13px 22px;
+         font-size:.92rem;font-weight:700;cursor:pointer}
+  #run{background:var(--blue);color:#fff}
+  #run:hover:not(:disabled){background:var(--gold);color:#3B2E00}
+  #run:disabled{opacity:.5;cursor:default}
+  #dl{background:var(--ok);color:#fff;display:none}
+  #dl:hover{background:var(--gold);color:#3B2E00}
+  .bar{height:10px;border-radius:5px;background:#EFEDE5;overflow:hidden;margin:12px 0 6px}
+  .bar i{display:block;height:100%;background:var(--gold);width:0;transition:width .3s}
+  .status{font-size:.82rem;color:var(--soft);min-height:1.5em}
+  table{width:100%;border-collapse:collapse;font-size:.79rem;margin-top:10px}
+  th,td{border:1px solid var(--line);padding:7px 9px;text-align:left}
+  th{background:var(--blue);color:#fff;font-weight:600;font-size:.74rem}
+  td.n{text-align:right;font-variant-numeric:tabular-nums}
+  tr.done td{background:#F4FAF6}
+  tr.fail td{background:#FDF3F3;color:var(--err)}
+  .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}
+  code{font-family:'IBM Plex Mono',monospace;font-size:.76rem;background:#F1EEE4;
+       border-radius:4px;padding:1px 6px}
+  .risk{font-size:.78rem;line-height:1.75;color:var(--soft);margin-top:8px}
+  .risk b{color:var(--rioja)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>노면 자료 만들기</h1>
+  <p class="sub">12일치 GPX 를 <code>route/</code> 에서 읽어 Overpass 에 한 번씩 물어보고,
+  <b>주의 구간 목록</b>을 뽑습니다. 결과를 <code>surface-risk.json</code> 으로 내려받아
+  <code>week-8/tool/</code> 에 넣으면 사이트가 조회 없이 바로 보여 줍니다.</p>
+
+  <div class="card err" id="where">
+    <h2>이 파일을 어디에 두나</h2>
+    <p><code>week-8/tool/make-surface-risk.html</code> 에 두고
+    <b>웹서버로 열어야</b> 합니다. GPX 를 <code>fetch</code> 로 읽기 때문에
+    파일을 직접 열면(<code>file://</code>) 브라우저가 막습니다.<br>
+    <code>python -m http.server 8000</code> 을 <code>week-8</code> 상위에서 돌리고
+    <code>http://localhost:8000/week-8/tool/make-surface-risk.html</code> 로 여세요.</p>
+  </div>
+
+  <div class="card warn">
+    <h2>돌리기 전에</h2>
+    <p>· 12일치라 <b>3~8분</b> 걸립니다. 창을 닫지 마세요.<br>
+    · Overpass 서버를 배려해 날짜 사이에 <b>4초씩 쉽니다</b>.<br>
+    · 실패한 날은 <b>두 번 더</b> 시도합니다. 그래도 안 되면 나중에 다시 돌리세요.<br>
+    · 한 번 만들어 두면 다시 돌릴 일이 없습니다. 노선을 바꿨을 때만 하시면 됩니다.</p>
+  </div>
+
+  <div class="btnrow">
+    <button id="run">전체 분석 시작</button>
+    <button id="dl">JSON 내려받기</button>
+  </div>
+  <div class="bar"><i id="bar"></i></div>
+  <div class="status" id="status">준비됨</div>
+
+  <table id="tbl">
+    <thead><tr><th>DAY</th><th>거리</th>
+      <th><span class="dot" style="background:#22A45D"></span>포장</th>
+      <th><span class="dot" style="background:#E8C33A"></span>다짐</th>
+      <th><span class="dot" style="background:#E8853A"></span>자갈</th>
+      <th><span class="dot" style="background:#D33A3A"></span>거친길</th>
+      <th><span class="dot" style="background:#4A4A4A"></span>미상</th>
+      <th>주의</th></tr></thead>
+    <tbody id="tb"></tbody>
+  </table>
+  <div class="risk" id="risk"></div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   GPX 를 route/ 에서 읽습니다 — 자료를 파일 안에 담지 않습니다.
+   ══════════════════════════════════════════════════════════════════════ */
+const GPX_DIR   = "../route/";
+const DAY_LIST  = [1,2,3,4,5,6,7,9,10,11,12,13];   /* 8 은 레온 휴식 */
+const SAMPLE_M  = 350;    /* Overpass 에 물어볼 지점 간격 */
+const MIN_RISK  = 300;    /* 이 길이(m) 이상인 구간만 목록에 담습니다 */
+const GAP_MS    = 4000;
+const TRIES     = 3;
+
+const ROUTE = {
+ 1:"Saint-Jean-Pied-de-Port → Roncesvalles → Zubiri",
+ 2:"Zubiri → Pamplona → Puente la Reina → Estella",
+ 3:"Estella → Los Arcos → Logroño → Navarrete",
+ 4:"Navarrete → Nájera → Santo Domingo → Belorado",
+ 5:"Belorado → San Juan de Ortega → Burgos → Castrojeriz",
+ 6:"Castrojeriz → Frómista → Carrión → Sahagún",
+ 7:"Sahagún → El Burgo Ranero → León",
+ 9:"León → Astorga → Rabanal del Camino",
+ 10:"Rabanal → Molinaseca → Ponferrada → Vega de Valcarce",
+ 11:"Vega de Valcarce → O Cebreiro → Samos → Sarria",
+ 12:"Sarria → Portomarín → Palas de Rei → Arzúa",
+ 13:"Arzúa → O Pedrouzo → Santiago de Compostela"
+};
+
+function metersPerDegLon(lat){return 111320*Math.cos(lat*Math.PI/180)}
+function pointSegDistanceMeters(p,a,b){
+ const sx=metersPerDegLon(p[0]),sy=110540,px=p[1]*sx,py=p[0]*sy,ax=a[1]*sx,ay=a[0]*sy,bx=b[1]*sx,by=b[0]*sy;
+ const dx=bx-ax,dy=by-ay,den=dx*dx+dy*dy; let t=den===0?0:((px-ax)*dx+(py-ay)*dy)/den;
+ t=Math.max(0,Math.min(1,t)); return Math.hypot(px-(ax+t*dx),py-(ay+t*dy));
+}
+function hav(a,b){
+ const R=6371000,rad=Math.PI/180,p1=a[0]*rad,p2=b[0]*rad,dp=(b[0]-a[0])*rad,dl=(b[1]-a[1])*rad;
+ const h=Math.sin(dp/2)**2+Math.cos(p1)*Math.cos(p2)*Math.sin(dl/2)**2;
+ return 2*R*Math.atan2(Math.sqrt(h),Math.sqrt(1-h));
+}
+function classify(t){
+ const surface=(t.surface||"").toLowerCase(),smooth=(t.smoothness||"").toLowerCase(),track=(t.tracktype||"").toLowerCase();
+ const mtb=parseInt((t["mtb:scale"]||"").split(";")[0],10);
+ const difficult=new Set(["dirt","mud","sand","rock","rocks","stone","stones","earth","grass","clay"]);
+ const rough=new Set(["gravel","pebblestone","unpaved","ground","crushed_stone"]);
+ const compact=new Set(["compacted","fine_gravel"]);
+ const paved=new Set(["asphalt","paved","concrete","concrete:plates","concrete:lanes","paving_stones","sett","cobblestone","metal","wood"]);
+ if((!Number.isNaN(mtb)&&mtb>=1)||["very_bad","horrible","very_horrible","impassable"].includes(smooth)||["grade4","grade5"].includes(track)||difficult.has(surface))return"difficult";
+ if(smooth==="bad"||track==="grade3"||rough.has(surface))return"rough";
+ if(["grade1","grade2"].includes(track)||compact.has(surface))return"compact";
+ if(paved.has(surface))return"paved";
+ if(!surface&&!track&&["motorway","trunk","primary","secondary","tertiary","residential","living_street","service","unclassified"].includes(t.highway||""))return"paved";
+ return"unknown";
+}
+function queryFor(info){
+ return `[out:json][timeout:90];(\n${info.samples.map(p=>`way(around:45,${p[0].toFixed(6)},${p[1].toFixed(6)})["highway"];`).join("\n")}\n);out tags geom;`;
+}
+function nearest(p,ways){
+ let best=null,bestD=Infinity;
+ for(const w of ways){
+  if(p[0]<w.minLat-.00075||p[0]>w.maxLat+.00075||p[1]<w.minLon-.0011||p[1]>w.maxLon+.0011)continue;
+  const g=w.geometry;
+  for(let j=1;j<g.length;j++){
+   const d=pointSegDistanceMeters(p,[g[j-1].lat,g[j-1].lon],[g[j].lat,g[j].lon]);
+   if(d<bestD){bestD=d;best=w}
+  }
+ }
+ return bestD<=42?{way:best,dist:bestD}:null;
+}
+
+const EPS = ["https://overpass-api.de/api/interpreter",
+             "https://overpass.kumi.systems/api/interpreter"];
+const $ = id => document.getElementById(id);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+let RESULT = null;
+
+/* ── GPX 읽기 ── */
+async function loadDay(d){
+  const url = GPX_DIR + "camino-2027-day" + String(d).padStart(2,"0") + ".gpx";
+  const r = await fetch(url, {cache:"force-cache"});
+  if(!r.ok) throw new Error(url.split("/").pop() + " 를 열지 못했습니다 (" + r.status + ")");
+  const doc = new DOMParser().parseFromString(await r.text(), "application/xml");
+  if(doc.querySelector("parsererror")) throw new Error("GPX 형식 오류");
+  const n = doc.getElementsByTagName("trkpt"), pts = [];
+  for(let i=0;i<n.length;i++){
+    const la=parseFloat(n[i].getAttribute("lat")), lo=parseFloat(n[i].getAttribute("lon"));
+    if(isNaN(la)||isNaN(lo)) continue;
+    const e=n[i].getElementsByTagName("ele")[0];
+    pts.push([la, lo, e ? (parseFloat(e.textContent)||0) : 0]);
+  }
+  if(pts.length<2) throw new Error("트랙이 없습니다");
+  /* Overpass 에 물어볼 지점을 약 350 m 간격으로 솎습니다 */
+  const samples=[pts[0]]; let acc=0;
+  for(let i=1;i<pts.length;i++){
+    acc += hav(pts[i-1], pts[i]);
+    if(acc >= SAMPLE_M){ samples.push(pts[i]); acc = 0; }
+  }
+  if(samples[samples.length-1] !== pts[pts.length-1]) samples.push(pts[pts.length-1]);
+  return {route: ROUTE[d] || ("DAY " + d), points: pts, samples};
+}
+
+async function fetchOverpass(info){
+  let last=null;
+  for(let t=0;t<TRIES;t++){
+    for(const ep of EPS){
+      try{
+        const r=await fetch(ep,{method:"POST",
+          headers:{"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"},
+          body:"data="+encodeURIComponent(queryFor(info))});
+        if(!r.ok) throw new Error("HTTP "+r.status);
+        return await r.json();
+      }catch(e){ last=e; }
+    }
+    if(t<TRIES-1){ $("status").textContent="다시 시도하는 중… ("+(t+2)+"/"+TRIES+")";
+                   await sleep(6000); }
+  }
+  throw last || new Error("알 수 없는 오류");
+}
+
+function analyzeDay(day, info, data){
+  const ways=(data.elements||[]).filter(e=>e.type==="way"&&e.geometry&&e.tags).map(w=>{
+    const la=w.geometry.map(p=>p.lat), lo=w.geometry.map(p=>p.lon);
+    w.minLat=Math.min(...la); w.maxLat=Math.max(...la);
+    w.minLon=Math.min(...lo); w.maxLon=Math.max(...lo); return w;
+  });
+  const totals={paved:0,compact:0,rough:0,difficult:0,unknown:0};
+  const segs=[]; let cur=null, run=0;
+  const P=info.points;
+  for(let i=1;i<P.length;i++){
+    const a=P[i-1], b=P[i];
+    const mid=[(a[0]+b[0])/2,(a[1]+b[1])/2];
+    const m=nearest(mid,ways), tags=(m&&m.way&&m.way.tags)||{};
+    const k=m?classify(tags):"unknown", len=hav(a,b);
+    totals[k]+=len;
+    if(cur && cur.k===k){ cur.len+=len; cur.to=run+len; }
+    else{ if(cur) segs.push(cur);
+          cur={k, from:run, to:run+len, len,
+               name:tags.name||null, surface:tags.surface||null,
+               tracktype:tags.tracktype||null, smoothness:tags.smoothness||null,
+               mtb:tags["mtb:scale"]||null, highway:tags.highway||null,
+               lat:+mid[0].toFixed(5), lon:+mid[1].toFixed(5)}; }
+    run+=len;
+  }
+  if(cur) segs.push(cur);
+
+  const risky = segs.filter(s=>(s.k==="difficult"||s.k==="rough") && s.len>=MIN_RISK)
+    .map(s=>({k:s.k,
+      from_km:+(s.from/1000).toFixed(2), to_km:+(s.to/1000).toFixed(2),
+      len_km:+(s.len/1000).toFixed(2),
+      name:s.name, surface:s.surface, tracktype:s.tracktype,
+      smoothness:s.smoothness, mtb:s.mtb, highway:s.highway,
+      lat:s.lat, lon:s.lon}))
+    .sort((a,b)=>b.len_km-a.len_km);
+
+  const tot=Object.values(totals).reduce((x,y)=>x+y,0);
+  const pct={};
+  Object.keys(totals).forEach(k=>pct[k]=+(totals[k]/tot*100).toFixed(1));
+  return {day:+day, route:info.route, total_km:+(tot/1000).toFixed(2),
+    km:{paved:+(totals.paved/1000).toFixed(2), compact:+(totals.compact/1000).toFixed(2),
+        rough:+(totals.rough/1000).toFixed(2), difficult:+(totals.difficult/1000).toFixed(2),
+        unknown:+(totals.unknown/1000).toFixed(2)},
+    pct, ways:ways.length, samples:info.samples.length, risky};
+}
+
+function row(r, cls, msg){
+  const tr=document.createElement("tr");
+  tr.className=cls||"";
+  if(msg) tr.innerHTML='<td><b>'+r+'</b></td><td colspan="7">'+msg+'</td>';
+  else{
+    const n=x=>'<td class="n">'+x.toFixed(1)+'</td>';
+    tr.innerHTML='<td><b>'+r.day+'</b></td><td class="n">'+r.total_km.toFixed(1)+'</td>'
+      +n(r.km.paved)+n(r.km.compact)+n(r.km.rough)+n(r.km.difficult)+n(r.km.unknown)
+      +'<td class="n">'+r.risky.length+'</td>';
+  }
+  $("tb").appendChild(tr);
+}
+
+$("run").addEventListener("click", async ()=>{
+  $("run").disabled=true; $("dl").style.display="none";
+  $("tb").innerHTML=""; $("risk").innerHTML="";
+  const out={made_at:new Date().toISOString(), min_risk_m:MIN_RISK,
+             sample_m:SAMPLE_M, days:[]};
+
+  for(let i=0;i<DAY_LIST.length;i++){
+    const d=DAY_LIST[i];
+    $("bar").style.width=(i/DAY_LIST.length*100).toFixed(1)+"%";
+    try{
+      $("status").textContent="DAY "+d+" GPX 읽는 중… ("+(i+1)+"/"+DAY_LIST.length+")";
+      const info=await loadDay(d);
+      $("status").textContent="DAY "+d+" · 트랙 "+info.points.length+"점 · 조회 지점 "
+        +info.samples.length+"곳 · Overpass 조회 중…";
+      const data=await fetchOverpass(info);
+      $("status").textContent="DAY "+d+" · OSM way "+(data.elements||[]).length+"개 · 맞추는 중…";
+      await sleep(30);
+      const r=analyzeDay(d, info, data);
+      out.days.push(r); row(r,"done");
+    }catch(e){
+      out.days.push({day:d, error:String(e.message||e)});
+      row(d,"fail","실패 — "+(e.message||e));
+    }
+    if(i<DAY_LIST.length-1) await sleep(GAP_MS);
+  }
+
+  $("bar").style.width="100%";
+  const ok=out.days.filter(x=>!x.error);
+  const allRisk=[];
+  ok.forEach(x=>x.risky.forEach(s=>allRisk.push(Object.assign({day:x.day}, s))));
+  allRisk.sort((a,b)=>b.len_km-a.len_km);
+  out.top_risky=allRisk.slice(0,40);
+  out.summary={
+    total_km:+ok.reduce((s,x)=>s+x.total_km,0).toFixed(2),
+    difficult_km:+ok.reduce((s,x)=>s+x.km.difficult,0).toFixed(2),
+    rough_km:+ok.reduce((s,x)=>s+x.km.rough,0).toFixed(2),
+    unknown_km:+ok.reduce((s,x)=>s+x.km.unknown,0).toFixed(2),
+    days_ok:ok.length, days_failed:out.days.length-ok.length};
+  RESULT=out;
+  $("status").textContent="끝났습니다 — "+ok.length+"일 성공"
+    +(out.summary.days_failed?" · "+out.summary.days_failed+"일 실패":"")
+    +" · 주의 구간 "+allRisk.length+"곳";
+  $("risk").innerHTML = allRisk.length
+    ? "<b>가장 긴 주의 구간</b> — "+allRisk.slice(0,5).map(s=>
+        "DAY "+s.day+" "+s.from_km.toFixed(1)+"–"+s.to_km.toFixed(1)+" km ("
+        +s.len_km.toFixed(1)+" km)").join(" · ")
+    : "300 m 이상인 주의 구간이 없습니다.";
+  $("dl").style.display="inline-block";
+  $("run").disabled=false;
+});
+
+$("dl").addEventListener("click", ()=>{
+  if(!RESULT) return;
+  const b=new Blob([JSON.stringify(RESULT,null,1)],{type:"application/json"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(b); a.download="surface-risk.json";
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{document.body.removeChild(a); URL.revokeObjectURL(a.href);},1500);
+});
+</script>
+</body>
+</html>

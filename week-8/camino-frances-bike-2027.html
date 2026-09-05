@@ -1931,6 +1931,79 @@
     font-variant-numeric:tabular-nums}
   .smap:hover{border-color:var(--flecha);background:#FFFBEE;color:#3B2E00}
   .sbn{padding:10px 12px;font-size:.76rem;color:var(--ink-soft)}
+
+  /* 노면 지도 */
+  .surfleg{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px}
+  .sf{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;color:var(--ink-soft);
+    background:#fff;border:1px solid var(--line);border-radius:999px;padding:4px 11px}
+  .sf::before{content:"";width:11px;height:11px;border-radius:50%;flex:0 0 auto}
+  .sf.g::before{background:#22A45D} .sf.y::before{background:#E8C33A}
+  .sf.o::before{background:#E8853A} .sf.r::before{background:#D33A3A}
+  .sf.k::before{background:#4A4A4A}
+  .surfwrap{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
+  .surfwrap iframe{display:block;width:100%;height:660px;border:0}
+  @media(max-width:760px){ .surfwrap iframe{height:520px} }
+  .surfbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:9px 0 12px;
+    font-size:.74rem;color:var(--ink-soft)}
+  .sfopen{text-decoration:none;font-weight:600;color:var(--camino-blue);
+    border:1px solid var(--line);border-radius:9px;padding:7px 13px;background:#fff}
+  .sfopen:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
+
+  /* ══════════════ 주의 구간 ══════════════ */
+  .nsum{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:13px}
+  @media(max-width:900px){ .nsum{grid-template-columns:1fr 1fr} }
+  .nc{border:1px solid var(--line);border-radius:11px;background:#fff;padding:10px 12px}
+  .nc small{display:block;font-size:.65rem;color:var(--ink-soft)}
+  .nc b{display:block;font-family:'Gowun Batang',serif;font-size:1.2rem;margin-top:2px;
+    color:var(--camino-blue);font-variant-numeric:tabular-nums}
+  .nc i{display:block;font-style:normal;font-size:.63rem;color:#A79E86;margin-top:1px}
+  .nc.g b{color:#22A45D} .nc.o b{color:#E8853A} .nc.r b{color:#D33A3A} .nc.k b{color:#6B6B66}
+
+  .rtab td{font-size:.78rem;vertical-align:middle}
+  .rtab tr.difficult td{background:#FDF3F3}
+  .rtab tr.rough td{background:#FFFBEE}
+
+  .rdays{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+  @media(max-width:860px){ .rdays{grid-template-columns:1fr} }
+  .rd{border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden}
+  .rd.hot{border-color:#E3B7B7} .rd.warm{border-color:#E7D9A8}
+  .rdh{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:9px 12px;
+    background:#F1EEE4;border-bottom:1px solid var(--line)}
+  .rd.hot .rdh{background:#FBEDEB} .rd.warm .rdh{background:#FBF3DF}
+  .rdh b{font-family:'Gowun Batang',serif;font-size:.96rem;color:var(--camino-blue)}
+  .rdh span{font-size:.66rem;color:#fff;background:var(--camino-blue);border-radius:999px;
+    padding:2px 8px}
+  .rdh em{font-style:normal;font-size:.74rem;color:var(--ink-soft)}
+  .rtag{margin-left:auto;font-style:normal;font-size:.6rem;font-weight:700;color:#fff;
+    background:#D33A3A;border-radius:999px;padding:2px 9px}
+  .rbar{display:flex;height:9px;margin:0}
+  .rbar i{display:block;height:100%}
+  .rbar i.g{background:#22A45D} .rbar i.y{background:#E8C33A}
+  .rbar i.o{background:#E8853A} .rbar i.r{background:#D33A3A} .rbar i.k{background:#4A4A4A}
+  .rnum{display:flex;flex-wrap:wrap;gap:9px;padding:7px 12px;font-size:.68rem;
+    color:var(--ink-soft);border-bottom:1px solid var(--line2);
+    font-variant-numeric:tabular-nums}
+  .rnum span::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;
+    margin-right:4px}
+  .rnum .g::before{background:#22A45D} .rnum .y::before{background:#E8C33A}
+  .rnum .o::before{background:#E8853A} .rnum .r::before{background:#D33A3A}
+  .rnum .k::before{background:#4A4A4A}
+  .rl{list-style:none;padding:5px 10px 8px;margin:0}
+  .rl li{display:flex;align-items:center;gap:8px;padding:6px 3px;
+    border-bottom:1px dashed #F0EDE4;font-size:.76rem}
+  .rl li:last-child{border-bottom:none}
+  .rl li.more{color:#A79E86;font-size:.7rem;justify-content:center;padding-top:8px}
+  .rkm{flex:0 0 78px;font-size:.72rem;font-weight:700;font-variant-numeric:tabular-nums;
+    color:var(--ink-soft);text-align:right}
+  .rl li.difficult .rkm{color:#D33A3A}
+  .rw{flex:1;min-width:0}
+  .rw b{display:block;font-size:.78rem;color:var(--ink)}
+  .rw small{display:block;font-size:.67rem;color:#A79E86;margin-top:1px}
+  .rmap{flex:0 0 auto;text-decoration:none;border:1px solid var(--line);border-radius:8px;
+    padding:4px 10px;font-size:.68rem;font-weight:700;color:var(--camino-blue);
+    background:#F7FAFF;white-space:nowrap}
+  .rmap:hover{border-color:var(--flecha);background:#FFFBEE;color:#3B2E00}
+  .rnone{padding:10px 12px;font-size:.74rem;color:var(--ok)}
 </style>
 
 <!-- ══════════════════════════════════════════════════════════════════════
@@ -2141,6 +2214,41 @@
     </table>
     </div>
   </div>
+
+    <h3 class="gh3" style="margin-top:20px">노면 확인 · OSM</h3>
+    <p class="jp">아스팔트인지 자갈인지 흙길인지를 <b>OpenStreetMap</b> 자료로 색칠해 봅니다.
+    GPX 에는 노면 정보가 없어서, 이것이 우리가 확인할 수 있는 유일한 방법입니다.<br>
+    날짜 단추를 누르면 그 날로 이동하고, <b>OSM 노면 분석</b>을 누르면 Overpass 서버에서
+    그 구간을 조회합니다. <b>전체 Camino 보기</b>로 12일 전체를 한 번에 볼 수도 있습니다.</p>
+
+    <div class="surfleg">
+      <span class="sf g">아스팔트 · 포장</span>
+      <span class="sf y">다진 자갈</span>
+      <span class="sf o">자갈 · 거친 길</span>
+      <span class="sf r">흙 · 바위 · MTB 난이도</span>
+      <span class="sf k">자료 없음</span>
+    </div>
+
+    <div class="surfwrap">
+      <iframe src="route/camino-2027-osm-surface-all-days.html"
+              title="Camino 2027 OSM 노면 지도" loading="lazy"></iframe>
+    </div>
+    <div class="surfbar">
+      <a class="sfopen" href="route/camino-2027-osm-surface-all-days.html"
+         target="_blank" rel="noopener">새 창에서 크게 보기 ↗</a>
+      <span>DAY 8 은 레온 휴식일이라 <b>💤</b> 로 표시됩니다</span>
+    </div>
+
+    <div class="bgnote">
+      <b>참고로만 보세요</b>
+      OSM 은 자원봉사자가 만드는 자료라 <b>빠지거나 오래된 구간</b>이 있습니다.
+      <span style="color:var(--ink-soft)">자료 없음(검정)</span> 이 나와도 실제로는
+      멀쩡한 포장길인 경우가 많습니다.
+      조회는 Overpass 서버를 거치므로 <b>몇 초에서 수십 초</b> 걸리고, 가끔 실패합니다 —
+      그때는 잠시 뒤 다시 누르면 됩니다.<br>
+      <b>붉은 구간</b>이 길게 나오는 날은 <a href="#secG">GPX 우회로</a>와 함께 보시고,
+      짐 실은 자전거로 지날 만한지 미리 판단해 두세요.
+    </div>
 </section>
 
 <!-- ───────── Ⅲ. 날짜별 카드 ───────── -->
@@ -3181,6 +3289,66 @@ Gracias! Buen Camino!</pre>
   </div>
 </section>
 
+<!-- ───────── 주의 구간 ───────── -->
+<section id="secN" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="no">Superficie</div>
+      <h2>주의 구간</h2>
+      <p>OSM 노면 자료를 12일치 미리 조회해 <b>300 m 이상 이어지는 거친 구간</b>만 뽑았습니다.
+      조회 없이 바로 보이므로 출발 전에도, 길 위에서도 열 수 있습니다.</p>
+    </div>
+
+    <div class="nsum">
+      <div class="nc "><small>전체 주행</small><b>782 km</b><i>12일</i></div><div class="nc g"><small>포장 · 다짐</small><b>542 km</b><i>69%</i></div><div class="nc o"><small>자갈 · 거친 길</small><b>111 km</b><i>14%</i></div><div class="nc r"><small>흙 · 바위</small><b>18.2 km</b><i>2%</i></div><div class="nc k"><small>자료 없음</small><b>111 km</b><i>14%</i></div>
+    </div>
+
+    <div class="bgwarn">
+      <b>DAY 1 이 가장 험합니다</b>
+      피레네 <b>14.9 ~ 23.9 km</b> 구간이 거의 이어져 있습니다 —
+      흙길 <b>3.4 km</b>, 거친 track 5급 <b>3.4 km</b>, 비포장 <b>1.6 km</b>.
+      전체 782 km 중 흙·바위가 18.2 km 인데 그중 <b>7.2 km 가 첫날</b>에 몰려 있습니다.
+      <b>-33% 내리막</b>도 이 구간입니다. 짐을 싣고 처음 타는 자전거로 지나야 하니
+      <b>내려서 끌 각오</b>를 하고 시간을 넉넉히 잡으세요.
+    </div>
+
+    <h3 class="gh3">가장 긴 여섯 곳</h3>
+    <div class="sched-wrap">
+      <table class="sched rtab" style="min-width:620px">
+        <thead><tr><th>날</th><th>구간</th><th>길이</th><th>노면</th><th></th></tr></thead>
+        <tbody><tr class="rough"><td class="sd"><b>DAY 7</b></td><td class="km">17.8 – 26.4</td><td class="km"><b>8.7 km</b></td><td class="sv2">자갈 · 다짐 2급</td><td><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.42371,-5.22344" target="_blank" rel="noopener">지도</a></td></tr><tr class="rough"><td class="sd"><b>DAY 9</b></td><td class="km">37.5 – 44.1</td><td class="km"><b>6.7 km</b></td><td class="sv2">굵은 자갈 · 자갈 3급</td><td><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.46053,-5.93491" target="_blank" rel="noopener">지도</a></td></tr><tr class="rough"><td class="sd"><b>DAY 5</b></td><td class="km">71.1 – 76.4</td><td class="km"><b>5.3 km</b></td><td class="sv2">다진 흙 · 자갈 3급</td><td><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.33688,-3.93740" target="_blank" rel="noopener">지도</a></td></tr><tr class="rough"><td class="sd"><b>DAY 7</b></td><td class="km">10.4 – 15.7</td><td class="km"><b>5.3 km</b></td><td class="sv2">자갈</td><td><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.38952,-5.14751" target="_blank" rel="noopener">지도</a></td></tr><tr class="rough"><td class="sd"><b>DAY 4</b></td><td class="km">24.9 – 29.8</td><td class="km"><b>4.9 km</b></td><td class="sv2">자갈 · 다짐 2급</td><td><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.43375,-2.83364" target="_blank" rel="noopener">지도</a></td></tr><tr class="rough"><td class="sd"><b>DAY 9</b></td><td class="km">53.5 – 57.6</td><td class="km"><b>4.1 km</b></td><td class="sv2">자갈</td><td><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.45910,-6.10785" target="_blank" rel="noopener">지도</a></td></tr></tbody>
+      </table>
+    </div>
+    <p class="jp" style="margin-top:8px">거리는 <b>그날 출발점 기준</b>입니다.
+    가민에 넣은 GPX 의 거리 표시와 같으니 주행 중 바로 대조할 수 있습니다.</p>
+
+    <h3 class="gh3">날짜별</h3>
+    <div class="rdays">
+      <div class="rd hot"><div class="rdh"><b>DAY 1</b><span>5/9</span><em>생장 → 수비리</em><i class="rtag">거친길 7.2 km</i></div><div class="rbar"><i class="g" style="width:37.66%"></i><i class="y" style="width:6.96%"></i><i class="o" style="width:3.58%"></i><i class="r" style="width:15.78%"></i><i class="k" style="width:36.02%"></i></div><div class="rnum"><span class="g">포장 17</span><span class="y">다짐 3</span><span class="o">자갈 2</span><span class="r">거친 7.2</span><span class="k">미상 17</span></div><ul class="rl"><li class="difficult"><span class="rkm">20.4–23.9</span><span class="rw"><b>3.5 km</b><small>흙길</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=43.02618,-1.29557" target="_blank" rel="noopener">지도</a></li><li class="difficult"><span class="rkm">16.6–18.8</span><span class="rw"><b>2.1 km</b><small>거친 5급 · 노면 나쁨</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=43.04474,-1.26570" target="_blank" rel="noopener">지도</a></li><li class="rough"><span class="rkm">18.8–20.4</span><span class="rw"><b>1.6 km</b><small>비포장 · 다짐 2급 · 노면 나쁨</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=43.03710,-1.28889" target="_blank" rel="noopener">지도</a></li><li class="difficult"><span class="rkm">15.3–16.6</span><span class="rw"><b>1.3 km</b><small>거친 5급 · 노면 나쁨</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=43.05501,-1.26652" target="_blank" rel="noopener">지도</a></li><li class="difficult"><span class="rkm">14.9–15.3</span><span class="rw"><b>0.4 km</b><small>거친 5급</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=43.05861,-1.26735" target="_blank" rel="noopener">지도</a></li></ul></div><div class="rd "><div class="rdh"><b>DAY 2</b><span>5/10</span><em>수비리 → 에스테야</em></div><div class="rbar"><i class="g" style="width:41.20%"></i><i class="y" style="width:23.53%"></i><i class="o" style="width:5.84%"></i><i class="r" style="width:1.97%"></i><i class="k" style="width:27.48%"></i></div><div class="rnum"><span class="g">포장 28</span><span class="y">다짐 16</span><span class="o">자갈 4</span><span class="r">거친 1.4</span><span class="k">미상 19</span></div><ul class="rl"><li class="rough"><span class="rkm">61.8–63.4</span><span class="rw"><b>1.6 km</b><small>다진 흙 · 자갈 3급</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.66621,-1.96088" target="_blank" rel="noopener">지도</a></li><li class="rough"><span class="rkm">56.9–58.0</span><span class="rw"><b>1.1 km</b><small>다진 흙 · 자갈 3급</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.67966,-1.91484" target="_blank" rel="noopener">지도</a></li><li class="difficult"><span class="rkm">63.4–64.0</span><span class="rw"><b>0.7 km</b><small>흙길 · 자갈 3급</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.66353,-1.97874" target="_blank" rel="noopener">지도</a></li><li class="rough"><span class="rkm">45.2–45.8</span><span class="rw"><b>0.6 km</b><small>굵은 자갈 · 다짐 2급</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.67854,-1.79309" target="_blank" rel="noopener">지도</a></li><li class="rough"><span class="rkm">65.4–66.0</span><span class="rw"><b>0.5 km</b><small>자갈 3급</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.66031,-1.99828" target="_blank" rel="noopener">지도</a></li><li class="difficult"><span class="rkm">45.8–46.3</span><span class="rw"><b>0.5 km</b><small>흙길</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.67709,-1.79997" target="_blank" rel="noopener">지도</a></li></ul></div><div class="rd "><div class="rdh"><b>DAY 3</b><span>5/11</span><em>에스테야 → 나바레테</em></div><div class="rbar"><i class="g" style="width:23.26%"></i><i class="y" style="width:45.71%"></i><i class="o" style="width:5.17%"></i><i class="r" style="width:2.23%"></i><i class="k" style="width:23.61%"></i></div><div class="rnum"><span class="g">포장 14</span><span class="y">다짐 28</span><span class="o">자갈 3</span><span class="r">거친 1.4</span><span class="k">미상 14</span></div><ul class="rl"><li class="rough"><span class="rkm">55.3–56.6</span><span class="rw"><b>1.3 km</b><small>다진 흙 · 자갈 3급</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.44674,-2.50537" target="_blank" rel="noopener">지도</a></li><li class="difficult"><span class="rkm">56.6–57.4</span><span class="rw"><b>0.8 km</b><small>자갈 · 매우 나쁨</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.44154,-2.51478" target="_blank" rel="noopener">지도</a></li><li class="rough"><span class="rkm">8.4–9.1</span><span class="rw"><b>0.7 km</b><small>맨땅</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.63191,-2.09580" target="_blank" rel="noopener">지도</a></li><li class="rough"><span class="rkm">59.1–59.7</span><span class="rw"><b>0.6 km</b><small>고운 자갈 · 자갈 3급</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.43643,-2.54252" target="_blank" rel="noopener">지도</a></li><li class="difficult"><span class="rkm">18.4–18.9</span><span class="rw"><b>0.5 km</b><small>흙길</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.59141,-2.17777" target="_blank" rel="noopener">지도</a></li><li class="rough"><span class="rkm">54.7–55.3</span><span class="rw"><b>0.5 km</b><small>고운 자갈 · 자갈 3급</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.44738,-2.50033" target="_blank" rel="noopener">지도</a></li></ul></div><div class="rd "><div class="rdh"><b>DAY 4</b><span>5/12</span><em>나바레테 → 벨로라도</em></div><div class="rbar"><i class="g" style="width:19.23%"></i><i class="y" style="width:60.82%"></i><i class="o" style="width:14.97%"></i><i class="r" style="width:0.72%"></i><i class="k" style="width:4.24%"></i></div><div class="rnum"><span class="g">포장 11</span><span class="y">다짐 36</span><span class="o">자갈 9</span><span class="r">거친 0.4</span><span class="k">미상 2</span></div><ul class="rl"><li class="rough"><span class="rkm">24.9–29.8</span><span class="rw"><b>4.9 km</b><small>자갈 · 다짐 2급</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.43375,-2.83364" target="_blank" rel="noopener">지도</a></li><li class="rough"><span class="rkm">5.4–7.5</span><span class="rw"><b>2.1 km</b><small>자갈 · 다짐 2급</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.41219,-2.61449" target="_blank" rel="noopener">지도</a></li><li class="rough"><span class="rkm">16.6–17.8</span><span class="rw"><b>1.2 km</b><small>비포장 · 다짐 2급</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.41472,-2.74078" target="_blank" rel="noopener">지도</a></li><li class="difficult"><span class="rkm">7.5–8.0</span><span class="rw"><b>0.4 km</b><small>흙길</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.41132,-2.64051" target="_blank" rel="noopener">지도</a></li></ul></div><div class="rd hot"><div class="rdh"><b>DAY 5</b><span>5/13</span><em>벨로라도 → 카스트로헤리스</em><i class="rtag">거친길 2.4 km</i></div><div class="rbar"><i class="g" style="width:32.44%"></i><i class="y" style="width:27.64%"></i><i class="o" style="width:33.21%"></i><i class="r" style="width:2.69%"></i><i class="k" style="width:4.03%"></i></div><div class="rnum"><span class="g">포장 29</span><span class="y">다짐 25</span><span class="o">자갈 30</span><span class="r">거친 2.4</span><span class="k">미상 4</span></div><ul class="rl"><li class="rough"><span class="rkm">71.1–76.4</span><span class="rw"><b>5.3 km</b><small>다진 흙 · 자갈 3급</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.33688,-3.93740" target="_blank" rel="noopener">지도</a></li><li class="rough"><span class="rkm">76.5–80.5</span><span class="rw"><b>4.0 km</b><small>다진 흙 · 자갈 3급</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.32418,-3.99786" target="_blank" rel="noopener">지도</a></li><li class="rough"><span class="rkm">81.0–84.6</span><span class="rw"><b>3.6 km</b><small>다진 흙 · 자갈 3급</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.31397,-4.04975" target="_blank" rel="noopener">지도</a></li><li class="rough"><span class="rkm">16.4–19.9</span><span class="rw"><b>3.5 km</b><small>다진 흙 · 다짐 2급 · 노면 나쁨</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.36624,-3.35609" target="_blank" rel="noopener">지도</a></li><li class="rough"><span class="rkm">64.9–68.2</span><span class="rw"><b>3.3 km</b><small>다진 흙 · 자갈 3급</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.34094,-3.86489" target="_blank" rel="noopener">지도</a></li><li class="difficult"><span class="rkm">30.4–32.7</span><span class="rw"><b>2.3 km</b><small>흙 4급</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.37806,-3.51685" target="_blank" rel="noopener">지도</a></li><li class="more">그 밖에 10곳 더 · 대부분 1 km 미만</li></ul></div><div class="rd "><div class="rdh"><b>DAY 6</b><span>5/14</span><em>카스트로헤리스 → 사아군</em></div><div class="rbar"><i class="g" style="width:16.24%"></i><i class="y" style="width:71.45%"></i><i class="o" style="width:9.11%"></i><i class="k" style="width:3.20%"></i></div><div class="rnum"><span class="g">포장 13</span><span class="y">다짐 59</span><span class="o">자갈 8</span><span class="r">거친 0.0</span><span class="k">미상 3</span></div><ul class="rl"><li class="rough"><span class="rkm">33.7–37.5</span><span class="rw"><b>3.8 km</b><small>자갈 · 다짐 2급</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.29900,-4.50156" target="_blank" rel="noopener">지도</a></li><li class="rough"><span class="rkm">18.9–20.4</span><span class="rw"><b>1.5 km</b><small>다진 흙 · 자갈 3급</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.26082,-4.34864" target="_blank" rel="noopener">지도</a></li><li class="rough"><span class="rkm">77.7–78.9</span><span class="rw"><b>1.2 km</b><small>다진 흙 · 자갈 3급</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.36545,-4.98161" target="_blank" rel="noopener">지도</a></li><li class="rough"><span class="rkm">8.2–9.0</span><span class="rw"><b>0.8 km</b><small>자갈 3급</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.28153,-4.23719" target="_blank" rel="noopener">지도</a></li></ul></div><div class="rd warm"><div class="rdh"><b>DAY 7</b><span>5/15</span><em>사아군 → 레온</em></div><div class="rbar"><i class="g" style="width:22.30%"></i><i class="y" style="width:26.85%"></i><i class="o" style="width:42.75%"></i><i class="k" style="width:7.90%"></i></div><div class="rnum"><span class="g">포장 12</span><span class="y">다짐 15</span><span class="o">자갈 23</span><span class="r">거친 0.1</span><span class="k">미상 4</span></div><ul class="rl"><li class="rough"><span class="rkm">17.8–26.4</span><span class="rw"><b>8.7 km</b><small>자갈 · 다짐 2급</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.42371,-5.22344" target="_blank" rel="noopener">지도</a></li><li class="rough"><span class="rkm">10.4–15.7</span><span class="rw"><b>5.3 km</b><small>자갈</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.38952,-5.14751" target="_blank" rel="noopener">지도</a></li><li class="rough"><span class="rkm">1.9–4.2</span><span class="rw"><b>2.3 km</b><small>자갈</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.37384,-5.04935" target="_blank" rel="noopener">지도</a></li><li class="rough"><span class="rkm">28.1–30.0</span><span class="rw"><b>1.9 km</b><small>자갈 · 다짐 2급</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.46812,-5.33115" target="_blank" rel="noopener">지도</a></li><li class="rough"><span class="rkm">4.5–5.7</span><span class="rw"><b>1.2 km</b><small>자갈</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.38283,-5.07811" target="_blank" rel="noopener">지도</a></li><li class="rough"><span class="rkm">15.9–17.0</span><span class="rw"><b>1.1 km</b><small>자갈</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.41407,-5.20420" target="_blank" rel="noopener">지도</a></li><li class="more">그 밖에 5곳 더 · 대부분 1 km 미만</li></ul></div><div class="rd "><div class="rdh"><b>DAY 9</b><span>5/17</span><em>레온 → 라바날</em></div><div class="rbar"><i class="g" style="width:29.87%"></i><i class="y" style="width:16.16%"></i><i class="o" style="width:19.67%"></i><i class="k" style="width:34.30%"></i></div><div class="rnum"><span class="g">포장 21</span><span class="y">다짐 11</span><span class="o">자갈 14</span><span class="r">거친 0.0</span><span class="k">미상 24</span></div><ul class="rl"><li class="rough"><span class="rkm">37.5–44.1</span><span class="rw"><b>6.7 km</b><small>굵은 자갈 · 자갈 3급</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.46053,-5.93491" target="_blank" rel="noopener">지도</a></li><li class="rough"><span class="rkm">53.5–57.6</span><span class="rw"><b>4.1 km</b><small>자갈</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.45910,-6.10785" target="_blank" rel="noopener">지도</a></li><li class="rough"><span class="rkm">32.5–34.3</span><span class="rw"><b>1.8 km</b><small>자갈 · 다짐 2급</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.46341,-5.88828" target="_blank" rel="noopener">지도</a></li><li class="rough"><span class="rkm">51.7–52.5</span><span class="rw"><b>0.8 km</b><small>자갈 · 다짐 2급</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.46058,-6.08707" target="_blank" rel="noopener">지도</a></li></ul></div><div class="rd "><div class="rdh"><b>DAY 10</b><span>5/18</span><em>라바날 → 베가 데 발카르세</em></div><div class="rbar"><i class="g" style="width:86.13%"></i><i class="y" style="width:0.81%"></i><i class="o" style="width:5.45%"></i><i class="k" style="width:7.54%"></i></div><div class="rnum"><span class="g">포장 64</span><span class="y">다짐 1</span><span class="o">자갈 4</span><span class="r">거친 0.1</span><span class="k">미상 6</span></div><ul class="rl"><li class="rough"><span class="rkm">46.1–48.4</span><span class="rw"><b>2.3 km</b><small>자갈 · 다짐 2급</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.58729,-6.67918" target="_blank" rel="noopener">지도</a></li><li class="rough"><span class="rkm">54.8–56.5</span><span class="rw"><b>1.6 km</b><small>자갈 · 다짐 2급</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.60137,-6.77667" target="_blank" rel="noopener">지도</a></li></ul></div><div class="rd "><div class="rdh"><b>DAY 11</b><span>5/19</span><em>베가 데 발카르세 → 사리아</em></div><div class="rbar"><i class="g" style="width:94.88%"></i><i class="r" style="width:3.02%"></i><i class="k" style="width:1.80%"></i></div><div class="rnum"><span class="g">포장 59</span><span class="y">다짐 0</span><span class="o">자갈 0</span><span class="r">거친 1.9</span><span class="k">미상 1</span></div><ul class="rl"><li class="difficult"><span class="rkm">8.8–10.6</span><span class="rw"><b>1.8 km</b><small>흙길 · 자갈 3급 · 매우 나쁨</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.69836,-6.99880" target="_blank" rel="noopener">지도</a></li></ul></div><div class="rd "><div class="rdh"><b>DAY 12</b><span>5/20</span><em>사리아 → 아르수아</em></div><div class="rbar"><i class="g" style="width:49.45%"></i><i class="y" style="width:21.28%"></i><i class="o" style="width:17.27%"></i><i class="k" style="width:12.01%"></i></div><div class="rnum"><span class="g">포장 38</span><span class="y">다짐 16</span><span class="o">자갈 13</span><span class="r">거친 0.0</span><span class="k">미상 9</span></div><ul class="rl"><li class="rough"><span class="rkm">1.7–4.1</span><span class="rw"><b>2.5 km</b><small>맨땅 · 자갈 3급</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.77839,-7.42366" target="_blank" rel="noopener">지도</a></li><li class="rough"><span class="rkm">54.1–55.7</span><span class="rw"><b>1.6 km</b><small>맨땅</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.87969,-7.93155" target="_blank" rel="noopener">지도</a></li><li class="rough"><span class="rkm">29.8–31.1</span><span class="rw"><b>1.3 km</b><small>맨땅</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.82150,-7.68196" target="_blank" rel="noopener">지도</a></li><li class="rough"><span class="rkm">32.8–34.0</span><span class="rw"><b>1.2 km</b><small>다진 흙 · 자갈 3급</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.83320,-7.71205" target="_blank" rel="noopener">지도</a></li><li class="rough"><span class="rkm">15.6–16.7</span><span class="rw"><b>1.1 km</b><small>맨땅</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.78421,-7.55208" target="_blank" rel="noopener">지도</a></li><li class="rough"><span class="rkm">50.4–51.5</span><span class="rw"><b>1.1 km</b><small>맨땅</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.87029,-7.89119" target="_blank" rel="noopener">지도</a></li><li class="more">그 밖에 7곳 더 · 대부분 1 km 미만</li></ul></div><div class="rd hot"><div class="rdh"><b>DAY 13</b><span>5/21</span><em>아르수아 → 산티아고</em><i class="rtag">거친길 3.4 km</i></div><div class="rbar"><i class="g" style="width:42.32%"></i><i class="y" style="width:22.23%"></i><i class="o" style="width:5.20%"></i><i class="r" style="width:8.62%"></i><i class="k" style="width:21.66%"></i></div><div class="rnum"><span class="g">포장 16</span><span class="y">다짐 9</span><span class="o">자갈 2</span><span class="r">거친 3.4</span><span class="k">미상 8</span></div><ul class="rl"><li class="rough"><span class="rkm">3.7–5.4</span><span class="rw"><b>1.8 km</b><small>맨땅</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.92636,-8.19644" target="_blank" rel="noopener">지도</a></li><li class="difficult"><span class="rkm">9.5–10.9</span><span class="rw"><b>1.4 km</b><small>흙길</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.92235,-8.25884" target="_blank" rel="noopener">지도</a></li><li class="difficult"><span class="rkm">15.6–16.5</span><span class="rw"><b>0.9 km</b><small>흙길</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.91651,-8.32373" target="_blank" rel="noopener">지도</a></li><li class="difficult"><span class="rkm">8.3–9.0</span><span class="rw"><b>0.7 km</b><small>흙길</small></span><a class="rmap" href="https://www.google.com/maps/search/?api=1&query=42.91784,-8.24601" target="_blank" rel="noopener">지도</a></li></ul></div>
+    </div>
+
+    <div class="bgnote">
+      <b>우회로가 효과가 있었습니다</b>
+      DAY 10 은 <b>64 km 가 포장</b>, DAY 11 은 <b>59 km 가 포장</b>입니다.
+      원래 도보 노선이라면 크루스 데 페로와 오 세브레이로 내리막이 자갈·바위인데,
+      포장도로로 갈아 끼운 덕분입니다. 두 날의 주의 구간이 각각 2곳·1곳뿐인 것이 그 증거입니다.
+    </div>
+
+    <div class="bgnote">
+      <b>자료 없음 111 km 는 어떻게 보나</b>
+      전체의 <b>14%</b> 입니다. OSM 에 노면 태그가 없는 길이라는 뜻이지
+      나쁜 길이라는 뜻이 아닙니다. 대부분 시골 포장도로입니다.
+      다만 DAY 9 (23.6 km) 와 DAY 2 (18.9 km) 는 자료 없음이 많으니,
+      그날은 <a href="#sec2">노면 지도</a> 에서 직접 확인해 보시는 편이 좋겠습니다.
+    </div>
+
+    <div class="note">OSM 은 자원봉사 자료라 실제와 다를 수 있습니다.
+      2026-09-05 에 조회한 값이며,
+      기준은 <b>300 m 이상</b> 이어지는 구간입니다.
+      더 짧은 거친 길은 목록에 없지만 실제로는 있습니다.</div>
+  </div>
+</section>
+
 <!-- ───────── 세요 ───────── -->
 <section id="secY" style="padding-top:0">
   <div class="wrap">
@@ -3242,6 +3410,7 @@ Gracias! Buen Camino!</pre>
     </div>
 
     <div class="note">도장을 찍은 크레덴시알은
+      <a href="#secN">주의 구간 · 노면</a>
       <a href="#secY">세요 · 도장 받는 곳</a>
       <a href="#secP">📕 디지털 순례자 여권</a> 에서 사진으로 기록할 수 있습니다.
       종이를 잃어버려도 기록이 남고, 산티아고에서 순서를 확인할 때도 편합니다.</div>
@@ -7855,7 +8024,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260904-2352";
+  var BUILD="20260905-0235";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
