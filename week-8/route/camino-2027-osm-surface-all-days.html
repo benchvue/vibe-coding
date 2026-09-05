@@ -11,7 +11,13 @@
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{height:100%}
   body{font-family:'IBM Plex Sans KR',system-ui,sans-serif;background:#F7F5EE;color:#2B2B29}
-  #map{height:100%;width:100%;background:#EDEAE0}
+  #map{position:absolute;top:0;left:0;right:0;height:75%;background:#EDEAE0}
+  #prof{position:absolute;left:0;right:0;bottom:0;height:25%;background:#fff;
+    border-top:1px solid rgba(0,0,0,.12)}
+  #prof svg{display:block;width:100%;height:100%}
+  .pf-ax{font-size:10px;fill:#8A7F63}
+  .pf-lab{font-size:11px;font-weight:700;fill:#fff}
+  .pf-sub{font-size:9px;fill:#fff;opacity:.85}
 
   .panel{position:absolute;z-index:1000;left:12px;top:12px;
     width:min(560px,calc(100vw - 24px));background:rgba(255,255,255,.96);
@@ -83,6 +89,7 @@
 </head>
 <body>
 <div id="map"></div>
+<div id="prof"></div>
 <div class="panel" id="panel">
   <button class="fold" id="fold" aria-expanded="true">
     <span class="ft">
@@ -169,6 +176,7 @@ const $=id=>document.getElementById(id);
 const esc=t=>String(t==null?"":t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 let map, layer, liveLayer, dayLayer, SEG=null, IDX=null, GPX={}, CUM={}, selected=1;
 let LIVE={}, liveOn=false, sumHtml="", lastPts=null;
+let ELE={}, profNow=null;
 
 function hav(a,b){
   const R=6371000, r=Math.PI/180;
@@ -192,14 +200,17 @@ async function loadGpx(d){
   if(!r.ok) throw new Error("열지 못했습니다 — "+new URL(url, location.href).pathname
     +" ("+r.status+")");
   const doc=new DOMParser().parseFromString(await r.text(),"application/xml");
-  const n=doc.getElementsByTagName("trkpt"), pts=[];
+  const n=doc.getElementsByTagName("trkpt"), pts=[], ele=[];
   for(let i=0;i<n.length;i++){
     const la=parseFloat(n[i].getAttribute("lat")), lo=parseFloat(n[i].getAttribute("lon"));
-    if(!isNaN(la)&&!isNaN(lo)) pts.push([la,lo]);
+    if(isNaN(la)||isNaN(lo)) continue;
+    pts.push([la,lo]);
+    const e=n[i].getElementsByTagName("ele")[0];
+    ele.push(e ? (parseFloat(e.textContent)||0) : 0);
   }
   const cum=[0];
   for(let i=1;i<pts.length;i++) cum.push(cum[i-1]+hav(pts[i-1],pts[i]));
-  GPX[d]=pts; CUM[d]=cum;
+  GPX[d]=pts; CUM[d]=cum; ELE[d]=ele;
   return pts;
 }
 
@@ -213,8 +224,162 @@ function stemIcon(text, color, sub, big){
       +esc(text)+(sub?'<i>'+esc(sub)+'</i>':'')+'</span>'});
 }
 
+/* ══════════════════════════════════════════════════════════════════════
+   고도 프로파일 — 오른쪽이 출발, 왼쪽이 도착
+   노면 색으로 칠해 오르막과 노면을 한 번에 봅니다.
+   ══════════════════════════════════════════════════════════════════════ */
+const PW=1000, PH=230, PL=6, PR=6, PT=34, PB=26;
+
+function drawProfile(cfg){
+  /* cfg = {ele:[], cum:[](m), runs:[[k,n]], left:{name,km}, right:{name,km}, color} */
+  profNow=cfg;
+  const el=document.getElementById("prof");
+  if(!cfg || !cfg.ele || cfg.ele.length<2){ el.innerHTML=""; return; }
+  const E=cfg.ele, C=cfg.cum, tot=C[C.length-1];
+  let lo=Infinity, hi=-Infinity;
+  for(const v of E){ if(v<lo)lo=v; if(v>hi)hi=v; }
+  if(hi-lo<50){ hi=lo+50; }
+  const pad=(hi-lo)*0.12;
+  lo-=pad; hi+=pad;
+  /* 오른쪽이 0 km */
+  const X=m=>PW-PR-(m/tot)*(PW-PL-PR);
+  const Y=e=>PT+(1-(e-lo)/(hi-lo))*(PH-PT-PB);
+
+  let h='<svg viewBox="0 0 '+PW+' '+PH+'" preserveAspectRatio="none">';
+  /* 노면 색으로 칠하기 */
+  if(cfg.runs && cfg.runs.length){
+    let i=0;
+    cfg.runs.forEach(r=>{
+      const k=r[0], n=r[1], a=i, b=Math.min(i+n, E.length-1);
+      if(b>a){
+        let d="M"+X(C[a]).toFixed(1)+" "+(PH-PB).toFixed(1);
+        for(let j=a;j<=b;j++) d+="L"+X(C[j]).toFixed(1)+" "+Y(E[j]).toFixed(1);
+        d+="L"+X(C[b]).toFixed(1)+" "+(PH-PB).toFixed(1)+"Z";
+        h+='<path d="'+d+'" fill="'+COLOR[k]+'" opacity="0.82"/>';
+      }
+      i+=n;
+    });
+  }else{
+    let d="M"+X(0).toFixed(1)+" "+(PH-PB).toFixed(1);
+    for(let j=0;j<E.length;j++) d+="L"+X(C[j]).toFixed(1)+" "+Y(E[j]).toFixed(1);
+    d+="L"+X(tot).toFixed(1)+" "+(PH-PB).toFixed(1)+"Z";
+    h+='<path d="'+d+'" fill="#9ca3af" opacity="0.7"/>';
+  }
+  /* 능선 */
+  let line="";
+  for(let j=0;j<E.length;j+=Math.max(1,Math.floor(E.length/600)))
+    line+=(line?"L":"M")+X(C[j]).toFixed(1)+" "+Y(E[j]).toFixed(1);
+  h+='<path d="'+line+'" fill="none" stroke="rgba(0,0,0,.45)" stroke-width="1.4"/>';
+  /* 바닥선 */
+  h+='<line x1="'+PL+'" y1="'+(PH-PB)+'" x2="'+(PW-PR)+'" y2="'+(PH-PB)
+    +'" stroke="#D8D3C4" stroke-width="1"/>';
+  /* 고도 눈금 */
+  h+='<text class="pf-ax" x="'+(PL+4)+'" y="'+(PT+11)+'">'+Math.round(hi)+' m</text>';
+  h+='<text class="pf-ax" x="'+(PL+4)+'" y="'+(PH-PB-4)+'">'+Math.round(lo)+' m</text>';
+
+  /* 양 끝 세로선 표지 */
+  const stem=(m, name, sub, col, anchor)=>{
+    const x=X(m);
+    let t='<line x1="'+x.toFixed(1)+'" y1="'+PT+'" x2="'+x.toFixed(1)+'" y2="'+(PH-PB)
+      +'" stroke="'+col+'" stroke-width="2.4"/>';
+    const w=Math.max(name.length*13+26, 96);
+    let lx=x-w/2;
+    if(anchor==="right") lx=Math.min(x-w/2, PW-PR-w);
+    if(anchor==="left")  lx=Math.max(x-w/2, PL);
+    t+='<rect x="'+lx.toFixed(1)+'" y="2" width="'+w+'" height="28" rx="7" fill="'+col+'"/>';
+    t+='<text class="pf-lab" x="'+(lx+w/2).toFixed(1)+'" y="14" text-anchor="middle">'
+      +esc(name)+'</text>';
+    t+='<text class="pf-sub" x="'+(lx+w/2).toFixed(1)+'" y="25" text-anchor="middle">'
+      +esc(sub)+'</text>';
+    return t;
+  };
+  if(cfg.right) h+=stem(0, cfg.right.name, cfg.right.km, cfg.right.color||"#1E7A46", "right");
+  if(cfg.left)  h+=stem(tot, cfg.left.name, cfg.left.km, cfg.left.color||"#152A55", "left");
+
+  /* 주행 위치 */
+  (cfg.marks||[]).forEach(mk=>{
+    const x=X(mk.m);
+    /* 그 지점의 고도를 찾습니다 */
+    let ei=0;
+    for(let j=1;j<C.length;j++){ if(C[j]>=mk.m){ ei=j; break; } ei=j; }
+    const ey=Y(E[ei]);
+    /* 두 사람이 겹치면 이름표를 한 줄 아래로 내립니다 */
+    const row=mk.row||0, ly=2+row*23;
+    h+='<line x1="'+x.toFixed(1)+'" y1="'+(ly+20)+'" x2="'+x.toFixed(1)+'" y2="'+(PH-PB)
+      +'" stroke="'+mk.c+'" stroke-width="2.6"/>';
+    h+='<circle cx="'+x.toFixed(1)+'" cy="'+ey.toFixed(1)+'" r="6" fill="#fff" stroke="'
+      +mk.c+'" stroke-width="3"/>';
+    const w=mk.t.length*12+22, lx=Math.min(Math.max(x-w/2,PL),PW-PR-w);
+    h+='<rect x="'+lx.toFixed(1)+'" y="'+ly+'" width="'+w+'" height="20" rx="6" fill="'+mk.c+'"/>';
+    h+='<text class="pf-lab" x="'+(lx+w/2).toFixed(1)+'" y="'+(ly+14)+'" text-anchor="middle">'
+      +esc(mk.t)+'</text>';
+  });
+  h+='</svg>';
+  el.innerHTML=h;
+}
+
 /* 이름표가 조작판이나 화면 밖에 가리지 않도록 여백을 잡아 맞춥니다.
    이름표는 점보다 약 55px 위에 뜨고, 조작판이 지도 위를 덮습니다. */
+/* 지금 화면에 맞는 프로파일 자료를 만들어 그립니다 */
+function profMarks(mode, d){
+  const out=[];
+  ["bin","jin"].forEach(w=>{
+    const v=LIVE[w];
+    if(!liveOn || !v || typeof v.km!=="number" || v.test) return;
+    let m;                                   /* 프로파일 안에서의 거리(m) */
+    if(mode==="all") m=v.km*1000;
+    else{
+      if(!CUMK[d]) return;
+      const rel=v.km-CUMK[d][0];
+      if(rel<-0.2 || rel>CUMK[d][1]-CUMK[d][0]+0.2) return;
+      m=Math.max(0, rel*1000);
+    }
+    out.push({w, m, c:WHO[w].c, t:WHO[w].n+" "+v.km.toFixed(1)});
+  });
+  /* 두 사람이 겹치면 이름표를 위아래로 어긋나게 */
+  if(out.length===2){
+    const tot = mode==="all" ? 782400 : (CUMK[d][1]-CUMK[d][0])*1000;
+    if(Math.abs(out[0].m-out[1].m) < tot*0.09) out[1].row=1;
+  }
+  out.forEach(o=>{ if(o.row===undefined) o.row=0; });
+  return out;
+}
+
+function profForDay(d){
+  const pts=GPX[d], cum=CUM[d];
+  if(!pts||!cum){ drawProfile(null); return; }
+  const info=SEG&&SEG.days&&SEG.days[d];
+  const ele=pts.map(p=>p[2]||0);
+  const c=CITY[d]||["출발","도착"], k=CUMK[d]||[0,0];
+  drawProfile({
+    ele, cum, runs: info?info.runs:null,
+    right:{name:c[0], km:k[0].toFixed(1)+" km", color:(d===1?"#1E7A46":"#6B7280")},
+    left :{name:c[1], km:k[1].toFixed(1)+" km", color:(d===13?"#8E2C3A":"#152A55")},
+    marks: profMarks("day", d)
+  });
+}
+
+async function profForAll(){
+  const ele=[], cum=[], runs=[];
+  let base=0;
+  for(const d of DAY_LIST){
+    if(d===REST) continue;
+    const pts=GPX[d], c=CUM[d];
+    if(!pts||!c) continue;
+    const info=SEG&&SEG.days&&SEG.days[d];
+    for(let i=0;i<pts.length;i++){ ele.push(pts[i][2]||0); cum.push(base+c[i]); }
+    if(info) info.runs.forEach(r=>runs.push([r[0],r[1]]));
+    else runs.push([4, pts.length-1]);
+    base+=c[c.length-1];
+  }
+  drawProfile({
+    ele, cum, runs,
+    right:{name:"생장", km:"0.0 km", color:"#1E7A46"},
+    left :{name:"산티아고", km:"782.4 km", color:"#8E2C3A"},
+    marks: profMarks("all")
+  });
+}
+
 function fitNice(pts){
   lastPts=pts;
   const b=L.polyline(pts).getBounds();
@@ -257,6 +422,7 @@ async function draw(d){
     $("restBox").innerHTML='<div class="rest-box">레온에서 하루 쉽니다. '
       +'대성당과 가우디의 보티네스 저택을 둘러보세요.</div>';
     $("status").textContent="";
+    drawProfile(null);
     map.setView([42.5987,-5.5671],13);
     foldSub(); return;
   }
@@ -271,6 +437,7 @@ async function draw(d){
       +"tool/surface-segments.json 에 이 날이 들어 있는지 확인하세요.";
     L.polyline(pts,{color:"#9ca3af",weight:4}).addTo(layer);
     markEnds(d, pts);
+    profForDay(d);
     fitNice(pts);
     foldSub(); return;
   }
@@ -298,6 +465,7 @@ async function draw(d){
     +(km[k]/tot*100).toFixed(0)+"%)").join(" · ");
   $("summary").innerHTML=sumHtml;
   markEnds(d, pts);
+  profForDay(d);
   $("status").textContent="색칠된 길을 누르면 그 구간의 노면 태그가 나옵니다.";
   fitNice(pts);
   foldSub();
@@ -341,6 +509,7 @@ async function showAll(){
   $("route").textContent="전체 Camino · 생장 → 산티아고 782.4 km";
   $("status").textContent="12일 전체입니다. 표지는 그날 도착 지점입니다. "
     +"날짜 단추를 누르면 그 날만 봅니다.";
+  await profForAll();
   fitNice(all);
   foldSub();
 }
@@ -473,14 +642,24 @@ function drawLive(){
 $("liveBtn").addEventListener("click", async ()=>{
   liveOn=!liveOn;
   $("liveBtn").classList.toggle("on", liveOn);
-  if(!liveOn){ liveLayer.clearLayers(); $("liveBox").innerHTML=""; return; }
+  if(!liveOn){ liveLayer.clearLayers(); $("liveBox").innerHTML="";
+    if(profNow) drawProfile(Object.assign({}, profNow, {marks:[]})); return; }
   $("liveBox").innerHTML='<span class="none">위치를 읽는 중…</span>';
-  try{ await loadLive(); drawLive(); }
+  try{ await loadLive(); drawLive(); redrawProf(); }
   catch(e){ $("liveBox").innerHTML='<span class="none">읽지 못했습니다 — '+esc(e.message)+'</span>'; }
 });
+
+/* 위치가 갱신되면 프로파일의 표지만 다시 그립니다 */
+function redrawProf(){
+  if(!profNow) return;
+  const all = profNow.right && profNow.right.name==="생장" && profNow.left
+              && profNow.left.name==="산티아고";
+  drawProfile(Object.assign({}, profNow,
+    {marks: all ? profMarks("all") : profMarks("day", selected)}));
+}
 setInterval(async ()=>{
   if(!liveOn || document.hidden) return;
-  try{ await loadLive(); drawLive(); }catch(e){}
+  try{ await loadLive(); drawLive(); redrawProf(); }catch(e){}
 }, 60000);
 
 /* ── 접기 ── */
