@@ -1942,7 +1942,8 @@
   .sf.k::before{background:#4A4A4A}
   .surfwrap{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
   .surfwrap iframe{display:block;width:100%;height:660px;border:0}
-  @media(max-width:760px){ .surfwrap iframe{height:520px} }
+  @media(max-width:760px){ .surfwrap iframe{height:560px} }
+  @media(max-width:520px){ .surfwrap iframe{height:480px} }
   .surfbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:9px 0 12px;
     font-size:.74rem;color:var(--ink-soft)}
   .sfopen{text-decoration:none;font-weight:600;color:var(--camino-blue);
@@ -2236,7 +2237,8 @@
     <div class="surfbar">
       <a class="sfopen" href="route/camino-2027-osm-surface-all-days.html"
          target="_blank" rel="noopener">새 창에서 크게 보기 ↗</a>
-      <span>DAY 8 은 레온 휴식일이라 <b>💤</b> 로 표시됩니다</span>
+      <span>휴대폰에서는 <b>제목 줄을 눌러</b> 조작판을 접었다 펼 수 있습니다 ·
+        DAY 8 은 레온 휴식일이라 <b>💤</b> 로 표시됩니다</span>
     </div>
 
     <div class="bgnote">
@@ -8024,7 +8026,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260905-0235";
+  var BUILD="20260905-0244";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){

@@ -10,6 +10,18 @@
 *{box-sizing:border-box} html,body{height:100%;margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
 #map{height:100%;width:100%}
 .panel{position:absolute;z-index:1000;left:12px;top:12px;width:min(560px,calc(100vw - 24px));background:rgba(20,21,24,.95);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:15px;padding:12px;box-shadow:0 10px 30px rgba(0,0,0,.32)}
+.fold{display:flex;align-items:center;gap:10px;width:100%;background:none;border:none;
+ padding:0 0 8px;margin:0;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.fold .ft{flex:1;min-width:0}
+.fold .fi{flex:0 0 auto;width:26px;height:26px;border-radius:50%;border:1px solid var(--border);
+ display:flex;align-items:center;justify-content:center;font-size:11px;color:#cbd5e1;
+ transition:transform .2s}
+.fold:hover .fi{background:rgba(255,255,255,.08)}
+.panel.closed .fold{padding-bottom:0}
+.panel.closed .fi{transform:rotate(180deg)}
+.panel.closed .body{display:none}
+.panel.closed .sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.body{display:block}
 .title{font-size:17px;font-weight:800;margin-bottom:2px}.sub{font-size:11px;color:var(--muted);margin-bottom:9px}
 .days{display:grid;grid-template-columns:repeat(13,1fr);gap:4px;margin-bottom:9px}
 .day{border:1px solid #444;background:#25272b;color:#eee;border-radius:7px;padding:7px 2px;font-size:11px;font-weight:700;cursor:pointer}
@@ -34,9 +46,15 @@ button.action:disabled{opacity:.5}
 </head>
 <body>
 <div id="map"></div>
-<div class="panel">
-  <div class="title">CAMINO FRANCÉS 2027 · 노면 지도</div>
-  <div class="sub">12 riding days + Day 8 León rest · GPX total 782.40 km</div>
+<div class="panel" id="panel">
+  <button class="fold" id="fold" aria-expanded="true">
+    <span class="ft">
+      <span class="title">CAMINO FRANCÉS 2027 · 노면 지도</span>
+      <span class="sub" id="foldSub">12 riding days + Day 8 León rest · GPX total 782.40 km</span>
+    </span>
+    <span class="fi" aria-hidden="true">▲</span>
+  </button>
+  <div class="body" id="pbody">
   <div class="days" id="dayButtons"></div>
   <div class="route" id="route"></div>
   <div class="stats" id="stats"></div>
@@ -54,6 +72,7 @@ button.action:disabled{opacity:.5}
   <div class="status" id="status"></div>
   <div class="summary" id="summary"></div>
   <div id="restBox"></div>
+  </div>
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
@@ -81,6 +100,32 @@ function clearMapRoute(){
  masterLayers.forEach(l=>map.removeLayer(l));masterLayers=[];
  if(restMarker){map.removeLayer(restMarker);restMarker=null}
 }
+function foldSub(){
+  const el=document.getElementById("foldSub"); if(!el) return;
+  const p=document.getElementById("panel");
+  if(!p.classList.contains("closed")){
+    el.textContent="12 riding days + Day 8 León rest · GPX total 782.40 km"; return;
+  }
+  const info=DAYS[selected];
+  const sm=document.getElementById("summary").textContent.trim();
+  el.textContent = info && info.rest
+    ? "DAY 8 · León 휴식일 — 눌러서 펼치기"
+    : "DAY "+selected+" · "+(info?info.distance_km.toFixed(1):"?")+" km"
+      +(sm?" · "+sm:"")+" — 눌러서 펼치기";
+}
+document.getElementById("fold").addEventListener("click",()=>{
+  const p=document.getElementById("panel");
+  const closed=p.classList.toggle("closed");
+  document.getElementById("fold").setAttribute("aria-expanded", String(!closed));
+  foldSub();
+  setTimeout(()=>{ if(window.map) map.invalidateSize(); },220);
+});
+/* 좁은 화면에서는 접힌 채로 시작합니다 */
+if(window.matchMedia("(max-width:650px)").matches){
+  document.getElementById("panel").classList.add("closed");
+  document.getElementById("fold").setAttribute("aria-expanded","false");
+}
+
 function setActive(d){
  document.querySelectorAll(".day").forEach(x=>x.classList.remove("active"));
  document.getElementById("dayBtn"+d).classList.add("active");
@@ -207,6 +252,7 @@ async function analyze(){
    .map(([i,k])=>`${i} ${(totals[k]/1000).toFixed(1)} km (${total?(totals[k]/total*100).toFixed(0):0}%)`).join(" · ");
  status.textContent="완료 · 색상 경로를 누르면 OSM surface / tracktype / smoothness / width / bicycle 태그를 볼 수 있습니다.";
  btn.disabled=false;
+ foldSub();
 }
 document.getElementById("analyzeBtn").onclick=analyze;
 document.getElementById("allRouteBtn").onclick=showAllRoute;
