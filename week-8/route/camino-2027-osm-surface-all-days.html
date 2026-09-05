@@ -12,12 +12,14 @@
   html,body{height:100%}
   body{font-family:'IBM Plex Sans KR',system-ui,sans-serif;background:#F7F5EE;color:#2B2B29}
   #map{position:absolute;top:0;left:0;right:0;height:75%;background:#EDEAE0}
+
+  #prof svg{display:block}
+  .pf-ax{font-family:'IBM Plex Sans KR',sans-serif;font-size:9.5px;fill:#9A9280}
+  .pf-name{font-family:'IBM Plex Sans KR',sans-serif;font-size:11.5px;font-weight:700}
+  .pf-lab{font-family:'IBM Plex Sans KR',sans-serif;font-size:10.5px;font-weight:700;fill:#fff}
+  .pf-sub{font-family:'IBM Plex Sans KR',sans-serif;font-size:9px;fill:rgba(255,255,255,.85)}
   #prof{position:absolute;left:0;right:0;bottom:0;height:25%;background:#fff;
     border-top:1px solid rgba(0,0,0,.12)}
-  #prof svg{display:block;width:100%;height:100%}
-  .pf-ax{font-size:10px;fill:#8A7F63}
-  .pf-lab{font-size:11px;font-weight:700;fill:#fff}
-  .pf-sub{font-size:9px;fill:#fff;opacity:.85}
 
   .panel{position:absolute;z-index:1000;left:12px;top:12px;
     width:min(560px,calc(100vw - 24px));background:rgba(255,255,255,.96);
@@ -228,92 +230,127 @@ function stemIcon(text, color, sub, big){
    고도 프로파일 — 오른쪽이 출발, 왼쪽이 도착
    노면 색으로 칠해 오르막과 노면을 한 번에 봅니다.
    ══════════════════════════════════════════════════════════════════════ */
-const PW=1000, PH=230, PL=6, PR=6, PT=34, PB=26;
+function niceStep(range, want){
+  const raw=range/want, p=Math.pow(10, Math.floor(Math.log10(raw)));
+  const n=raw/p;
+  return (n<=1?1:n<=2?2:n<=2.5?2.5:n<=5?5:10)*p;
+}
 
 function drawProfile(cfg){
-  /* cfg = {ele:[], cum:[](m), runs:[[k,n]], left:{name,km}, right:{name,km}, color} */
   profNow=cfg;
   const el=document.getElementById("prof");
   if(!cfg || !cfg.ele || cfg.ele.length<2){ el.innerHTML=""; return; }
+
+  /* 늘어나지 않도록 실제 크기로 그립니다 */
+  const W=el.clientWidth, H=el.clientHeight;
+  if(W<80||H<60){ el.innerHTML=""; return; }
+  const PL=46, PR=14, PT=34, PB=20;
+  const iw=W-PL-PR, ih=H-PT-PB;
+
   const E=cfg.ele, C=cfg.cum, tot=C[C.length-1];
   let lo=Infinity, hi=-Infinity;
   for(const v of E){ if(v<lo)lo=v; if(v>hi)hi=v; }
-  if(hi-lo<50){ hi=lo+50; }
-  const pad=(hi-lo)*0.12;
-  lo-=pad; hi+=pad;
-  /* 오른쪽이 0 km */
-  const X=m=>PW-PR-(m/tot)*(PW-PL-PR);
-  const Y=e=>PT+(1-(e-lo)/(hi-lo))*(PH-PT-PB);
+  if(hi-lo<80) hi=lo+80;
+  const eStep=niceStep(hi-lo, 4);
+  lo=Math.floor(lo/eStep)*eStep;
+  hi=Math.ceil((hi+eStep*0.15)/eStep)*eStep;
 
-  let h='<svg viewBox="0 0 '+PW+' '+PH+'" preserveAspectRatio="none">';
-  /* 노면 색으로 칠하기 */
+  /* 오른쪽이 0 km */
+  const X=m=>PL+iw-(m/tot)*iw;
+  const Y=e=>PT+(1-(e-lo)/(hi-lo))*ih;
+  const F=n=>n.toFixed(1);
+
+  let h='<svg viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'">';
+
+  /* 고도 눈금선 */
+  for(let e=lo; e<=hi+0.1; e+=eStep){
+    const y=Y(e);
+    h+='<line x1="'+PL+'" y1="'+F(y)+'" x2="'+(PL+iw)+'" y2="'+F(y)
+      +'" stroke="#EAE6D8" stroke-width="1"/>'
+      +'<text class="pf-ax" x="'+(PL-6)+'" y="'+F(y+3.5)+'" text-anchor="end">'
+      +Math.round(e).toLocaleString()+'</text>';
+  }
+  h+='<text class="pf-ax" x="'+(PL-6)+'" y="'+(PT-8)+'" text-anchor="end">고도 m</text>';
+
+  /* 노면 색으로 채우기 */
   if(cfg.runs && cfg.runs.length){
     let i=0;
     cfg.runs.forEach(r=>{
       const k=r[0], n=r[1], a=i, b=Math.min(i+n, E.length-1);
       if(b>a){
-        let d="M"+X(C[a]).toFixed(1)+" "+(PH-PB).toFixed(1);
-        for(let j=a;j<=b;j++) d+="L"+X(C[j]).toFixed(1)+" "+Y(E[j]).toFixed(1);
-        d+="L"+X(C[b]).toFixed(1)+" "+(PH-PB).toFixed(1)+"Z";
-        h+='<path d="'+d+'" fill="'+COLOR[k]+'" opacity="0.82"/>';
+        let d="M"+F(X(C[a]))+" "+F(PT+ih);
+        const stepj=Math.max(1, Math.floor((b-a)/240));
+        for(let j=a;j<=b;j+=stepj) d+="L"+F(X(C[j]))+" "+F(Y(E[j]));
+        d+="L"+F(X(C[b]))+" "+F(Y(E[b]))+"L"+F(X(C[b]))+" "+F(PT+ih)+"Z";
+        h+='<path d="'+d+'" fill="'+COLOR[k]+'" opacity="0.8"/>';
       }
       i+=n;
     });
   }else{
-    let d="M"+X(0).toFixed(1)+" "+(PH-PB).toFixed(1);
-    for(let j=0;j<E.length;j++) d+="L"+X(C[j]).toFixed(1)+" "+Y(E[j]).toFixed(1);
-    d+="L"+X(tot).toFixed(1)+" "+(PH-PB).toFixed(1)+"Z";
+    let d="M"+F(X(0))+" "+F(PT+ih);
+    const st=Math.max(1, Math.floor(E.length/500));
+    for(let j=0;j<E.length;j+=st) d+="L"+F(X(C[j]))+" "+F(Y(E[j]));
+    d+="L"+F(X(tot))+" "+F(PT+ih)+"Z";
     h+='<path d="'+d+'" fill="#9ca3af" opacity="0.7"/>';
   }
+
   /* 능선 */
   let line="";
-  for(let j=0;j<E.length;j+=Math.max(1,Math.floor(E.length/600)))
-    line+=(line?"L":"M")+X(C[j]).toFixed(1)+" "+Y(E[j]).toFixed(1);
-  h+='<path d="'+line+'" fill="none" stroke="rgba(0,0,0,.45)" stroke-width="1.4"/>';
-  /* 바닥선 */
-  h+='<line x1="'+PL+'" y1="'+(PH-PB)+'" x2="'+(PW-PR)+'" y2="'+(PH-PB)
-    +'" stroke="#D8D3C4" stroke-width="1"/>';
-  /* 고도 눈금 */
-  h+='<text class="pf-ax" x="'+(PL+4)+'" y="'+(PT+11)+'">'+Math.round(hi)+' m</text>';
-  h+='<text class="pf-ax" x="'+(PL+4)+'" y="'+(PH-PB-4)+'">'+Math.round(lo)+' m</text>';
+  const st2=Math.max(1, Math.floor(E.length/700));
+  for(let j=0;j<E.length;j+=st2) line+=(line?"L":"M")+F(X(C[j]))+" "+F(Y(E[j]));
+  h+='<path d="'+line+'" fill="none" stroke="#3F5C3A" stroke-width="1.3" opacity=".7"/>';
 
-  /* 양 끝 세로선 표지 */
-  const stem=(m, name, sub, col, anchor)=>{
+  /* 거리 눈금 */
+  const km=tot/1000, dStep=niceStep(km, 7);
+  h+='<line x1="'+PL+'" y1="'+F(PT+ih)+'" x2="'+(PL+iw)+'" y2="'+F(PT+ih)
+    +'" stroke="#CFC9B6" stroke-width="1"/>';
+  for(let k=0; k<=km+0.01; k+=dStep){
+    const x=X(k*1000);
+    h+='<line x1="'+F(x)+'" y1="'+F(PT+ih)+'" x2="'+F(x)+'" y2="'+F(PT+ih+4)
+      +'" stroke="#CFC9B6" stroke-width="1"/>'
+      +'<text class="pf-ax" x="'+F(x)+'" y="'+(PT+ih+15)+'" text-anchor="middle">'
+      +(dStep<1?k.toFixed(1):Math.round(k))+'</text>';
+  }
+  h+='<text class="pf-ax" x="'+(PL-6)+'" y="'+(PT+ih+15)+'" text-anchor="end">km</text>';
+
+  /* 양 끝 표지 — 가는 세로선 + 위쪽 알약 */
+  const stem=(m, name, sub, col, side)=>{
     const x=X(m);
-    let t='<line x1="'+x.toFixed(1)+'" y1="'+PT+'" x2="'+x.toFixed(1)+'" y2="'+(PH-PB)
-      +'" stroke="'+col+'" stroke-width="2.4"/>';
-    const w=Math.max(name.length*13+26, 96);
-    let lx=x-w/2;
-    if(anchor==="right") lx=Math.min(x-w/2, PW-PR-w);
-    if(anchor==="left")  lx=Math.max(x-w/2, PL);
-    t+='<rect x="'+lx.toFixed(1)+'" y="2" width="'+w+'" height="28" rx="7" fill="'+col+'"/>';
-    t+='<text class="pf-lab" x="'+(lx+w/2).toFixed(1)+'" y="14" text-anchor="middle">'
-      +esc(name)+'</text>';
-    t+='<text class="pf-sub" x="'+(lx+w/2).toFixed(1)+'" y="25" text-anchor="middle">'
+    let t='<line x1="'+F(x)+'" y1="'+(PT-2)+'" x2="'+F(x)+'" y2="'+F(PT+ih)
+      +'" stroke="'+col+'" stroke-width="1.6" opacity=".8"/>'
+      +'<circle cx="'+F(x)+'" cy="'+F(Y(m===0?E[0]:E[E.length-1]))+'" r="4.5" '
+      +'fill="#fff" stroke="'+col+'" stroke-width="2.4"/>';
+    const anchor = side==="right" ? "end" : "start";
+    const dx = side==="right" ? -6 : 6;
+    t+='<text class="pf-name" x="'+F(x+dx)+'" y="'+(PT-16)+'" text-anchor="'+anchor
+      +'" fill="'+col+'">'+esc(name)+'</text>'
+      +'<text class="pf-ax" x="'+F(x+dx)+'" y="'+(PT-5)+'" text-anchor="'+anchor+'">'
       +esc(sub)+'</text>';
     return t;
   };
-  if(cfg.right) h+=stem(0, cfg.right.name, cfg.right.km, cfg.right.color||"#1E7A46", "right");
-  if(cfg.left)  h+=stem(tot, cfg.left.name, cfg.left.km, cfg.left.color||"#152A55", "left");
+  if(cfg.right) h+=stem(0, cfg.right.name, cfg.right.km, cfg.right.color||"#1E7A46","right");
+  if(cfg.left)  h+=stem(tot, cfg.left.name, cfg.left.km, cfg.left.color||"#152A55","left");
 
   /* 주행 위치 */
   (cfg.marks||[]).forEach(mk=>{
     const x=X(mk.m);
-    /* 그 지점의 고도를 찾습니다 */
     let ei=0;
-    for(let j=1;j<C.length;j++){ if(C[j]>=mk.m){ ei=j; break; } ei=j; }
+    for(let j=1;j<C.length;j++){ ei=j; if(C[j]>=mk.m) break; }
     const ey=Y(E[ei]);
-    /* 두 사람이 겹치면 이름표를 한 줄 아래로 내립니다 */
-    const row=mk.row||0, ly=2+row*23;
-    h+='<line x1="'+x.toFixed(1)+'" y1="'+(ly+20)+'" x2="'+x.toFixed(1)+'" y2="'+(PH-PB)
-      +'" stroke="'+mk.c+'" stroke-width="2.6"/>';
-    h+='<circle cx="'+x.toFixed(1)+'" cy="'+ey.toFixed(1)+'" r="6" fill="#fff" stroke="'
-      +mk.c+'" stroke-width="3"/>';
-    const w=mk.t.length*12+22, lx=Math.min(Math.max(x-w/2,PL),PW-PR-w);
-    h+='<rect x="'+lx.toFixed(1)+'" y="'+ly+'" width="'+w+'" height="20" rx="6" fill="'+mk.c+'"/>';
-    h+='<text class="pf-lab" x="'+(lx+w/2).toFixed(1)+'" y="'+(ly+14)+'" text-anchor="middle">'
+    const row=mk.row||0;
+    const lh=19, ly=4+row*(lh+3);
+    h+='<line x1="'+F(x)+'" y1="'+(ly+lh)+'" x2="'+F(x)+'" y2="'+F(ey)
+      +'" stroke="'+mk.c+'" stroke-width="2"/>'
+      +'<circle cx="'+F(x)+'" cy="'+F(ey)+'" r="6" fill="#fff" stroke="'+mk.c
+      +'" stroke-width="3"/>';
+    const w=mk.t.length*7.2+18;
+    const lx=Math.min(Math.max(x-w/2, PL), PL+iw-w);
+    h+='<rect x="'+F(lx)+'" y="'+ly+'" width="'+F(w)+'" height="'+lh+'" rx="'+(lh/2)
+      +'" fill="'+mk.c+'"/>'
+      +'<text class="pf-lab" x="'+F(lx+w/2)+'" y="'+(ly+13.5)+'" text-anchor="middle">'
       +esc(mk.t)+'</text>';
   });
+
   h+='</svg>';
   el.innerHTML=h;
 }
@@ -682,6 +719,7 @@ $("fold").addEventListener("click",()=>{
   setTimeout(()=>{
     map.invalidateSize();
     if(lastPts) fitNice(lastPts);      /* 여백이 달라졌으니 다시 맞춥니다 */
+    if(profNow) drawProfile(profNow);
   },240);
 });
 if(window.matchMedia("(max-width:650px)").matches){
@@ -691,7 +729,8 @@ if(window.matchMedia("(max-width:650px)").matches){
 let rz=null;
 window.addEventListener("resize",()=>{
   clearTimeout(rz);
-  rz=setTimeout(()=>{ map.invalidateSize(); if(lastPts) fitNice(lastPts); },250);
+  rz=setTimeout(()=>{ map.invalidateSize(); if(lastPts) fitNice(lastPts);
+      if(profNow) drawProfile(profNow); },250);
 });
 
 /* ── 시작 ── */
