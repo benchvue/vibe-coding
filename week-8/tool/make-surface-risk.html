@@ -48,13 +48,14 @@
 <div class="wrap">
   <h1>노면 자료 만들기</h1>
   <p class="sub">12일치 GPX 를 <code>route/</code> 에서 읽어 Overpass 에 한 번씩 물어보고,
-  <b>주의 구간 목록</b>을 뽑습니다. 결과를 <code>surface-risk.json</code> 으로 내려받아
+  <b>주의 구간 목록</b>을 뽑습니다. 결과를 <code>surface-risk.json</code> 과 <code>surface-segments.json</code> 으로 내려받아
   <code>week-8/tool/</code> 에 넣으면 사이트가 조회 없이 바로 보여 줍니다.</p>
 
   <div class="card err" id="where">
     <h2>이 파일을 어디에 두나</h2>
-    <p><code>week-8/tool/make-surface-risk.html</code> 에 두고
-    <b>웹서버로 열어야</b> 합니다. GPX 를 <code>fetch</code> 로 읽기 때문에
+    <p><code>week-8/tool/</code> 에 두는 것을 권합니다. 다른 곳에 두어도
+    <code>route/</code> 를 스스로 찾습니다.<br>
+    다만 <b>웹서버로 열어야</b> 합니다 — GPX 를 <code>fetch</code> 로 읽기 때문에
     파일을 직접 열면(<code>file://</code>) 브라우저가 막습니다.<br>
     <code>python -m http.server 8000</code> 을 <code>week-8</code> 상위에서 돌리고
     <code>http://localhost:8000/week-8/tool/make-surface-risk.html</code> 로 여세요.</p>
@@ -70,7 +71,7 @@
 
   <div class="btnrow">
     <button id="run">전체 분석 시작</button>
-    <button id="dl">JSON 내려받기</button>
+    <button id="dl">JSON 두 개 내려받기</button>
   </div>
   <div class="bar"><i id="bar"></i></div>
   <div class="status" id="status">준비됨</div>
@@ -92,7 +93,8 @@
 /* ══════════════════════════════════════════════════════════════════════
    GPX 를 route/ 에서 읽습니다 — 자료를 파일 안에 담지 않습니다.
    ══════════════════════════════════════════════════════════════════════ */
-const GPX_DIR   = "../route/";
+let GPX_DIR = null;                       /* 아래에서 스스로 찾습니다 */
+const GPX_TRY = ["../route/", "./", "route/", "../"];
 const DAY_LIST  = [1,2,3,4,5,6,7,9,10,11,12,13];   /* 8 은 레온 휴식 */
 const SAMPLE_M  = 350;    /* Overpass 에 물어볼 지점 간격 */
 const MIN_RISK  = 300;    /* 이 길이(m) 이상인 구간만 목록에 담습니다 */
@@ -165,7 +167,8 @@ let RESULT = null;
 async function loadDay(d){
   const url = GPX_DIR + "camino-2027-day" + String(d).padStart(2,"0") + ".gpx";
   const r = await fetch(url, {cache:"force-cache"});
-  if(!r.ok) throw new Error(url.split("/").pop() + " 를 열지 못했습니다 (" + r.status + ")");
+  if(!r.ok) throw new Error("열지 못했습니다 — "+new URL(url, location.href).pathname
+    +" ("+r.status+")");
   const doc = new DOMParser().parseFromString(await r.text(), "application/xml");
   if(doc.querySelector("parsererror")) throw new Error("GPX 형식 오류");
   const n = doc.getElementsByTagName("trkpt"), pts = [];
@@ -230,6 +233,29 @@ function analyzeDay(day, info, data){
   }
   if(cur) segs.push(cur);
 
+  /* 지도에서 바로 그릴 수 있도록 전 구간을 압축해 담습니다.
+     runs = [분류번호, 연속한 트랙 점 개수] · 합계는 points-1 과 같습니다. */
+  const K=["paved","compact","rough","difficult","unknown"];
+  const runs=[], rtags=[];
+  {
+    let last=null, n=0, lt=null;
+    for(let i=1;i<P.length;i++){
+      const a=P[i-1], b=P[i];
+      const mid=[(a[0]+b[0])/2,(a[1]+b[1])/2];
+      const m=nearest(mid,ways), tags=(m&&m.way&&m.way.tags)||{};
+      const k=m?classify(tags):"unknown";
+      const t=(k==="paved") ? null : {
+        s:tags.surface||null, t:tags.tracktype||null,
+        m:tags.smoothness||null, b:tags["mtb:scale"]||null,
+        h:tags.highway||null, n:tags.name||null};
+      const sig=k+"|"+JSON.stringify(t);
+      if(last===sig){ n++; }
+      else{ if(last!==null){ runs.push([K.indexOf(last.split("|")[0]), n]); rtags.push(lt); }
+            last=sig; lt=t; n=1; }
+    }
+    if(last!==null){ runs.push([K.indexOf(last.split("|")[0]), n]); rtags.push(lt); }
+  }
+
   const risky = segs.filter(s=>(s.k==="difficult"||s.k==="rough") && s.len>=MIN_RISK)
     .map(s=>({k:s.k,
       from_km:+(s.from/1000).toFixed(2), to_km:+(s.to/1000).toFixed(2),
@@ -243,6 +269,7 @@ function analyzeDay(day, info, data){
   const pct={};
   Object.keys(totals).forEach(k=>pct[k]=+(totals[k]/tot*100).toFixed(1));
   return {day:+day, route:info.route, total_km:+(tot/1000).toFixed(2),
+    runs, rtags, points:P.length,
     km:{paved:+(totals.paved/1000).toFixed(2), compact:+(totals.compact/1000).toFixed(2),
         rough:+(totals.rough/1000).toFixed(2), difficult:+(totals.difficult/1000).toFixed(2),
         unknown:+(totals.unknown/1000).toFixed(2)},
@@ -262,8 +289,25 @@ function row(r, cls, msg){
   $("tb").appendChild(tr);
 }
 
+async function findGpxDir(){
+  for(const d of GPX_TRY){
+    try{
+      const r=await fetch(d+"camino-2027-day01.gpx",{cache:"force-cache"});
+      if(r.ok) return d;
+    }catch(e){}
+  }
+  return null;
+}
+
 $("run").addEventListener("click", async ()=>{
   $("run").disabled=true; $("dl").style.display="none";
+  $("status").textContent="GPX 위치를 찾는 중…";
+  GPX_DIR = await findGpxDir();
+  if(!GPX_DIR){
+    $("status").innerHTML="⚠ GPX 를 찾지 못했습니다. 이 파일을 <b>tool/</b> 안에 두고 "
+      +"<b>웹서버로</b> 열어 주세요 — 파일을 직접 열면(file://) 브라우저가 막습니다.";
+    $("run").disabled=false; return;
+  }
   $("tb").innerHTML=""; $("risk").innerHTML="";
   const out={made_at:new Date().toISOString(), min_risk_m:MIN_RISK,
              sample_m:SAMPLE_M, days:[]};
@@ -313,13 +357,35 @@ $("run").addEventListener("click", async ()=>{
   $("run").disabled=false;
 });
 
-$("dl").addEventListener("click", ()=>{
-  if(!RESULT) return;
-  const b=new Blob([JSON.stringify(RESULT,null,1)],{type:"application/json"});
+function save(obj, name, pretty){
+  const b=new Blob([JSON.stringify(obj, null, pretty?1:0)],{type:"application/json"});
   const a=document.createElement("a");
-  a.href=URL.createObjectURL(b); a.download="surface-risk.json";
+  a.href=URL.createObjectURL(b); a.download=name;
   document.body.appendChild(a); a.click();
   setTimeout(()=>{document.body.removeChild(a); URL.revokeObjectURL(a.href);},1500);
+}
+
+$("dl").addEventListener("click", async ()=>{
+  if(!RESULT) return;
+  /* ① 사이트의 주의 구간 섹션이 쓰는 가벼운 파일 */
+  const risk={made_at:RESULT.made_at, min_risk_m:RESULT.min_risk_m,
+    sample_m:RESULT.sample_m, summary:RESULT.summary, top_risky:RESULT.top_risky,
+    days:RESULT.days.map(x=>x.error ? x : ({
+      day:x.day, route:x.route, total_km:x.total_km, km:x.km, pct:x.pct,
+      ways:x.ways, risky:x.risky}))};
+  save(risk, "surface-risk.json", true);
+
+  /* ② 노면 지도가 즉시 그리는 데 쓰는 파일 */
+  await sleep(600);
+  const segs={made_at:RESULT.made_at, sample_m:RESULT.sample_m,
+    classes:["paved","compact","rough","difficult","unknown"], days:{}};
+  RESULT.days.forEach(x=>{
+    if(x.error) return;
+    segs.days[x.day]={runs:x.runs, tags:x.rtags, points:x.points,
+                      total_km:x.total_km, km:x.km, route:x.route};
+  });
+  save(segs, "surface-segments.json", false);
+  $("status").textContent="두 파일을 내려받았습니다 — surface-risk.json · surface-segments.json";
 });
 </script>
 </body>

@@ -2217,10 +2217,11 @@
   </div>
 
     <h3 class="gh3" style="margin-top:20px">노면 확인 · OSM</h3>
-    <p class="jp">아스팔트인지 자갈인지 흙길인지를 <b>OpenStreetMap</b> 자료로 색칠해 봅니다.
+    <p class="jp">아스팔트인지 자갈인지 흙길인지를 <b>OpenStreetMap</b> 자료로 색칠했습니다.
     GPX 에는 노면 정보가 없어서, 이것이 우리가 확인할 수 있는 유일한 방법입니다.<br>
-    날짜 단추를 누르면 그 날로 이동하고, <b>OSM 노면 분석</b>을 누르면 Overpass 서버에서
-    그 구간을 조회합니다. <b>전체 Camino 보기</b>로 12일 전체를 한 번에 볼 수도 있습니다.</p>
+    <b>미리 만들어 둔 자료를 읽으므로 날짜 단추를 누르면 즉시 나옵니다</b> —
+    예전처럼 Overpass 조회를 기다릴 필요가 없습니다.
+    <b>주행 위치 보기</b>를 누르면 BIN·JIN 이 지금 <b>어느 노면 위에 있는지</b>까지 보입니다.</p>
 
     <div class="surfleg">
       <span class="sf g">아스팔트 · 포장</span>
@@ -2246,8 +2247,7 @@
       OSM 은 자원봉사자가 만드는 자료라 <b>빠지거나 오래된 구간</b>이 있습니다.
       <span style="color:var(--ink-soft)">자료 없음(검정)</span> 이 나와도 실제로는
       멀쩡한 포장길인 경우가 많습니다.
-      조회는 Overpass 서버를 거치므로 <b>몇 초에서 수십 초</b> 걸리고, 가끔 실패합니다 —
-      그때는 잠시 뒤 다시 누르면 됩니다.<br>
+      <br>
       <b>붉은 구간</b>이 길게 나오는 날은 <a href="#secG">GPX 우회로</a>와 함께 보시고,
       짐 실은 자전거로 지날 만한지 미리 판단해 두세요.
     </div>
@@ -8026,7 +8026,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260905-0244";
+  var BUILD="20260905-1034";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
