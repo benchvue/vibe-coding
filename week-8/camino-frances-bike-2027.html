@@ -2061,6 +2061,17 @@
     background:#F7FAFF;white-space:nowrap}
   .rmap:hover{border-color:var(--flecha);background:#FFFBEE;color:#3B2E00}
   .rnone{padding:10px 12px;font-size:.74rem;color:var(--ok)}
+
+  /* 날짜 카드 고도 프로파일 */
+  .dprof{margin-top:10px;border:1px solid #D4DFF2;border-radius:12px;background:#FBFAF5;
+    overflow:hidden;height:150px;position:relative}
+  .dprof svg{display:block}
+  .dp-ax{font-family:'IBM Plex Sans KR',sans-serif;font-size:9.5px;fill:#9A9280}
+  .dp-name{font-family:'IBM Plex Sans KR',sans-serif;font-size:11px;font-weight:700}
+  .dp-lab{font-family:'IBM Plex Sans KR',sans-serif;font-size:10px;font-weight:700;fill:#fff}
+  .dp-none{padding:12px;font-size:.74rem;color:var(--ink-soft)}
+  @media(max-width:520px){ .dprof{height:126px} }
+  @media(min-width:1100px){ .dprof{height:172px} }
 </style>
 
 <!-- ══════════════════════════════════════════════════════════════════════
@@ -8082,7 +8093,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260905-1808";
+  var BUILD="20260905-1927";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
@@ -8947,6 +8958,262 @@ window.CAMINO_LIVE = (function(){
   }
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",boot);
   else boot();
+})();
+
+</script>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   날짜 카드의 고도 프로파일 — 노면 색으로 칠하고 BIN·JIN 위치도 얹습니다
+     route/camino-2027-dayNN.gpx     좌표와 고도
+     tool/surface-segments.json      노면 분류
+   화면에 들어올 때만 읽습니다 (12일치를 한꺼번에 받지 않도록).
+   ══════════════════════════════════════════════════════════════════════ */
+(function(){
+  "use strict";
+
+  var SEG=null, GPX={}, CUM={}, ELE={}, RIDES=[], ready=false;
+  var COLOR=["#16a34a","#eab308","#f97316","#dc2626","#9ca3af"];
+  var KNAME=["포장","다짐","자갈","거친 길","자료 없음"];
+  var WHO={bin:{n:"BIN",c:"#1E5FB4"}, jin:{n:"JIN",c:"#C92A2A"}};
+  var CITY={1:["생장","수비리"],2:["수비리","에스테야"],3:["에스테야","나바레테"],
+    4:["나바레테","벨로라도"],5:["벨로라도","카스트로헤리스"],6:["카스트로헤리스","사아군"],
+    7:["사아군","레온"],9:["레온","라바날"],10:["라바날","베가 데 발카르세"],
+    11:["베가 데 발카르세","사리아"],12:["사리아","아르수아"],13:["아르수아","산티아고"]};
+  var CUMK={1:[0,45.8],2:[45.8,114.7],3:[114.7,176.1],4:[176.1,234.8],5:[234.8,324.8],
+    6:[324.8,407.1],7:[407.1,461.8],9:[461.8,530.7],10:[530.7,604.9],11:[604.9,667.2],
+    12:[667.2,743.5],13:[743.5,782.4]};
+
+  function esc(t){ return String(t==null?"":t)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+  function hav(a,b){
+    var R=6371000, r=Math.PI/180;
+    var dla=(b[0]-a[0])*r, dlo=(b[1]-a[1])*r;
+    var h=Math.sin(dla/2)*Math.sin(dla/2)
+        + Math.cos(a[0]*r)*Math.cos(b[0]*r)*Math.sin(dlo/2)*Math.sin(dlo/2);
+    return 2*R*Math.asin(Math.min(1,Math.sqrt(h)));
+  }
+  function niceStep(range, want){
+    var raw=range/want, p=Math.pow(10, Math.floor(Math.log10(raw))), n=raw/p;
+    return (n<=1?1:n<=2?2:n<=2.5?2.5:n<=5?5:10)*p;
+  }
+
+  function loadGpx(d){
+    if(GPX[d]) return Promise.resolve(true);
+    var url="route/camino-2027-day"+(d<10?"0":"")+d+".gpx";
+    return fetch(url,{cache:"force-cache"}).then(function(r){
+      if(!r.ok) throw new Error(r.status);
+      return r.text();
+    }).then(function(t){
+      var doc=new DOMParser().parseFromString(t,"application/xml");
+      var n=doc.getElementsByTagName("trkpt"), pts=[], ele=[];
+      for(var i=0;i<n.length;i++){
+        var la=parseFloat(n[i].getAttribute("lat")), lo=parseFloat(n[i].getAttribute("lon"));
+        if(isNaN(la)||isNaN(lo)) continue;
+        pts.push([la,lo]);
+        var e=n[i].getElementsByTagName("ele")[0];
+        ele.push(e ? (parseFloat(e.textContent)||0) : 0);
+      }
+      var cum=[0];
+      for(var j=1;j<pts.length;j++) cum.push(cum[j-1]+hav(pts[j-1],pts[j]));
+      GPX[d]=pts; CUM[d]=cum; ELE[d]=ele;
+      return true;
+    });
+  }
+
+  /* 그날 화면에 얹을 BIN·JIN */
+  function marksFor(d){
+    var out=[];
+    var LV=(window.CAMINO_LIVE ? window.CAMINO_LIVE.get().riders : null) || {};
+    ["bin","jin"].forEach(function(w){
+      var km=null, live=false;
+      RIDES.forEach(function(r){
+        if(r.del || (r.owner||"bin")!==w) return;
+        if(km===null || r.cumKm>km) km=r.cumKm;
+      });
+      var v=LV[w];
+      if(v && typeof v.km==="number" && !v.test && (km===null || v.km>km)){
+        km=v.km; live=true;
+      }
+      if(km===null || !CUMK[d]) return;
+      var rel=km-CUMK[d][0], span=CUMK[d][1]-CUMK[d][0];
+      if(rel<-0.15 || rel>span+0.15) return;
+      out.push({w:w, m:Math.max(0,rel)*1000, c:WHO[w].c,
+                t:WHO[w].n+" "+km.toFixed(1), live:live});
+    });
+    if(out.length===2){
+      var span2=(CUMK[d][1]-CUMK[d][0])*1000;
+      if(Math.abs(out[0].m-out[1].m) < span2*0.12) out[1].row=1;
+    }
+    out.forEach(function(o){ if(o.row===undefined) o.row=0; });
+    return out;
+  }
+
+  function render(box, d){
+    var pts=GPX[d], C=CUM[d], E=ELE[d];
+    if(!pts||!C||!E||E.length!==pts.length){ box.innerHTML=""; return; }
+    var W=box.clientWidth, H=box.clientHeight;
+    if(W<120||H<70) return;
+    var PL=44, PR=12, PT=30, PB=19;
+    var iw=W-PL-PR, ih=H-PT-PB, tot=C[C.length-1];
+
+    var lo=Infinity, hi=-Infinity, i;
+    for(i=0;i<E.length;i++){ if(E[i]<lo)lo=E[i]; if(E[i]>hi)hi=E[i]; }
+    if(hi-lo<80) hi=lo+80;
+    var eStep=niceStep(hi-lo,3);
+    lo=Math.floor(lo/eStep)*eStep;
+    hi=Math.ceil((hi+eStep*0.15)/eStep)*eStep;
+
+    var X=function(m){ return PL+iw-(m/tot)*iw; };      /* 오른쪽이 출발 */
+    var Y=function(e){ return PT+(1-(e-lo)/(hi-lo))*ih; };
+    var F=function(n){ return n.toFixed(1); };
+
+    var h='<svg viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" role="img" '
+      +'aria-label="DAY '+d+' 고도와 노면">';
+    for(var e=lo; e<=hi+0.1; e+=eStep){
+      var y=Y(e);
+      h+='<line x1="'+PL+'" y1="'+F(y)+'" x2="'+(PL+iw)+'" y2="'+F(y)
+        +'" stroke="#EAE6D8" stroke-width="1"/>'
+        +'<text class="dp-ax" x="'+(PL-6)+'" y="'+F(y+3.5)+'" text-anchor="end">'
+        +Math.round(e).toLocaleString()+'</text>';
+    }
+    h+='<text class="dp-ax" x="'+(PL-6)+'" y="'+(PT-8)+'" text-anchor="end">고도 m</text>';
+
+    var info=SEG && SEG.days && SEG.days[d];
+    if(info && info.runs && info.runs.length){
+      var k0=0;
+      info.runs.forEach(function(r){
+        var k=r[0], n=r[1], a=k0, b=Math.min(k0+n, E.length-1);
+        if(b>a){
+          var dpath="M"+F(X(C[a]))+" "+F(PT+ih), st=Math.max(1,Math.floor((b-a)/160));
+          for(var j=a;j<=b;j+=st) dpath+="L"+F(X(C[j]))+" "+F(Y(E[j]));
+          dpath+="L"+F(X(C[b]))+" "+F(Y(E[b]))+"L"+F(X(C[b]))+" "+F(PT+ih)+"Z";
+          h+='<path d="'+dpath+'" fill="'+COLOR[k]+'" opacity="0.8"/>';
+        }
+        k0+=n;
+      });
+    }else{
+      var dp="M"+F(X(0))+" "+F(PT+ih), s2=Math.max(1,Math.floor(E.length/400));
+      for(i=0;i<E.length;i+=s2) dp+="L"+F(X(C[i]))+" "+F(Y(E[i]));
+      dp+="L"+F(X(tot))+" "+F(PT+ih)+"Z";
+      h+='<path d="'+dp+'" fill="#9ca3af" opacity="0.65"/>';
+    }
+    var line="", s3=Math.max(1,Math.floor(E.length/500));
+    for(i=0;i<E.length;i+=s3) line+=(line?"L":"M")+F(X(C[i]))+" "+F(Y(E[i]));
+    h+='<path d="'+line+'" fill="none" stroke="#3F5C3A" stroke-width="1.2" opacity=".7"/>';
+
+    var km=tot/1000, dStep=niceStep(km,5);
+    h+='<line x1="'+PL+'" y1="'+F(PT+ih)+'" x2="'+(PL+iw)+'" y2="'+F(PT+ih)
+      +'" stroke="#CFC9B6" stroke-width="1"/>';
+    for(var t2=0; t2<=km+0.01; t2+=dStep){
+      var x2=X(t2*1000);
+      h+='<line x1="'+F(x2)+'" y1="'+F(PT+ih)+'" x2="'+F(x2)+'" y2="'+F(PT+ih+4)
+        +'" stroke="#CFC9B6" stroke-width="1"/>'
+        +'<text class="dp-ax" x="'+F(x2)+'" y="'+(PT+ih+14)+'" text-anchor="middle">'
+        +(dStep<1?t2.toFixed(1):Math.round(t2))+'</text>';
+    }
+    h+='<text class="dp-ax" x="'+(PL-6)+'" y="'+(PT+ih+14)+'" text-anchor="end">km</text>';
+
+    var c=CITY[d]||["출발","도착"], k2=CUMK[d]||[0,0];
+    function stem(m, name, sub, col, side){
+      var x=X(m), anchor=(side==="right"?"end":"start"), dx=(side==="right"?-6:6);
+      return '<line x1="'+F(x)+'" y1="'+(PT-2)+'" x2="'+F(x)+'" y2="'+F(PT+ih)
+        +'" stroke="'+col+'" stroke-width="1.5" opacity=".8"/>'
+        +'<circle cx="'+F(x)+'" cy="'+F(Y(m===0?E[0]:E[E.length-1]))+'" r="4" '
+        +'fill="#fff" stroke="'+col+'" stroke-width="2.2"/>'
+        +'<text class="dp-name" x="'+F(x+dx)+'" y="'+(PT-15)+'" text-anchor="'+anchor
+        +'" fill="'+col+'">'+esc(name)+'</text>'
+        +'<text class="dp-ax" x="'+F(x+dx)+'" y="'+(PT-5)+'" text-anchor="'+anchor+'">'
+        +esc(sub)+'</text>';
+    }
+    h+=stem(0, c[0], k2[0].toFixed(1)+" km", d===1?"#1E7A46":"#6B7280", "right");
+    h+=stem(tot, c[1], k2[1].toFixed(1)+" km", d===13?"#8E2C3A":"#152A55", "left");
+
+    marksFor(d).forEach(function(mk){
+      var x=X(mk.m), ei=0;
+      for(var j=1;j<C.length;j++){ ei=j; if(C[j]>=mk.m) break; }
+      var ey=Y(E[ei]), lh=18, ly=3+(mk.row||0)*(lh+3);
+      h+='<line x1="'+F(x)+'" y1="'+(ly+lh)+'" x2="'+F(x)+'" y2="'+F(ey)
+        +'" stroke="'+mk.c+'" stroke-width="2"/>'
+        +'<circle cx="'+F(x)+'" cy="'+F(ey)+'" r="5.5" fill="#fff" stroke="'+mk.c
+        +'" stroke-width="2.8"/>';
+      var w=mk.t.length*7+16, lx=Math.min(Math.max(x-w/2,PL),PL+iw-w);
+      h+='<rect x="'+F(lx)+'" y="'+ly+'" width="'+F(w)+'" height="'+lh+'" rx="'+(lh/2)
+        +'" fill="'+mk.c+'"/>'
+        +'<text class="dp-lab" x="'+F(lx+w/2)+'" y="'+(ly+12.5)+'" text-anchor="middle">'
+        +esc(mk.t)+(mk.live?" ●":"")+'</text>';
+    });
+    h+='</svg>';
+    box.innerHTML=h;
+  }
+
+  function fill(box){
+    var d=+box.dataset.day;
+    if(box.dataset.busy) return;
+    box.dataset.busy="1";
+    loadGpx(d).then(function(){ box.dataset.busy=""; render(box,d); })
+      .catch(function(){ box.dataset.busy="";
+        box.innerHTML='<p class="dp-none">고도 자료를 읽지 못했습니다</p>'; });
+  }
+
+  function boot(){
+    var cards=document.querySelectorAll("article.dcard[id^=day]");
+    if(!cards.length) return;
+
+    Promise.all([
+      fetch("tool/surface-segments.json",{cache:"no-cache"})
+        .then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; }),
+      (window.CAMINO_DRIVE ? window.CAMINO_DRIVE.files().then(function(f){
+        var x=f.filter(function(y){ return y.name==="progress.json"; })[0];
+        if(!x) return null;
+        return window.CAMINO_DRIVE.text(x.id).then(function(t){
+          try{ return JSON.parse(t); }catch(e){ return null; } });
+      }).catch(function(){ return null; }) : Promise.resolve(null))
+    ]).then(function(a){
+      SEG=a[0];
+      RIDES=(a[1] && a[1].rides) || [];
+      ready=true;
+
+      Array.prototype.forEach.call(cards, function(card){
+        var n=+(card.id.replace("day","")); if(!n || n===8) return;
+        var fig=card.querySelector("figure.dmapreal");
+        if(!fig) return;
+        var box=document.createElement("div");
+        box.className="dprof"; box.dataset.day=String(n);
+        fig.insertAdjacentElement("afterend", box);
+      });
+
+      var boxes=document.querySelectorAll(".dprof");
+      if("IntersectionObserver" in window){
+        var io=new IntersectionObserver(function(ents){
+          ents.forEach(function(en){
+            if(en.isIntersecting){ fill(en.target); io.unobserve(en.target); }
+          });
+        },{rootMargin:"300px"});
+        Array.prototype.forEach.call(boxes, function(b){ io.observe(b); });
+      }else Array.prototype.forEach.call(boxes, fill);
+
+      var rz=null;
+      window.addEventListener("resize", function(){
+        clearTimeout(rz);
+        rz=setTimeout(function(){
+          Array.prototype.forEach.call(document.querySelectorAll(".dprof"), function(b){
+            if(GPX[+b.dataset.day]) render(b, +b.dataset.day);
+          });
+        }, 250);
+      });
+
+      if(window.CAMINO_LIVE) window.CAMINO_LIVE.on(function(){
+        Array.prototype.forEach.call(document.querySelectorAll(".dprof"), function(b){
+          if(GPX[+b.dataset.day]) render(b, +b.dataset.day);
+        });
+      });
+    });
+  }
+
+  if(window.onCaminoDays) window.onCaminoDays(boot);
+  else if(document.readyState!=="loading") boot();
+  else document.addEventListener("DOMContentLoaded", boot);
 })();
 
 </script>
