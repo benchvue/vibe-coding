@@ -8094,7 +8094,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260905-2055";
+  var BUILD="20260905-2101";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
@@ -9177,17 +9177,19 @@ window.CAMINO_LIVE = (function(){
 
       Array.prototype.forEach.call(cards, function(card){
         var n=+(card.id.replace("day","")); if(!n || n===8) return;
-        var fig=card.querySelector("figure.dmapreal");
-        if(!fig) return;
+        if(!card.querySelector("figure.dmapreal")) return;
         var box=document.createElement("div");
         box.className="dprof"; box.dataset.day=String(n);
-        /* .dbody 는 order 가 걸린 flex 상자입니다.
-           그 안에 넣으면 순서가 밀리고 폭이 0 이 되므로 바깥에 답니다. */
-        var body=fig.parentNode;
-        while(body && body!==card && body.className.indexOf("dbody")<0)
-          body=body.parentNode;
-        if(body && body!==card) body.insertAdjacentElement("afterend", box);
-        else fig.insertAdjacentElement("afterend", box);
+        /* .dbody 는 order 가 걸린 flex 상자라 그 안에 넣으면 순서가 밀립니다.
+           카드 안에서 dbody 다음, dextra 앞에 놓습니다. */
+        var kids=card.children, at=null;
+        for(var q=0;q<kids.length;q++){
+          var cn=" "+(kids[q].className||"")+" ";
+          if(cn.indexOf(" dbody ")>=0) at=kids[q];
+        }
+        if(at && at.nextSibling) card.insertBefore(box, at.nextSibling);
+        else if(at) card.appendChild(box);
+        else return;
       });
 
       var boxes=document.querySelectorAll(".dprof");
