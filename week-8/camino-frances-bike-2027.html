@@ -2063,9 +2063,17 @@
   .rnone{padding:10px 12px;font-size:.74rem;color:var(--ok)}
 
   /* 날짜 카드 고도 프로파일 */
-  .dprof{margin:0 14px 14px;border:1px solid #D4DFF2;border-radius:12px;background:#FBFAF5;
-    overflow:hidden;height:150px;position:relative;
-    flex:1 1 100%;order:3}   /* flex 상자 안에 들어가더라도 맨 뒤로 */
+  .dprof{border:1px solid #D4DFF2;border-radius:12px;background:#FBFAF5;
+    overflow:hidden;height:150px;position:relative;min-width:0}
+  /* 넓은 화면 — 지도와 QR 아래 한 줄 전체 */
+  @media(min-width:521px){
+    .dprof{order:3;flex:1 1 100%;width:100%;margin-top:2px}
+  }
+  /* 좁은 화면 — 지도 바로 아래, QR 위 */
+  @media(max-width:520px){
+    .dprof{order:2;flex:1 1 100%;width:100%}
+    .dcard .dqr{order:3}
+  }
   .dprof svg{display:block}
   .dp-ax{font-family:'IBM Plex Sans KR',sans-serif;font-size:9.5px;fill:#9A9280}
   .dp-name{font-family:'IBM Plex Sans KR',sans-serif;font-size:11px;font-weight:700}
@@ -8094,7 +8102,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260905-2101";
+  var BUILD="20260905-2106";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
@@ -9177,19 +9185,13 @@ window.CAMINO_LIVE = (function(){
 
       Array.prototype.forEach.call(cards, function(card){
         var n=+(card.id.replace("day","")); if(!n || n===8) return;
-        if(!card.querySelector("figure.dmapreal")) return;
+        var fig=card.querySelector("figure.dmapreal");
+        if(!fig) return;
         var box=document.createElement("div");
         box.className="dprof"; box.dataset.day=String(n);
-        /* .dbody 는 order 가 걸린 flex 상자라 그 안에 넣으면 순서가 밀립니다.
-           카드 안에서 dbody 다음, dextra 앞에 놓습니다. */
-        var kids=card.children, at=null;
-        for(var q=0;q<kids.length;q++){
-          var cn=" "+(kids[q].className||"")+" ";
-          if(cn.indexOf(" dbody ")>=0) at=kids[q];
-        }
-        if(at && at.nextSibling) card.insertBefore(box, at.nextSibling);
-        else if(at) card.appendChild(box);
-        else return;
+        /* .dbody 안에 두고 순서는 CSS order 로 잡습니다 —
+           좁은 화면은 지도 다음·QR 앞, 넓은 화면은 둘 아래 한 줄 전체. */
+        fig.insertAdjacentElement("afterend", box);
       });
 
       var boxes=document.querySelectorAll(".dprof");
