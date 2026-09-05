@@ -145,6 +145,15 @@ async function findDir(cands, file, noCache){
 const DAY_LIST=[1,2,3,4,5,6,7,8,9,10,11,12,13], REST=8;
 const COLOR=["#16a34a","#eab308","#f97316","#dc2626","#9ca3af"];
 const KNAME=["포장","다짐","자갈","거친 길","자료 없음"];
+/* 날짜별 출발·도착 도시와 누적 거리 */
+const CITY={1:["생장","수비리"],2:["수비리","에스테야"],3:["에스테야","나바레테"],
+  4:["나바레테","벨로라도"],5:["벨로라도","카스트로헤리스"],6:["카스트로헤리스","사아군"],
+  7:["사아군","레온"],9:["레온","라바날"],10:["라바날","베가 데 발카르세"],
+  11:["베가 데 발카르세","사리아"],12:["사리아","아르수아"],13:["아르수아","산티아고"]};
+const CUMK={1:[0,45.8],2:[45.8,114.7],3:[114.7,176.1],4:[176.1,234.8],5:[234.8,324.8],
+  6:[324.8,407.1],7:[407.1,461.8],9:[461.8,530.7],10:[530.7,604.9],11:[604.9,667.2],
+  12:[667.2,743.5],13:[743.5,782.4]};
+
 const SF={dirt:"흙길",ground:"맨땅",gravel:"자갈",pebblestone:"굵은 자갈",unpaved:"비포장",
   compacted:"다진 흙",fine_gravel:"고운 자갈",sand:"모래",rock:"바위",earth:"흙",
   asphalt:"아스팔트",paved:"포장",concrete:"콘크리트",grass:"풀밭",mud:"진흙"};
@@ -214,6 +223,17 @@ function tagText(t){
   return p.join(" · ") || (t.h||"태그 없음");
 }
 
+/* 그날 출발점과 도착점에 세로선 표지 */
+function markEnds(d, pts){
+  const c=CITY[d], k=CUMK[d];
+  if(!c || !pts || pts.length<2) return;
+  const start=(d===1), end=(d===13);
+  L.marker(pts[0],{icon:stemIcon(c[0], start?"#1E7A46":"#6B7280",
+    k[0].toFixed(1)+" km 출발", start), zIndexOffset:400}).addTo(dayLayer);
+  L.marker(pts[pts.length-1],{icon:stemIcon(c[1], end?"#8E2C3A":"#152A55",
+    k[1].toFixed(1)+" km 도착", true), zIndexOffset:500}).addTo(dayLayer);
+}
+
 async function draw(d){
   layer.clearLayers(); dayLayer.clearLayers();
   if(d===REST){
@@ -235,7 +255,8 @@ async function draw(d){
     $("status").innerHTML="<b>DAY "+d+" 노면 자료가 없습니다.</b> "
       +"tool/surface-segments.json 에 이 날이 들어 있는지 확인하세요.";
     L.polyline(pts,{color:"#9ca3af",weight:4}).addTo(layer);
-    map.fitBounds(L.polyline(pts).getBounds(),{padding:[30,30]});
+    markEnds(d, pts);
+    map.fitBounds(L.polyline(pts).getBounds(),{padding:[46,34]});
     foldSub(); return;
   }
   let i=0;
@@ -261,8 +282,9 @@ async function draw(d){
     '<span style="color:'+COLOR[j]+'">●</span> '+km[k].toFixed(1)+" km ("
     +(km[k]/tot*100).toFixed(0)+"%)").join(" · ");
   $("summary").innerHTML=sumHtml;
+  markEnds(d, pts);
   $("status").textContent="색칠된 길을 누르면 그 구간의 노면 태그가 나옵니다.";
-  map.fitBounds(L.polyline(pts).getBounds(),{padding:[30,30]});
+  map.fitBounds(L.polyline(pts).getBounds(),{padding:[46,34]});
   foldSub();
 }
 
@@ -295,12 +317,10 @@ async function showAll(){
       zIndexOffset:600}).addTo(dayLayer);
   }
   /* 날짜마다 도착 지점에 세로선 표지 */
-  const CUMK={1:45.8,2:114.7,3:176.1,4:234.8,5:324.8,6:407.1,7:461.8,
-              9:530.7,10:604.9,11:667.2,12:743.5,13:782.4};
   ends.forEach(e=>{
     const d=e[0], p=e[1], last=(d===13);
     L.marker(p,{icon:stemIcon(last?"산티아고":"DAY "+d,
-      last?"#8E2C3A":"#152A55", CUMK[d].toFixed(1)+" km", last),
+      last?"#8E2C3A":"#152A55", CUMK[d][1].toFixed(1)+" km", last),
       zIndexOffset:500}).addTo(dayLayer);
   });
   $("route").textContent="전체 Camino · 생장 → 산티아고 782.4 km";
