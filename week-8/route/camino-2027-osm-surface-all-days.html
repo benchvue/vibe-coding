@@ -7,23 +7,23 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root{--bg:#141518;--border:rgba(255,255,255,.14);--dim:#94a3b8}
+  :root{--bg:#fff;--border:rgba(0,0,0,.12);--dim:#6B6B66}
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{height:100%}
-  body{font-family:'IBM Plex Sans KR',system-ui,sans-serif;background:#0b0c0e;color:#e7ecf6}
-  #map{height:100%;width:100%;background:#0b0c0e}
+  body{font-family:'IBM Plex Sans KR',system-ui,sans-serif;background:#F7F5EE;color:#2B2B29}
+  #map{height:100%;width:100%;background:#EDEAE0}
 
   .panel{position:absolute;z-index:1000;left:12px;top:12px;
-    width:min(560px,calc(100vw - 24px));background:rgba(20,21,24,.95);
+    width:min(560px,calc(100vw - 24px));background:rgba(255,255,255,.96);
     backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:15px;
-    padding:12px;box-shadow:0 10px 30px rgba(0,0,0,.32)}
+    padding:12px;box-shadow:0 8px 26px rgba(0,0,0,.18)}
   .fold{display:flex;align-items:center;gap:10px;width:100%;background:none;border:none;
     padding:0 0 8px;margin:0;color:inherit;font:inherit;text-align:left;cursor:pointer}
   .fold .ft{flex:1;min-width:0}
   .fold .fi{flex:0 0 auto;width:26px;height:26px;border-radius:50%;
     border:1px solid var(--border);display:flex;align-items:center;justify-content:center;
-    font-size:11px;color:#cbd5e1;transition:transform .2s}
-  .fold:hover .fi{background:rgba(255,255,255,.08)}
+    font-size:11px;color:#6B6B66;transition:transform .2s}
+  .fold:hover .fi{background:rgba(0,0,0,.05)}
   .panel.closed .fold{padding-bottom:0}
   .panel.closed .fi{transform:rotate(180deg)}
   .panel.closed .body{display:none}
@@ -32,12 +32,12 @@
   .sub{font-size:12px;color:var(--dim);display:block;margin-top:2px}
 
   .days{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin:9px 0}
-  .day{border:1px solid var(--border);background:rgba(255,255,255,.05);color:#e7ecf6;
+  .day{border:1px solid var(--border);background:#fff;color:#2B2B29;
     border-radius:9px;padding:9px 0;font-size:13px;font-weight:700;font-family:inherit;
     cursor:pointer}
-  .day:hover{background:rgba(255,255,255,.12)}
-  .day.on{background:#fff;color:#111}
-  .day.rest{border-style:dashed;color:#94a3b8}
+  .day:hover{background:#F1EEE4}
+  .day.on{background:#152A55;color:#fff;border-color:#152A55}
+  .day.rest{border-style:dashed;color:#A79E86}
   .route{font-size:13px;font-weight:700;line-height:1.5;margin:2px 0 6px}
   .stats{font-size:12px;color:var(--dim);margin-bottom:8px}
   .legend{display:flex;flex-wrap:wrap;gap:8px;font-size:11.5px;color:var(--dim);
@@ -46,20 +46,20 @@
   .dot{width:10px;height:10px;border-radius:50%;display:inline-block}
   .bars{display:flex;height:10px;border-radius:5px;overflow:hidden;margin-bottom:7px}
   .bars i{display:block;height:100%}
-  .summary{font-size:12px;color:#cbd5e1;line-height:1.7}
+  .summary{font-size:12px;color:#4A4A46;line-height:1.7}
   .actions{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0 6px}
-  .action{border:1px solid var(--border);background:rgba(255,255,255,.06);color:#e7ecf6;
+  .action{border:1px solid var(--border);background:#fff;color:#152A55;
     border-radius:10px;padding:9px 14px;font-size:12.5px;font-weight:700;font-family:inherit;
     cursor:pointer}
-  .action:hover{background:rgba(255,255,255,.14)}
+  .action:hover{background:#F1EEE4}
   .action.on{background:#f5b917;color:#3b2e00;border-color:#f5b917}
   .status{font-size:11.5px;color:var(--dim);line-height:1.6}
   .rest-box{margin-top:8px;padding:10px 12px;border:1px dashed var(--border);
-    border-radius:11px;font-size:12.5px;color:#cbd5e1;line-height:1.7}
+    border-radius:11px;font-size:12.5px;color:#4A4A46;line-height:1.7}
   .who{display:inline-block;font-size:10.5px;font-weight:700;border-radius:999px;
     padding:2px 8px;margin-right:5px}
   .who.bin{background:#1E5FB4;color:#fff} .who.jin{background:#C92A2A;color:#fff}
-  .live{margin-top:8px;font-size:12px;color:#cbd5e1;line-height:1.8}
+  .live{margin-top:8px;font-size:12px;color:#4A4A46;line-height:1.8}
   .live .none{color:var(--dim)}
   .leaflet-popup-content{font-family:'IBM Plex Sans KR',sans-serif;font-size:12.5px;
     line-height:1.65}
@@ -156,8 +156,9 @@ function hav(a,b){
 }
 
 map=L.map("map",{zoomControl:true}).setView([42.6,-4.5],7);
-L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-  {maxZoom:19, attribution:"© OpenStreetMap · © CARTO · 노면 © OpenStreetMap 기여자"}).addTo(map);
+/* 키가 필요 없는 타일. CARTO 는 이제 API 키를 요구합니다. */
+L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+  {maxZoom:19, attribution:"© OpenStreetMap 기여자"}).addTo(map);
 layer=L.layerGroup().addTo(map);
 liveLayer=L.layerGroup().addTo(map);
 
@@ -217,7 +218,7 @@ async function draw(d){
     const [k,n]=run;
     const seg=pts.slice(i, i+n+1);
     if(seg.length>1){
-      const pl=L.polyline(seg,{color:COLOR[k],weight:5,opacity:.92}).addTo(layer);
+      const pl=L.polyline(seg,{color:COLOR[k],weight:6,opacity:.95}).addTo(layer);
       const t=info.tags[ri];
       const from=(CUM[d][i]/1000).toFixed(1), to=(CUM[d][Math.min(i+n,pts.length-1)]/1000).toFixed(1);
       pl.bindPopup('<b style="color:'+COLOR[k]+'">'+KNAME[k]+'</b><br>'
