@@ -77,7 +77,7 @@
   <button class="fold" id="fold" aria-expanded="true">
     <span class="ft">
       <span class="title">CAMINO FRANCÉS 2027 · 노면 지도</span>
-      <span class="sub" id="foldSub">불러오는 중…</span>
+      <span class="sub" id="foldSub">불러오는 중… <span style="opacity:.6">v3</span></span>
     </span>
     <span class="fi" aria-hidden="true">▲</span>
   </button>
@@ -120,12 +120,15 @@ let GPX_DIR=null, TOOL=null;
 const GPX_TRY  = ["./", "../route/", "route/", "../"];
 const TOOL_TRY = ["../tool/", "./", "tool/", "../"];
 
-async function findDir(cands, file){
+const TRIED=[];      /* 무엇을 시도했는지 남겨 둡니다 */
+async function findDir(cands, file, noCache){
   for(const d of cands){
+    const u=d+file;
     try{
-      const r=await fetch(d+file, {method:"GET", cache:"force-cache"});
+      const r=await fetch(u, {method:"GET", cache: noCache ? "no-cache" : "force-cache"});
+      TRIED.push(u+" → "+r.status);
       if(r.ok) return d;
-    }catch(e){}
+    }catch(e){ TRIED.push(u+" → "+(e.message||"실패")); }
   }
   return null;
 }
@@ -208,7 +211,8 @@ async function draw(d){
             $("bars").innerHTML=""; $("summary").innerHTML=""; return; }
   const info=SEG && SEG.days && SEG.days[d];
   if(!info){
-    $("status").textContent="전처리 자료가 없습니다 — tool/surface-segments.json 을 확인하세요";
+    $("status").innerHTML="<b>DAY "+d+" 노면 자료가 없습니다.</b> "
+      +"tool/surface-segments.json 에 이 날이 들어 있는지 확인하세요.";
     L.polyline(pts,{color:"#9ca3af",weight:4}).addTo(layer);
     map.fitBounds(L.polyline(pts).getBounds(),{padding:[30,30]});
     foldSub(); return;
@@ -414,7 +418,7 @@ if(window.matchMedia("(max-width:650px)").matches){
 
   $("status").textContent="자료 위치를 찾는 중…";
   GPX_DIR = await findDir(GPX_TRY, "camino-2027-day01.gpx");
-  TOOL    = await findDir(TOOL_TRY, "surface-segments.json");
+  TOOL    = await findDir(TOOL_TRY, "surface-segments.json", true);
 
   if(!GPX_DIR){
     $("status").innerHTML="GPX 를 찾지 못했습니다. 이 파일을 <b>route/</b> 또는 "
@@ -422,19 +426,28 @@ if(window.matchMedia("(max-width:650px)").matches){
       +"(파일을 직접 열면 브라우저가 막습니다).";
     return;
   }
+  let segErr=null;
   if(TOOL){
     try{
-      const r=await fetch(TOOL+"surface-segments.json",{cache:"force-cache"});
-      if(r.ok) SEG=await r.json();
-    }catch(e){}
+      const r=await fetch(TOOL+"surface-segments.json",{cache:"no-cache"});
+      if(!r.ok) throw new Error("HTTP "+r.status);
+      SEG=await r.json();
+      if(!SEG || !SEG.days) throw new Error("days 항목이 없습니다");
+    }catch(e){ segErr=e.message||String(e); SEG=null; }
     try{
-      const r=await fetch(TOOL+"camino-route-index.json",{cache:"force-cache"});
+      const r=await fetch(TOOL+"camino-route-index.json",{cache:"no-cache"});
       if(r.ok) IDX=(await r.json()).points;
     }catch(e){}
+  }else segErr="tool 폴더를 찾지 못했습니다";
+
+  if(!SEG){
+    $("status").innerHTML=
+      "<b>노면 자료를 읽지 못해 색칠하지 못합니다</b> — "+esc(segErr)+"<br>"
+      +"<span style='color:#8A7F63'>시도한 주소<br>"+TRIED.map(esc).join("<br>")+"</span>";
+  }else{
+    const n=Object.keys(SEG.days).length;
+    $("status").textContent="노면 자료 "+n+"일치를 읽었습니다.";
   }
-  if(!SEG) $("status").innerHTML=
-    "노면 자료(<b>surface-segments.json</b>)를 찾지 못해 색칠하지 못합니다.<br>"
-    +"<b>tool/make-surface-risk.html</b> 로 한 번 만들어 <b>tool/</b> 에 넣어 주세요.";
   selectDay(1);
 })();
 </script>
