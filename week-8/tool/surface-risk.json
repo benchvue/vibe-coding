@@ -1,16 +1,31 @@
 {
- "made_at": "2026-09-05T17:34:33.513Z",
+ "made_at": "2026-09-06T23:46:57.786Z",
  "min_risk_m": 300,
  "sample_m": 350,
  "summary": {
-  "total_km": 782.4,
-  "difficult_km": 18.2,
-  "rough_km": 111.28,
-  "unknown_km": 110.82,
+  "total_km": 793.54,
+  "difficult_km": 14.78,
+  "rough_km": 120.36,
+  "unknown_km": 103.23,
   "days_ok": 12,
   "days_failed": 0
  },
  "top_risky": [
+  {
+   "day": 1,
+   "k": "rough",
+   "from_km": 24.67,
+   "to_km": 33.7,
+   "len_km": 9.03,
+   "name": null,
+   "surface": "compacted",
+   "tracktype": "grade3",
+   "smoothness": null,
+   "mtb": null,
+   "highway": "track",
+   "lat": 43.01065,
+   "lon": -1.22979
+  },
   {
    "day": 7,
    "k": "rough",
@@ -162,21 +177,6 @@
    "lon": -3.35609
   },
   {
-   "day": 1,
-   "k": "difficult",
-   "from_km": 20.4,
-   "to_km": 23.85,
-   "len_km": 3.45,
-   "name": null,
-   "surface": "dirt",
-   "tracktype": null,
-   "smoothness": null,
-   "mtb": null,
-   "highway": "path",
-   "lat": 43.02618,
-   "lon": -1.29557
-  },
-  {
    "day": 5,
    "k": "rough",
    "from_km": 64.89,
@@ -267,19 +267,19 @@
    "lon": -2.61449
   },
   {
-   "day": 1,
+   "day": 2,
    "k": "difficult",
-   "from_km": 16.65,
-   "to_km": 18.76,
-   "len_km": 2.12,
+   "from_km": 34.08,
+   "to_km": 36.1,
+   "len_km": 2.02,
    "name": null,
    "surface": null,
-   "tracktype": "grade5",
-   "smoothness": "bad",
+   "tracktype": "grade4",
+   "smoothness": null,
    "mtb": null,
    "highway": "track",
-   "lat": 43.04474,
-   "lon": -1.2657
+   "lat": 42.73425,
+   "lon": -1.7472
   },
   {
    "day": 7,
@@ -372,25 +372,10 @@
    "lon": -6.77667
   },
   {
-   "day": 1,
-   "k": "rough",
-   "from_km": 18.76,
-   "to_km": 20.4,
-   "len_km": 1.64,
-   "name": null,
-   "surface": "unpaved",
-   "tracktype": "grade2",
-   "smoothness": "bad",
-   "mtb": null,
-   "highway": "track",
-   "lat": 43.0371,
-   "lon": -1.28889
-  },
-  {
    "day": 2,
    "k": "rough",
-   "from_km": 61.75,
-   "to_km": 63.38,
+   "from_km": 58.86,
+   "to_km": 60.49,
    "len_km": 1.63,
    "name": null,
    "surface": "compacted",
@@ -492,21 +477,6 @@
    "lon": -2.50537
   },
   {
-   "day": 1,
-   "k": "difficult",
-   "from_km": 15.31,
-   "to_km": 16.57,
-   "len_km": 1.26,
-   "name": "Camino Francés - Frantses Bidea",
-   "surface": null,
-   "tracktype": "grade5",
-   "smoothness": "bad",
-   "mtb": null,
-   "highway": "track",
-   "lat": 43.05501,
-   "lon": -1.26652
-  },
-  {
    "day": 6,
    "k": "rough",
    "from_km": 77.69,
@@ -597,6 +567,21 @@
    "lon": -3.54231
   },
   {
+   "day": 1,
+   "k": "difficult",
+   "from_km": 18.61,
+   "to_km": 19.71,
+   "len_km": 1.1,
+   "name": null,
+   "surface": "ground",
+   "tracktype": "grade4",
+   "smoothness": "very_bad",
+   "mtb": null,
+   "highway": "track",
+   "lat": 43.04235,
+   "lon": -1.24759
+  },
+  {
    "day": 12,
    "k": "rough",
    "from_km": 15.62,
@@ -610,125 +595,140 @@
    "highway": "path",
    "lat": 42.78421,
    "lon": -7.55208
+  },
+  {
+   "day": 5,
+   "k": "rough",
+   "from_km": 58.68,
+   "to_km": 59.75,
+   "len_km": 1.07,
+   "name": null,
+   "surface": "compacted",
+   "tracktype": "grade3",
+   "smoothness": null,
+   "mtb": null,
+   "highway": "track",
+   "lat": 42.34996,
+   "lon": -3.79861
   }
  ],
  "days": [
   {
    "day": 1,
    "route": "Saint-Jean-Pied-de-Port → Roncesvalles → Zubiri",
-   "total_km": 45.83,
+   "total_km": 59.86,
    "km": {
-    "paved": 17.26,
-    "compact": 3.19,
-    "rough": 1.64,
-    "difficult": 7.23,
-    "unknown": 16.51
+    "paved": 25.91,
+    "compact": 14.68,
+    "rough": 10.72,
+    "difficult": 1.1,
+    "unknown": 7.45
    },
    "pct": {
-    "paved": 37.7,
-    "compact": 7,
-    "rough": 3.6,
-    "difficult": 15.8,
-    "unknown": 36
+    "paved": 43.3,
+    "compact": 24.5,
+    "rough": 17.9,
+    "difficult": 1.8,
+    "unknown": 12.4
    },
-   "ways": 181,
+   "ways": 239,
    "risky": [
     {
-     "k": "difficult",
-     "from_km": 20.4,
-     "to_km": 23.85,
-     "len_km": 3.45,
+     "k": "rough",
+     "from_km": 24.67,
+     "to_km": 33.7,
+     "len_km": 9.03,
      "name": null,
-     "surface": "dirt",
-     "tracktype": null,
+     "surface": "compacted",
+     "tracktype": "grade3",
      "smoothness": null,
      "mtb": null,
-     "highway": "path",
-     "lat": 43.02618,
-     "lon": -1.29557
+     "highway": "track",
+     "lat": 43.01065,
+     "lon": -1.22979
     },
     {
      "k": "difficult",
-     "from_km": 16.65,
-     "to_km": 18.76,
-     "len_km": 2.12,
+     "from_km": 18.61,
+     "to_km": 19.71,
+     "len_km": 1.1,
      "name": null,
-     "surface": null,
-     "tracktype": "grade5",
-     "smoothness": "bad",
+     "surface": "ground",
+     "tracktype": "grade4",
+     "smoothness": "very_bad",
      "mtb": null,
      "highway": "track",
-     "lat": 43.04474,
-     "lon": -1.2657
+     "lat": 43.04235,
+     "lon": -1.24759
     },
     {
      "k": "rough",
-     "from_km": 18.76,
-     "to_km": 20.4,
-     "len_km": 1.64,
+     "from_km": 39.17,
+     "to_km": 40.04,
+     "len_km": 0.88,
      "name": null,
-     "surface": "unpaved",
+     "surface": "gravel",
      "tracktype": "grade2",
-     "smoothness": "bad",
-     "mtb": null,
-     "highway": "track",
-     "lat": 43.0371,
-     "lon": -1.28889
-    },
-    {
-     "k": "difficult",
-     "from_km": 15.31,
-     "to_km": 16.57,
-     "len_km": 1.26,
-     "name": "Camino Francés - Frantses Bidea",
-     "surface": null,
-     "tracktype": "grade5",
-     "smoothness": "bad",
-     "mtb": null,
-     "highway": "track",
-     "lat": 43.05501,
-     "lon": -1.26652
-    },
-    {
-     "k": "difficult",
-     "from_km": 14.88,
-     "to_km": 15.29,
-     "len_km": 0.41,
-     "name": "Camino Francés - Frantses Bidea",
-     "surface": null,
-     "tracktype": "grade5",
      "smoothness": null,
      "mtb": null,
      "highway": "track",
-     "lat": 43.05861,
-     "lon": -1.26735
+     "lat": 42.97384,
+     "lon": -1.34159
+    },
+    {
+     "k": "rough",
+     "from_km": 54.08,
+     "to_km": 54.56,
+     "len_km": 0.48,
+     "name": null,
+     "surface": "unpaved",
+     "tracktype": null,
+     "smoothness": null,
+     "mtb": null,
+     "highway": "track",
+     "lat": 42.9347,
+     "lon": -1.45225
     }
    ]
   },
   {
    "day": 2,
    "route": "Zubiri → Pamplona → Puente la Reina → Estella",
-   "total_km": 68.89,
+   "total_km": 66,
    "km": {
-    "paved": 28.38,
-    "compact": 16.21,
+    "paved": 21.62,
+    "compact": 15.95,
     "rough": 4.02,
-    "difficult": 1.36,
-    "unknown": 18.93
+    "difficult": 4.07,
+    "unknown": 20.35
    },
    "pct": {
-    "paved": 41.2,
-    "compact": 23.5,
-    "rough": 5.8,
-    "difficult": 2,
-    "unknown": 27.5
+    "paved": 32.8,
+    "compact": 24.2,
+    "rough": 6.1,
+    "difficult": 6.2,
+    "unknown": 30.8
    },
-   "ways": 704,
+   "ways": 696,
    "risky": [
     {
+     "k": "difficult",
+     "from_km": 34.08,
+     "to_km": 36.1,
+     "len_km": 2.02,
+     "name": null,
+     "surface": null,
+     "tracktype": "grade4",
+     "smoothness": null,
+     "mtb": null,
+     "highway": "track",
+     "lat": 42.73425,
+     "lon": -1.7472
+    },
+    {
      "k": "rough",
-     "from_km": 61.75,
-     "to_km": 63.38,
+     "from_km": 58.86,
+     "to_km": 60.49,
      "len_km": 1.63,
      "name": null,
      "surface": "compacted",
@@ -741,8 +741,8 @@
     },
     {
      "k": "rough",
-     "from_km": 56.92,
-     "to_km": 57.97,
+     "from_km": 54.03,
+     "to_km": 55.09,
      "len_km": 1.05,
      "name": null,
      "surface": "compacted",
@@ -755,8 +755,8 @@
     },
     {
      "k": "difficult",
-     "from_km": 63.38,
-     "to_km": 64.04,
+     "from_km": 60.49,
+     "to_km": 61.15,
      "len_km": 0.67,
      "name": null,
      "surface": "dirt",
@@ -769,8 +769,8 @@
     },
     {
      "k": "rough",
-     "from_km": 45.16,
-     "to_km": 45.77,
+     "from_km": 42.28,
+     "to_km": 42.88,
      "len_km": 0.6,
      "name": null,
      "surface": "pebblestone",
@@ -783,8 +783,8 @@
     },
     {
      "k": "rough",
-     "from_km": 65.42,
-     "to_km": 65.95,
+     "from_km": 62.53,
+     "to_km": 63.06,
      "len_km": 0.53,
      "name": "Camino Francés - Donejakue bidea",
      "surface": null,
@@ -797,8 +797,8 @@
     },
     {
      "k": "difficult",
-     "from_km": 45.77,
-     "to_km": 46.27,
+     "from_km": 42.88,
+     "to_km": 43.38,
      "len_km": 0.5,
      "name": null,
      "surface": "dirt",
@@ -808,6 +808,20 @@
      "highway": "path",
      "lat": 42.67709,
      "lon": -1.79997
+    },
+    {
+     "k": "difficult",
+     "from_km": 33.19,
+     "to_km": 33.66,
+     "len_km": 0.48,
+     "name": null,
+     "surface": null,
+     "tracktype": "grade4",
+     "smoothness": null,
+     "mtb": null,
+     "highway": "track",
+     "lat": 42.73751,
+     "lon": -1.73774
     }
    ]
   },
@@ -816,18 +830,18 @@
    "route": "Estella → Los Arcos → Logroño → Navarrete",
    "total_km": 61.34,
    "km": {
-    "paved": 14.24,
+    "paved": 14.27,
     "compact": 28.04,
     "rough": 3.17,
     "difficult": 1.37,
-    "unknown": 14.52
+    "unknown": 14.48
    },
    "pct": {
-    "paved": 23.2,
+    "paved": 23.3,
     "compact": 45.7,
     "rough": 5.2,
     "difficult": 2.2,
-    "unknown": 23.7
+    "unknown": 23.6
    },
    "ways": 490,
    "risky": [
@@ -1246,20 +1260,20 @@
    "route": "Castrojeriz → Frómista → Carrión → Sahagún",
    "total_km": 82.31,
    "km": {
-    "paved": 13.46,
+    "paved": 13.37,
     "compact": 58.81,
     "rough": 7.5,
     "difficult": 0,
-    "unknown": 2.54
+    "unknown": 2.63
    },
    "pct": {
-    "paved": 16.4,
+    "paved": 16.2,
     "compact": 71.4,
     "rough": 9.1,
     "difficult": 0,
-    "unknown": 3.1
+    "unknown": 3.2
    },
-   "ways": 391,
+   "ways": 399,
    "risky": [
     {
      "k": "rough",
