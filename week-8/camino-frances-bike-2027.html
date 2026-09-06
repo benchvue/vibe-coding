@@ -1825,6 +1825,13 @@
   .pgs u{display:block;text-decoration:none;font-size:.66rem;color:#A79E86;line-height:1.5}
   .pgctl{grid-template-columns:1fr auto}
   .pgctl label small{font-weight:400;color:#A79E86}
+  #pgLive{border:1px solid var(--camino-blue);background:var(--camino-blue);color:#fff;
+    border-radius:9px;padding:10px 16px;font-size:.78rem;font-weight:600;font-family:inherit;
+    white-space:nowrap}
+  #pgLive:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
+  #pgLive:disabled{opacity:.55}
+  .pgctl{grid-template-columns:1fr auto auto}
+  @media(max-width:700px){ .pgctl{grid-template-columns:1fr} }
   #pgRl{border:1px solid var(--line);background:#fff;color:var(--camino-blue);border-radius:9px;
     padding:10px 15px;font-size:.78rem;font-family:inherit;white-space:nowrap}
   #pgRl:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
@@ -2168,16 +2175,16 @@
 <header class="hero">
   <div class="wrap">
     <div class="eyebrow">2027. 5. 6 – 5. 22 · Bicigrino</div>
-    <h1 class="display">카미노 프란세스,<br>자전거로 <em>782.4km</em>를 달리다</h1>
+    <h1 class="display">카미노 프란세스,<br>자전거로 <em>793.6km</em>를 달리다</h1>
     <p class="hero-sub"><b style="color:#fff">Bin</b>(미국 Newark 출발)과 <b style="color:#fff">Jin</b>(한국 인천 출발)이
     5월 7일 파리에서 만나 5월 8일 기차로 생장에 들어가, 12일 라이딩 + 레온 휴식 1일로
     산티아고 대성당까지 완주하는 자전거 순례 일정입니다.</p>
     <div class="stats">
-      <div class="stat"><b>782.4 km</b><span>총 주행 거리</span></div>
+      <div class="stat"><b>793.6 km</b><span>총 주행 거리</span></div>
       <div class="stat"><b>12 + 1일</b><span>라이딩 12일 · 휴식 1일 (5/9–5/21)</span></div>
       <div class="stat"><b>65 km</b><span>일평균 주행</span></div>
       <div class="stat"><b>90.0 km</b><span>최장 구간 (5일차)</span></div>
-      <div class="stat"><b>11,432 m</b><span>총 획득고도</span></div>
+      <div class="stat"><b>11,529 m</b><span>총 획득고도</span></div>
     </div>
     <figure class="overview-map">
       <img src="images/camino-frances-bike-2027.webp"
@@ -2202,8 +2209,8 @@
     <div class="sec-head">
       <div class="no">Ⅰ · Perfil</div>
       <h2>고도 프로필</h2>
-      <p>실제 GPX 트랙에서 다시 계산한 값입니다 — 12일 주행 <b>782.4 km</b>,
-      누적 상승 <b>11,432 m</b>. 예전 계획표의 어림값(8,500 m)보다 <b>2,900 m</b> 더 오릅니다.
+      <p>실제 GPX 트랙에서 다시 계산한 값입니다 — 12일 주행 <b>793.6 km</b>,
+      누적 상승 <b>11,529 m</b>. 예전 계획표의 어림값(8,500 m)보다 <b>2,900 m</b> 더 오릅니다.
       길이만 보면 평탄해 보이는 날에도 잔오르막이 쌓입니다.<br>
       곡선은 GPX 트랙포인트 <b>14,499개</b>를 그대로 이어 그린 것입니다 —
       아래에서 <b>오늘 어디까지 갔는지</b> 표시할 수 있습니다.</p>
@@ -2214,8 +2221,8 @@
       <h3 class="climbh">힘든 날 순서 <small>· 획득고도 기준</small></h3>
       <div class="climbrow">
         <div class="cc c1"><span class="ccn">1</span>
-          <b>DAY 1</b><em>+1,911 m</em>
-          <small>생장 → 수비리 · 45.8 km<br>피레네 · 171 m 에서 론세스바예스 956 m</small></div>
+          <b>DAY 1</b><em>+1,943 m</em>
+          <small>생장 → 수비리 · 59.9 km<br>피레네 · 171 m 에서 론세스바예스 956 m</small></div>
         <div class="cc c2"><span class="ccn">2</span>
           <b>DAY 12</b><em>+1,394 m</em>
           <small>사리아 → 아르수아 · 76.3 km<br>갈리시아 잔오르막이 끝없이 반복</small></div>
@@ -2233,21 +2240,21 @@
             <th style="text-align:right">획득고도</th><th style="text-align:right">누적</th>
             <th>고도 변화</th></tr></thead>
           <tbody>
-            <tr><td>1</td><td>생장 → 수비리</td><td class="km">45.8</td><td class="km hi">1,911</td><td class="km">45.8</td><td>171 → 956 → 531 m</td></tr>
-            <tr><td>2</td><td>수비리 → 에스테야</td><td class="km">68.9</td><td class="km">1,006</td><td class="km">114.7</td><td>528 → 350 → 425 m</td></tr>
-            <tr><td>3</td><td>에스테야 → 나바레테</td><td class="km">61.3</td><td class="km">972</td><td class="km">176.1</td><td>428 → 395 → 515 m</td></tr>
-            <tr><td>4</td><td>나바레테 → 벨로라도</td><td class="km">58.7</td><td class="km">868</td><td class="km">234.8</td><td>516 → 645 → 769 m</td></tr>
-            <tr><td>5</td><td>벨로라도 → 카스트로헤리스</td><td class="km">90.0</td><td class="km">979</td><td class="km">324.8</td><td>768 → 1,005 → 812 m</td></tr>
-            <tr><td>6</td><td>카스트로헤리스 → 사아군</td><td class="km">82.3</td><td class="km">546</td><td class="km">407.1</td><td>810 → 857 → 826 m</td></tr>
-            <tr><td>7</td><td>사아군 → 레온</td><td class="km">54.7</td><td class="km">279</td><td class="km">461.8</td><td>821 → 879 → 838 m</td></tr>
-            <tr class="rest"><td>8</td><td>레온 휴식</td><td class="km">—</td><td class="km">—</td><td class="km">461.8</td><td>838 m</td></tr>
-            <tr><td>9</td><td>레온 → 라바날</td><td class="km">68.9</td><td class="km">703</td><td class="km">530.7</td><td>840 → 873 → 1,149 m</td></tr>
-            <tr><td>10</td><td>라바날 → 베가 데 발카르세</td><td class="km">74.3</td><td class="km">972</td><td class="km">604.9</td><td>1,150 → 482 → 634 m</td></tr>
-            <tr><td>11</td><td>베가 데 발카르세 → 사리아</td><td class="km">62.3</td><td class="km hi">1,141</td><td class="km">667.2</td><td>637 → 1,290 → 421 m</td></tr>
-            <tr><td>12</td><td>사리아 → 아르수아</td><td class="km">76.3</td><td class="km hi">1,394</td><td class="km">743.5</td><td>421 → 347 → 394 m</td></tr>
-            <tr class="fin"><td>13</td><td>아르수아 → 산티아고</td><td class="km">38.9</td><td class="km">661</td><td class="km">782.4</td><td>392 → 293 → 262 m</td></tr>
+            <tr><td>1</td><td>생장 → 수비리</td><td class="km">59.9</td><td class="km hi">1,911</td><td class="km">59.9</td><td>171 → 956 → 531 m</td></tr>
+            <tr><td>2</td><td>수비리 → 에스테야</td><td class="km">68.9</td><td class="km">1,006</td><td class="km">125.9</td><td>528 → 350 → 425 m</td></tr>
+            <tr><td>3</td><td>에스테야 → 나바레테</td><td class="km">61.3</td><td class="km">972</td><td class="km">187.2</td><td>428 → 395 → 515 m</td></tr>
+            <tr><td>4</td><td>나바레테 → 벨로라도</td><td class="km">58.7</td><td class="km">868</td><td class="km">245.9</td><td>516 → 645 → 769 m</td></tr>
+            <tr><td>5</td><td>벨로라도 → 카스트로헤리스</td><td class="km">90.0</td><td class="km">979</td><td class="km">335.9</td><td>768 → 1,005 → 812 m</td></tr>
+            <tr><td>6</td><td>카스트로헤리스 → 사아군</td><td class="km">82.3</td><td class="km">546</td><td class="km">418.2</td><td>810 → 857 → 826 m</td></tr>
+            <tr><td>7</td><td>사아군 → 레온</td><td class="km">54.7</td><td class="km">279</td><td class="km">472.9</td><td>821 → 879 → 838 m</td></tr>
+            <tr class="rest"><td>8</td><td>레온 휴식</td><td class="km">—</td><td class="km">—</td><td class="km">472.9</td><td>838 m</td></tr>
+            <tr><td>9</td><td>레온 → 라바날</td><td class="km">68.9</td><td class="km">703</td><td class="km">541.8</td><td>840 → 873 → 1,149 m</td></tr>
+            <tr><td>10</td><td>라바날 → 베가 데 발카르세</td><td class="km">74.3</td><td class="km">972</td><td class="km">616.1</td><td>1,150 → 482 → 634 m</td></tr>
+            <tr><td>11</td><td>베가 데 발카르세 → 사리아</td><td class="km">62.3</td><td class="km hi">1,141</td><td class="km">678.4</td><td>637 → 1,290 → 421 m</td></tr>
+            <tr><td>12</td><td>사리아 → 아르수아</td><td class="km">76.3</td><td class="km hi">1,394</td><td class="km">754.7</td><td>421 → 347 → 394 m</td></tr>
+            <tr class="fin"><td>13</td><td>아르수아 → 산티아고</td><td class="km">38.9</td><td class="km">661</td><td class="km">793.6</td><td>392 → 293 → 262 m</td></tr>
           </tbody>
-          <tfoot><tr><th>12일</th><th>주행</th><th class="km">782.4</th><th class="km">11,432</th><th></th><th></th></tr></tfoot>
+          <tfoot><tr><th>12일</th><th>주행</th><th class="km">793.6</th><th class="km">11,529</th><th></th><th></th></tr></tfoot>
         </table>
       </div>
       <p class="note">거리·획득고도는 실제 GPX 트랙에서 계산한 값입니다
@@ -2271,23 +2278,23 @@
         <tr><th>일차</th><th>날짜</th><th>구간</th><th style="text-align:right">거리</th><th style="text-align:right">획득고도</th><th style="text-align:right">누적 km</th></tr>
       </thead>
       <tbody>
-        <tr><td>1</td><td class="day">5/9<small>일</small></td><td class="route"><b>생장</b> <small>(Saint-Jean-Pied-de-Port)</small> → <b>수비리</b> <small>(Zubiri)</small></td><td class="km">45.8 km</td><td class="gain">+1,911 m</td><td class="km">45.8</td></tr>
-        <tr><td>2</td><td class="day">5/10<small>월</small></td><td class="route"><b>수비리</b> <small>(Zubiri)</small> → <b>에스떼야</b> <small>(Estella)</small></td><td class="km">68.9 km</td><td class="gain">+1,006 m</td><td class="km">114.7</td></tr>
-        <tr><td>3</td><td class="day">5/11<small>화</small></td><td class="route"><b>에스떼야</b> <small>(Estella)</small> → <b>나베레테</b> <small>(Navarrete)</small></td><td class="km">61.3 km</td><td class="gain">+972 m</td><td class="km">176.1</td></tr>
-        <tr><td>4</td><td class="day">5/12<small>수</small></td><td class="route"><b>나베레테</b> <small>(Navarrete)</small> → <b>벨로라도</b> <small>(Belorado)</small></td><td class="km">58.7 km</td><td class="gain">+868 m</td><td class="km">234.8</td></tr>
-        <tr><td>5</td><td class="day">5/13<small>목</small></td><td class="route"><b>벨로라도</b> <small>(Belorado)</small> → <b>키스트로헤리스</b> <small>(Castrojeriz)</small></td><td class="km">90.0 km</td><td class="gain">+979 m</td><td class="km">324.8</td></tr>
-        <tr><td>6</td><td class="day">5/14<small>금</small></td><td class="route"><b>키스트로헤리스</b> <small>(Castrojeriz)</small> → <b>사아군</b> <small>(Sahagún)</small></td><td class="km">82.3 km</td><td class="gain">+546 m</td><td class="km">407.1</td></tr>
-        <tr><td>7</td><td class="day">5/15<small>토</small></td><td class="route"><b>사아군</b> <small>(Sahagún)</small> → <b>레온</b> <small>(León)</small></td><td class="km">54.7 km</td><td class="gain">+279 m</td><td class="km">461.8</td></tr>
-        <tr class="restrow"><td>8</td><td class="day">5/16<small>일</small></td><td class="route">🛌 <b>레온</b> (León) 휴식일 — 자전거 주행 없음</td><td class="km">0 km</td><td class="gain">—</td><td class="km">461.8</td></tr>
-        <tr><td>9</td><td class="day">5/17<small>월</small></td><td class="route"><b>레온</b> <small>(León)</small> → <b>라바날 델 까미노</b> <small>(Rabanal del Camino)</small></td><td class="km">68.9 km</td><td class="gain">+703 m</td><td class="km">530.7</td></tr>
-        <tr><td>10</td><td class="day">5/18<small>화</small></td><td class="route"><b>라바날 델 까미노</b> <small>(Rabanal del Camino)</small> → <b>베가 데 발까르세</b> <small>(Vega de Valcarce)</small></td><td class="km">74.3 km</td><td class="gain">+972 m</td><td class="km">604.9</td></tr>
-        <tr><td>11</td><td class="day">5/19<small>수</small></td><td class="route"><b>베가 데 발까르세</b> <small>(Vega de Valcarce)</small> → <b>사리아</b> <small>(Sarria)</small></td><td class="km">62.3 km</td><td class="gain">+1,141 m</td><td class="km">667.2</td></tr>
-        <tr><td>12</td><td class="day">5/20<small>목</small></td><td class="route"><b>사리아</b> <small>(Sarria)</small> → <b>아르수아</b> <small>(Arzúa)</small></td><td class="km">76.3 km</td><td class="gain">+1,394 m</td><td class="km">743.5</td></tr>
-        <tr><td>13</td><td class="day">5/21<small>금</small></td><td class="route"><b>아르수아</b> <small>(Arzúa)</small> → <b>산티아고 대성당</b> <small>(Santiago de Compostela)</small></td><td class="km">38.9 km</td><td class="gain">+661 m</td><td class="km">782.4</td></tr>
+        <tr><td>1</td><td class="day">5/9<small>일</small></td><td class="route"><b>생장</b> <small>(Saint-Jean-Pied-de-Port)</small> → <b>수비리</b> <small>(Zubiri)</small></td><td class="km">59.9 km</td><td class="gain">+1,943 m</td><td class="km">59.9</td></tr>
+        <tr><td>2</td><td class="day">5/10<small>월</small></td><td class="route"><b>수비리</b> <small>(Zubiri)</small> → <b>에스떼야</b> <small>(Estella)</small></td><td class="km">66.0 km</td><td class="gain">+1,071 m</td><td class="km">125.9</td></tr>
+        <tr><td>3</td><td class="day">5/11<small>화</small></td><td class="route"><b>에스떼야</b> <small>(Estella)</small> → <b>나베레테</b> <small>(Navarrete)</small></td><td class="km">61.3 km</td><td class="gain">+972 m</td><td class="km">187.2</td></tr>
+        <tr><td>4</td><td class="day">5/12<small>수</small></td><td class="route"><b>나베레테</b> <small>(Navarrete)</small> → <b>벨로라도</b> <small>(Belorado)</small></td><td class="km">58.7 km</td><td class="gain">+868 m</td><td class="km">245.9</td></tr>
+        <tr><td>5</td><td class="day">5/13<small>목</small></td><td class="route"><b>벨로라도</b> <small>(Belorado)</small> → <b>키스트로헤리스</b> <small>(Castrojeriz)</small></td><td class="km">90.0 km</td><td class="gain">+979 m</td><td class="km">335.9</td></tr>
+        <tr><td>6</td><td class="day">5/14<small>금</small></td><td class="route"><b>키스트로헤리스</b> <small>(Castrojeriz)</small> → <b>사아군</b> <small>(Sahagún)</small></td><td class="km">82.3 km</td><td class="gain">+546 m</td><td class="km">418.2</td></tr>
+        <tr><td>7</td><td class="day">5/15<small>토</small></td><td class="route"><b>사아군</b> <small>(Sahagún)</small> → <b>레온</b> <small>(León)</small></td><td class="km">54.7 km</td><td class="gain">+279 m</td><td class="km">472.9</td></tr>
+        <tr class="restrow"><td>8</td><td class="day">5/16<small>일</small></td><td class="route">🛌 <b>레온</b> (León) 휴식일 — 자전거 주행 없음</td><td class="km">0 km</td><td class="gain">—</td><td class="km">472.9</td></tr>
+        <tr><td>9</td><td class="day">5/17<small>월</small></td><td class="route"><b>레온</b> <small>(León)</small> → <b>라바날 델 까미노</b> <small>(Rabanal del Camino)</small></td><td class="km">68.9 km</td><td class="gain">+703 m</td><td class="km">541.8</td></tr>
+        <tr><td>10</td><td class="day">5/18<small>화</small></td><td class="route"><b>라바날 델 까미노</b> <small>(Rabanal del Camino)</small> → <b>베가 데 발까르세</b> <small>(Vega de Valcarce)</small></td><td class="km">74.3 km</td><td class="gain">+972 m</td><td class="km">616.1</td></tr>
+        <tr><td>11</td><td class="day">5/19<small>수</small></td><td class="route"><b>베가 데 발까르세</b> <small>(Vega de Valcarce)</small> → <b>사리아</b> <small>(Sarria)</small></td><td class="km">62.3 km</td><td class="gain">+1,141 m</td><td class="km">678.4</td></tr>
+        <tr><td>12</td><td class="day">5/20<small>목</small></td><td class="route"><b>사리아</b> <small>(Sarria)</small> → <b>아르수아</b> <small>(Arzúa)</small></td><td class="km">76.3 km</td><td class="gain">+1,394 m</td><td class="km">754.7</td></tr>
+        <tr><td>13</td><td class="day">5/21<small>금</small></td><td class="route"><b>아르수아</b> <small>(Arzúa)</small> → <b>산티아고 대성당</b> <small>(Santiago de Compostela)</small></td><td class="km">38.9 km</td><td class="gain">+661 m</td><td class="km">793.6</td></tr>
       </tbody>
       <tfoot>
-        <tr><th colspan="3">12일 주행 · 레온 휴식 1일</th><th class="km">782.4 km</th>
-          <th class="gain">+11,432 m</th><th class="km">782.4</th></tr>
+        <tr><th colspan="3">12일 주행 · 레온 휴식 1일</th><th class="km">793.6 km</th>
+          <th class="gain">+11,529 m</th><th class="km">793.6</th></tr>
       </tfoot>
     </table>
     </div>
@@ -2744,7 +2751,7 @@ Gracias! Buen Camino!</pre>
     <div class="sec-head">
       <div class="no">Llegada</div>
       <h2>산티아고 도착</h2>
-      <p>5/21 금요일, <b>782.4 km</b> 를 마치고 대성당 앞에 섭니다.
+      <p>5/21 금요일, <b>793.6 km</b> 를 마치고 대성당 앞에 섭니다.
       그날 할 일은 셋입니다 — <b>자전거 반납</b>, <b>순례자 증서 받기</b>, 그리고 쉬기.
       세 곳 모두 걸어서 5분 안에 있습니다.</p>
     </div>
@@ -2756,7 +2763,7 @@ Gracias! Buen Camino!</pre>
           <li><b>Rúa das Carretas 33</b></li>
           <li>매일 <b>09:00 – 19:00</b><small>12/25 · 1/1 휴무</small></li>
           <li><b>콤포스텔라</b> 무료 · 라틴어 이름으로 발급</li>
-          <li><b>거리 증서</b> 3 € · 782.4 km 가 적힙니다</li>
+          <li><b>거리 증서</b> 3 € · 793.6 km 가 적힙니다</li>
           <li>도장이 찍힌 <b>크레덴시알</b>을 가져가세요</li>
         </ul>
         <div class="an">자전거는 <b>마지막 200 km 부터 하루 두 개</b> 도장이 필요합니다.
@@ -2895,7 +2902,7 @@ Gracias! Buen Camino!</pre>
         <div class="gb warn"><span>0.680</span><i style="width:86%"></i><em>MMR · 34T/50T</em></div>
       </div>
       <p class="gsub"><b>기어비 차이가 15.6% 입니다.</b> 카탈로그에서는 작아 보이지만,
-      13일 내내 <b>11,432 m</b>를 오르는 여정에서는 누적으로 크게 벌어집니다.
+      13일 내내 <b>11,529 m</b>를 오르는 여정에서는 누적으로 크게 벌어집니다.
       가벼운 체중일수록 기어비가 더 중요합니다 — 몸무게로 페달을 누를 여력이 적기 때문입니다.</p>
     </div>
 
@@ -2916,9 +2923,9 @@ Gracias! Buen Camino!</pre>
         <thead><tr><th>DAY</th><th>거리 · 고도</th><th>주행</th><th>주행 소모</th>
           <th>하루 총</th><th>주행 중 탄수화물</th></tr></thead>
         <tbody>
-          <tr class="hard"><td><b>1</b></td><td class="sd">45.8 km · 1,911 m</td><td class="km">3.3 h</td>
+          <tr class="hard"><td><b>1</b></td><td class="sd">59.9 km · 1,943 m</td><td class="km">3.3 h</td>
             <td class="km">2,040</td><td class="km"><b>3,710</b></td><td class="km">280 g</td></tr>
-          <tr><td><b>2</b></td><td class="sd">68.9 km · 1,006 m</td><td class="km">4.2 h</td>
+          <tr><td><b>2</b></td><td class="sd">66.0 km · 1,071 m</td><td class="km">4.2 h</td>
             <td class="km">1,717</td><td class="km">3,390</td><td class="km">236 g</td></tr>
           <tr><td><b>3</b></td><td class="sd">61.3 km · 972 m</td><td class="km">3.7 h</td>
             <td class="km">1,589</td><td class="km">3,260</td><td class="km">219 g</td></tr>
@@ -4514,7 +4521,7 @@ Gracias! Buen Camino!</pre>
       <div class="fd-row frame fd-final">
         <div class="fd-img pthumb" data-fd="13" style="display:none"><img alt="DAY 13 완주 기념 요리"></div>
         <div class="fd-head"><span class="fd-chip final">D13</span> <b>아르수아 → 산티아고 데 콤포스텔라</b> <small>5/21 금</small></div>
-        <div class="fd-name">⭐ 782.4km 완주 기념 저녁 — Restaurante El Puente</div>
+        <div class="fd-name">⭐ 793.6km 완주 기념 저녁 — Restaurante El Puente</div>
         <div class="fd-menu">전통 갈리시아 마리스께리아 (Marisquería tradicional gallega)</div>
         <div class="fd-addr">📍 Viaducto da Rocha, 11, Bajo, 15706 Santiago de Compostela</div>
         <div class="fd-menu" style="margin-top:8px"><b>추천 메뉴:</b>
@@ -4633,8 +4640,8 @@ Gracias! Buen Camino!</pre>
 </div>
 <footer class="site">
   <div class="buen display">¡Buen Camino!</div>
-  <p>Camino Francés 782.4km · 2027. 5. 6 – 5. 22 · <b>Bin &amp; Jin</b>의 Bicigrino 일정표<br>
-  라이딩 12일 + 레온 휴식 1일 · 일평균 약 65km · 총 획득고도 11,432m</p>
+  <p>Camino Francés 793.6km · 2027. 5. 6 – 5. 22 · <b>Bin &amp; Jin</b>의 Bicigrino 일정표<br>
+  라이딩 12일 + 레온 휴식 1일 · 일평균 약 66km · 총 획득고도 11,529m</p>
 </footer>
 
 
@@ -7228,7 +7235,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       +'<div class="cpg-b"><b>1. 자전거 순례자의 발급 조건</b>'
         +'<ul class="cpg-l">'
         +'<li><em>거리</em>Santiago까지 <b>마지막 200 km 이상</b> 자전거 주행 '
-          +'<span class="ok">이번 일정 782.4 km — 충족</span></li>'
+          +'<span class="ok">이번 일정 793.6 km — 충족</span></li>'
         +'<li><em>여권</em>Credencial(순례자 여권)에 경로를 따라 세요를 받을 것</li>'
         +'<li><em>세요</em>마지막 구간은 <b>하루 2개</b>를 받아 두는 것이 안전합니다 '
           +'<span class="sub">공식 규정문에는 개수가 명시되어 있지 않지만, 사무소 확인 관행입니다. '
@@ -7299,11 +7306,11 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
           +'<tr><th>경로</th><td>Camino Francés (French Way)</td></tr>'
           +'<tr><th>출발</th><td>Saint-Jean-Pied-de-Port, France · 2027년 5월 9일</td></tr>'
           +'<tr><th>도착</th><td>Santiago de Compostela · 2027년 5월 21일</td></tr>'
-          +'<tr><th>계획 거리</th><td>782.4 km</td></tr>'
+          +'<tr><th>계획 거리</th><td>793.6 km</td></tr>'
         +'</tbody></table>'
         +'<p class="cpg-note" style="margin-top:10px">'
         +'<b>주의</b> 증서에 적히는 거리는 Pilgrim Office 가 크레덴시알과 인정 경로를 확인해 '
-        +'<b>직접 결정</b>합니다. 782.4 km 는 우리 계획 거리일 뿐, 그대로 기재된다고 볼 수 없습니다.</p></div>'
+        +'<b>직접 결정</b>합니다. 793.6 km 는 우리 계획 거리일 뿐, 그대로 기재된다고 볼 수 없습니다.</p></div>'
 
       +'<div class="cpg-b"><b>3. 신청 방법</b>'
         +'<p class="cpg-p">따로 등록하는 곳은 없습니다. 앞의 <b>온라인 등록</b> 화면에서 '
@@ -7334,7 +7341,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
           +'<tr><th>도착일</th><td class="yes">있음</td><td class="yes">있음</td></tr>'
           +'<tr><th>가격</th><td>무료</td><td>3 €</td></tr>'
         +'</tbody></table></div>'
-        +'<p class="cpg-p">Compostela 에는 782.4 km 가 남지 않습니다. '
+        +'<p class="cpg-p">Compostela 에는 793.6 km 가 남지 않습니다. '
         +'이번 자전거 순례의 기록으로는 <b>두 가지를 함께 받는 편</b>을 권합니다.</p></div>'
       +'</div>';
   }
@@ -7425,7 +7432,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     return '<div class="ppc-t">CREDENCIAL DEL PEREGRINO</div>'
       +'<div class="ppc-n">'+p.n+'</div>'
       +'<div class="ppc-s">Camino Francés · 2027</div>'
-      +'<div class="ppc-d">Saint-Jean-Pied-de-Port → Santiago de Compostela · 782.4 km</div>';
+      +'<div class="ppc-d">Saint-Jean-Pied-de-Port → Santiago de Compostela · 793.6 km</div>';
   }
   function whoTabs(){
     return '<div class="ppwhobar">'+PP.people.map(function(p){
@@ -8103,7 +8110,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260905-2126";
+  var BUILD="20260906-2342";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
@@ -8443,6 +8450,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
             return '<option value="'+d.cum_km_end+'">DAY '+d.day+' · '+esc(d.to)
               +' ('+d.cum_km_end.toFixed(1)+' km)</option>'; }).join("")
         +'</select></label>'
+        +'<button type="button" id="pgLive">상대방 주행 위치 보기</button>'
         +'<button type="button" id="pgRl">기록 새로고침</button>'
       +'</div>'
       +'<p class="pgmsg" id="pgMsg">주행 기록은 <b>upload-camino.html → 🚴 주행 기록</b> 에서 '
@@ -8456,6 +8464,34 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       preview = this.value==="" ? null : +this.value;
       draw();
     });
+    $("pgLive").addEventListener("click",function(){
+      var b=$("pgLive"), m=$("pgMsg");
+      b.disabled=true; m.textContent="위치를 읽는 중…";
+      var p = window.CAMINO_LIVE ? window.CAMINO_LIVE.refresh() : Promise.resolve(null);
+      p.then(function(d){
+        b.disabled=false;
+        var r=(d&&d.riders)||{}, out=[];
+        ["bin","jin"].forEach(function(w){
+          var v=r[w]; if(!v||typeof v.km!=="number") return;
+          var nm=WHO[w].n, tm=window.CAMINO_LIVE?window.CAMINO_LIVE.ago(v):"";
+          if(v.test){
+            var z=v.zone==="am"?"아메리카":v.zone==="as"?"아시아":"유럽";
+            out.push('<b style="color:'+WHO[w].c+'">'+nm+'</b> 시험 중 · '+z+' · '+tm);
+          }else{
+            out.push('<b style="color:'+WHO[w].c+'">'+nm+'</b> '
+                     +v.km.toFixed(1)+' km · '+tm);
+          }
+        });
+        m.innerHTML = out.length
+          ? out.join(" &nbsp;·&nbsp; ")
+            +"<br><small>표지가 위 그림과 지도에 함께 나타납니다.</small>"
+          : "아직 들어온 위치가 없습니다. 폰에서 OwnTracks 가 켜져 있는지 확인하세요.";
+        draw();
+      }).catch(function(e){
+        b.disabled=false; m.textContent="읽지 못했습니다 — "+esc(e.message||e);
+      });
+    });
+
     $("pgRl").addEventListener("click",function(){
       var m=$("pgMsg"); m.textContent="기록을 다시 읽는 중…";
       loadRides().then(function(){ draw();
@@ -8780,7 +8816,7 @@ window.CAMINO_LIVE = (function(){
 <script>
 /* ══════════════════════════════════════════════════════════════════════
    전체 개요 그림(camino-frances-bike-2027.webp) 위 주행 위치
-   · 이 그림은 오른쪽이 생장(0 km), 왼쪽이 산티아고(782.4 km)
+   · 이 그림은 오른쪽이 생장(0 km), 왼쪽이 산티아고(793.6 km)
    · 위쪽 지도와 아래쪽 고도 프로파일 두 곳에 함께 찍습니다
    · 원본 이미지는 손대지 않고 같은 크기의 SVG 를 덮습니다
    ══════════════════════════════════════════════════════════════════════ */
@@ -8808,7 +8844,12 @@ window.CAMINO_LIVE = (function(){
     }
     return {x:n[0].x_px, y:n[0].y_px};
   }
-  function profX(km){ return CFG.profile.km_to_x.a*km + CFG.profile.km_to_x.b; }
+  function profX(km){
+    /* 그림에 인쇄된 축은 782.4 km 기준이라 실제 거리를 그 비율로 줄여 찍습니다 */
+    var P=CFG.profile, sc=(P.total_km_printed && P.total_km_actual)
+      ? P.total_km_printed/P.total_km_actual : 1;
+    return P.km_to_x.a*(km*sc) + P.km_to_x.b;
+  }
   function profY(x){
     var p=CFG.profile.ridge;
     if(x<=p[0][0]) return p[0][1];
@@ -8990,9 +9031,7 @@ window.CAMINO_LIVE = (function(){
     4:["나바레테","벨로라도"],5:["벨로라도","카스트로헤리스"],6:["카스트로헤리스","사아군"],
     7:["사아군","레온"],9:["레온","라바날"],10:["라바날","베가 데 발카르세"],
     11:["베가 데 발카르세","사리아"],12:["사리아","아르수아"],13:["아르수아","산티아고"]};
-  var CUMK={1:[0,45.8],2:[45.8,114.7],3:[114.7,176.1],4:[176.1,234.8],5:[234.8,324.8],
-    6:[324.8,407.1],7:[407.1,461.8],9:[461.8,530.7],10:[530.7,604.9],11:[604.9,667.2],
-    12:[667.2,743.5],13:[743.5,782.4]};
+  var CUMK={1:[0.0,59.9],2:[59.9,125.9],3:[125.9,187.2],4:[187.2,245.9],5:[245.9,335.9],6:[335.9,418.2],7:[418.2,472.9],9:[472.9,541.8],10:[541.8,616.1],11:[616.1,678.4],12:[678.4,754.7],13:[754.7,793.6]};
 
   function esc(t){ return String(t==null?"":t)
     .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }

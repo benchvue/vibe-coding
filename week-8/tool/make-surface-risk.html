@@ -30,6 +30,11 @@
   #dl:hover{background:var(--gold);color:#3B2E00}
   #reset{background:#fff;color:var(--soft);border:1px solid var(--line)}
   #reset:hover{border-color:var(--err);color:var(--err)}
+  #clearDays{background:#fff;color:var(--blue);border:1px solid var(--line)}
+  #clearDays:hover{border-color:var(--gold);background:#FFFBEE;color:#3B2E00}
+  .redo{display:flex;align-items:center;gap:9px;font-size:.85rem;color:var(--soft)}
+  .redo input{width:130px;border:1px solid var(--line);border-radius:9px;padding:11px 12px;
+    font-size:.92rem;font-family:inherit}
   .bar{height:10px;border-radius:5px;background:#EFEDE5;overflow:hidden;margin:12px 0 6px}
   .bar i{display:block;height:100%;background:var(--gold);width:0;transition:width .3s}
   .status{font-size:.82rem;color:var(--soft);min-height:1.5em}
@@ -70,13 +75,20 @@
     · <b>끝난 날은 저장됩니다.</b> 중간에 멈추거나 실패해도
       <b>전체 분석 시작</b>을 다시 누르면 <b>남은 날부터 이어서</b> 합니다.<br>
     · 한 응답이 90초를 넘으면 포기하고 다른 서버로 넘어갑니다.<br>
-    · 한 번 만들어 두면 다시 돌릴 일이 없습니다. 노선을 바꿨을 때만 하시면 됩니다.</p>
+    · <b>노선을 바꿨다면</b> 그 날짜만 <b>이 날짜만 지우기</b> 로 지우고
+      다시 시작하면 됩니다 — 나머지는 그대로 둡니다.</p>
   </div>
 
   <div class="btnrow">
     <button id="run">전체 분석 시작</button>
     <button id="dl">JSON 두 개 내려받기</button>
     <button id="reset">처음부터 다시</button>
+  </div>
+  <div class="btnrow" style="margin-top:-4px">
+    <label class="redo">다시 할 날짜만
+      <input type="text" id="redo" placeholder="예: 1,2" inputmode="numeric">
+    </label>
+    <button id="clearDays">이 날짜만 지우기</button>
   </div>
   <div class="bar"><i id="bar"></i></div>
   <div class="status" id="status">준비됨</div>
@@ -332,6 +344,21 @@ const SAVEKEY="caminoSurfProgress";
 const loadProgress=()=>{ try{ const v=JSON.parse(localStorage.getItem(SAVEKEY));
   if(v&&v.days) return v; }catch(e){} return null; };
 const saveProgress=o=>{ try{ localStorage.setItem(SAVEKEY, JSON.stringify(o)); }catch(e){} };
+
+$("clearDays").addEventListener("click", ()=>{
+  const raw=$("redo").value.trim();
+  const want=raw.split(/[^0-9]+/).map(Number).filter(n=>DAY_LIST.indexOf(n)>=0);
+  if(!want.length){ $("status").textContent="다시 할 날짜를 넣으세요 (예: 1,2)"; return; }
+  const prev=loadProgress();
+  if(!prev){ $("status").textContent="저장된 결과가 없습니다. 그냥 시작하세요."; return; }
+  prev.days=prev.days.filter(x=>want.indexOf(x.day)<0);
+  saveProgress(prev);
+  $("tb").innerHTML="";
+  prev.days.sort((a,b)=>a.day-b.day).forEach(x=>row(x,"done"));
+  $("status").innerHTML="DAY "+want.join(", ")+" 를 지웠습니다 — "
+    +"<b>전체 분석 시작</b>을 누르면 그 날만 다시 합니다.";
+  $("dl").style.display="none";
+});
 
 $("reset").addEventListener("click", ()=>{
   localStorage.removeItem(SAVEKEY);

@@ -159,9 +159,7 @@ const CITY={1:["생장","수비리"],2:["수비리","에스테야"],3:["에스�
   4:["나바레테","벨로라도"],5:["벨로라도","카스트로헤리스"],6:["카스트로헤리스","사아군"],
   7:["사아군","레온"],9:["레온","라바날"],10:["라바날","베가 데 발카르세"],
   11:["베가 데 발카르세","사리아"],12:["사리아","아르수아"],13:["아르수아","산티아고"]};
-const CUMK={1:[0,45.8],2:[45.8,114.7],3:[114.7,176.1],4:[176.1,234.8],5:[234.8,324.8],
-  6:[324.8,407.1],7:[407.1,461.8],9:[461.8,530.7],10:[530.7,604.9],11:[604.9,667.2],
-  12:[667.2,743.5],13:[743.5,782.4]};
+const CUMK={1:[0.0,59.9],2:[59.9,125.9],3:[125.9,187.2],4:[187.2,245.9],5:[245.9,335.9],6:[335.9,418.2],7:[418.2,472.9],9:[472.9,541.8],10:[541.8,616.1],11:[616.1,678.4],12:[678.4,754.7],13:[754.7,793.6]};
 
 const SF={dirt:"흙길",ground:"맨땅",gravel:"자갈",pebblestone:"굵은 자갈",unpaved:"비포장",
   compacted:"다진 흙",fine_gravel:"고운 자갈",sand:"모래",rock:"바위",earth:"흙",
@@ -414,7 +412,7 @@ async function profForAll(){
   drawProfile({
     ele, cum, runs,
     right:{name:"생장", km:"0.0 km", color:"#1E7A46"},
-    left :{name:"산티아고", km:"782.4 km", color:"#8E2C3A"},
+    left :{name:"산티아고", km:"793.6 km", color:"#8E2C3A"},
     marks: profMarks("all")
   });
 }
@@ -545,7 +543,7 @@ async function showAll(){
       last?"#8E2C3A":"#152A55", CUMK[d][1].toFixed(1)+" km", last),
       zIndexOffset:500}).addTo(dayLayer);
   });
-  $("route").textContent="전체 Camino · 생장 → 산티아고 782.4 km";
+  $("route").textContent="전체 Camino · 생장 → 산티아고 793.6 km";
   $("status").textContent="12일 전체입니다. 표지는 그날 도착 지점입니다. "
     +"날짜 단추를 누르면 그 날만 봅니다.";
   await profForAll();
@@ -705,7 +703,7 @@ setInterval(async ()=>{
 function foldSub(){
   const el=$("foldSub"), p=$("panel");
   if(!p.classList.contains("closed")){
-    el.textContent="12일 주행 + DAY 8 레온 휴식 · 전체 782.4 km"; return;
+    el.textContent="12일 주행 + DAY 8 레온 휴식 · 전체 793.6 km"; return;
   }
   if(selected===REST){ el.textContent="DAY 8 · León 휴식일 — 눌러서 펼치기"; return; }
   const info=SEG&&SEG.days&&SEG.days[selected];
