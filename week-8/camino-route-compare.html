@@ -279,27 +279,49 @@ function nearestEleAt(lat,lon){
   });
   return best ? best.ele : 0;
 }
-function fetchLive(){
-  var base="https://www.googleapis.com/drive/v3/files";
-  var q="'"+DRIVE.folder+"' in parents and trashed=false";
-  return fetch(base+"?q="+encodeURIComponent(q)
-      +"&fields=files(id,name,mimeType)&pageSize=200&key="+DRIVE.api,{cache:"no-cache"})
+/* 사이트와 같은 방식으로 부릅니다 — fields 값도 인코딩해야 400 이 안 납니다. */
+function driveList(q){
+  return fetch("https://www.googleapis.com/drive/v3/files?q="+encodeURIComponent(q)
+      +"&fields="+encodeURIComponent("files(id,name,mimeType)")
+      +"&pageSize=1000&key="+DRIVE.api)
     .then(function(r){ if(!r.ok) throw new Error("드라이브 "+r.status); return r.json(); })
-    .then(function(j){
-      var db=(j.files||[]).find(function(f){
-        return f.name==="db" && f.mimeType.indexOf("folder")>=0; });
-      if(!db) throw new Error("db 폴더 없음");
-      var q2="'"+db.id+"' in parents and trashed=false";
-      return fetch(base+"?q="+encodeURIComponent(q2)
-        +"&fields=files(id,name)&pageSize=200&key="+DRIVE.api,{cache:"no-cache"});
+    .then(function(d){ return d.files||[]; });
+}
+/* 본문은 여러 경로로 시도합니다 — 프록시가 막히는 곳이 있어서요. */
+function driveText(id){
+  var uc="https://drive.google.com/uc?export=download&id="+id;
+  var c=["https://www.googleapis.com/drive/v3/files/"+id+"?alt=media&key="+DRIVE.api,
+         "https://api.allorigins.win/raw?url="+encodeURIComponent(uc),
+         "https://corsproxy.io/?url="+encodeURIComponent(uc)];
+  function tryK(k){
+    if(k>=c.length) return Promise.reject(new Error("위치 파일을 받을 수 없습니다"));
+    var ac=("AbortController" in window)?new AbortController():null;
+    var to=ac?setTimeout(function(){ac.abort();},8000):null;
+    return fetch(c[k], ac?{signal:ac.signal}:{}).then(function(r){
+      if(to) clearTimeout(to);
+      if(!r.ok) throw 0;
+      return r.text();
+    }).catch(function(){ if(to) clearTimeout(to); return tryK(k+1); });
+  }
+  return tryK(0);
+}
+function fetchLive(){
+  return driveList("'"+DRIVE.folder+"' in parents and trashed=false")
+    .then(function(items){
+      var db=items.filter(function(f){
+        return f.mimeType==="application/vnd.google-apps.folder"
+            && f.name.toLowerCase()==="db"; })[0];
+      if(!db) throw new Error("db 폴더가 없습니다");
+      return driveList("'"+db.id+"' in parents and trashed=false");
     })
-    .then(function(r){ return r.json(); })
-    .then(function(j){
-      var f=(j.files||[]).find(function(x){ return x.name==="live.json"; });
+    .then(function(files){
+      var f=files.filter(function(x){ return x.name==="live.json"; })[0];
       if(!f){ LIVE={}; return LIVE; }
-      return fetch(base+"/"+f.id+"?alt=media&key="+DRIVE.api,{cache:"no-cache"})
-        .then(function(r){ return r.json(); })
-        .then(function(j2){ LIVE=(j2&&j2.riders)||{}; return LIVE; });
+      return driveText(f.id).then(function(t){
+        var j=null; try{ j=JSON.parse(t); }catch(e){}
+        LIVE=(j&&j.riders)||{};
+        return LIVE;
+      });
     });
 }
 function agoText(at){
@@ -324,6 +346,10 @@ function drawLive(){
     if(v.test && typeof v.lat==="number" && typeof v.lon==="number"){
       lat=v.lat; lon=v.lon;
       sub="시험 중 · "+(v.zone==="am"?"아메리카":v.zone==="as"?"아시아":"유럽");
+    }else if(v.test && IDX){
+      var p0=kmToPos(0); if(!p0) return;
+      lat=p0[0]; lon=p0[1];
+      sub="시험 중 · 생장";
     }else if(typeof v.km==="number" && !v.test){
       var p=kmToPos(v.km); if(!p) return;
       lat=p[0]; lon=p[1]; sub=v.km.toFixed(1)+" km";
