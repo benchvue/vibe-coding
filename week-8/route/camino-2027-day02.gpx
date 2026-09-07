@@ -3,19 +3,147 @@
   <metadata>
     <name>Camino day02</name>
   </metadata>
-  <wpt lat="42.9304266" lon="-1.5046371">
-    <name>Stop 1</name>
+ <wpt lat="42.9011586" lon="-1.5419241">
+    <name>Albergue de peregrinos de Larrasoaña</name>
+    <desc>C. San Nicolás, Larrasoaña Â· Tel +34 626 718 417</desc>
+    <sym>Lodging</sym>
+    <cmt>C. San Nicolás, Larrasoaña Â· Tel +34 626 718 417</cmt>
   </wpt>
-  <wpt lat="42.8125260" lon="-1.6457745">
-    <name>Stop 2</name>
+ <wpt lat="42.8560368" lon="-1.5814938">
+    <name>Albergue parroquial de Zabaldika</name>
+    <desc>C. San Esteban de arriba 8, Zabaldika Â· Tel +34 948 330 918</desc>
+    <sym>Lodging</sym>
+    <cmt>C. San Esteban de arriba 8, Zabaldika Â· Tel +34 948 330 918</cmt>
   </wpt>
-  <wpt lat="42.6722818" lon="-1.8135750">
-    <name>Stop 3</name>
+ <wpt lat="42.8320157" lon="-1.6060374">
+    <name>Iraipe Albergue de Villava</name>
+    <desc>C. Pedro de Atarrabia 17 (Trasera), Villava Â· Tel +34 948 517 731</desc>
+    <sym>Lodging</sym>
+    <cmt>C. Pedro de Atarrabia 17 (Trasera), Villava Â· Tel +34 948 517 731</cmt>
   </wpt>
-  <wpt lat="42.6720856" lon="-2.0324524">
-    <name>Stop 4</name>
+ <wpt lat="42.8198625" lon="-1.6408159">
+    <name>Catedral de Santa Maria la Real, Pamplona</name>
+    <desc>팜플로나 대성당</desc>
+    <sym>Church</sym>
+    <type>photo</type>
+    <cmt>팜플로나 대성당</cmt>
   </wpt>
-  <trk>
+ <wpt lat="42.8174311" lon="-1.6432970">
+    <name>Cafe Iruna</name>
+    <desc>카페 이루냐 (헤밍웨이)</desc>
+    <sym>Restaurant</sym>
+    <type>photo</type>
+    <cmt>카페 이루냐 (헤밍웨이)</cmt>
+  </wpt>
+ <wpt lat="42.8184148" lon="-1.6441697">
+    <name>Ayuntamiento de Pamplona</name>
+    <cmt>팜플로나 시청 · 산 페르민 개막</cmt>
+    <desc>팜플로나 시청 · 산 페르민 개막</desc>
+    <sym>Scenic Area</sym>
+    <type>photo</type>
+  </wpt>
+ <wpt lat="42.8121347" lon="-1.6493171">
+    <name>Ciudadela de Pamplona</name>
+    <desc>팜플로나 요새</desc>
+    <sym>Scenic Area</sym>
+    <type>photo</type>
+    <cmt>팜플로나 요새</cmt>
+  </wpt>
+ <wpt lat="42.7885429" lon="-1.6744112">
+    <name>Albergue de la Orden de Malta</name>
+    <desc>Encomienda Sanjuanist, Cizur Menor Â· Tel +34 616 651 330</desc>
+    <sym>Lodging</sym>
+    <cmt>Encomienda Sanjuanist, Cizur Menor Â· Tel +34 616 651 330</cmt>
+  </wpt>
+ <wpt lat="42.7358582" lon="-1.7426490">
+    <name>Monumento al Peregrino, Alto del Perdon</name>
+    <desc>용서의 언덕 순례자 조형물</desc>
+    <sym>Summit</sym>
+    <type>photo</type>
+    <cmt>용서의 언덕 순례자 조형물</cmt>
+  </wpt>
+ <wpt lat="42.6734404" lon="-1.8103114">
+    <name>Albergue de los Padres Reparadores</name>
+    <desc>c/ Crucifijo 1 (Seminario), Puente la Reina Â· Tel +34 663 615 795</desc>
+    <sym>Lodging</sym>
+    <cmt>c/ Crucifijo 1 (Seminario), Puente la Reina Â· Tel +34 663 615 795</cmt>
+  </wpt>
+ <wpt lat="42.6731287" lon="-1.8107319">
+    <name>Iglesia del Crucifijo</name>
+    <desc>십자가상 성당</desc>
+    <sym>Church</sym>
+    <type>photo</type>
+    <cmt>십자가상 성당</cmt>
+  </wpt>
+ <wpt lat="42.6711209" lon="-1.8187637">
+    <name>Puente Romanico de Puente la Reina</name>
+    <desc>중세 순례자 다리 (여왕의 다리)</desc>
+    <sym>Scenic Area</sym>
+    <type>photo</type>
+    <cmt>중세 순례자 다리 (여왕의 다리)</cmt>
+  </wpt>
+ <wpt lat="42.6688492" lon="-1.8631406">
+    <name>Albergue El Cantero</name>
+    <desc>c/Esperanza 2, Maneru Â· Tel +34 948 342 142</desc>
+    <sym>Lodging</sym>
+    <cmt>c/Esperanza 2, Maneru Â· Tel +34 948 342 142</cmt>
+  </wpt>
+ <wpt lat="42.6722820" lon="-1.9458650">
+    <name>Jose Ramon</name>
+    <desc>c/ Mayor 40, Lorca Â· Tel +34 948 541 190</desc>
+    <sym>Scenic Area</sym>
+    <cmt>c/ Mayor 40, Lorca Â· Tel +34 948 541 190</cmt>
+  </wpt>
+ <wpt lat="42.6596087" lon="-1.9924481">
+    <name>Albergue Etxeurdina</name>
+    <desc>C. Río Iranzu 3, Villatuerta Â· Tel +34 621 267 282</desc>
+    <sym>Lodging</sym>
+    <cmt>C. Río Iranzu 3, Villatuerta Â· Tel +34 621 267 282</cmt>
+  </wpt>
+ <wpt lat="42.6591220" lon="-1.9926885">
+    <name>La Casa Mágica</name>
+    <desc>c/ Rebote 5, Villatuerta Â· Tel +34 948 439 689</desc>
+    <sym>Scenic Area</sym>
+    <cmt>c/ Rebote 5, Villatuerta Â· Tel +34 948 439 689</cmt>
+  </wpt>
+ <wpt lat="42.6586799" lon="-1.9933334">
+    <name>Casa Rural 643 km</name>
+    <desc>Pl. Rebote 3, Villatuerta Â· Tel +34 615 003 690</desc>
+    <sym>Lodging</sym>
+    <cmt>Pl. Rebote 3, Villatuerta Â· Tel +34 615 003 690</cmt>
+  </wpt>
+ <wpt lat="42.6687734" lon="-2.0235118">
+    <name>Albergue La Hostería Curtidores</name>
+    <desc>C. Curtidores 43, Estella Â· Tel +34 948 550 070</desc>
+    <sym>Lodging</sym>
+    <cmt>C. Curtidores 43, Estella Â· Tel +34 948 550 070</cmt>
+  </wpt>
+ <wpt lat="42.6708976" lon="-2.0253137">
+    <name>Albergue Anfas</name>
+    <desc>C. Cordeleros 7, Estella Â· Tel +34 639 011 688</desc>
+    <sym>Lodging</sym>
+    <cmt>C. Cordeleros 7, Estella Â· Tel +34 639 011 688</cmt>
+  </wpt>
+ <wpt lat="42.6697222" lon="-2.0252778">
+    <name>Iglesia del Santo Sepulcro, Estella</name>
+    <desc>산토 세풀크로 성당</desc>
+    <sym>Church</sym>
+    <type>photo</type>
+    <cmt>산토 세풀크로 성당</cmt>
+  </wpt>
+ <wpt lat="42.6719917" lon="-2.0281766">
+    <name>Albergue San Miguel</name>
+    <desc>Mercado Viejo 18, Estella Â· Tel +34 654 480 239</desc>
+    <sym>Lodging</sym>
+    <cmt>Mercado Viejo 18, Estella Â· Tel +34 654 480 239</cmt>
+  </wpt>
+ <wpt lat="42.6656559" lon="-2.0315724">
+    <name>Capuchinos Rocamador</name>
+    <desc>c/ Rocamador 6, Estella Â· Tel +34 948 550 549</desc>
+    <sym>Scenic Area</sym>
+    <cmt>c/ Rocamador 6, Estella Â· Tel +34 948 550 549</cmt>
+  </wpt>
+<trk>
     <name>Camino day02</name>
     <trkseg>
       <trkpt lat="42.9298200" lon="-1.5028600">
