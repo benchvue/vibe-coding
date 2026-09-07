@@ -242,8 +242,9 @@ var $ = function(id){ return document.getElementById(id); };
 var viewer=null, DATA={}, ENT={walk:[],bike:[],offW:[],offB:[],wpt:[],day:[],live:[]};
 var LIVE={}, IDX=null, liveTimer=null;
 var WHO={bin:{n:"BIN", c:"#1E5FB4"}, jin:{n:"JIN", c:"#C92A2A"}};
-var DRIVE={api:"AIzaSyDzahk0Yhz3faRfMhDS2vQzQ2oADYXhPRg",
-           folder:"1z6EJEVanJ_Hal3gIzqeAc0eOUfr1EOAK"};
+/* 기존 DRIVE(토큰 읽기용)와 이름이 겹치지 않도록 따로 둡니다 */
+var LIVEDRV={apiKey:"AIzaSyDzahk0Yhz3faRfMhDS2vQzQ2oADYXhPRg",
+             folder:"1z6EJEVanJ_Hal3gIzqeAc0eOUfr1EOAK"};
 var OPT={walk:true,bike:true,off:true,wpt:true,live:false,dayColor:false,
          thresh:100, exag:1.0, lift:80, xray:true};
 
@@ -283,14 +284,14 @@ function nearestEleAt(lat,lon){
 function driveList(q){
   return fetch("https://www.googleapis.com/drive/v3/files?q="+encodeURIComponent(q)
       +"&fields="+encodeURIComponent("files(id,name,mimeType)")
-      +"&pageSize=1000&key="+DRIVE.api)
+      +"&pageSize=1000&key="+LIVEDRV.apiKey)
     .then(function(r){ if(!r.ok) throw new Error("드라이브 "+r.status); return r.json(); })
     .then(function(d){ return d.files||[]; });
 }
 /* 본문은 여러 경로로 시도합니다 — 프록시가 막히는 곳이 있어서요. */
 function driveText(id){
   var uc="https://drive.google.com/uc?export=download&id="+id;
-  var c=["https://www.googleapis.com/drive/v3/files/"+id+"?alt=media&key="+DRIVE.api,
+  var c=["https://www.googleapis.com/drive/v3/files/"+id+"?alt=media&key="+LIVEDRV.apiKey,
          "https://api.allorigins.win/raw?url="+encodeURIComponent(uc),
          "https://corsproxy.io/?url="+encodeURIComponent(uc)];
   function tryK(k){
@@ -306,7 +307,7 @@ function driveText(id){
   return tryK(0);
 }
 function fetchLive(){
-  return driveList("'"+DRIVE.folder+"' in parents and trashed=false")
+  return driveList("'"+LIVEDRV.folder+"' in parents and trashed=false")
     .then(function(items){
       var db=items.filter(function(f){
         return f.mimeType==="application/vnd.google-apps.folder"
