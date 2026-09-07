@@ -239,9 +239,128 @@ var C_WALK = "#1F6FD0", C_BIKE = "#E0670F", C_OFF = "#C92A2A", C_OFFW = "#0B4C9E
 var DAY_HUE = [null,8,32,52,72,100,128,152,null,176,200,224,268,300];
 
 var $ = function(id){ return document.getElementById(id); };
-var viewer=null, DATA={}, ENT={walk:[],bike:[],offW:[],offB:[],wpt:[],day:[]};
-var OPT={walk:true,bike:true,off:true,wpt:true,dayColor:false,
+var viewer=null, DATA={}, ENT={walk:[],bike:[],offW:[],offB:[],wpt:[],day:[],live:[]};
+var LIVE={}, IDX=null, liveTimer=null;
+var WHO={bin:{n:"BIN", c:"#1E5FB4"}, jin:{n:"JIN", c:"#C92A2A"}};
+var DRIVE={api:"AIzaSyDzahk0Yhz3faRfMhDS2vQzQ2oADYXhPRg",
+           folder:"1z6EJEVanJ_Hal3gIzqeAc0eOUfr1EOAK"};
+var OPT={walk:true,bike:true,off:true,wpt:true,live:false,dayColor:false,
          thresh:100, exag:1.0, lift:80, xray:true};
+
+
+/* ══════════════════════════════════════════════════════════════════════
+   BIN · JIN 주행 위치 — 지면까지 내려오는 선과 이름표
+   좌표는 저장하지 않으므로 누적 km 를 노선 색인으로 되돌려 찍습니다.
+   시험 중(노선 밖)이면 남겨 둔 좌표를 그대로 씁니다.
+   ══════════════════════════════════════════════════════════════════════ */
+function loadIndex(){
+  if(IDX) return Promise.resolve(IDX);
+  return fetch("tool/camino-route-index.json",{cache:"force-cache"})
+    .then(function(r){ if(!r.ok) throw new Error("색인 없음"); return r.json(); })
+    .then(function(j){ IDX=j.points; return IDX; });
+}
+function kmToPos(km){
+  if(!IDX||!IDX.length) return null;
+  var lo=0, hi=IDX.length-1;
+  if(km<=IDX[0][2]) return [IDX[0][0],IDX[0][1]];
+  if(km>=IDX[hi][2]) return [IDX[hi][0],IDX[hi][1]];
+  while(hi-lo>1){ var m=(lo+hi)>>1; if(IDX[m][2]<=km) lo=m; else hi=m; }
+  var a=IDX[lo], b=IDX[hi], t=(km-a[2])/((b[2]-a[2])||1);
+  return [a[0]+(b[0]-a[0])*t, a[1]+(b[1]-a[1])*t];
+}
+function nearestEleAt(lat,lon){
+  var best=null, bd=1e18;
+  Object.keys(DATA).forEach(function(d){
+    var arr=(DATA[d]&&DATA[d].bike)||[];
+    for(var i=0;i<arr.length;i+=6){
+      var dd=(arr[i].lat-lat)*(arr[i].lat-lat)+(arr[i].lon-lon)*(arr[i].lon-lon);
+      if(dd<bd){ bd=dd; best=arr[i]; }
+    }
+  });
+  return best ? best.ele : 0;
+}
+function fetchLive(){
+  var base="https://www.googleapis.com/drive/v3/files";
+  var q="'"+DRIVE.folder+"' in parents and trashed=false";
+  return fetch(base+"?q="+encodeURIComponent(q)
+      +"&fields=files(id,name,mimeType)&pageSize=200&key="+DRIVE.api,{cache:"no-cache"})
+    .then(function(r){ if(!r.ok) throw new Error("드라이브 "+r.status); return r.json(); })
+    .then(function(j){
+      var db=(j.files||[]).find(function(f){
+        return f.name==="db" && f.mimeType.indexOf("folder")>=0; });
+      if(!db) throw new Error("db 폴더 없음");
+      var q2="'"+db.id+"' in parents and trashed=false";
+      return fetch(base+"?q="+encodeURIComponent(q2)
+        +"&fields=files(id,name)&pageSize=200&key="+DRIVE.api,{cache:"no-cache"});
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(j){
+      var f=(j.files||[]).find(function(x){ return x.name==="live.json"; });
+      if(!f){ LIVE={}; return LIVE; }
+      return fetch(base+"/"+f.id+"?alt=media&key="+DRIVE.api,{cache:"no-cache"})
+        .then(function(r){ return r.json(); })
+        .then(function(j2){ LIVE=(j2&&j2.riders)||{}; return LIVE; });
+    });
+}
+function agoText(at){
+  var t=new Date(at).getTime();
+  if(isNaN(t)) return "";
+  var m=Math.round((Date.now()-t)/60000);
+  if(m<2) return "방금";
+  if(m<60) return m+"분 전";
+  var h=Math.round(m/60);
+  return h<24 ? h+"시간 전" : Math.round(h/24)+"일 전";
+}
+function drawLive(){
+  var ds=viewer.entities;
+  ENT.live.forEach(function(e){ ds.remove(e); });
+  ENT.live=[];
+  if(!OPT.live) return;
+  var msg=[];
+  ["bin","jin"].forEach(function(w,i){
+    var v=LIVE[w]; if(!v) return;
+    var m=WHO[w], col=Cesium.Color.fromCssColorString(m.c);
+    var lat, lon, sub;
+    if(v.test && typeof v.lat==="number" && typeof v.lon==="number"){
+      lat=v.lat; lon=v.lon;
+      sub="시험 중 · "+(v.zone==="am"?"아메리카":v.zone==="as"?"아시아":"유럽");
+    }else if(typeof v.km==="number" && !v.test){
+      var p=kmToPos(v.km); if(!p) return;
+      lat=p[0]; lon=p[1]; sub=v.km.toFixed(1)+" km";
+    }else return;
+    var base=v.test ? 0 : nearestEleAt(lat,lon)*OPT.exag;
+    var top=base+3400+i*900;
+    ENT.live.push(ds.add({
+      name:m.n+" 주행 위치",
+      position:Cesium.Cartesian3.fromDegrees(lon,lat,top),
+      polyline:{ positions:Cesium.Cartesian3.fromDegreesArrayHeights(
+          [lon,lat,0, lon,lat,top]),
+        width:4, material:col.withAlpha(.95) },
+      label:{ text:m.n+"  "+sub,
+        font:"700 15px 'IBM Plex Sans KR', sans-serif",
+        fillColor:Cesium.Color.WHITE, showBackground:true,
+        backgroundColor:col.withAlpha(.95),
+        backgroundPadding:new Cesium.Cartesian2(11,7),
+        verticalOrigin:Cesium.VerticalOrigin.BOTTOM,
+        pixelOffset:new Cesium.Cartesian2(0,-6),
+        disableDepthTestDistance:Number.POSITIVE_INFINITY } }));
+    ENT.live.push(ds.add({
+      position:Cesium.Cartesian3.fromDegrees(lon,lat,base+60),
+      point:{ pixelSize:15, color:col, outlineColor:Cesium.Color.WHITE,
+        outlineWidth:3, disableDepthTestDistance:Number.POSITIVE_INFINITY } }));
+    msg.push(m.n+" "+sub+" · "+agoText(v.at));
+  });
+  var el=document.getElementById("livemsg");
+  if(el) el.textContent = msg.length ? msg.join("   ·   ")
+    : "아직 들어온 위치가 없습니다.";
+}
+function refreshLive(){
+  var el=document.getElementById("livemsg");
+  if(el) el.textContent="위치를 읽는 중…";
+  return Promise.all([loadIndex().catch(function(){ return null; }), fetchLive()])
+    .then(function(){ drawLive(); })
+    .catch(function(e){ if(el) el.textContent="읽지 못했습니다 — "+(e.message||e); });
+}
 
 /* ── 도우미 ── */
 function dstr(d){ var x=new Date(START); x.setDate(x.getDate()+(d-1));
@@ -694,6 +813,11 @@ function renderCtrl(){
     +chk("cDay","날짜별 색상","날마다 다른 색으로",OPT.dayColor,"")
     +chk("cXray","지형에 가려도 보이기","산 뒤로 넘어간 부분을 점선으로",OPT.xray,"")
     +'</div>'
+    +'<div class="grp"><h3>주행 위치</h3>'
+    +chk("cLive","BIN · JIN 보기","1분마다 새로 읽습니다",OPT.live,"")
+    +'<div class="row2" style="margin-top:6px"><span id="livemsg">'
+    +'켜면 두 사람의 위치를 표시합니다.</span></div>'
+    +'</div>'
 
     +'<div class="grp"><h3>지면에서 띄우기</h3>'
     +'<div class="selrow"><input type="range" id="rLf" min="0" max="100" step="5" value="'+OPT.lift+'">'
@@ -745,6 +869,14 @@ function renderCtrl(){
   bind("cWpt",  function(v){ OPT.wpt=v;  applyShow(); });
   bind("cDay",  function(v){ OPT.dayColor=v; draw(); });
   bind("cXray", function(v){ OPT.xray=v; draw(); });
+  bind("cLive",function(v){
+    OPT.live=v;
+    if(liveTimer){ clearInterval(liveTimer); liveTimer=null; }
+    if(v){
+      refreshLive();
+      liveTimer=setInterval(function(){ if(!document.hidden) refreshLive(); },60000);
+    }else drawLive();
+  });
 
   rangeCtl("rTh","vTh", function(v){ return v+" m"; }, null,
     function(v){ OPT.thresh=+v; recompute(); draw(); renderStats(); });
