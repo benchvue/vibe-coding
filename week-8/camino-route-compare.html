@@ -233,6 +233,32 @@
   .hud-play select{flex:0 0 66px;border:1px solid var(--line);border-radius:8px;padding:8px 4px;
     background:#fff;font-size:.74rem}
   .hud-play b{flex:0 0 66px;text-align:right;font-size:.78rem;font-variant-numeric:tabular-nums;color:var(--ink)}
+  .hud-wp{position:absolute;left:10px;top:calc(max(10px,env(safe-area-inset-top)) + 56px);max-width:min(78vw,380px)}
+  .hud-wp > button{border:1px solid rgba(255,255,255,.7);background:rgba(255,255,255,.94);color:var(--ink);
+    border-radius:10px;padding:8px 12px;font-size:.78rem;font-weight:700;cursor:pointer;
+    box-shadow:0 2px 10px rgba(21,42,85,.18);max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hud-wp > button.on{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
+  .wpx-panel{margin-top:6px;background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.7);
+    border-radius:12px;padding:6px 8px;box-shadow:0 2px 12px rgba(21,42,85,.18);backdrop-filter:blur(6px)}
+  .wpx-panel.hide{display:none}
+  .wpx{display:flex;align-items:center;gap:8px;padding:6px 2px;border-bottom:1px solid var(--line)}
+  .wpx:last-of-type{border-bottom:none}
+  .wpx.near{background:#FFF3C4;border-radius:8px;padding-left:6px;padding-right:6px}
+  .wpx-ico{flex:0 0 22px;text-align:center;font-size:1rem}
+  .wpx-txt{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.3}
+  .wpx-txt b{font-size:.76rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .wpx-txt i{font-style:normal;font-size:.68rem;color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .wpx-d{flex:0 0 auto;text-align:right;display:flex;flex-direction:column;line-height:1.3}
+  .wpx-d b{font-size:.8rem;color:var(--blue);font-variant-numeric:tabular-nums}
+  .wpx-d i{font-style:normal;font-size:.66rem;color:var(--soft)}
+  .wpx-none{font-size:.72rem;color:var(--soft);padding:6px 2px}
+  .wpx-voice{display:flex;align-items:center;gap:6px;font-size:.7rem;color:var(--soft);padding:6px 2px 2px;cursor:pointer}
+  .wpx-voice input{accent-color:var(--flecha)}
+  .wpx-toast{position:absolute;left:50%;transform:translateX(-50%);
+    bottom:calc(max(12px,env(safe-area-inset-bottom)) + 86px);
+    background:#3B2E00;color:var(--flecha);border-radius:12px;padding:10px 16px;font-size:.9rem;font-weight:700;
+    box-shadow:0 4px 16px rgba(0,0,0,.35);max-width:88vw;text-align:center}
+  .wpx-toast.hide{display:none}
   .hud-north{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:42px;height:42px;
     border-radius:50%;background:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.7);
     box-shadow:0 2px 8px rgba(21,42,85,.18);display:flex;align-items:center;justify-content:center;
@@ -309,6 +335,14 @@
     <div class="hud-info"><b id="hkm">—</b><small id="hsub">위치를 기다리는 중</small></div>
     <button class="hud-exit" id="hexit">주행 끝</button>
   </div>
+  <div class="hud-wp">
+    <button id="hwp">📍 명소</button>
+    <div id="hwpp" class="wpx-panel hide">
+      <div id="hwpl"></div>
+      <label class="wpx-voice"><input type="checkbox" id="hwpv"> 음성 안내 (300 m · 도착)</label>
+    </div>
+  </div>
+  <div id="hwpt" class="wpx-toast hide"></div>
   <div class="hud-north"><i id="hnorth">N↑</i></div>
   <div class="hud-zoom">
     <button id="hzin" aria-label="확대">＋</button>
@@ -359,7 +393,7 @@ var ZOOM_M=[60,120,250,500,1000,2000,4000,8000,16000,32000,64000];   /* 카메�
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null,
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20260908-6";     /* DAY 0 카드에 표시 — 옛 판이 캐시돼 있는지 확인용 */
+var D0_VER="v20260908-7";     /* DAY 0 카드에 표시 — 옛 판이 캐시돼 있는지 확인용 */
 var D0={pts:[], cum:[], hasTime:false, name:"", total:0,
         playing:false, speed:5, km:0, raf:null, tPrev:0, fixedKmh:15};
 var WHO={bin:{n:"BIN", c:"#1E5FB4"}, jin:{n:"JIN", c:"#C92A2A"}};
@@ -648,11 +682,17 @@ function listRouteGpx(){
   box.querySelectorAll("[data-rday]").forEach(function(b){
     b.addEventListener("click",function(){
       var d=+b.dataset.rday, D=DATA[d];
-      if(D && D.bike && D.bike.length>1){
-        setDay0(D.bike.map(function(q){ return {lat:q.lat,lon:q.lon,ele:q.ele,t:null}; }), "노선 DAY "+d);
-      }else alert("DAY "+d+" 자전거 GPX 가 없습니다.");
+      simDay(d, false);
     });
   });
+}
+/* 그 날 자전거 노선을 재생 궤적으로 — 기억해 둔 DAY 0 GPX 는 건드리지 않습니다 */
+function simDay(d, enterNav){
+  var D=DATA[d];
+  if(!(D && D.bike && D.bike.length>1)){ alert("DAY "+d+" 자전거 GPX 가 없습니다."); return; }
+  setDay0(D.bike.map(function(q){ return {lat:q.lat,lon:q.lon,ele:q.ele,t:null}; }), "노선 DAY "+d, !!enterNav, d);
+  WPX.key="";
+  if(enterNav){ NAV.src="day0"; if(NAV.on){ syncHud(); if(!D0.playing) d0Play(true); } else setNav(true); }
 }
 function loadDay0Text(txt,name){
   try{
@@ -661,14 +701,15 @@ function loadDay0Text(txt,name){
     setDay0(p.pts, p.name||String(name||"GPX").replace(/\.gpx$/i,""));
   }catch(e){ alert("GPX 를 읽지 못했습니다 — "+e.message); }
 }
-function setDay0(pts,name,quiet){
+function setDay0(pts,name,quiet,day){
+  D0.day=day||0;
   var cum=[0];
   for(var i=1;i<pts.length;i++) cum.push(cum[i-1]+hav(pts[i-1],pts[i])/1000);
   var hasTime=pts.every(function(p){ return p.t!==null; });
   for(var j=1;j<pts.length && hasTime;j++) if(pts[j].t<pts[j-1].t) hasTime=false;
   D0.pts=pts; D0.cum=cum; D0.total=cum[cum.length-1]; D0.hasTime=hasTime;
   D0.name=name; D0.km=0; D0.playing=false; D0.aReal=null;
-  if(!quiet) saveDay0();
+  if(!quiet && !D0.day) saveDay0();
   drawDay0();
   NAV.src="day0"; NAV.hdg=null;
   syncD0UI();
@@ -689,7 +730,7 @@ function restoreDay0(){
   try{
     var j=JSON.parse(localStorage.getItem(D0_KEY)||"null");
     if(!j||!j.rows||j.rows.length<2) return false;
-    setDay0(j.rows.map(function(r){ return {lat:r[0],lon:r[1],ele:r[2]||0,t:r[3]===null?null:r[3]*1000}; }), j.name||"DAY 0", true);
+    setDay0(j.rows.map(function(r){ return {lat:r[0],lon:r[1],ele:r[2]||0,t:r[3]===null?null:r[3]*1000}; }), j.name||"DAY 0", true, 0);
     return true;
   }catch(e){ return false; }
 }
@@ -870,6 +911,7 @@ function navTick(now){
     setHudText((s.km!==null&&s.km!==undefined?s.km.toFixed(2)+" km":"— km"), sub);
     var n=$("hnorth"); if(n) n.style.transform="rotate("+(-NAV.hdg)+"deg)";
     hudLiveLabel();
+    wpxRender(false);
   }
 }
 function fmtClock(ms){ var d=new Date(ms); return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0"); }
@@ -934,6 +976,7 @@ function syncHud(){
   var has=D0.pts.length>0;
   $("hbot").classList.toggle("hide",!has);
   $("hsrc0").classList.toggle("on",NAV.src==="day0");
+  $("hsrc0").textContent=(D0.day?"DAY "+D0.day+" 노선 재생":"DAY 0 시험 주행");
   $("hsrcL").classList.toggle("on",NAV.src==="live");
   hudLiveLabel();
   $("hplay").style.display = NAV.src==="day0" ? "" : "none";
@@ -964,6 +1007,8 @@ function setupHud(){
   on("hzin","click",function(){ setZoom(-1); });
   on("hzout","click",function(){ setZoom(1); });
   on("hsrc0","click",function(){ NAV.src="day0"; NAV.hdg=null; if(!D0.playing) d0Play(true); syncHud(); });
+  on("hwp","click",function(){ WPX.open=!WPX.open; $("hwpp").classList.toggle("hide",!WPX.open); $("hwp").classList.toggle("on",WPX.open); wpxRender(true); });
+  on("hwpv","change",function(){ WPX.voice=$("hwpv").checked; if(WPX.voice) wpxSay("음성 안내를 켰습니다"); });
   on("hsrcL","click",function(){ NAV.src="live"; NAV.hdg=null; NAV.dispKm=null;
     if(!OPT.live){ var cl=$("cLive"); if(cl){ cl.checked=true; cl.dispatchEvent(new Event("change")); } }
     syncHud(); });
@@ -972,6 +1017,113 @@ function setupHud(){
   on("hspd","change",function(){ d0SetSpeed($("hspd").value); });
   try{ var w=localStorage.getItem("caminoNavWho"); if(w&&WHO[w]) setWho(w); }catch(e){}
   setZoom(0);
+}
+
+/* ══════════ 다가올 명소 안내 ══════════
+   지금 따라가는 궤적(DAY 0 · 날짜 노선 · 실시간 색인) 위에 모든 날의 웨이포인트를 투영해
+   누적 km · 길에서 벗어난 거리 · 왼쪽/오른쪽을 구합니다. 궤적이 바뀔 때 한 번만 계산합니다. */
+var WPX={list:[], key:"", open:false, voice:false, said:{}, lastT:0, lastHtml:""};
+function wpxTrack(){
+  if(NAV.src==="day0" && D0.pts.length)
+    return {key:"d0:"+D0.name+":"+D0.pts.length, pts:D0.pts, cum:D0.cum};
+  if(IDX&&IDX.length)
+    return {key:"idx", pts:IDX.map(function(r){ return {lat:r[0],lon:r[1]}; }), cum:IDX.map(function(r){ return r[2]; })};
+  return null;
+}
+/* 점을 궤적에 투영 — {km, off(m), side(+1 왼쪽 / -1 오른쪽)} */
+function projectOn(pts,cum,lat,lon){
+  var r=Math.PI/180, cl=Math.cos(lat*r), best=Infinity, out=null;
+  for(var i=0;i<pts.length-1;i++){
+    var a=pts[i], b=pts[i+1];
+    var ax=(a.lon-lon)*111320*cl, ay=(a.lat-lat)*111320;
+    var bx=(b.lon-lon)*111320*cl, by=(b.lat-lat)*111320;
+    var sx=bx-ax, sy=by-ay, L2=sx*sx+sy*sy;
+    var t=L2? Math.max(0,Math.min(1,-(ax*sx+ay*sy)/L2)) : 0;
+    var px=ax+sx*t, py=ay+sy*t, d2=px*px+py*py;
+    if(d2<best){ best=d2;
+      /* 점(원점)이 진행 방향의 왼쪽이면 cross>0 */
+      var cross=sx*(0-ay)-sy*(0-ax);
+      out={km:cum[i]+(cum[i+1]-cum[i])*t, off:Math.sqrt(d2), side:cross>0?1:-1}; }
+  }
+  return out;
+}
+function wpxBuild(){
+  var tr=wpxTrack(); if(!tr){ WPX.list=[]; WPX.key=""; return; }
+  if(tr.key===WPX.key) return;
+  WPX.key=tr.key; WPX.list=[]; WPX.said={};
+  BIKE_DAYS.forEach(function(d){
+    (DATA[d]&&DATA[d].wpts||[]).forEach(function(w){
+      var p=projectOn(tr.pts,tr.cum,w.lat,w.lon);
+      if(p && p.off<=400) WPX.list.push({name:w.name||"", cmt:w.cmt||"", sym:w.sym, day:d, km:p.km, off:p.off, side:p.side});
+    });
+  });
+  WPX.list.sort(function(a,b){ return a.km-b.km; });
+}
+function wpxCurKm(){
+  if(NAV.src==="day0" && D0.pts.length) return D0.km;
+  var v=LIVE[NAV.who]; if(v && typeof v.km==="number" && !v.test) return (NAV.dispKm!=null?NAV.dispKm:v.km);
+  return null;
+}
+function wpxSideText(w){
+  if(w.off<20) return "길 위";
+  return (w.side>0?"왼쪽 ":"오른쪽 ")+(w.off<100?Math.round(w.off/5)*5:Math.round(w.off/10)*10)+" m";
+}
+function wpxRender(force){
+  if(!NAV.on) return;
+  var now=Date.now(); if(!force && now-WPX.lastT<1000) return; WPX.lastT=now;
+  wpxBuild();
+  var cur=wpxCurKm(), box=$("hwpl"), btn=$("hwp"); if(!box) return;
+  var html="";
+  if(cur===null||cur===undefined) html='<div class="wpx-none">위치를 아직 모릅니다</div>';
+  else{
+    var up=WPX.list.filter(function(w){ return w.km-cur > -0.05; }).slice(0,4);
+    if(!up.length) html='<div class="wpx-none">'+(WPX.list.length?"남은 명소가 없습니다":"이 궤적 근처(400 m)에 명소가 없습니다 — 노선 DAY 로 시험해 보세요")+'</div>';
+    up.forEach(function(w){
+      var ahead=(w.km-cur)*1000, near=ahead<=300;
+      html+='<div class="wpx'+(near?" near":"")+'">'
+        +'<span class="wpx-ico">'+symOf(w.sym).e+'</span>'
+        +'<span class="wpx-txt"><b>'+esc(w.name)+'</b>'+(w.cmt?'<i>'+esc(w.cmt)+'</i>':'')+'</span>'
+        +'<span class="wpx-d"><b>'+(ahead<1000?Math.round(ahead/10)*10+" m":(ahead/1000).toFixed(1)+" km")+'</b><i>'+wpxSideText(w)+'</i></span></div>';
+      /* 알림 — 300 m 안에 처음 들어올 때 한 번, 60 m 안에서 한 번 더 */
+      var id=w.day+":"+w.name;
+      if(near && !WPX.said[id]){ WPX.said[id]=1; wpxAlert(w, Math.round(ahead/10)*10); }
+      if(ahead<=60 && WPX.said[id]===1){ WPX.said[id]=2; wpxAlert(w, 0); }
+    });
+    if(up.length){ var f=up[0], a0=(f.km-cur)*1000;
+      btn.textContent="📍 "+(a0<1000?Math.round(a0/10)*10+" m":(a0/1000).toFixed(1)+" km")+" · "+(f.cmt||f.name).slice(0,14); }
+    else btn.textContent="📍 명소";
+  }
+  if(html!==WPX.lastHtml){ WPX.lastHtml=html; box.innerHTML=html; }
+}
+function wpxAlert(w, ahead){
+  var side=wpxSideText(w);
+  var msg=(ahead>0? ahead+" 미터 앞 " : "지금 ")+side+", "+(w.cmt||w.name);
+  var t=$("hwpt"); if(t){ t.textContent=msg; t.classList.remove("hide"); clearTimeout(WPX.toastT);
+    WPX.toastT=setTimeout(function(){ t.classList.add("hide"); },6000); }
+  try{ if(navigator.vibrate) navigator.vibrate(ahead>0?[120,80,120]:[300]); }catch(e){}
+  wpxBeep(ahead>0?1:2);
+  if(WPX.voice) wpxSay(msg);
+}
+var _ac=null;
+function wpxBeep(n){
+  try{
+    _ac=_ac||new (window.AudioContext||window.webkitAudioContext)();
+    for(var i=0;i<n;i++){
+      var o=_ac.createOscillator(), g=_ac.createGain();
+      o.frequency.value=880; o.connect(g); g.connect(_ac.destination);
+      var t0=_ac.currentTime+i*0.22; g.gain.setValueAtTime(0.0001,t0);
+      g.gain.exponentialRampToValueAtTime(0.4,t0+0.02); g.gain.exponentialRampToValueAtTime(0.0001,t0+0.18);
+      o.start(t0); o.stop(t0+0.2);
+    }
+  }catch(e){}
+}
+function wpxSay(text){
+  try{
+    if(!("speechSynthesis" in window)) return;
+    speechSynthesis.cancel();
+    var u=new SpeechSynthesisUtterance(text); u.lang="ko-KR"; u.rate=1.05;
+    speechSynthesis.speak(u);
+  }catch(e){}
 }
 
 /* ── 도우미 ── */
@@ -1393,12 +1545,14 @@ function renderStats(){
         +'<div class="row2" style="margin-top:5px"><span>자전거가 벗어난 길이</span>'
           +'<b class="b">'+km(c.offB)+' km</b></div>'
         +'<div class="row2"><span>도보가 벗어난 길이</span><b class="w">'+km(c.offW)+' km</b></div>'
-        +'<div class="row2"><span>가장 멀어진 거리</span><b>'+(c.maxGap/1000).toFixed(1)+' km</b></div>'
-        +'<button class="gobtn" data-go="'+d+'">이탈 구간으로 이동 →</button>';
+        +'<div class="row2"><span>가장 멀어진 거리</span><b>'+(c.maxGap/1000).toFixed(1)+' km</b></div>';
     }else{
-      h+='<div class="row2"><span>차이</span><b>거의 없음 ('+km(c.offB)+' km)</b></div>'
-        +'<button class="gobtn" data-day="'+d+'">이 날 전체 보기 →</button>';
+      h+='<div class="row2"><span>차이</span><b>거의 없음 ('+km(c.offB)+' km)</b></div>';
     }
+    h+='<div class="d0row"><button class="mini play" data-sim="'+d+'">주행 모드로 보기</button>'
+      +'<button class="mini" data-day="'+d+'">궤적 보기</button>'
+      +(diff?'<button class="mini" data-go="'+d+'" title="이탈 구간으로">이탈 →</button>':'')
+      +'</div>';
     h+='</div></div>';
   });
 
@@ -1408,6 +1562,9 @@ function renderStats(){
   });
   el.querySelectorAll("[data-day]").forEach(function(b){
     b.addEventListener("click",function(){ flyDay(+b.dataset.day); });
+  });
+  el.querySelectorAll("[data-sim]").forEach(function(b){
+    b.addEventListener("click",function(){ simDay(+b.dataset.sim, true); });
   });
   bindDay0Card();
 }
@@ -1428,6 +1585,7 @@ function day0Card(){
     var span="";
     if(D0.hasTime){ var ms=D0.pts[D0.pts.length-1].t-D0.pts[0].t;
       span=Math.floor(ms/3600000)+"시간 "+Math.round(ms%3600000/60000)+"분 · "+fmtClock(D0.pts[0].t)+" 출발"; }
+    if(D0.day) h+='<div class="d0note" style="margin:0 0 6px;color:#7A5A00"><b>노선 DAY '+D0.day+'</b> 를 재생 중입니다. 기억해 둔 GPX 는 그대로 있습니다.</div>';
     h+='<div class="row2"><span>파일</span><b>'+esc(D0.name)+'</b></div>'
       +'<div class="row2"><span>거리</span><b>'+D0.total.toFixed(1)+' km · '+D0.pts.length+'점</b></div>'
       +'<div class="row2"><span>시간</span><b>'+(D0.hasTime?span:"없음 — 15 km/h 로 재생")+'</b></div>'
@@ -1443,7 +1601,7 @@ function day0Card(){
       +'<input type="file" id="d0file"></label>'
       +'<button class="mini" id="d0drive">드라이브</button>'
       +'<button class="mini" id="d0route">노선</button>'
-      +'<button class="mini" id="d0del" style="color:var(--rioja)">지우기</button></div>'
+      +(D0.day?'<button class="mini" id="d0back">내 GPX 로</button>':'<button class="mini" id="d0del" style="color:var(--rioja)">지우기</button>')+'</div>'
       +'<div id="d0list"></div>'
       +'<div class="d0note">이 GPX 는 브라우저에 기억됩니다. <span style="color:#B0A070">판 '+D0_VER+'</span></div>';
   }
@@ -1460,6 +1618,7 @@ function bindDay0Card(){
   on("d0spd","change",function(){ d0SetSpeed($("d0spd").value); });
   on("d0nav","click",function(){ NAV.src="day0"; setNav(true); });
   on("d0del","click",function(){ if(confirm("DAY 0 궤적을 지울까요?")) clearDay0(); });
+  on("d0back","click",function(){ if(!restoreDay0()) clearDay0(); WPX.key=""; if(NAV.on) syncHud(); });
   on("d0fly","click",function(){
     flyPts(D0.pts.filter(function(_,k){ return k%Math.max(1,Math.floor(D0.pts.length/400))===0; }), 1.15, -45); });
   syncD0UI();
