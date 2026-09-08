@@ -254,11 +254,21 @@
   .wpx-none{font-size:.72rem;color:var(--soft);padding:6px 2px}
   .wpx-voice{display:flex;align-items:center;gap:6px;font-size:.7rem;color:var(--soft);padding:6px 2px 2px;cursor:pointer}
   .wpx-voice input{accent-color:var(--flecha)}
-  .wpx-toast{position:absolute;left:50%;transform:translateX(-50%);
-    bottom:calc(max(12px,env(safe-area-inset-bottom)) + 86px);
-    background:#3B2E00;color:var(--flecha);border-radius:12px;padding:10px 16px;font-size:.9rem;font-weight:700;
-    box-shadow:0 4px 16px rgba(0,0,0,.35);max-width:88vw;text-align:center}
-  .wpx-toast.hide{display:none}
+  .wpx-banner{position:absolute;left:10px;right:10px;
+    bottom:calc(max(12px,env(safe-area-inset-bottom)) + 12px);
+    background:#3B2E00;color:#FFF3C4;border-radius:14px;padding:10px 14px 11px;
+    box-shadow:0 4px 18px rgba(0,0,0,.4);line-height:1.35}
+  #hud.has-bot .wpx-banner{bottom:calc(max(12px,env(safe-area-inset-bottom)) + 104px)}
+  .wpx-banner.hide{display:none}
+  .wpx-banner.passed{background:#4A4A4A;color:#EEE}
+  .wb-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+  .wb-head b{font-size:1.3rem;color:var(--flecha);font-variant-numeric:tabular-nums}
+  .wpx-banner.passed .wb-head b{color:#FFD166;font-size:1.05rem}
+  .wb-head span{font-size:.92rem;font-weight:700}
+  .wb-name{font-size:1rem;font-weight:700;margin-top:2px}
+  .wb-cmt{font-size:.82rem;opacity:.9;margin-top:1px}
+  .wb-next{font-size:.74rem;opacity:.75;margin-top:5px;border-top:1px solid rgba(255,255,255,.18);padding-top:5px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .hud-north{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:42px;height:42px;
     border-radius:50%;background:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.7);
     box-shadow:0 2px 8px rgba(21,42,85,.18);display:flex;align-items:center;justify-content:center;
@@ -342,7 +352,7 @@
       <label class="wpx-voice"><input type="checkbox" id="hwpv"> 음성 안내 (300 m · 도착)</label>
     </div>
   </div>
-  <div id="hwpt" class="wpx-toast hide"></div>
+  <div id="hwpb" class="wpx-banner hide"></div>
   <div class="hud-north"><i id="hnorth">N↑</i></div>
   <div class="hud-zoom">
     <button id="hzin" aria-label="확대">＋</button>
@@ -393,7 +403,7 @@ var ZOOM_M=[60,120,250,500,1000,2000,4000,8000,16000,32000,64000];   /* 카메�
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null,
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20260908-7";     /* DAY 0 카드에 표시 — 옛 판이 캐시돼 있는지 확인용 */
+var D0_VER="v20260908-8";     /* DAY 0 카드에 표시 — 옛 판이 캐시돼 있는지 확인용 */
 var D0={pts:[], cum:[], hasTime:false, name:"", total:0,
         playing:false, speed:5, km:0, raf:null, tPrev:0, fixedKmh:15};
 var WHO={bin:{n:"BIN", c:"#1E5FB4"}, jin:{n:"JIN", c:"#C92A2A"}};
@@ -866,8 +876,21 @@ function navEnts(){
     position:new Cesium.CallbackProperty(function(){ return NAVP.base; }, false),
     point:{ pixelSize:16, color:colProp, outlineColor:Cesium.Color.WHITE, outlineWidth:3,
       disableDepthTestDistance:Number.POSITIVE_INFINITY } }));
+  /* 300 m 알림 반경 — 지면에 붙는 고리 */
+  ENT.nav.push(ds.add({ show:false, name:"알림 반경 300 m",
+    polyline:{ positions:new Cesium.CallbackProperty(function(){ return NAVP.ring||[]; }, false),
+      width:3, clampToGround:true,
+      material:new Cesium.PolylineDashMaterialProperty({
+        color:Cesium.Color.fromCssColorString("#F5B917").withAlpha(.9), dashLength:24 }) } }));
 }
-function navShow(on){ navEnts(); ENT.nav.forEach(function(e){ e.show=on; }); }
+var WPX_R=300;   /* 알림 반경 (m) */
+function ringAround(lat,lon,rm){
+  var out=[], r=Math.PI/180, cl=Math.cos(lat*r);
+  for(var i=0;i<=48;i++){ var a=i/48*2*Math.PI;
+    out.push(lon+rm*Math.sin(a)/(111320*cl), lat+rm*Math.cos(a)/111320); }
+  return Cesium.Cartesian3.fromDegreesArray(out);
+}
+function navShow(on){ navEnts(); ENT.nav.forEach(function(e,i){ e.show = on && (i<2 || NAV.on); }); }
 
 /* ── 카메라 ── */
 function navRange(){ return ZOOM_M[NAV.zi]; }
@@ -898,6 +921,8 @@ function navTick(now){
   var tall = NAV.on ? Math.max(35, navRange()*0.22) : 600;
   NAVP.base=Cesium.Cartesian3.fromDegrees(s.lon,s.lat,gnd+2);
   NAVP.top =Cesium.Cartesian3.fromDegrees(s.lon,s.lat,gnd+tall);
+  NAV.cur={lat:s.lat,lon:s.lon};
+  if(NAV.on && (!NAVP.ringAt || hav(NAVP.ringAt,s)>4)){ NAVP.ring=ringAround(s.lat,s.lon,WPX_R); NAVP.ringAt={lat:s.lat,lon:s.lon}; }
   NAVP.text=WHO[NAV.who].n+(s.km!==null&&s.km!==undefined?"  "+s.km.toFixed(1)+" km":"");
   navShow(true);
   if(NAV.on){
@@ -975,6 +1000,7 @@ function setZoom(d){
 function syncHud(){
   var has=D0.pts.length>0;
   $("hbot").classList.toggle("hide",!has);
+  $("hud").classList.toggle("has-bot",has);
   $("hsrc0").classList.toggle("on",NAV.src==="day0");
   $("hsrc0").textContent=(D0.day?"DAY "+D0.day+" 노선 재생":"DAY 0 시험 주행");
   $("hsrcL").classList.toggle("on",NAV.src==="live");
@@ -1068,38 +1094,82 @@ function wpxSideText(w){
   if(w.off<20) return "길 위";
   return (w.side>0?"왼쪽 ":"오른쪽 ")+(w.off<100?Math.round(w.off/5)*5:Math.round(w.off/10)*10)+" m";
 }
+function fmtM(m){ m=Math.abs(m); return m<1000 ? Math.round(m/10)*10+" m" : (m/1000).toFixed(1)+" km"; }
 function wpxRender(force){
   if(!NAV.on) return;
-  var now=Date.now(); if(!force && now-WPX.lastT<1000) return; WPX.lastT=now;
+  var now=Date.now(); if(!force && now-WPX.lastT<700) return; WPX.lastT=now;
   wpxBuild();
   var cur=wpxCurKm(), box=$("hwpl"), btn=$("hwp"); if(!box) return;
-  var html="";
+  var html="", up=[], passed=null;
   if(cur===null||cur===undefined) html='<div class="wpx-none">위치를 아직 모릅니다</div>';
   else{
-    var up=WPX.list.filter(function(w){ return w.km-cur > -0.05; }).slice(0,4);
+    WPX.list.forEach(function(w){
+      var a=(w.km-cur)*1000;
+      if(a>-30) up.push(w);
+      else if(a>-250 && (!passed || w.km>passed.km)) passed=w;      /* 방금 지나친 것 (250 m 안) */
+    });
+    up=up.slice(0,4);
     if(!up.length) html='<div class="wpx-none">'+(WPX.list.length?"남은 명소가 없습니다":"이 궤적 근처(400 m)에 명소가 없습니다 — 노선 DAY 로 시험해 보세요")+'</div>';
     up.forEach(function(w){
-      var ahead=(w.km-cur)*1000, near=ahead<=300;
+      var ahead=(w.km-cur)*1000, near=ahead<=WPX_R;
       html+='<div class="wpx'+(near?" near":"")+'">'
         +'<span class="wpx-ico">'+symOf(w.sym).e+'</span>'
         +'<span class="wpx-txt"><b>'+esc(w.name)+'</b>'+(w.cmt?'<i>'+esc(w.cmt)+'</i>':'')+'</span>'
-        +'<span class="wpx-d"><b>'+(ahead<1000?Math.round(ahead/10)*10+" m":(ahead/1000).toFixed(1)+" km")+'</b><i>'+wpxSideText(w)+'</i></span></div>';
-      /* 알림 — 300 m 안에 처음 들어올 때 한 번, 60 m 안에서 한 번 더 */
+        +'<span class="wpx-d"><b>'+fmtM(ahead)+'</b><i>'+wpxSideText(w)+'</i></span></div>';
+      /* 소리·음성 — 300 m 안에 처음 들어올 때, 60 m 안에서, 지나쳤을 때 각 한 번 */
       var id=w.day+":"+w.name;
       if(near && !WPX.said[id]){ WPX.said[id]=1; wpxAlert(w, Math.round(ahead/10)*10); }
       if(ahead<=60 && WPX.said[id]===1){ WPX.said[id]=2; wpxAlert(w, 0); }
     });
-    if(up.length){ var f=up[0], a0=(f.km-cur)*1000;
-      btn.textContent="📍 "+(a0<1000?Math.round(a0/10)*10+" m":(a0/1000).toFixed(1)+" km")+" · "+(f.cmt||f.name).slice(0,14); }
-    else btn.textContent="📍 명소";
+    /* 단추: 다음 두 개 */
+    if(up.length){
+      var t0="📍 "+fmtM((up[0].km-cur)*1000)+" "+(up[0].cmt||up[0].name).slice(0,12);
+      if(up[1]) t0+="  ·  "+fmtM((up[1].km-cur)*1000)+" "+(up[1].cmt||up[1].name).slice(0,10);
+      btn.textContent=t0;
+    }else btn.textContent="📍 명소";
   }
   if(html!==WPX.lastHtml){ WPX.lastHtml=html; box.innerHTML=html; }
+  wpxBanner(cur, up, passed);
+  wpxTint();
+}
+/* 화면 아래 꽉 찬 안내 띠 — 300 m 안에 들어오면 지나칠 때까지 거리를 바꿔 가며 보이고,
+   지나친 뒤 250 m 까지는 "방금 지나침" 으로 남습니다 */
+function wpxBanner(cur, up, passed){
+  var b=$("hwpb"); if(!b) return;
+  var f=up&&up[0], a=f?(f.km-cur)*1000:null, h="";
+  if(f && a<=WPX_R){
+    h='<div class="wb-head"><b>'+(a>15?fmtM(a)+" 앞":"지금")+'</b><span>'+wpxSideText(f)+'</span></div>'
+     +'<div class="wb-name">'+esc(f.name)+'</div>'
+     +(f.cmt?'<div class="wb-cmt">'+esc(f.cmt)+'</div>':'')
+     +(up[1]?'<div class="wb-next">다음 · '+fmtM((up[1].km-cur)*1000)+' · '+esc(up[1].cmt||up[1].name)+'</div>':'');
+    b.className="wpx-banner";
+  }else if(passed){
+    var back=(cur-passed.km)*1000, id=passed.day+":"+passed.name;
+    h='<div class="wb-head"><b>방금 지나침</b><span>'+(passed.off<20?"뒤 ":(passed.side>0?"왼쪽 ":"오른쪽 ")+Math.round(passed.off/10)*10+" m · 뒤 ")+fmtM(back)+'</span></div>'
+     +'<div class="wb-name">'+esc(passed.name)+'</div>'
+     +(passed.cmt?'<div class="wb-cmt">'+esc(passed.cmt)+'</div>':'')
+     +(f?'<div class="wb-next">다음 · '+fmtM(a)+' · '+esc(f.cmt||f.name)+'</div>':'');
+    b.className="wpx-banner passed";
+    if(WPX.said[id]!==3){ WPX.said[id]=3;
+      wpxBeep(1); if(WPX.voice) wpxSay("지나쳤습니다. "+(passed.side>0?"왼쪽":"오른쪽")+" 뒤, "+(passed.cmt||passed.name)); }
+  }else{ b.className="wpx-banner hide"; WPX.lastBanner=""; }
+  if(h!==WPX.lastBanner){ WPX.lastBanner=h; b.innerHTML=h; }
+}
+/* 원 안(300 m)에 들어온 명소 아이콘은 노랗게 키웁니다 */
+function wpxTint(){
+  if(!NAV.cur) return;
+  var Y=Cesium.Color.fromCssColorString("#F5B917"), W=Cesium.Color.WHITE;
+  ENT.wpt.forEach(function(e){
+    var w=e._wp; if(!w||w.lat===undefined) return;
+    var inside=hav(NAV.cur,w)<=WPX_R;
+    if(e._in!==inside){ e._in=inside;
+      if(e.billboard){ e.billboard.color=inside?Y:W; e.billboard.scale=inside?1.5:1; }
+      if(e.polyline) e.polyline.width=inside?4:1.6; }
+  });
 }
 function wpxAlert(w, ahead){
   var side=wpxSideText(w);
   var msg=(ahead>0? ahead+" 미터 앞 " : "지금 ")+side+", "+(w.cmt||w.name);
-  var t=$("hwpt"); if(t){ t.textContent=msg; t.classList.remove("hide"); clearTimeout(WPX.toastT);
-    WPX.toastT=setTimeout(function(){ t.classList.add("hide"); },6000); }
   try{ if(navigator.vibrate) navigator.vibrate(ahead>0?[120,80,120]:[300]); }catch(e){}
   wpxBeep(ahead>0?1:2);
   if(WPX.voice) wpxSay(msg);
@@ -1143,6 +1213,12 @@ function pathLen(pts,i0,i1){
 }
 
 /* ── GPX 파싱 ── */
+/* "Â·" "Ã©" 처럼 UTF-8 이 Latin-1 로 잘못 읽힌 글자를 되돌립니다 */
+function unmojibake(t){
+  if(!t || !/[ÃÂ][\u0080-\u00BF]?/.test(t)) return t;
+  try{ var f=decodeURIComponent(escape(t)); if(!/\uFFFD/.test(f)) return f; }catch(e){}
+  return t.replace(/Â·/g,"·").replace(/Â /g," ");
+}
 function parseGpx(txt){
   var doc=new DOMParser().parseFromString(txt,"application/xml");
   if(doc.querySelector("parsererror")) throw new Error("GPX 형식 오류");
@@ -1162,7 +1238,7 @@ function parseGpx(txt){
     var g=function(t){ var el=w.getElementsByTagName(t)[0]; return el?el.textContent.trim():""; };
     var we=parseFloat(g("ele"));
     wpts.push({lat:wla, lon:wlo, ele:isNaN(we)?null:we,
-      name:g("name"), cmt:g("cmt")||g("desc"), sym:g("sym")||"Waypoint"});
+      name:unmojibake(g("name")), cmt:unmojibake(g("cmt")||g("desc")), sym:g("sym")||"Waypoint"});
   }
   return {pts:pts, wpts:wpts};
 }
@@ -1389,7 +1465,7 @@ function draw(){
           distanceDisplayCondition:new Cesium.DistanceDisplayCondition(0, 42000),
           scaleByDistance:new Cesium.NearFarScalar(1500,1.15, 42000,0.55) },
         show:OPT.wpt });
-      wpEnt._wp = { name:w.name||"", cmt:w.cmt||"", sym:w.sym, day:d, m:m };
+      wpEnt._wp = { name:w.name||"", cmt:w.cmt||"", sym:w.sym, day:d, m:m, lat:w.lat, lon:w.lon };
       ENT.wpt.push(wpEnt);
     });
   });
