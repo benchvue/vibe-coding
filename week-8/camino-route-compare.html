@@ -403,12 +403,14 @@ var LIVE={}, IDX=null, liveTimer=null;
 /* 네비게이션 주행 모드 상태 */
 var ZOOM_M=[60,120,250,500,1000,2000,4000,8000,16000,32000,64000];   /* 카메라 거리 단계 (m) */
 /* 폰 GPS (브라우저 geolocation) — 5초에 한 번 받아들입니다 */
+var GPS_ENABLED=false;     /* 폰 GPS 출처 — 당분간 끔. true 로 바꾸면 설정·HUD 에 다시 나타납니다 */
 var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:5000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"server",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20260908-9";
-try{ var _pm=localStorage.getItem("caminoPosMode"); if(_pm==="gps") NAV.posMode="gps"; }catch(e){}     /* DAY 0 카드에 표시 — 옛 판이 캐시돼 있는지 확인용 */
+var D0_VER="v20260908-10";
+try{ var _pm=localStorage.getItem("caminoPosMode"); if(_pm==="gps"&&GPS_ENABLED) NAV.posMode="gps"; }catch(e){}
+try{ var _m2=localStorage.getItem("caminoMap2d"); if(_m2==="0") OPT_MAP2D_INIT=false; }catch(e){}     /* DAY 0 카드에 표시 — 옛 판이 캐시돼 있는지 확인용 */
 var D0={pts:[], cum:[], hasTime:false, name:"", total:0,
         playing:false, speed:5, km:0, raf:null, tPrev:0, fixedKmh:15};
 var WHO={bin:{n:"BIN", c:"#1E5FB4"}, jin:{n:"JIN", c:"#C92A2A"}};
@@ -419,7 +421,8 @@ var LIVEDRV={apiKey:"AIzaSyDzahk0Yhz3faRfMhDS2vQzQ2oADYXhPRg",
      비우면("") 예전처럼 Drive 의 live.json 만 읽습니다. */
   exec:"https://script.google.com/macros/s/AKfycbz_hOt0SGogE6jSKgqlFxPaLEGUJb-_3_f11m9rpOJNAQzk0Bu6GqFfSa2fVxjkF_Aoyw/exec",
   key:"camino2027-bin-jin-x7k2m9"};
-var OPT={walk:true,bike:true,off:true,wpt:true,live:false,dayColor:false,
+var OPT_MAP2D_INIT=true;
+var OPT={map2d:true, walk:true,bike:true,off:true,wpt:true,live:false,dayColor:false,
          thresh:100, exag:1.0, lift:80, xray:true};
 
 
@@ -910,7 +913,8 @@ function navEnts(){
       disableDepthTestDistance:Number.POSITIVE_INFINITY } }));
   ENT.nav.push(ds.add({ show:false,
     position:new Cesium.CallbackProperty(function(){ return NAVP.base; }, false),
-    point:{ pixelSize:16, color:colProp, outlineColor:Cesium.Color.WHITE, outlineWidth:3,
+    point:{ pixelSize:new Cesium.CallbackProperty(function(){ return OPT.map2d?22:16; },false),
+      color:colProp, outlineColor:Cesium.Color.WHITE, outlineWidth:3,
       disableDepthTestDistance:Number.POSITIVE_INFINITY } }));
   /* 300 m 알림 반경 — 지면에 붙는 고리 */
   ENT.nav.push(ds.add({ show:false, name:"알림 반경 300 m",
@@ -933,11 +937,11 @@ function navRange(){ return ZOOM_M[NAV.zi]; }
 function navCamera(s){
   var range=navRange(), hd=NAV.hdg;
   /* 자전거를 화면 아래쪽에 두려고 조금 앞을 바라봅니다 */
-  var ahead=offsetLL(s.lat,s.lon,hd,range*(range>=16000?0.18:0.28));
+  var ahead=offsetLL(s.lat,s.lon,hd,range*(OPT.map2d?0.22:(range>=16000?0.18:0.28)));
   var gnd=groundAt(s.lat,s.lon,s.ele);
   var target=Cesium.Cartesian3.fromDegrees(ahead[1],ahead[0],gnd);
-  var p0 = range>=16000 ? -70 : range>=4000 ? -58 : -46;   /* 멀수록 위에서 내려다봄 */
-  var pitches=[p0, Math.min(p0-16,-80), -88], cam=viewer.camera;
+  var p0 = OPT.map2d ? -89 : (range>=16000 ? -70 : range>=4000 ? -58 : -46);   /* 2D 는 늘 위에서 */
+  var pitches=[p0, Math.min(p0-16,-80), -89], cam=viewer.camera;
   for(var k=0;k<pitches.length;k++){
     cam.lookAt(target, new Cesium.HeadingPitchRange(
       Cesium.Math.toRadians(hd), Cesium.Math.toRadians(pitches[k]), range));
@@ -1004,7 +1008,7 @@ function setNav(on){
   var c=$("cNav"); if(c) c.checked=on;
   if(on){
     NAV.hdg=null; NAV.dispKm=null; NAV.last=null;
-    var def = NAV.posMode==="gps" ? "gps" : "live";
+    var def = (GPS_ENABLED && NAV.posMode==="gps") ? "gps" : "live";
     if(!D0.pts.length) NAV.src=def;
     else if(NAV.src!=="live" && NAV.src!=="gps") NAV.src="day0";
     if(NAV.src==="gps") gpsStart();
@@ -1017,6 +1021,20 @@ function setNav(on){
     if(!D0.pts.length) navShow(false);
     drawLive();
     syncD0UI();
+  }
+}
+/* 2D 지도 = 위에서 똑바로 내려다보는 카메라. 위쪽이 진행 방향인 주행 모드는 그대로 됩니다.
+   (Cesium 의 진짜 2D 장면은 지도를 돌릴 수 없어 쓰지 않습니다) */
+function setMap2d(on){
+  OPT.map2d=!!on;
+  try{ localStorage.setItem("caminoMap2d", OPT.map2d?"1":"0"); }catch(e){}
+  document.querySelectorAll("[data-map]").forEach(function(b){ b.classList.toggle("on", (b.dataset.map==="2d")===OPT.map2d); });
+  if(!NAV.on){
+    /* 지금 보고 있는 곳을 그대로 두고 각도만 바꿉니다 */
+    var c=viewer.camera, pick=c.pickEllipsoid(new Cesium.Cartesian2(viewer.canvas.clientWidth/2, viewer.canvas.clientHeight/2));
+    if(pick){ var dist=Cesium.Cartesian3.distance(c.positionWC,pick);
+      c.flyToBoundingSphere(new Cesium.BoundingSphere(pick,1),{duration:.8,
+        offset:new Cesium.HeadingPitchRange(OPT.map2d?0:c.heading, Cesium.Math.toRadians(OPT.map2d?-89:-45), dist)}); }
   }
 }
 function setPosMode(m){
@@ -1047,6 +1065,7 @@ function syncHud(){
   $("hbot").classList.remove("hide");                 /* 출처 전환은 늘 보입니다 */
   $("hud").classList.add("has-bot");
   $("hsrc0").style.display = has ? "" : "none";
+  $("hsrcG").style.display = GPS_ENABLED ? "" : "none";
   $("hsrcG").classList.toggle("on",NAV.src==="gps");
   $("hsrc0").classList.toggle("on",NAV.src==="day0");
   $("hsrc0").textContent=(D0.day?"DAY "+D0.day+" 노선 재생":"DAY 0 시험 주행");
@@ -1627,6 +1646,9 @@ function flyDay(d){
   var D=DATA[d]||{}; if(!D.bike) return;
   flyPts(D.bike.filter(function(_,i){ return i%5===0; }), 1.15, -45);
 }
+/* 2D 지도일 때는 어디로 날아가든 위에서 내려다봅니다 */
+var _flyPts=flyPts;
+flyPts=function(pts,pad,pitch){ return _flyPts(pts,pad,OPT.map2d?-89:pitch); };
 
 /* ══════════ 왼쪽 패널 ══════════ */
 function renderStats(){
@@ -1777,9 +1799,12 @@ function renderCtrl(){
     +'켜면 두 사람의 위치를 표시합니다.</span></div>'
     +'<div class="who"><button class="bin'+(NAV.who==="bin"?" on":"")+'" data-who="bin">BIN</button>'
     +'<button class="jin'+(NAV.who==="jin"?" on":"")+'" data-who="jin">JIN</button></div>'
-    +'<div class="row2" style="margin:8px 0 4px"><span>주행 모드 위치 방식</span></div>'
+    +(GPS_ENABLED ? '<div class="row2" style="margin:8px 0 4px"><span>주행 모드 위치 방식</span></div>'
     +'<div class="who mode"><button class="srv'+(NAV.posMode!=="gps"?" on":"")+'" data-mode="server">서버 (OwnTracks · 3분)</button>'
-    +'<button class="gps'+(NAV.posMode==="gps"?" on":"")+'" data-mode="gps">폰 GPS (5초)</button></div>'
+    +'<button class="gps'+(NAV.posMode==="gps"?" on":"")+'" data-mode="gps">폰 GPS (5초)</button></div>' : '')
+    +'<div class="row2" style="margin:8px 0 4px"><span>지도 보기</span></div>'
+    +'<div class="who mode"><button class="'+(OPT.map2d?" on":"")+'" data-map="2d">2D 지도 (위에서)</button>'
+    +'<button class="'+(!OPT.map2d?" on":"")+'" data-map="3d">3D 지형</button></div>'
     +chk("cNav","네비게이션 주행 모드","선택한 사람을 카메라가 따라갑니다 · 위쪽이 진행 방향",NAV.on,"")
     +'<div class="legend">주행 모드에서는 지도 회전과 끌기가 막히고 <b>＋ −</b> 로 거리만 조절합니다. '
     +'DAY 0 에 GPX 를 넣어 두면 실시간 위치 대신 그 궤적을 재생해 볼 수 있습니다.</div>'
@@ -1838,6 +1863,8 @@ function renderCtrl(){
   bind("cNav",function(v){ setNav(v); });
   document.querySelectorAll("#ctrl [data-mode]").forEach(function(b){
     b.addEventListener("click",function(){ setPosMode(b.dataset.mode); }); });
+  document.querySelectorAll("#ctrl [data-map]").forEach(function(b){
+    b.addEventListener("click",function(){ setMap2d(b.dataset.map==="2d"); }); });
   document.querySelectorAll("#ctrl [data-who]").forEach(function(b){
     b.addEventListener("click",function(){ setWho(b.dataset.who); }); });
   bind("cLive",function(v){
@@ -1930,6 +1957,7 @@ function boot(token){
     step("설정 패널", renderCtrl);
     step("도움말 표시", setupTip);
     step("주행 모드", function(){ setupHud(); navEnts(); });
+    step("지도 보기", function(){ OPT.map2d=OPT_MAP2D_INIT; if(OPT.map2d) setMap2d(true); });
     step("DAY 0 복원", function(){ restoreDay0(); });
     $("load").classList.add("hide");
     setTimeout(flyAll, 300);
