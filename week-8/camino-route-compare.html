@@ -204,7 +204,7 @@
     box-shadow:0 2px 10px rgba(21,42,85,.18);backdrop-filter:blur(6px)}
   .hud-info b{font-family:'Gowun Batang',serif;font-size:1.12rem;color:var(--blue);
     font-variant-numeric:tabular-nums;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .hud-info small{font-size:.68rem;color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hud-info small{font-size:.7rem;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .hud-exit{border:1px solid rgba(255,255,255,.7);background:rgba(255,255,255,.94);color:var(--rioja);
     border-radius:12px;padding:0 13px;font-size:.8rem;font-weight:700;cursor:pointer;
     box-shadow:0 2px 10px rgba(21,42,85,.18)}
@@ -359,7 +359,7 @@ var ZOOM_M=[120,250,500,1000,2000,4000,8000];       /* 카메라 거리 단계 (
 var NAV={on:false, who:"bin", src:"live", zi:2, timer:null,
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20260908-2";     /* DAY 0 카드에 표시 — 옛 판이 캐시돼 있는지 확인용 */
+var D0_VER="v20260908-3";     /* DAY 0 카드에 표시 — 옛 판이 캐시돼 있는지 확인용 */
 var D0={pts:[], cum:[], hasTime:false, name:"", total:0,
         playing:false, speed:5, km:0, raf:null, tPrev:0, fixedKmh:15};
 var WHO={bin:{n:"BIN", c:"#1E5FB4"}, jin:{n:"JIN", c:"#C92A2A"}};
@@ -434,9 +434,13 @@ function driveText(id){
   }
   return tryK(0);
 }
+var LIVEDIAG={src:"", err:"", read:null};
 function fetchLive(){
-  if(LIVEDRV.exec) return fetchLiveExec().catch(function(){ return fetchLiveDrive(); });
-  return fetchLiveDrive();
+  LIVEDIAG.err="";
+  if(LIVEDRV.exec) return fetchLiveExec()
+    .catch(function(e){ LIVEDIAG.err="스크립트 직독 실패: "+(e.message||e)+" → Drive"; return fetchLiveDrive(); })
+    .then(function(r){ LIVEDIAG.read=Date.now(); return r; });
+  return fetchLiveDrive().then(function(r){ LIVEDIAG.read=Date.now(); return r; });
 }
 /* 앱스 스크립트 ?k=암호 → 현재 위치. 응답 모양이 live.json 과 같지 않아도 riders / bin / jin 을 찾아 씁니다. */
 function fetchLiveExec(){
@@ -525,8 +529,14 @@ function drawLive(){
     msg.push(m.n+" "+sub+" · "+agoText(v.at)+(v.at?" ("+fmtClock(new Date(v.at).getTime())+")":""));
   });
   var el=document.getElementById("livemsg");
-  if(el) el.textContent = msg.length ? msg.join("   ·   ")+(LIVE._src==="exec"?"  · 스크립트 직독":"  · Drive")
-    : "아직 들어온 위치가 없습니다.";
+  var diag=(LIVE._src==="exec"?"스크립트 직독":"Drive")+(LIVEDIAG.read?" · 읽음 "+fmtClock(LIVEDIAG.read):"")
+          +(LIVEDIAG.err?" · "+LIVEDIAG.err:"");
+  var raw=["bin","jin"].map(function(w){ var v=LIVE[w]; return v&&v.at ? w+" at="+String(v.at).replace(/^\d{4}-\d{2}-\d{2}T?/,"").slice(0,8) : ""; })
+             .filter(Boolean).join(" · ");
+  if(el) el.innerHTML = (msg.length ? esc(msg.join("   ·   ")) : "아직 들어온 위치가 없습니다.")
+    +'<br><span style="color:#8A7A4A">'+esc(diag)+(raw?"<br>"+esc(raw):"")+'</span>'
+    +' <button class="mini" id="liveNow" style="padding:3px 8px;font-size:.68rem;margin-left:4px">지금 읽기</button>';
+  on("liveNow","click",function(){ refreshLive(); });
 }
 function refreshLive(){
   var el=document.getElementById("livemsg");
@@ -698,8 +708,8 @@ function d0Anchor(now){          /* 지금 위치·시각을 기준점으로 삼
 function d0Advance(now){
   if(D0.aReal===undefined || D0.aReal===null) d0Anchor(now);
   var el=(now-D0.aReal)*D0.speed;
-  if(D0.hasTime) D0.km=d0KmAtTime(D0.aSim+el);
-  else D0.km=D0.aSim + el*D0.fixedKmh/3600000;
+  if(D0.hasTime){ D0.simT=D0.aSim+el; D0.km=d0KmAtTime(D0.simT); }
+  else{ D0.km=D0.aSim + el*D0.fixedKmh/3600000; D0.simT=null; }
   if(D0.km>=D0.total){ D0.km=D0.total; d0Play(false); }
 }
 function d0Play(on){
@@ -707,7 +717,7 @@ function d0Play(on){
   if(on){ if(D0.km>=D0.total) D0.km=0; D0.aReal=null; ensureLoop(); }
   syncD0UI();
 }
-function d0Seek(kmv){ D0.km=Math.max(0,Math.min(D0.total,+kmv||0)); D0.aReal=null; syncD0UI(); ensureLoop(); }
+function d0Seek(kmv){ D0.km=Math.max(0,Math.min(D0.total,+kmv||0)); D0.aReal=null; D0.simT=null; syncD0UI(); ensureLoop(); }
 function d0SetSpeed(v){ D0.speed=+v||1; D0.aReal=null; syncD0UI(); }
 
 function drawDay0(){
@@ -738,6 +748,7 @@ function riderState(){
   var w=NAV.who, m=WHO[w];
   if(NAV.src==="day0" && D0.pts.length){
     var s=d0State(D0.km); if(!s) return null;
+    if(D0.playing && D0.hasTime && D0.simT) s.time=D0.simT;   /* 재생 중엔 재생 시계를 그대로 */
     s.km=D0.km; s.sub="DAY 0 시험 · "+D0.name;
     s.ele=s.ele*OPT.exag+OPT.lift; return s;
   }
@@ -829,12 +840,13 @@ function navTick(now){
   navShow(true);
   if(NAV.on){
     navCamera(s);
-    var extra="";
+    var sub=s.sub;
     if(NAV.src==="day0"&&D0.hasTime&&s.time){
       var e=Math.max(0,Math.round((s.time-D0.pts[0].t)/1000));
-      extra="  ·  "+fmtClock(s.time)+"  ·  경과 "+Math.floor(e/3600)+":"+String(Math.floor(e%3600/60)).padStart(2,"0")+":"+String(e%60).padStart(2,"0");
+      sub=fmtClock(s.time)+"  ·  경과 "+Math.floor(e/3600)+":"+String(Math.floor(e%3600/60)).padStart(2,"0")+":"+String(e%60).padStart(2,"0")
+         +"  ·  "+D0.speed+"×";
     }
-    setHudText((s.km!==null&&s.km!==undefined?s.km.toFixed(1)+" km":"— km")+extra, s.sub);
+    setHudText((s.km!==null&&s.km!==undefined?s.km.toFixed(2)+" km":"— km"), sub);
     var n=$("hnorth"); if(n) n.style.transform="rotate("+(-NAV.hdg)+"deg)";
   }
 }
