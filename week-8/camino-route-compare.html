@@ -184,6 +184,7 @@
     padding:9px 6px;font-size:.78rem;font-weight:700;cursor:pointer;color:var(--soft)}
   .who button.on{color:#fff;border-color:transparent}
   .who button.bin.on{background:#1E5FB4} .who button.jin.on{background:#C92A2A}
+  .who.mode button{font-size:.72rem;font-weight:600} .who.mode button.on{background:var(--blue)}
 
   /* ── 네비게이션 주행 모드 HUD ── */
   body.navmode .panel, body.navmode .toggle, body.navmode .cesium-viewer-toolbar,
@@ -363,6 +364,7 @@
     <div class="hud-src">
       <button data-src="day0" id="hsrc0">DAY 0 시험 주행</button>
       <button data-src="live" id="hsrcL">실시간 위치</button>
+      <button data-src="gps" id="hsrcG">폰 GPS</button>
     </div>
     <div class="hud-play" id="hplay">
       <button id="hpp">▶</button>
@@ -400,10 +402,13 @@ var viewer=null, DATA={}, ENT={walk:[],bike:[],offW:[],offB:[],wpt:[],day:[],liv
 var LIVE={}, IDX=null, liveTimer=null;
 /* 네비게이션 주행 모드 상태 */
 var ZOOM_M=[60,120,250,500,1000,2000,4000,8000,16000,32000,64000];   /* 카메라 거리 단계 (m) */
-var NAV={on:false, who:"bin", src:"live", zi:3, timer:null,
+/* 폰 GPS (브라우저 geolocation) — 5초에 한 번 받아들입니다 */
+var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:5000};
+var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"server",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20260908-8";     /* DAY 0 카드에 표시 — 옛 판이 캐시돼 있는지 확인용 */
+var D0_VER="v20260908-9";
+try{ var _pm=localStorage.getItem("caminoPosMode"); if(_pm==="gps") NAV.posMode="gps"; }catch(e){}     /* DAY 0 카드에 표시 — 옛 판이 캐시돼 있는지 확인용 */
 var D0={pts:[], cum:[], hasTime:false, name:"", total:0,
         playing:false, speed:5, km:0, raf:null, tPrev:0, fixedKmh:15};
 var WHO={bin:{n:"BIN", c:"#1E5FB4"}, jin:{n:"JIN", c:"#C92A2A"}};
@@ -702,7 +707,7 @@ function simDay(d, enterNav){
   if(!(D && D.bike && D.bike.length>1)){ alert("DAY "+d+" 자전거 GPX 가 없습니다."); return; }
   setDay0(D.bike.map(function(q){ return {lat:q.lat,lon:q.lon,ele:q.ele,t:null}; }), "노선 DAY "+d, !!enterNav, d);
   WPX.key="";
-  if(enterNav){ NAV.src="day0"; if(NAV.on){ syncHud(); if(!D0.playing) d0Play(true); } else setNav(true); }
+  if(enterNav){ NAV.src="day0"; gpsStop(); if(NAV.on){ syncHud(); if(!D0.playing) d0Play(true); } else setNav(true); }
 }
 function loadDay0Text(txt,name){
   try{
@@ -814,9 +819,40 @@ function drawDay0(){
       disableDepthTestDistance:Number.POSITIVE_INFINITY } }));
 }
 
+/* ══ 폰 GPS ══ */
+function gpsStart(){
+  if(GPS.watch!==null) return;
+  if(!("geolocation" in navigator)){ GPS.err="이 브라우저는 위치를 지원하지 않습니다"; return; }
+  GPS.err="";
+  GPS.watch=navigator.geolocation.watchPosition(function(pos){
+    var now=Date.now();
+    if(GPS.fix && now-GPS.fix.at < GPS.acceptEvery-500) return;     /* 5초 간격으로만 */
+    var c=pos.coords, f={lat:c.latitude, lon:c.longitude, acc:c.accuracy||0, at:now,
+      spd:(typeof c.speed==="number"&&c.speed>=0)?c.speed:null,
+      hdg:(typeof c.heading==="number"&&!isNaN(c.heading)&&c.speed>1)?c.heading:null};
+    if(f.hdg===null && GPS.fix && hav(GPS.fix,f)>8) f.hdg=bearing(GPS.fix,f);
+    /* 어느 궤적 위에 있나 — DAY 0 궤적 400 m 안이면 그것, 아니면 노선 색인 3 km 안 */
+    f.track=null; f.km=null;
+    if(D0.pts.length){ var p0=projectOn(D0.pts,D0.cum,f.lat,f.lon); if(p0&&p0.off<=400){ f.track="d0"; f.km=p0.km; } }
+    if(!f.track && IDX&&IDX.length){ var pi=projectOn(IDX.map(function(r){return {lat:r[0],lon:r[1]};}), IDX.map(function(r){return r[2];}), f.lat,f.lon);
+      if(pi&&pi.off<=3000){ f.track="idx"; f.km=pi.km; } }
+    GPS.last=GPS.fix; GPS.fix=f;
+  }, function(e){
+    GPS.err = e.code===1 ? "위치 권한이 거부됐습니다 (설정 → Safari → 위치)" : e.code===2 ? "위치를 잡지 못했습니다" : "위치 응답이 늦습니다";
+  }, {enableHighAccuracy:true, maximumAge:GPS.acceptEvery, timeout:20000});
+}
+function gpsStop(){ if(GPS.watch!==null){ try{ navigator.geolocation.clearWatch(GPS.watch); }catch(e){} GPS.watch=null; } }
+
 /* ── 따라갈 사람의 현재 상태 ── {lat,lon,ele,hdg,km,sub} 또는 null */
 function riderState(){
   var w=NAV.who, m=WHO[w];
+  if(NAV.src==="gps"){
+    var f=GPS.fix; if(!f) return null;
+    var g={lat:f.lat, lon:f.lon, hdg:f.hdg, km:f.km,
+      sub:"폰 GPS · ±"+Math.round(f.acc)+" m · "+agoText(new Date(f.at).toISOString())+(GPS.err?" · "+GPS.err:"")};
+    g.ele = (f.track==="d0" ? d0State(f.km).ele : nearestEleAt(f.lat,f.lon))*OPT.exag+OPT.lift;
+    return g;
+  }
   if(NAV.src==="day0" && D0.pts.length){
     var s=d0State(D0.km); if(!s) return null;
     if(D0.playing && D0.hasTime && D0.simT) s.time=D0.simT;   /* 재생 중엔 재생 시계를 그대로 */
@@ -911,10 +947,10 @@ function navCamera(s){
   }
 }
 function navTick(now){
-  if(!NAV.on && NAV.src!=="day0"){ navShow(false); return; }   /* 평소엔 실시간 표지는 drawLive 가 맡음 */
+  if(!NAV.on && NAV.src!=="day0"){ navShow(false); return; }   /* 평소엔 실시간 표지는 drawLive 가 맡음 · 폰 GPS 는 주행 모드에서만 */
   if(NAV.on && viewer.trackedEntity) viewer.trackedEntity=undefined;
   var s=riderState();
-  if(!s){ navShow(false); setHudText("—","위치를 기다리는 중"); return; }
+  if(!s){ navShow(false); setHudText("—", NAV.src==="gps" ? (GPS.err||"폰 GPS 를 잡는 중…") : "위치를 기다리는 중"); return; }
   if(s.hdg===null||s.hdg===undefined) s.hdg = (NAV.hdg===null?0:NAV.hdg);
   NAV.hdg = NAV.hdg===null ? s.hdg : lerpAngle(NAV.hdg, s.hdg, 0.12);
   var gnd=groundAt(s.lat,s.lon,s.ele);
@@ -968,18 +1004,27 @@ function setNav(on){
   var c=$("cNav"); if(c) c.checked=on;
   if(on){
     NAV.hdg=null; NAV.dispKm=null; NAV.last=null;
-    if(!D0.pts.length) NAV.src="live";
-    else if(NAV.src!=="live") NAV.src="day0";
+    var def = NAV.posMode==="gps" ? "gps" : "live";
+    if(!D0.pts.length) NAV.src=def;
+    else if(NAV.src!=="live" && NAV.src!=="gps") NAV.src="day0";
+    if(NAV.src==="gps") gpsStart();
     if(NAV.src==="live" && !OPT.live){ var cl=$("cLive"); if(cl){ cl.checked=true; cl.dispatchEvent(new Event("change")); } }
     if(NAV.src==="day0" && !D0.playing) d0Play(true);
     syncHud(); ensureLoop();
   }else{
     viewer.camera.lookAtTransform(Cesium.Matrix4.IDENTITY);
-    NAV.hdg=null;
+    NAV.hdg=null; gpsStop();
     if(!D0.pts.length) navShow(false);
     drawLive();
     syncD0UI();
   }
+}
+function setPosMode(m){
+  NAV.posMode = m==="gps" ? "gps" : "server";
+  try{ localStorage.setItem("caminoPosMode",NAV.posMode); }catch(e){}
+  document.querySelectorAll("[data-mode]").forEach(function(b){ b.classList.toggle("on", b.dataset.mode===NAV.posMode); });
+  if(NAV.on && NAV.src!=="day0"){ NAV.src = NAV.posMode==="gps" ? "gps" : "live"; NAV.hdg=null; WPX.key="";
+    if(NAV.src==="gps") gpsStart(); else gpsStop(); syncHud(); }
 }
 function setWho(w){
   if(!WHO[w]) return;
@@ -999,8 +1044,10 @@ function setZoom(d){
 }
 function syncHud(){
   var has=D0.pts.length>0;
-  $("hbot").classList.toggle("hide",!has);
-  $("hud").classList.toggle("has-bot",has);
+  $("hbot").classList.remove("hide");                 /* 출처 전환은 늘 보입니다 */
+  $("hud").classList.add("has-bot");
+  $("hsrc0").style.display = has ? "" : "none";
+  $("hsrcG").classList.toggle("on",NAV.src==="gps");
   $("hsrc0").classList.toggle("on",NAV.src==="day0");
   $("hsrc0").textContent=(D0.day?"DAY "+D0.day+" 노선 재생":"DAY 0 시험 주행");
   $("hsrcL").classList.toggle("on",NAV.src==="live");
@@ -1032,16 +1079,18 @@ function setupHud(){
   on("hexit","click",function(){ setNav(false); });
   on("hzin","click",function(){ setZoom(-1); });
   on("hzout","click",function(){ setZoom(1); });
-  on("hsrc0","click",function(){ NAV.src="day0"; NAV.hdg=null; if(!D0.playing) d0Play(true); syncHud(); });
+  on("hsrc0","click",function(){ NAV.src="day0"; NAV.hdg=null; gpsStop(); if(!D0.playing) d0Play(true); syncHud(); });
   on("hwp","click",function(){ WPX.open=!WPX.open; $("hwpp").classList.toggle("hide",!WPX.open); $("hwp").classList.toggle("on",WPX.open); wpxRender(true); });
   on("hwpv","change",function(){ WPX.voice=$("hwpv").checked; if(WPX.voice) wpxSay("음성 안내를 켰습니다"); });
-  on("hsrcL","click",function(){ NAV.src="live"; NAV.hdg=null; NAV.dispKm=null;
+  on("hsrcG","click",function(){ NAV.src="gps"; NAV.hdg=null; WPX.key=""; gpsStart(); syncHud(); });
+  on("hsrcL","click",function(){ NAV.src="live"; NAV.hdg=null; NAV.dispKm=null; gpsStop();
     if(!OPT.live){ var cl=$("cLive"); if(cl){ cl.checked=true; cl.dispatchEvent(new Event("change")); } }
     syncHud(); });
   on("hpp","click",function(){ d0Play(!D0.playing); });
   on("hsl","input",function(){ d0Seek($("hsl").value/1000*D0.total); });
   on("hspd","change",function(){ d0SetSpeed($("hspd").value); });
   try{ var w=localStorage.getItem("caminoNavWho"); if(w&&WHO[w]) setWho(w); }catch(e){}
+  try{ var pm=localStorage.getItem("caminoPosMode"); if(pm) setPosMode(pm); }catch(e){}
   setZoom(0);
 }
 
@@ -1050,6 +1099,8 @@ function setupHud(){
    누적 km · 길에서 벗어난 거리 · 왼쪽/오른쪽을 구합니다. 궤적이 바뀔 때 한 번만 계산합니다. */
 var WPX={list:[], key:"", open:false, voice:false, said:{}, lastT:0, lastHtml:""};
 function wpxTrack(){
+  if(NAV.src==="gps" && GPS.fix && GPS.fix.track==="d0" && D0.pts.length)
+    return {key:"d0:"+D0.name+":"+D0.pts.length, pts:D0.pts, cum:D0.cum};
   if(NAV.src==="day0" && D0.pts.length)
     return {key:"d0:"+D0.name+":"+D0.pts.length, pts:D0.pts, cum:D0.cum};
   if(IDX&&IDX.length)
@@ -1086,6 +1137,7 @@ function wpxBuild(){
   WPX.list.sort(function(a,b){ return a.km-b.km; });
 }
 function wpxCurKm(){
+  if(NAV.src==="gps") return GPS.fix ? GPS.fix.km : null;
   if(NAV.src==="day0" && D0.pts.length) return D0.km;
   var v=LIVE[NAV.who]; if(v && typeof v.km==="number" && !v.test) return (NAV.dispKm!=null?NAV.dispKm:v.km);
   return null;
@@ -1725,6 +1777,9 @@ function renderCtrl(){
     +'켜면 두 사람의 위치를 표시합니다.</span></div>'
     +'<div class="who"><button class="bin'+(NAV.who==="bin"?" on":"")+'" data-who="bin">BIN</button>'
     +'<button class="jin'+(NAV.who==="jin"?" on":"")+'" data-who="jin">JIN</button></div>'
+    +'<div class="row2" style="margin:8px 0 4px"><span>주행 모드 위치 방식</span></div>'
+    +'<div class="who mode"><button class="srv'+(NAV.posMode!=="gps"?" on":"")+'" data-mode="server">서버 (OwnTracks · 3분)</button>'
+    +'<button class="gps'+(NAV.posMode==="gps"?" on":"")+'" data-mode="gps">폰 GPS (5초)</button></div>'
     +chk("cNav","네비게이션 주행 모드","선택한 사람을 카메라가 따라갑니다 · 위쪽이 진행 방향",NAV.on,"")
     +'<div class="legend">주행 모드에서는 지도 회전과 끌기가 막히고 <b>＋ −</b> 로 거리만 조절합니다. '
     +'DAY 0 에 GPX 를 넣어 두면 실시간 위치 대신 그 궤적을 재생해 볼 수 있습니다.</div>'
@@ -1781,6 +1836,8 @@ function renderCtrl(){
   bind("cDay",  function(v){ OPT.dayColor=v; draw(); });
   bind("cXray", function(v){ OPT.xray=v; draw(); });
   bind("cNav",function(v){ setNav(v); });
+  document.querySelectorAll("#ctrl [data-mode]").forEach(function(b){
+    b.addEventListener("click",function(){ setPosMode(b.dataset.mode); }); });
   document.querySelectorAll("#ctrl [data-who]").forEach(function(b){
     b.addEventListener("click",function(){ setWho(b.dataset.who); }); });
   bind("cLive",function(v){
