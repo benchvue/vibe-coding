@@ -355,11 +355,11 @@ var $ = function(id){ return document.getElementById(id); };
 var viewer=null, DATA={}, ENT={walk:[],bike:[],offW:[],offB:[],wpt:[],day:[],live:[],day0:[],nav:[]};
 var LIVE={}, IDX=null, liveTimer=null;
 /* 네비게이션 주행 모드 상태 */
-var ZOOM_M=[120,250,500,1000,2000,4000,8000];       /* 카메라 거리 단계 (m) */
-var NAV={on:false, who:"bin", src:"live", zi:2, timer:null,
+var ZOOM_M=[60,120,250,500,1000,2000,4000,8000,16000,32000,64000];   /* 카메라 거리 단계 (m) */
+var NAV={on:false, who:"bin", src:"live", zi:3, timer:null,
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20260908-5";     /* DAY 0 카드에 표시 — 옛 판이 캐시돼 있는지 확인용 */
+var D0_VER="v20260908-6";     /* DAY 0 카드에 표시 — 옛 판이 캐시돼 있는지 확인용 */
 var D0={pts:[], cum:[], hasTime:false, name:"", total:0,
         playing:false, speed:5, km:0, raf:null, tPrev:0, fixedKmh:15};
 var WHO={bin:{n:"BIN", c:"#1E5FB4"}, jin:{n:"JIN", c:"#C92A2A"}};
@@ -833,10 +833,11 @@ function navRange(){ return ZOOM_M[NAV.zi]; }
 function navCamera(s){
   var range=navRange(), hd=NAV.hdg;
   /* 자전거를 화면 아래쪽에 두려고 조금 앞을 바라봅니다 */
-  var ahead=offsetLL(s.lat,s.lon,hd,range*0.28);
+  var ahead=offsetLL(s.lat,s.lon,hd,range*(range>=16000?0.18:0.28));
   var gnd=groundAt(s.lat,s.lon,s.ele);
   var target=Cesium.Cartesian3.fromDegrees(ahead[1],ahead[0],gnd);
-  var pitches=[-46,-62,-80], cam=viewer.camera;
+  var p0 = range>=16000 ? -70 : range>=4000 ? -58 : -46;   /* 멀수록 위에서 내려다봄 */
+  var pitches=[p0, Math.min(p0-16,-80), -88], cam=viewer.camera;
   for(var k=0;k<pitches.length;k++){
     cam.lookAt(target, new Cesium.HeadingPitchRange(
       Cesium.Math.toRadians(hd), Cesium.Math.toRadians(pitches[k]), range));
@@ -926,6 +927,7 @@ function setZoom(d){
   var l=$("hzlv"); if(l) l.textContent=navRange()>=1000?(navRange()/1000)+" km":navRange()+" m";
   var zi=$("hzin"), zo=$("hzout");     /* 끝단에서도 단추는 그대로 두고 살짝만 흐리게 */
   if(zi) zi.style.opacity=NAV.zi===0?".55":"";
+  /* 60 m 에서는 표지가 카메라를 가리지 않게 세로선을 짧게 — navTick 의 tall 계산이 range 를 따릅니다 */
   if(zo) zo.style.opacity=NAV.zi===ZOOM_M.length-1?".55":"";
 }
 function syncHud(){
@@ -1609,7 +1611,7 @@ function boot(token){
   }catch(e){ gateErr("Cesium 을 시작하지 못했습니다: "+e.message); return; }
   viewer=v;
   v.scene.globe.depthTestAgainstTerrain = true;
-  v.scene.screenSpaceCameraController.minimumZoomDistance = 30;
+  v.scene.screenSpaceCameraController.minimumZoomDistance = 20;
   /* 더블탭으로 개체를 추적하는 기본 동작을 끕니다 — 주행 모드에서 카메라를 빼앗아 갑니다 */
   v.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
   v.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
