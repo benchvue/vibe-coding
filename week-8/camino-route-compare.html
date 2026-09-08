@@ -158,6 +158,88 @@
   .panel.off{display:none}
   .toggle.l.off{left:10px} .toggle.r.off{right:10px}
 
+  /* ── DAY 0 · 주행 시험 카드 (통계 패널 맨 위) ── */
+  .dcard.d0{border:1.5px dashed var(--flecha);background:#FFFBEC}
+  .dcard.d0 .dh{background:#FBF1CC}
+  .dcard.d0 .dh b{color:#7A5A00}
+  .dcard.d0 .tag.test{background:var(--flecha);color:#3B2E00}
+  .d0file{display:block;border:1px dashed #D9C77A;border-radius:9px;padding:10px;
+    text-align:center;font-size:.76rem;color:#7A5A00;cursor:pointer;background:#fff}
+  .d0file:hover{border-color:var(--flecha);background:#FFF7DC}
+  .d0file input{display:none}
+  .d0row{display:flex;align-items:center;gap:6px;margin-top:8px}
+  .d0row .mini{flex:1;padding:8px 4px}
+  .d0row .mini.play{background:var(--blue);color:#fff;border-color:var(--blue)}
+  .d0row .mini.play:hover{background:var(--flecha);color:#3B2E00;border-color:var(--flecha)}
+  .d0row select{flex:0 0 74px;border:1px solid var(--line);border-radius:9px;padding:8px 6px;
+    background:#fff;font-size:.74rem;color:var(--ink)}
+  .d0slide{margin-top:8px}
+  .d0slide input{width:100%;accent-color:var(--flecha)}
+  .d0slide .barl b{color:var(--ink);font-variant-numeric:tabular-nums}
+  .d0note{font-size:.7rem;color:#8A7A4A;line-height:1.7;margin-top:6px}
+
+  /* ── BIN / JIN 선택 ── */
+  .who{display:flex;gap:6px;margin-bottom:8px}
+  .who button{flex:1;border:1px solid var(--line);background:var(--card);border-radius:9px;
+    padding:9px 6px;font-size:.78rem;font-weight:700;cursor:pointer;color:var(--soft)}
+  .who button.on{color:#fff;border-color:transparent}
+  .who button.bin.on{background:#1E5FB4} .who button.jin.on{background:#C92A2A}
+
+  /* ── 네비게이션 주행 모드 HUD ── */
+  body.navmode .panel, body.navmode .toggle, body.navmode .cesium-viewer-toolbar,
+  body.navmode .cesium-infoBox{display:none}
+  #hud{display:none;position:absolute;inset:0;z-index:40;pointer-events:none}
+  body.navmode #hud{display:block}
+  #hud > *{pointer-events:auto}
+  .hud-top{position:absolute;left:10px;right:10px;top:max(10px,env(safe-area-inset-top));
+    display:flex;align-items:stretch;gap:8px}
+  .hud-who{display:flex;border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(21,42,85,.18);
+    border:1px solid rgba(255,255,255,.7)}
+  .hud-who button{border:none;padding:0 15px;font-size:.86rem;font-weight:700;cursor:pointer;
+    background:rgba(255,255,255,.94);color:var(--soft);min-height:46px}
+  .hud-who button.on.bin{background:#1E5FB4;color:#fff}
+  .hud-who button.on.jin{background:#C92A2A;color:#fff}
+  .hud-info{flex:1;min-width:0;background:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.7);
+    border-radius:12px;padding:6px 12px;display:flex;flex-direction:column;justify-content:center;
+    box-shadow:0 2px 10px rgba(21,42,85,.18);backdrop-filter:blur(6px)}
+  .hud-info b{font-family:'Gowun Batang',serif;font-size:1.12rem;color:var(--blue);
+    font-variant-numeric:tabular-nums;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hud-info small{font-size:.68rem;color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hud-exit{border:1px solid rgba(255,255,255,.7);background:rgba(255,255,255,.94);color:var(--rioja);
+    border-radius:12px;padding:0 13px;font-size:.8rem;font-weight:700;cursor:pointer;
+    box-shadow:0 2px 10px rgba(21,42,85,.18)}
+  .hud-zoom{position:absolute;right:12px;top:50%;transform:translateY(-50%);
+    display:flex;flex-direction:column;gap:10px}
+  .hud-zoom button{width:56px;height:56px;border-radius:50%;border:1px solid rgba(255,255,255,.7);
+    background:rgba(255,255,255,.94);color:var(--blue);font-size:1.7rem;font-weight:700;cursor:pointer;
+    box-shadow:0 3px 12px rgba(21,42,85,.22);line-height:1;touch-action:manipulation;
+    -webkit-tap-highlight-color:transparent}
+  .hud-zoom button:active{background:var(--flecha);color:#3B2E00}
+  .hud-zoom button:disabled{opacity:.35}
+  .hud-zoom small{text-align:center;font-size:.66rem;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.6);
+    font-variant-numeric:tabular-nums}
+  .hud-bot{position:absolute;left:10px;right:10px;bottom:max(12px,env(safe-area-inset-bottom));
+    background:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.7);border-radius:14px;
+    padding:9px 12px 10px;box-shadow:0 2px 12px rgba(21,42,85,.18);backdrop-filter:blur(6px)}
+  .hud-bot.hide{display:none}
+  .hud-src{display:flex;gap:6px;margin-bottom:7px}
+  .hud-src button{flex:1;border:1px solid var(--line);background:#fff;border-radius:8px;
+    padding:6px;font-size:.72rem;font-weight:600;color:var(--soft);cursor:pointer}
+  .hud-src button.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+  .hud-play{display:flex;align-items:center;gap:8px}
+  .hud-play button{width:44px;height:40px;border-radius:10px;border:none;background:var(--blue);
+    color:#fff;font-size:1rem;cursor:pointer;flex:0 0 auto}
+  .hud-play input[type=range]{flex:1;accent-color:var(--flecha);min-width:0}
+  .hud-play select{flex:0 0 66px;border:1px solid var(--line);border-radius:8px;padding:8px 4px;
+    background:#fff;font-size:.74rem}
+  .hud-play b{flex:0 0 66px;text-align:right;font-size:.78rem;font-variant-numeric:tabular-nums;color:var(--ink)}
+  .hud-north{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:42px;height:42px;
+    border-radius:50%;background:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.7);
+    box-shadow:0 2px 8px rgba(21,42,85,.18);display:flex;align-items:center;justify-content:center;
+    font-size:.72rem;font-weight:700;color:var(--rioja);pointer-events:none}
+  .hud-north i{display:block;font-style:normal;transform-origin:50% 50%}
+  @media(prefers-reduced-motion:reduce){ .wtip{transition:none} }
+
   @media(max-width:900px){
     .panel{width:284px} .panel.right{width:266px}
     .toggle.l{left:294px} .toggle.r{right:276px}
@@ -217,6 +299,37 @@
   <div class="pb" id="ctrl"></div>
 </aside>
 
+<!-- 네비게이션 주행 모드 — 지도 위에만 뜨는 조작부 -->
+<div id="hud">
+  <div class="hud-top">
+    <div class="hud-who">
+      <button class="bin" data-who="bin">BIN</button>
+      <button class="jin" data-who="jin">JIN</button>
+    </div>
+    <div class="hud-info"><b id="hkm">—</b><small id="hsub">위치를 기다리는 중</small></div>
+    <button class="hud-exit" id="hexit">주행 끝</button>
+  </div>
+  <div class="hud-north"><i id="hnorth">N↑</i></div>
+  <div class="hud-zoom">
+    <button id="hzin" aria-label="확대">＋</button>
+    <small id="hzlv">600 m</small>
+    <button id="hzout" aria-label="축소">－</button>
+  </div>
+  <div class="hud-bot hide" id="hbot">
+    <div class="hud-src">
+      <button data-src="day0" id="hsrc0">DAY 0 시험 주행</button>
+      <button data-src="live" id="hsrcL">실시간 위치</button>
+    </div>
+    <div class="hud-play" id="hplay">
+      <button id="hpp">▶</button>
+      <input type="range" id="hsl" min="0" max="1000" value="0">
+      <b id="hpos">0.0 km</b>
+      <select id="hspd"><option value="1">1×</option><option value="5" selected>5×</option>
+        <option value="20">20×</option><option value="60">60×</option></select>
+    </div>
+  </div>
+</div>
+
 <script src="https://unpkg.com/cesium@1.119/Build/Cesium/Cesium.js"></script>
 <script>window.CESIUM_BASE_URL = "https://unpkg.com/cesium@1.119/Build/Cesium/";</script>
 <script src="camino-token.js" onerror="window.__noTokenFile=1"></script>
@@ -239,8 +352,15 @@ var C_WALK = "#1F6FD0", C_BIKE = "#E0670F", C_OFF = "#C92A2A", C_OFFW = "#0B4C9E
 var DAY_HUE = [null,8,32,52,72,100,128,152,null,176,200,224,268,300];
 
 var $ = function(id){ return document.getElementById(id); };
-var viewer=null, DATA={}, ENT={walk:[],bike:[],offW:[],offB:[],wpt:[],day:[],live:[]};
+var viewer=null, DATA={}, ENT={walk:[],bike:[],offW:[],offB:[],wpt:[],day:[],live:[],day0:[],nav:[]};
 var LIVE={}, IDX=null, liveTimer=null;
+/* 네비게이션 주행 모드 상태 */
+var ZOOM_M=[120,250,500,1000,2000,4000,8000];       /* 카메라 거리 단계 (m) */
+var NAV={on:false, who:"bin", src:"live", zi:2, timer:null,
+         hdg:null, last:null, pos:null, ents:null};
+/* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
+var D0={pts:[], cum:[], hasTime:false, name:"", total:0,
+        playing:false, speed:5, km:0, raf:null, tPrev:0, fixedKmh:15};
 var WHO={bin:{n:"BIN", c:"#1E5FB4"}, jin:{n:"JIN", c:"#C92A2A"}};
 /* 기존 DRIVE(토큰 읽기용)와 이름이 겹치지 않도록 따로 둡니다 */
 var LIVEDRV={apiKey:"AIzaSyDzahk0Yhz3faRfMhDS2vQzQ2oADYXhPRg",
@@ -342,6 +462,7 @@ function drawLive(){
   var msg=[];
   ["bin","jin"].forEach(function(w,i){
     var v=LIVE[w]; if(!v) return;
+    if(NAV.on && NAV.src==="live" && w===NAV.who) return;   /* 따라가는 사람은 주행 표지가 맡습니다 */
     var m=WHO[w], col=Cesium.Color.fromCssColorString(m.c);
     var lat, lon, sub;
     if(v.test && typeof v.lat==="number" && typeof v.lon==="number"){
@@ -356,7 +477,7 @@ function drawLive(){
       lat=p[0]; lon=p[1]; sub=v.km.toFixed(1)+" km";
     }else return;
     var base=v.test ? 0 : nearestEleAt(lat,lon)*OPT.exag;
-    var top=base+3400+i*900;
+    var top=base+(NAV.on ? Math.max(40, navRange()*0.25) : 3400+i*900);
     ENT.live.push(ds.add({
       name:m.n+" 주행 위치",
       position:Cesium.Cartesian3.fromDegrees(lon,lat,top),
@@ -387,6 +508,326 @@ function refreshLive(){
   return Promise.all([loadIndex().catch(function(){ return null; }), fetchLive()])
     .then(function(){ drawLive(); })
     .catch(function(e){ if(el) el.textContent="읽지 못했습니다 — "+(e.message||e); });
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   네비게이션 주행 모드
+   · 선택한 사람(BIN / JIN, 기본 BIN)의 현재 위치를 따라 카메라가 갑니다.
+   · 화면 위쪽이 항상 자전거 진행 방향입니다. 지도 회전은 막고 줌 + − 만 둡니다.
+   · 위치 출처 두 가지 — 실시간(live.json) · DAY 0 시험(가져온 GPX 재생)
+   ══════════════════════════════════════════════════════════════════════ */
+function bearing(a,b){
+  var r=Math.PI/180, la1=a.lat*r, la2=b.lat*r, dl=(b.lon-a.lon)*r;
+  var y=Math.sin(dl)*Math.cos(la2);
+  var x=Math.cos(la1)*Math.sin(la2)-Math.sin(la1)*Math.cos(la2)*Math.cos(dl);
+  return ((Math.atan2(y,x)/r)+360)%360;
+}
+function lerpAngle(a,b,t){ var d=((b-a+540)%360)-180; return (a+d*t+360)%360; }
+function offsetLL(lat,lon,hdgDeg,m){
+  var r=Math.PI/180;
+  return [lat + m*Math.cos(hdgDeg*r)/111320,
+          lon + m*Math.sin(hdgDeg*r)/(111320*Math.cos(lat*r))];
+}
+/* 노선 색인에서 누적 km 지점의 진행 방향 */
+function idxHeading(kmv){
+  var a=kmToPos(Math.max(0,kmv-0.05)), b=kmToPos(kmv+0.12);
+  if(!a||!b||(a[0]===b[0]&&a[1]===b[1])) return null;
+  return bearing({lat:a[0],lon:a[1]},{lat:b[0],lon:b[1]});
+}
+
+/* ── DAY 0 · GPX 가져오기 ── */
+function parseGpxTimed(txt){
+  var doc=new DOMParser().parseFromString(txt,"application/xml");
+  if(doc.querySelector("parsererror")) throw new Error("GPX 형식 오류");
+  var pts=[], nodes=doc.getElementsByTagName("trkpt");
+  for(var i=0;i<nodes.length;i++){
+    var n=nodes[i];
+    var la=parseFloat(n.getAttribute("lat")), lo=parseFloat(n.getAttribute("lon"));
+    if(isNaN(la)||isNaN(lo)) continue;
+    var e=n.getElementsByTagName("ele")[0], t=n.getElementsByTagName("time")[0];
+    var tm=t?Date.parse(t.textContent.trim()):NaN;
+    pts.push({lat:la, lon:lo, ele:e?(parseFloat(e.textContent)||0):0, t:isNaN(tm)?null:tm});
+  }
+  var nm=doc.querySelector("trk > name");
+  return {pts:pts, name:nm?nm.textContent.trim():""};
+}
+function loadDay0File(file){
+  if(!file) return;
+  var rd=new FileReader();
+  rd.onload=function(){
+    try{
+      var p=parseGpxTimed(rd.result);
+      if(p.pts.length<2) throw new Error("트랙 점이 2개 미만입니다");
+      setDay0(p.pts, p.name||file.name.replace(/\.gpx$/i,""));
+    }catch(e){ alert("GPX 를 읽지 못했습니다 — "+e.message); }
+  };
+  rd.readAsText(file);
+}
+function setDay0(pts,name){
+  var cum=[0];
+  for(var i=1;i<pts.length;i++) cum.push(cum[i-1]+hav(pts[i-1],pts[i])/1000);
+  var hasTime=pts.every(function(p){ return p.t!==null; });
+  for(var j=1;j<pts.length && hasTime;j++) if(pts[j].t<pts[j-1].t) hasTime=false;
+  D0.pts=pts; D0.cum=cum; D0.total=cum[cum.length-1]; D0.hasTime=hasTime;
+  D0.name=name; D0.km=0; D0.playing=false;
+  drawDay0();
+  NAV.src="day0"; NAV.hdg=null;
+  syncD0UI();
+  renderStats();
+  if(NAV.on) syncHud();
+  else flyPts(pts.filter(function(_,k){ return k%Math.max(1,Math.floor(pts.length/400))===0; }), 1.15, -45);
+  ensureLoop();
+}
+function d0State(kmv){
+  var c=D0.cum, n=c.length; if(n<2) return null;
+  kmv=Math.max(0,Math.min(D0.total,kmv));
+  var lo=0, hi=n-1;
+  while(hi-lo>1){ var m=(lo+hi)>>1; if(c[m]<=kmv) lo=m; else hi=m; }
+  var a=D0.pts[lo], b=D0.pts[hi], t=(kmv-c[lo])/((c[hi]-c[lo])||1);
+  /* 진행 방향은 앞뒤 몇 점을 함께 봐서 떨림을 줄입니다 */
+  var i0=Math.max(0,lo-2), i1=Math.min(n-1,hi+2);
+  var hd=bearing(D0.pts[i0],D0.pts[i1]);
+  return {lat:a.lat+(b.lat-a.lat)*t, lon:a.lon+(b.lon-a.lon)*t,
+          ele:a.ele+(b.ele-a.ele)*t, hdg:hd,
+          time:D0.hasTime ? a.t+(b.t-a.t)*t : null};
+}
+function d0KmAtTime(ms){
+  var p=D0.pts, n=p.length, lo=0, hi=n-1;
+  if(ms<=p[0].t) return 0;
+  if(ms>=p[hi].t) return D0.total;
+  while(hi-lo>1){ var m=(lo+hi)>>1; if(p[m].t<=ms) lo=m; else hi=m; }
+  var t=(ms-p[lo].t)/((p[hi].t-p[lo].t)||1);
+  return D0.cum[lo]+(D0.cum[hi]-D0.cum[lo])*t;
+}
+function d0Advance(now){
+  var dt=D0.tPrev ? (now-D0.tPrev) : 0; D0.tPrev=now;
+  if(dt<=0 || dt>2000) return;                   /* 탭 전환 등으로 튄 값은 버림 */
+  if(D0.hasTime){
+    var s=d0State(D0.km), t=(s&&s.time!==null)?s.time:D0.pts[0].t;
+    D0.km=d0KmAtTime(t + dt*D0.speed);
+  }else{
+    D0.km += dt*D0.speed*D0.fixedKmh/3600000;
+  }
+  if(D0.km>=D0.total){ D0.km=D0.total; d0Play(false); }
+}
+function d0Play(on){
+  D0.playing=!!on;
+  if(on){ D0.tPrev=0; if(D0.km>=D0.total) D0.km=0; ensureLoop(); }
+  syncD0UI();
+}
+function d0Seek(kmv){ D0.km=Math.max(0,Math.min(D0.total,+kmv||0)); D0.tPrev=0; syncD0UI(); ensureLoop(); }
+
+function drawDay0(){
+  var ds=viewer.entities;
+  ENT.day0.forEach(function(e){ ds.remove(e); }); ENT.day0=[];
+  if(!D0.pts.length) return;
+  var col=Cesium.Color.fromCssColorString("#F5B917");
+  ENT.day0.push(ds.add({ name:"DAY 0 시험 주행",
+    polyline:{ positions:toCart(D0.pts), width:6, clampToGround:false,
+      material:new Cesium.PolylineOutlineMaterialProperty({
+        color:col.withAlpha(.98), outlineColor:Cesium.Color.fromCssColorString("#3B2E00").withAlpha(.8),
+        outlineWidth:1.5 }),
+      depthFailMaterial:depthMat(col) } }));
+  var last=D0.pts[D0.pts.length-1], top=last.ele*OPT.exag+900;
+  ENT.day0.push(ds.add({ name:"DAY 0 끝",
+    position:Cesium.Cartesian3.fromDegrees(last.lon,last.lat,top),
+    polyline:{ positions:Cesium.Cartesian3.fromDegreesArrayHeights([last.lon,last.lat,0,last.lon,last.lat,top]),
+      width:2, material:col.withAlpha(.8) },
+    label:{ text:"DAY 0  "+D0.total.toFixed(1)+" km", font:"600 13px 'IBM Plex Sans KR', sans-serif",
+      fillColor:Cesium.Color.fromCssColorString("#3B2E00"), showBackground:true,
+      backgroundColor:col.withAlpha(.95), backgroundPadding:new Cesium.Cartesian2(9,6),
+      verticalOrigin:Cesium.VerticalOrigin.BOTTOM, pixelOffset:new Cesium.Cartesian2(0,-4),
+      disableDepthTestDistance:Number.POSITIVE_INFINITY } }));
+}
+
+/* ── 따라갈 사람의 현재 상태 ── {lat,lon,ele,hdg,km,sub} 또는 null */
+function riderState(){
+  var w=NAV.who, m=WHO[w];
+  if(NAV.src==="day0" && D0.pts.length){
+    var s=d0State(D0.km); if(!s) return null;
+    s.km=D0.km; s.sub="DAY 0 시험 · "+D0.name;
+    s.ele=s.ele*OPT.exag+OPT.lift; return s;
+  }
+  var v=LIVE[w]; if(!v) return null;
+  var out=null;
+  if(v.test && typeof v.lat==="number" && typeof v.lon==="number"){
+    out={lat:v.lat, lon:v.lon, hdg:null, km:(typeof v.km==="number")?v.km:null,
+         sub:"시험 중 · "+(v.zone==="am"?"아메리카":v.zone==="as"?"아시아":"유럽")+" · "+agoText(v.at)};
+    out.ele=OPT.lift;
+    /* 좌표만 있을 때는 직전 위치에서 움직인 방향을 진행 방향으로 봅니다 */
+    if(NAV.last && NAV.last.who===w && hav(NAV.last,out)>8) out.hdg=bearing(NAV.last,out);
+    if(!NAV.last || NAV.last.who!==w || hav(NAV.last,out)>8) NAV.last={who:w,lat:out.lat,lon:out.lon};
+  }else if(typeof v.km==="number"){
+    var p=kmToPos(v.km); if(!p) return null;
+    if(NAV.dispKm===null || NAV.dispKm===undefined || Math.abs(NAV.dispKm-v.km)>3) NAV.dispKm=v.km;
+    NAV.dispKm += (v.km-NAV.dispKm)*0.04;      /* 새 위치가 오면 미끄러지듯 이동 */
+    p=kmToPos(NAV.dispKm);
+    out={lat:p[0], lon:p[1], hdg:idxHeading(NAV.dispKm), km:v.km,
+         sub:m.n+" · "+agoText(v.at)};
+    out.ele=nearestEleAt(out.lat,out.lon)*OPT.exag+OPT.lift;
+  }
+  return out;
+}
+function groundAt(lat,lon,fallback){
+  try{
+    var h=viewer.scene.globe.getHeight(Cesium.Cartographic.fromDegrees(lon,lat));
+    if(typeof h==="number" && isFinite(h)) return Math.max(h*OPT.exag+OPT.lift, fallback||0);
+  }catch(e){}
+  return fallback||0;
+}
+
+/* ── 주행 표지 (세로선 + 점 + 이름표) — 위치는 CallbackProperty 로 매 프레임 갱신 ── */
+var NAVP={base:null, top:null, text:""};
+function navEnts(){
+  if(ENT.nav.length) return;
+  var ds=viewer.entities;
+  var colProp=new Cesium.CallbackProperty(function(){
+    return Cesium.Color.fromCssColorString(WHO[NAV.who].c); }, false);
+  ENT.nav.push(ds.add({ name:"주행 위치",
+    show:false,
+    position:new Cesium.CallbackProperty(function(){ return NAVP.top; }, false),
+    polyline:{ positions:new Cesium.CallbackProperty(function(){
+        return NAVP.base ? [NAVP.base, NAVP.top] : []; }, false),
+      width:4, material:new Cesium.ColorMaterialProperty(colProp) },
+    label:{ text:new Cesium.CallbackProperty(function(){ return NAVP.text; }, false),
+      font:"700 15px 'IBM Plex Sans KR', sans-serif",
+      fillColor:Cesium.Color.WHITE, showBackground:true,
+      backgroundColor:new Cesium.CallbackProperty(function(){
+        return Cesium.Color.fromCssColorString(WHO[NAV.who].c).withAlpha(.95); }, false),
+      backgroundPadding:new Cesium.Cartesian2(11,7),
+      verticalOrigin:Cesium.VerticalOrigin.BOTTOM, pixelOffset:new Cesium.Cartesian2(0,-6),
+      disableDepthTestDistance:Number.POSITIVE_INFINITY } }));
+  ENT.nav.push(ds.add({ show:false,
+    position:new Cesium.CallbackProperty(function(){ return NAVP.base; }, false),
+    point:{ pixelSize:16, color:colProp, outlineColor:Cesium.Color.WHITE, outlineWidth:3,
+      disableDepthTestDistance:Number.POSITIVE_INFINITY } }));
+}
+function navShow(on){ navEnts(); ENT.nav.forEach(function(e){ e.show=on; }); }
+
+/* ── 카메라 ── */
+function navRange(){ return ZOOM_M[NAV.zi]; }
+function navCamera(s){
+  var range=navRange(), hd=NAV.hdg;
+  /* 자전거를 화면 아래쪽에 두려고 조금 앞을 바라봅니다 */
+  var ahead=offsetLL(s.lat,s.lon,hd,range*0.28);
+  var gnd=groundAt(s.lat,s.lon,s.ele);
+  var target=Cesium.Cartesian3.fromDegrees(ahead[1],ahead[0],gnd);
+  var pitches=[-46,-62,-80], cam=viewer.camera;
+  for(var k=0;k<pitches.length;k++){
+    cam.lookAt(target, new Cesium.HeadingPitchRange(
+      Cesium.Math.toRadians(hd), Cesium.Math.toRadians(pitches[k]), range));
+    var cc=Cesium.Cartographic.fromCartesian(cam.positionWC);
+    var th=viewer.scene.globe.getHeight(cc);
+    if(typeof th!=="number" || cc.height > th+25) break;    /* 지형 아래로 안 들어가면 됨 */
+  }
+}
+function navTick(now){
+  if(!NAV.on && NAV.src!=="day0"){ navShow(false); return; }   /* 평소엔 실시간 표지는 drawLive 가 맡음 */
+  var s=riderState();
+  if(!s){ navShow(false); setHudText("—","위치를 기다리는 중"); return; }
+  if(s.hdg===null||s.hdg===undefined) s.hdg = (NAV.hdg===null?0:NAV.hdg);
+  NAV.hdg = NAV.hdg===null ? s.hdg : lerpAngle(NAV.hdg, s.hdg, 0.12);
+  var gnd=groundAt(s.lat,s.lon,s.ele);
+  var tall = NAV.on ? Math.max(35, navRange()*0.22) : 600;
+  NAVP.base=Cesium.Cartesian3.fromDegrees(s.lon,s.lat,gnd+2);
+  NAVP.top =Cesium.Cartesian3.fromDegrees(s.lon,s.lat,gnd+tall);
+  NAVP.text=WHO[NAV.who].n+(s.km!==null&&s.km!==undefined?"  "+s.km.toFixed(1)+" km":"");
+  navShow(true);
+  if(NAV.on){
+    navCamera(s);
+    setHudText((s.km!==null&&s.km!==undefined?s.km.toFixed(1)+" km":"— km")
+               +(NAV.src==="day0"&&D0.hasTime&&s.time?"  ·  "+fmtClock(s.time):""), s.sub);
+    var n=$("hnorth"); if(n) n.style.transform="rotate("+(-NAV.hdg)+"deg)";
+  }
+}
+function fmtClock(ms){ var d=new Date(ms); return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0"); }
+function setHudText(a,b){ var k=$("hkm"), s=$("hsub"); if(k) k.textContent=a; if(s) s.textContent=b; }
+
+/* 한 개의 rAF 루프 — 주행 모드거나 DAY 0 재생 중일 때만 돕니다 */
+var LOOP=null;
+function ensureLoop(){
+  if(LOOP) return;
+  var step=function(now){
+    if(D0.playing) d0Advance(now);
+    navTick(now);
+    if(D0.playing) syncD0UI(true);
+    if(NAV.on || D0.playing){ LOOP=requestAnimationFrame(step); }
+    else LOOP=null;
+  };
+  LOOP=requestAnimationFrame(step);
+}
+
+/* ── 주행 모드 켜고 끄기 ── */
+function setNav(on){
+  on=!!on; if(on===NAV.on) return;
+  NAV.on=on;
+  var ssc=viewer.scene.screenSpaceCameraController;
+  ["enableRotate","enableTranslate","enableZoom","enableTilt","enableLook"].forEach(function(k){ ssc[k]=!on; });
+  document.body.classList.toggle("navmode",on);
+  var c=$("cNav"); if(c) c.checked=on;
+  if(on){
+    NAV.hdg=null; NAV.dispKm=null; NAV.last=null;
+    if(!D0.pts.length) NAV.src="live";
+    else if(NAV.src!=="live") NAV.src="day0";
+    if(NAV.src==="live" && !OPT.live){ var cl=$("cLive"); if(cl){ cl.checked=true; cl.dispatchEvent(new Event("change")); } }
+    if(NAV.src==="day0" && !D0.playing) d0Play(true);
+    syncHud(); ensureLoop();
+  }else{
+    viewer.camera.lookAtTransform(Cesium.Matrix4.IDENTITY);
+    NAV.hdg=null;
+    if(!D0.pts.length) navShow(false);
+    drawLive();
+    syncD0UI();
+  }
+}
+function setWho(w){
+  if(!WHO[w]) return;
+  NAV.who=w; NAV.hdg=null; NAV.dispKm=null; NAV.last=null;
+  try{ localStorage.setItem("caminoNavWho",w); }catch(e){}
+  document.querySelectorAll("[data-who]").forEach(function(b){ b.classList.toggle("on", b.dataset.who===w); });
+  drawLive();
+  if(NAV.on||D0.pts.length) ensureLoop();
+}
+function setZoom(d){
+  NAV.zi=Math.max(0,Math.min(ZOOM_M.length-1,NAV.zi+d));
+  var l=$("hzlv"); if(l) l.textContent=navRange()>=1000?(navRange()/1000)+" km":navRange()+" m";
+  var zi=$("hzin"), zo=$("hzout");
+  if(zi) zi.disabled=NAV.zi===0; if(zo) zo.disabled=NAV.zi===ZOOM_M.length-1;
+}
+function syncHud(){
+  var has=D0.pts.length>0;
+  $("hbot").classList.toggle("hide",!has);
+  $("hsrc0").classList.toggle("on",NAV.src==="day0");
+  $("hsrcL").classList.toggle("on",NAV.src==="live");
+  $("hplay").style.display = NAV.src==="day0" ? "" : "none";
+  document.querySelectorAll("[data-who]").forEach(function(b){ b.classList.toggle("on", b.dataset.who===NAV.who); });
+  setZoom(0);
+  syncD0UI();
+}
+/* 통계 카드와 HUD 의 재생 조작부를 같은 값으로 맞춥니다 */
+function syncD0UI(light){
+  var pct=D0.total? Math.round(D0.km/D0.total*1000) : 0, kmt=D0.km.toFixed(1)+" km";
+  ["hsl","d0sl"].forEach(function(id){ var e=$(id); if(e && document.activeElement!==e) e.value=pct; });
+  ["hpos","d0pos"].forEach(function(id){ var e=$(id); if(e) e.textContent=kmt; });
+  ["hpp","d0pp"].forEach(function(id){ var e=$(id); if(e) e.textContent=D0.playing?"❚❚":"▶"; });
+  if(light) return;
+  ["hspd","d0spd"].forEach(function(id){ var e=$(id); if(e) e.value=String(D0.speed); });
+}
+function setupHud(){
+  document.querySelectorAll("#hud [data-who]").forEach(function(b){
+    b.addEventListener("click",function(){ setWho(b.dataset.who); }); });
+  on("hexit","click",function(){ setNav(false); });
+  on("hzin","click",function(){ setZoom(-1); });
+  on("hzout","click",function(){ setZoom(1); });
+  on("hsrc0","click",function(){ NAV.src="day0"; NAV.hdg=null; if(!D0.playing) d0Play(true); syncHud(); });
+  on("hsrcL","click",function(){ NAV.src="live"; NAV.hdg=null; NAV.dispKm=null;
+    if(!OPT.live){ var cl=$("cLive"); if(cl){ cl.checked=true; cl.dispatchEvent(new Event("change")); } }
+    syncHud(); });
+  on("hpp","click",function(){ d0Play(!D0.playing); });
+  on("hsl","input",function(){ d0Seek($("hsl").value/1000*D0.total); });
+  on("hspd","change",function(){ D0.speed=+$("hspd").value; syncD0UI(); });
+  try{ var w=localStorage.getItem("caminoNavWho"); if(w&&WHO[w]) setWho(w); }catch(e){}
+  setZoom(0);
 }
 
 /* ── 도우미 ── */
@@ -656,6 +1097,9 @@ function draw(){
       ENT.wpt.push(wpEnt);
     });
   });
+  drawDay0();
+  navEnts();
+  if(NAV.on || D0.pts.length) ensureLoop();
   applyShow();
 }
 function nearEle(pts,w){
@@ -783,6 +1227,8 @@ function renderStats(){
     +'열두 날 가운데 <b>'+nDiff+'일</b>만 실제로 다른 길을 갑니다 — '
     +'나머지는 도보 노선을 그대로 씁니다.</div>';
 
+  h+=day0Card();
+
   BIKE_DAYS.forEach(function(d){
     var D=DATA[d]||{};
     if(!D.bike){ h+=errCard(d, D.bikeErr||"자전거 파일 없음"); return; }
@@ -819,6 +1265,47 @@ function renderStats(){
   el.querySelectorAll("[data-day]").forEach(function(b){
     b.addEventListener("click",function(){ flyDay(+b.dataset.day); });
   });
+  bindDay0Card();
+}
+/* DAY 0 — 가져온 GPX 로 주행 모드를 시험하는 카드 */
+function day0Card(){
+  var h='<div class="dcard d0"><div class="dh"><b>DAY 0</b><span>주행 시험</span>'
+       +'<span class="tag test">시험</span></div><div class="db">';
+  if(!D0.pts.length){
+    h+='<label class="d0file">GPX 파일 가져오기<input type="file" id="d0file" accept=".gpx,application/gpx+xml"></label>'
+      +'<div class="d0note">폰으로 기록한 GPX 를 넣으면 그 궤적을 따라 주행 모드를 시험할 수 있습니다. '
+      +'시간이 들어 있으면 실제 속도로, 없으면 15 km/h 로 재생합니다.</div>';
+  }else{
+    var span="";
+    if(D0.hasTime){ var ms=D0.pts[D0.pts.length-1].t-D0.pts[0].t;
+      span=Math.floor(ms/3600000)+"시간 "+Math.round(ms%3600000/60000)+"분 · "+fmtClock(D0.pts[0].t)+" 출발"; }
+    h+='<div class="row2"><span>파일</span><b>'+esc(D0.name)+'</b></div>'
+      +'<div class="row2"><span>거리</span><b>'+D0.total.toFixed(1)+' km · '+D0.pts.length+'점</b></div>'
+      +'<div class="row2"><span>시간</span><b>'+(D0.hasTime?span:"없음 — 15 km/h 로 재생")+'</b></div>'
+      +'<div class="d0row"><button class="mini play" id="d0pp">▶</button>'
+      +'<select id="d0spd"><option value="1">1×</option><option value="5">5×</option>'
+      +'<option value="20">20×</option><option value="60">60×</option></select>'
+      +'<button class="mini" id="d0rw">처음으로</button></div>'
+      +'<div class="d0slide"><input type="range" id="d0sl" min="0" max="1000" value="0">'
+      +'<div class="barl"><span>0 km</span><b id="d0pos">0.0 km</b><span>'+D0.total.toFixed(1)+' km</span></div></div>'
+      +'<div class="d0row"><button class="mini play" id="d0nav">주행 모드로 보기</button>'
+      +'<button class="mini" id="d0fly">궤적 보기</button>'
+      +'<label class="mini d0file" style="flex:0 0 auto;padding:8px 10px">다른 파일'
+      +'<input type="file" id="d0file" accept=".gpx,application/gpx+xml"></label></div>';
+  }
+  return h+'</div></div>';
+}
+function bindDay0Card(){
+  on("d0file","change",function(e){ loadDay0File(e.target.files[0]); });
+  if(!D0.pts.length) return;
+  on("d0pp","click",function(){ d0Play(!D0.playing); });
+  on("d0rw","click",function(){ d0Play(false); d0Seek(0); });
+  on("d0sl","input",function(){ d0Seek($("d0sl").value/1000*D0.total); });
+  on("d0spd","change",function(){ D0.speed=+$("d0spd").value; syncD0UI(); });
+  on("d0nav","click",function(){ NAV.src="day0"; setNav(true); });
+  on("d0fly","click",function(){
+    flyPts(D0.pts.filter(function(_,k){ return k%Math.max(1,Math.floor(D0.pts.length/400))===0; }), 1.15, -45); });
+  syncD0UI();
 }
 function card(n,v,s,c){
   return '<div class="sc '+(c||"")+'"><small>'+n+'</small><b>'+v+'</b><i>'+(s||"")+'</i></div>';
@@ -842,8 +1329,13 @@ function renderCtrl(){
     +'</div>'
     +'<div class="grp"><h3>주행 위치</h3>'
     +chk("cLive","BIN · JIN 보기","1분마다 새로 읽습니다",OPT.live,"")
-    +'<div class="row2" style="margin-top:6px"><span id="livemsg">'
+    +'<div class="row2" style="margin-top:6px;margin-bottom:10px"><span id="livemsg">'
     +'켜면 두 사람의 위치를 표시합니다.</span></div>'
+    +'<div class="who"><button class="bin'+(NAV.who==="bin"?" on":"")+'" data-who="bin">BIN</button>'
+    +'<button class="jin'+(NAV.who==="jin"?" on":"")+'" data-who="jin">JIN</button></div>'
+    +chk("cNav","네비게이션 주행 모드","선택한 사람을 카메라가 따라갑니다 · 위쪽이 진행 방향",NAV.on,"")
+    +'<div class="legend">주행 모드에서는 지도 회전과 끌기가 막히고 <b>＋ −</b> 로 거리만 조절합니다. '
+    +'DAY 0 에 GPX 를 넣어 두면 실시간 위치 대신 그 궤적을 재생해 볼 수 있습니다.</div>'
     +'</div>'
 
     +'<div class="grp"><h3>지면에서 띄우기</h3>'
@@ -896,6 +1388,9 @@ function renderCtrl(){
   bind("cWpt",  function(v){ OPT.wpt=v;  applyShow(); });
   bind("cDay",  function(v){ OPT.dayColor=v; draw(); });
   bind("cXray", function(v){ OPT.xray=v; draw(); });
+  bind("cNav",function(v){ setNav(v); });
+  document.querySelectorAll("#ctrl [data-who]").forEach(function(b){
+    b.addEventListener("click",function(){ setWho(b.dataset.who); }); });
   bind("cLive",function(v){
     OPT.live=v;
     if(liveTimer){ clearInterval(liveTimer); liveTimer=null; }
@@ -959,6 +1454,7 @@ function boot(token){
   }catch(e){ gateErr("Cesium 을 시작하지 못했습니다: "+e.message); return; }
   viewer=v;
   v.scene.globe.depthTestAgainstTerrain = true;
+  v.scene.screenSpaceCameraController.minimumZoomDistance = 30;
   v.scene.skyAtmosphere.show = true;
   v.scene.fog.enabled = true;
 
@@ -981,6 +1477,7 @@ function boot(token){
     step("통계 패널", renderStats);
     step("설정 패널", renderCtrl);
     step("도움말 표시", setupTip);
+    step("주행 모드", function(){ setupHud(); navEnts(); });
     $("load").classList.add("hide");
     setTimeout(flyAll, 300);
   }).catch(function(e){
