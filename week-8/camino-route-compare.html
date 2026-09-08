@@ -359,7 +359,7 @@ var ZOOM_M=[120,250,500,1000,2000,4000,8000];       /* 카메라 거리 단계 (
 var NAV={on:false, who:"bin", src:"live", zi:2, timer:null,
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20260908-4";     /* DAY 0 카드에 표시 — 옛 판이 캐시돼 있는지 확인용 */
+var D0_VER="v20260908-5";     /* DAY 0 카드에 표시 — 옛 판이 캐시돼 있는지 확인용 */
 var D0={pts:[], cum:[], hasTime:false, name:"", total:0,
         playing:false, speed:5, km:0, raf:null, tPrev:0, fixedKmh:15};
 var WHO={bin:{n:"BIN", c:"#1E5FB4"}, jin:{n:"JIN", c:"#C92A2A"}};
@@ -868,6 +868,7 @@ function navTick(now){
     }
     setHudText((s.km!==null&&s.km!==undefined?s.km.toFixed(2)+" km":"— km"), sub);
     var n=$("hnorth"); if(n) n.style.transform="rotate("+(-NAV.hdg)+"deg)";
+    hudLiveLabel();
   }
 }
 function fmtClock(ms){ var d=new Date(ms); return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0"); }
@@ -932,7 +933,7 @@ function syncHud(){
   $("hbot").classList.toggle("hide",!has);
   $("hsrc0").classList.toggle("on",NAV.src==="day0");
   $("hsrcL").classList.toggle("on",NAV.src==="live");
-  var lv=LIVE[NAV.who]; $("hsrcL").textContent="실시간 위치"+(lv&&lv.at?" · "+agoText(lv.at):"");
+  hudLiveLabel();
   $("hplay").style.display = NAV.src==="day0" ? "" : "none";
   document.querySelectorAll("[data-who]").forEach(function(b){ b.classList.toggle("on", b.dataset.who===NAV.who); });
   setZoom(0);
@@ -946,6 +947,13 @@ function syncD0UI(light){
   ["hpp","d0pp"].forEach(function(id){ var e=$(id); if(e) e.textContent=D0.playing?"❚❚":"▶"; });
   if(light) return;
   ["hspd","d0spd"].forEach(function(id){ var e=$(id); if(e) e.value=String(D0.speed); });
+}
+/* 아래 띠 "실시간 위치 · N분 전" — 위 띠와 같은 값이 되도록 매초 새로 씁니다 */
+var _hudLbl="";
+function hudLiveLabel(){
+  var b=$("hsrcL"); if(!b) return;
+  var lv=LIVE[NAV.who], t="실시간 위치"+(lv&&lv.at?" · "+agoText(lv.at):"");
+  if(t!==_hudLbl){ _hudLbl=t; b.textContent=t; }
 }
 function setupHud(){
   document.querySelectorAll("#hud [data-who]").forEach(function(b){
