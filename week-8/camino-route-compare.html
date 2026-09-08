@@ -359,6 +359,7 @@ var ZOOM_M=[120,250,500,1000,2000,4000,8000];       /* 카메라 거리 단계 (
 var NAV={on:false, who:"bin", src:"live", zi:2, timer:null,
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
+var D0_VER="v20260908-1";     /* DAY 0 카드에 표시 — 옛 판이 캐시돼 있는지 확인용 */
 var D0={pts:[], cum:[], hasTime:false, name:"", total:0,
         playing:false, speed:5, km:0, raf:null, tPrev:0, fixedKmh:15};
 var WHO={bin:{n:"BIN", c:"#1E5FB4"}, jin:{n:"JIN", c:"#C92A2A"}};
@@ -558,14 +559,52 @@ function loadDay0File(file){
     if(!confirm("'"+file.name+"' 은 .gpx 이름이 아닙니다. 그래도 GPX 로 읽어 볼까요?")) return;
   }
   var rd=new FileReader();
-  rd.onload=function(){
-    try{
-      var p=parseGpxTimed(rd.result);
-      if(p.pts.length<2) throw new Error("트랙 점이 2개 미만입니다");
-      setDay0(p.pts, p.name||file.name.replace(/\.gpx$/i,""));
-    }catch(e){ alert("GPX 를 읽지 못했습니다 — "+e.message); }
-  };
+  rd.onload=function(){ loadDay0Text(rd.result, file.name); };
   rd.readAsText(file);
+}
+/* 파일 선택기를 못 쓸 때 — 공유 드라이브 폴더의 .gpx 목록에서 고릅니다 */
+function listDriveGpx(){
+  var box=$("d0list"); if(!box) return;
+  box.innerHTML='<div class="d0note">드라이브를 읽는 중…</div>';
+  driveList("'"+LIVEDRV.folder+"' in parents and trashed=false and name contains '.gpx'")
+    .then(function(files){
+      files=files.filter(function(f){ return /\.gpx$/i.test(f.name); })
+                 .sort(function(a,b){ return a.name<b.name?1:-1; });
+      if(!files.length){ box.innerHTML='<div class="d0note">폴더에 .gpx 파일이 없습니다. '
+        +'드라이브 앱에서 공유 폴더에 GPX 를 올린 뒤 다시 누르세요.</div>'; return; }
+      box.innerHTML=files.map(function(f){
+        return '<button class="gobtn" data-did="'+esc(f.id)+'" data-dname="'+esc(f.name)+'">'+esc(f.name)+'</button>';
+      }).join("");
+      box.querySelectorAll("[data-did]").forEach(function(b){
+        b.addEventListener("click",function(){
+          b.textContent="받는 중… "+b.dataset.dname;
+          driveText(b.dataset.did).then(function(t){ loadDay0Text(t, b.dataset.dname); })
+            .catch(function(e){ alert("드라이브에서 받지 못했습니다 — "+(e.message||e)); });
+        });
+      });
+    })
+    .catch(function(e){ box.innerHTML='<div class="d0note">드라이브를 읽지 못했습니다 — '+esc(e.message||e)+'</div>'; });
+}
+/* 사이트의 route/ 폴더 GPX — 시간은 없으니 15 km/h 로 재생됩니다 */
+function listRouteGpx(){
+  var box=$("d0list"); if(!box) return;
+  box.innerHTML='<div class="d0row" style="flex-wrap:wrap">'+BIKE_DAYS.map(function(d){
+    return '<button class="mini" data-rday="'+d+'" style="flex:0 0 calc(25% - 5px)">DAY '+d+'</button>'; }).join("")+'</div>';
+  box.querySelectorAll("[data-rday]").forEach(function(b){
+    b.addEventListener("click",function(){
+      var d=+b.dataset.rday, D=DATA[d];
+      if(D && D.bike && D.bike.length>1){
+        setDay0(D.bike.map(function(q){ return {lat:q.lat,lon:q.lon,ele:q.ele,t:null}; }), "노선 DAY "+d);
+      }else alert("DAY "+d+" 자전거 GPX 가 없습니다.");
+    });
+  });
+}
+function loadDay0Text(txt,name){
+  try{
+    var p=parseGpxTimed(txt);
+    if(p.pts.length<2) throw new Error("트랙 점이 2개 미만입니다");
+    setDay0(p.pts, p.name||String(name||"GPX").replace(/\.gpx$/i,""));
+  }catch(e){ alert("GPX 를 읽지 못했습니다 — "+e.message); }
 }
 function setDay0(pts,name){
   var cum=[0];
@@ -1276,9 +1315,14 @@ function day0Card(){
   var h='<div class="dcard d0"><div class="dh"><b>DAY 0</b><span>주행 시험</span>'
        +'<span class="tag test">시험</span></div><div class="db">';
   if(!D0.pts.length){
-    h+='<label class="d0file">GPX 파일 가져오기<input type="file" id="d0file"></label>'
+    h+='<label class="d0file">폰에서 GPX 파일 고르기<input type="file" id="d0file"></label>'
+      +'<div class="d0row"><button class="mini" id="d0drive">드라이브에서 고르기</button>'
+      +'<button class="mini" id="d0route">노선 GPX 로 시험</button></div>'
+      +'<div id="d0list"></div>'
       +'<div class="d0note">폰으로 기록한 GPX 를 넣으면 그 궤적을 따라 주행 모드를 시험할 수 있습니다. '
-      +'시간이 들어 있으면 실제 속도로, 없으면 15 km/h 로 재생합니다.</div>';
+      +'시간이 들어 있으면 실제 속도로, 없으면 15 km/h 로 재생합니다.<br>'
+      +'폰 선택기에서 파일이 회색이면 <b>드라이브에서 고르기</b>를 쓰세요 — 공유 폴더에 올린 .gpx 가 나옵니다.'
+      +'<br><span style="color:#B0A070">판 '+D0_VER+'</span></div>';
   }else{
     var span="";
     if(D0.hasTime){ var ms=D0.pts[D0.pts.length-1].t-D0.pts[0].t;
@@ -1301,6 +1345,8 @@ function day0Card(){
 }
 function bindDay0Card(){
   on("d0file","change",function(e){ loadDay0File(e.target.files[0]); });
+  on("d0drive","click", listDriveGpx);
+  on("d0route","click", listRouteGpx);
   if(!D0.pts.length) return;
   on("d0pp","click",function(){ d0Play(!D0.playing); });
   on("d0rw","click",function(){ d0Play(false); d0Seek(0); });
