@@ -553,6 +553,10 @@ function parseGpxTimed(txt){
 }
 function loadDay0File(file){
   if(!file) return;
+  /* accept 속성을 쓰지 않으므로 여기서 이름으로 거릅니다 — 폰에서는 형식이 비어 오기도 합니다 */
+  if(!/\.gpx$/i.test(file.name) && !/gpx|xml/i.test(file.type||"")){
+    if(!confirm("'"+file.name+"' 은 .gpx 이름이 아닙니다. 그래도 GPX 로 읽어 볼까요?")) return;
+  }
   var rd=new FileReader();
   rd.onload=function(){
     try{
@@ -1272,7 +1276,7 @@ function day0Card(){
   var h='<div class="dcard d0"><div class="dh"><b>DAY 0</b><span>주행 시험</span>'
        +'<span class="tag test">시험</span></div><div class="db">';
   if(!D0.pts.length){
-    h+='<label class="d0file">GPX 파일 가져오기<input type="file" id="d0file" accept=".gpx,application/gpx+xml"></label>'
+    h+='<label class="d0file">GPX 파일 가져오기<input type="file" id="d0file"></label>'
       +'<div class="d0note">폰으로 기록한 GPX 를 넣으면 그 궤적을 따라 주행 모드를 시험할 수 있습니다. '
       +'시간이 들어 있으면 실제 속도로, 없으면 15 km/h 로 재생합니다.</div>';
   }else{
@@ -1291,7 +1295,7 @@ function day0Card(){
       +'<div class="d0row"><button class="mini play" id="d0nav">주행 모드로 보기</button>'
       +'<button class="mini" id="d0fly">궤적 보기</button>'
       +'<label class="mini d0file" style="flex:0 0 auto;padding:8px 10px">다른 파일'
-      +'<input type="file" id="d0file" accept=".gpx,application/gpx+xml"></label></div>';
+      +'<input type="file" id="d0file"></label></div>';
   }
   return h+'</div></div>';
 }
