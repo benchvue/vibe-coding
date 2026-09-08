@@ -359,7 +359,7 @@ var ZOOM_M=[120,250,500,1000,2000,4000,8000];       /* 카메라 거리 단계 (
 var NAV={on:false, who:"bin", src:"live", zi:2, timer:null,
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20260908-3";     /* DAY 0 카드에 표시 — 옛 판이 캐시돼 있는지 확인용 */
+var D0_VER="v20260908-4";     /* DAY 0 카드에 표시 — 옛 판이 캐시돼 있는지 확인용 */
 var D0={pts:[], cum:[], hasTime:false, name:"", total:0,
         playing:false, speed:5, km:0, raf:null, tPrev:0, fixedKmh:15};
 var WHO={bin:{n:"BIN", c:"#1E5FB4"}, jin:{n:"JIN", c:"#C92A2A"}};
@@ -408,7 +408,7 @@ function nearestEleAt(lat,lon){
 /* 사이트와 같은 방식으로 부릅니다 — fields 값도 인코딩해야 400 이 안 납니다. */
 function driveList(q){
   return fetch("https://www.googleapis.com/drive/v3/files?q="+encodeURIComponent(q)
-      +"&fields="+encodeURIComponent("files(id,name,mimeType)")
+      +"&fields="+encodeURIComponent("files(id,name,mimeType,modifiedTime)")
       +"&pageSize=1000&key="+LIVEDRV.apiKey+"&_="+Date.now(), {cache:"no-store"})
     .then(function(r){ if(!r.ok) throw new Error("드라이브 "+r.status); return r.json(); })
     .then(function(d){ return d.files||[]; });
@@ -466,7 +466,10 @@ function fetchLiveDrive(){
       return driveList("'"+db.id+"' in parents and trashed=false");
     })
     .then(function(files){
-      var f=files.filter(function(x){ return x.name==="live.json"; })[0];
+      /* live.json 이 여러 개면(스크립트가 덮어쓰지 않고 새로 만들면 생김) 가장 최근 것 */
+      var fs=files.filter(function(x){ return x.name==="live.json"; })
+                  .sort(function(a,b){ return (b.modifiedTime||"")<(a.modifiedTime||"")?-1:1; });
+      var f=fs[0]; LIVEDIAG.dup=fs.length;
       if(!f){ LIVE={}; return LIVE; }
       return driveText(f.id).then(function(t){
         var j=null; try{ j=JSON.parse(t); }catch(e){}
@@ -474,6 +477,20 @@ function fetchLiveDrive(){
         return LIVE;
       });
     });
+}
+/* 마지막으로 받은 위치(DAY 0 궤적과 상관없이)로 카메라를 보냅니다 */
+function liveLatLon(w){
+  var v=LIVE[w]; if(!v) return null;
+  if(typeof v.lat==="number" && typeof v.lon==="number") return [v.lat,v.lon];
+  if(typeof v.km==="number"){ var p=kmToPos(v.km); if(p) return p; }
+  return null;
+}
+function flyToLive(w){
+  var p=liveLatLon(w||NAV.who);
+  if(!p){ alert(WHO[w||NAV.who].n+" 위치가 아직 없습니다."); return; }
+  if(NAV.on){ NAV.src="live"; NAV.hdg=null; NAV.dispKm=null; syncHud(); return; }
+  viewer.camera.flyTo({ destination:Cesium.Cartesian3.fromDegrees(p[1],p[0],2500),
+    orientation:{ heading:0, pitch:Cesium.Math.toRadians(-55), roll:0 }, duration:1.6 });
 }
 function agoText(at){
   var t=new Date(at).getTime();
@@ -529,14 +546,17 @@ function drawLive(){
     msg.push(m.n+" "+sub+" · "+agoText(v.at)+(v.at?" ("+fmtClock(new Date(v.at).getTime())+")":""));
   });
   var el=document.getElementById("livemsg");
-  var diag=(LIVE._src==="exec"?"스크립트 직독":"Drive")+(LIVEDIAG.read?" · 읽음 "+fmtClock(LIVEDIAG.read):"")
+  var diag=(LIVE._src==="exec"?"스크립트 직독":"Drive"+(LIVEDIAG.dup>1?" (live.json "+LIVEDIAG.dup+"개!)":""))
+          +(LIVEDIAG.read?" · 읽음 "+fmtClock(LIVEDIAG.read):"")
           +(LIVEDIAG.err?" · "+LIVEDIAG.err:"");
   var raw=["bin","jin"].map(function(w){ var v=LIVE[w]; return v&&v.at ? w+" at="+String(v.at).replace(/^\d{4}-\d{2}-\d{2}T?/,"").slice(0,8) : ""; })
              .filter(Boolean).join(" · ");
   if(el) el.innerHTML = (msg.length ? esc(msg.join("   ·   ")) : "아직 들어온 위치가 없습니다.")
     +'<br><span style="color:#8A7A4A">'+esc(diag)+(raw?"<br>"+esc(raw):"")+'</span>'
-    +' <button class="mini" id="liveNow" style="padding:3px 8px;font-size:.68rem;margin-left:4px">지금 읽기</button>';
+    +' <button class="mini" id="liveNow" style="padding:3px 8px;font-size:.68rem;margin-left:4px">지금 읽기</button>'
+    +' <button class="mini" id="liveGo" style="padding:3px 8px;font-size:.68rem">수신 위치로</button>';
   on("liveNow","click",function(){ refreshLive(); });
+  on("liveGo","click",function(){ flyToLive(NAV.who); });
 }
 function refreshLive(){
   var el=document.getElementById("livemsg");
@@ -912,6 +932,7 @@ function syncHud(){
   $("hbot").classList.toggle("hide",!has);
   $("hsrc0").classList.toggle("on",NAV.src==="day0");
   $("hsrcL").classList.toggle("on",NAV.src==="live");
+  var lv=LIVE[NAV.who]; $("hsrcL").textContent="실시간 위치"+(lv&&lv.at?" · "+agoText(lv.at):"");
   $("hplay").style.display = NAV.src==="day0" ? "" : "none";
   document.querySelectorAll("[data-who]").forEach(function(b){ b.classList.toggle("on", b.dataset.who===NAV.who); });
   setZoom(0);

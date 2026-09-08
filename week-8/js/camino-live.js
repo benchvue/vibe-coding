@@ -269,10 +269,28 @@ window.CAMINO_LIVE = (function(){
   "use strict";
   var data={riders:{}}, subs=[], timer=null, POLL=60000, STALE=45*60*1000;
 
+  /* 앱스 스크립트에서 바로 읽으면 Drive·프록시 캐시를 거치지 않습니다. 비우면 Drive 만 읽습니다. */
+  var EXEC="https://script.google.com/macros/s/AKfycbz_hOt0SGogE6jSKgqlFxPaLEGUJb-_3_f11m9rpOJNAQzk0Bu6GqFfSa2fVxjkF_Aoyw/exec";
+  var KEY="camino2027-bin-jin-x7k2m9";
+  function fetchExec(){
+    return fetch(EXEC+"?k="+encodeURIComponent(KEY)+"&_="+Date.now(),{cache:"no-store",redirect:"follow"})
+      .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function(j){
+        var riders=j.riders || ((j.bin||j.jin)?j:null);
+        if(!riders) throw new Error("shape");
+        data={riders:riders}; return data;
+      });
+  }
   function fetchOnce(){
+    if(EXEC) return fetchExec().catch(function(){ return fetchDrive(); });
+    return fetchDrive();
+  }
+  function fetchDrive(){
     if(!window.CAMINO_DRIVE) return Promise.resolve(data);
     return window.CAMINO_DRIVE.files().then(function(files){
-      var f=files.filter(function(x){ return x.name==="live.json"; })[0];
+      /* live.json 이 여러 개면 가장 최근 것 — 스크립트가 덮어쓰지 않고 새로 만들면 생깁니다 */
+      var f=files.filter(function(x){ return x.name==="live.json"; })
+                 .sort(function(a,b){ return (b.modifiedTime||"")<(a.modifiedTime||"")?-1:1; })[0];
       if(!f) return data;
       return window.CAMINO_DRIVE.text(f.id).then(function(t){
         var j=null; try{ j=JSON.parse(t); }catch(e){}
