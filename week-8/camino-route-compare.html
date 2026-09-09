@@ -205,7 +205,8 @@
     box-shadow:0 2px 10px rgba(21,42,85,.18);backdrop-filter:blur(6px)}
   .hud-info b{font-family:'Gowun Batang',serif;font-size:1.12rem;color:var(--blue);
     font-variant-numeric:tabular-nums;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .hud-info small{font-size:.7rem;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hud-info small{font-size:.66rem;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.25;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   .hud-exit{border:1px solid rgba(255,255,255,.7);background:rgba(255,255,255,.94);color:var(--rioja);
     border-radius:12px;padding:0 13px;font-size:.8rem;font-weight:700;cursor:pointer;
     box-shadow:0 2px 10px rgba(21,42,85,.18)}
@@ -410,7 +411,7 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:5000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"server",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20260909-12";
+var D0_VER="v20260909-13";
 try{ var _pm=localStorage.getItem("caminoPosMode"); if(_pm==="gps"&&GPS_ENABLED) NAV.posMode="gps"; }catch(e){}
 try{ var _m2=localStorage.getItem("caminoMap2d"); if(_m2==="0") OPT_MAP2D_INIT=false; }catch(e){}
 var OPT_BASE_INIT="map";
@@ -871,7 +872,7 @@ function liveHistPush(){
   });
 }
 /* 예측 결과 {mode:"km"|"d0"|"xy", km|lat/lon, spd(km/h), ahead(km), last:{...}} — 못 하면 null */
-var PRED_MAX_MIN=8, PRED_MIN_KMH=0.7, PRED_MAX_KMH=45;
+var PRED_MAX_MIN=20, PRED_MIN_KMH=0.7, PRED_MAX_KMH=45;
 function predict(w){
   var h=LIVEHIST[w]; if(!h.length) return null;
   var b=h[h.length-1], a=h.length>1?h[h.length-2]:null, now=Date.now();
@@ -901,9 +902,9 @@ function predict(w){
 function trailBetween(mode,k0,k1){
   var pts=[], n=Math.max(2,Math.ceil(Math.abs(k1-k0)/0.04));
   for(var i=0;i<=n;i++){ var k=k0+(k1-k0)*i/n, p;
-    if(mode==="km"){ p=kmToPos(k); if(p) pts.push(p[1],p[0]); }
-    else { var st=d0State(k); if(st) pts.push(st.lon,st.lat); } }
-  return pts.length>=4 ? Cesium.Cartesian3.fromDegreesArray(pts) : [];
+    if(mode==="km"){ p=kmToPos(k); if(p) pts.push(p[1],p[0], nearestEleAt(p[0],p[1])*OPT.exag+OPT.lift+3); }
+    else { var st=d0State(k); if(st) pts.push(st.lon,st.lat, st.ele*OPT.exag+OPT.lift+3); } }
+  return pts.length>=6 ? Cesium.Cartesian3.fromDegreesArrayHeights(pts) : [];
 }
 
 /* ── 따라갈 사람의 현재 상태 ── {lat,lon,ele,hdg,km,sub} 또는 null */
@@ -974,7 +975,8 @@ function navEnts(){
       backgroundColor:new Cesium.CallbackProperty(function(){
         return Cesium.Color.fromCssColorString(WHO[NAV.who].c).withAlpha(.95); }, false),
       backgroundPadding:new Cesium.Cartesian2(11,7),
-      verticalOrigin:Cesium.VerticalOrigin.BOTTOM, pixelOffset:new Cesium.Cartesian2(0,-6),
+      verticalOrigin:new Cesium.CallbackProperty(function(){ return OPT.map2d?Cesium.VerticalOrigin.TOP:Cesium.VerticalOrigin.BOTTOM; },false),
+      pixelOffset:new Cesium.CallbackProperty(function(){ return OPT.map2d?new Cesium.Cartesian2(0,30):new Cesium.Cartesian2(0,-6); },false),
       disableDepthTestDistance:Number.POSITIVE_INFINITY } }));
   ENT.nav.push(ds.add({ show:false,
     position:new Cesium.CallbackProperty(function(){ return NAVP.base; }, false),
@@ -991,20 +993,23 @@ function navEnts(){
 }
 function navPredEnts(){
   var ds=viewer.entities;
+  var V=Cesium.Color.fromCssColorString("#7C3AED");
   ENT.nav.push(ds.add({ show:false, name:"수신 위치 → 추정 위치",
     polyline:{ positions:new Cesium.CallbackProperty(function(){ return NAVP.trail||[]; }, false),
-      width:9, clampToGround:true, material:Cesium.Color.fromCssColorString("#7C3AED").withAlpha(.85) } }));
+      width:11, material:new Cesium.PolylineOutlineMaterialProperty({ color:V.withAlpha(.9), outlineColor:Cesium.Color.WHITE, outlineWidth:2 }),
+      depthFailMaterial:V.withAlpha(.6) } }));
   ENT.nav.push(ds.add({ show:false, name:"마지막 수신 위치",
     polyline:{ positions:new Cesium.CallbackProperty(function(){ return NAVP.pastRing||[]; }, false),
-      width:3, clampToGround:true,
-      material:new Cesium.PolylineDashMaterialProperty({ color:Cesium.Color.fromCssColorString("#7C3AED"), dashLength:12 }) } }));
+      width:4, material:new Cesium.PolylineDashMaterialProperty({ color:V, gapColor:Cesium.Color.WHITE.withAlpha(.6), dashLength:14 }),
+      depthFailMaterial:V.withAlpha(.6) } }));
 }
 var WPX_R=300;   /* 알림 반경 (m) */
-function ringAround(lat,lon,rm){
+function ringAround(lat,lon,rm,h){
   var out=[], r=Math.PI/180, cl=Math.cos(lat*r);
   for(var i=0;i<=48;i++){ var a=i/48*2*Math.PI;
-    out.push(lon+rm*Math.sin(a)/(111320*cl), lat+rm*Math.cos(a)/111320); }
-  return Cesium.Cartesian3.fromDegreesArray(out);
+    out.push(lon+rm*Math.sin(a)/(111320*cl), lat+rm*Math.cos(a)/111320);
+    if(h!==undefined) out.push(h); }
+  return h!==undefined ? Cesium.Cartesian3.fromDegreesArrayHeights(out) : Cesium.Cartesian3.fromDegreesArray(out);
 }
 function navShow(on){ navEnts(); ENT.nav.forEach(function(e,i){ e.show = on && (i<2 || NAV.on); }); }
 /* NAV.src 나 사람이 바뀌면 예측 흔적을 지웁니다 */
@@ -1044,7 +1049,9 @@ function navTick(now){
   /* 예측 중이면 마지막 수신 자리(점선 원)와 덧칠 노선 */
   if(NAV.on && s.last && s.pred && s.pred.ahead>0.005){
     NAVP.trail=s.trail||[];
-    if(!NAVP.pastAt || hav(NAVP.pastAt,s.last)>2){ NAVP.pastRing=ringAround(s.last.lat,s.last.lon,Math.max(8,navRange()*0.03)); NAVP.pastAt=s.last; }
+    if(!NAVP.pastAt || hav(NAVP.pastAt,s.last)>2 || NAVP.pastR!==navRange()){
+      var lg=groundAt(s.last.lat,s.last.lon,s.ele);
+      NAVP.pastRing=ringAround(s.last.lat,s.last.lon,Math.max(14,navRange()*0.06), lg+3); NAVP.pastAt=s.last; NAVP.pastR=navRange(); }
   }else{ NAVP.trail=[]; NAVP.pastRing=[]; NAVP.pastAt=null; }
   NAVP.text=WHO[NAV.who].n+(s.km!==null&&s.km!==undefined?"  "+s.km.toFixed(1)+" km":"");
   navShow(true);
