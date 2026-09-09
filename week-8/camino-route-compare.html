@@ -411,7 +411,7 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:5000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"server",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20260909-14";
+var D0_VER="v20260909-15";
 try{ var _pm=localStorage.getItem("caminoPosMode"); if(_pm==="gps"&&GPS_ENABLED) NAV.posMode="gps"; }catch(e){}
 try{ var _m2=localStorage.getItem("caminoMap2d"); if(_m2==="0") OPT_MAP2D_INIT=false; }catch(e){}
 var OPT_BASE_INIT="map";
@@ -1260,8 +1260,9 @@ function projectOn(pts,cum,lat,lon,prefKm){
   cands.sort(function(a,b){ return a.km-b.km; });
   var groups=[]; cands.forEach(function(c){ var g=groups[groups.length-1];
     if(g && c.km-g.km<1.0){ if(c.off<g.off){ g.km=c.km; g.off=c.off; g.side=c.side; } } else groups.push({km:c.km,off:c.off,side:c.side}); });
-  /* 가장 가까운 후보의 3배 안에 드는 것만 후보로 */
-  var lim=Math.max(30, Math.sqrt(best)*3);
+  /* 가장 가까운 후보의 3배 안, 최소 150 m 까지는 후보로 둡니다 — 왕복 궤적의 출발점이
+     집에서 100 m 쯤 떨어져 있어도 "출발" 로 잡히게 */
+  var lim=Math.max(150, Math.sqrt(best)*3);
   var ok=groups.filter(function(g){ return g.off<=lim; });
   if(!ok.length) ok=groups;
   if(typeof prefKm==="number") ok.sort(function(a,b){ return Math.abs(a.km-prefKm)-Math.abs(b.km-prefKm); });
