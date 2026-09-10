@@ -414,7 +414,7 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:5000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"server",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20260910-17";
+var D0_VER="v20260910-18";
 try{ var _pm=localStorage.getItem("caminoPosMode"); if(_pm==="gps"&&GPS_ENABLED) NAV.posMode="gps"; }catch(e){}
 try{ var _m2=localStorage.getItem("caminoMap2d"); if(_m2==="0") OPT_MAP2D_INIT=false; }catch(e){}
 var OPT_BASE_INIT="map";
@@ -893,7 +893,7 @@ function plogStart(){
   if(PLOG.s) plogEnd();
   PLOG.s={ id:new Date().toISOString().replace(/[:.]/g,"-").slice(0,19), ver:D0_VER, who:NAV.who, vehicle:VEHICLE,
     track:D0.pts.length?D0.name:"route-index", trackKm:D0.pts.length?+D0.total.toFixed(3):null,
-    params:{maxMin:PRED_MAX_MIN, minKmh:PRED_MIN_KMH, maxKmh:PRED_MAX_KMH},
+    params:{algo:PRED_ALGO, wVel:PRED_W_VEL, stopF:PRED_STOP_F, maxMin:PRED_MAX_MIN, minKmh:PRED_MIN_KMH, maxKmh:PRED_MAX_KMH},
     start:new Date().toISOString(), end:null, fixes:[], sumErrKm:0, distKm:0, firstKm:null, lastKm:null, done:false, note:"" };
 }
 function plogOnFix(w, f, h){
@@ -950,9 +950,14 @@ function plogDownload(){
   setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },2000);
 }
 /* 예측 결과 {mode:"km"|"d0"|"xy", km|lat/lon, spd(km/h), ahead(km), last:{...}} — 못 하면 null */
-var PRED_MAX_MIN=20, PRED_MIN_KMH=0.7, PRED_MAX_KMH=45;
-var VEHICLE="bike";  /* bike | car — 자동차면 속도 상한을 올립니다 */
-function setVehicle(v){ VEHICLE = v==="car"?"car":"bike"; PRED_MAX_KMH = VEHICLE==="car"?140:45;
+var PRED_MAX_MIN=20, PRED_MIN_KMH=0.7, PRED_MAX_KMH=160;
+/* 알고리즘 v2 (2026-09-10, 자동차 왕복 2회 로그로 맞춤)
+   v1 은 두 수신의 구간 평균 속도만 썼고 자전거 상한 45 를 넘으면 0 으로 봐서 오차 80~97 %.
+   v2 는 OwnTracks 가 보낸 순간 속도(vel)를 0.9, 구간 평균을 0.1 로 섞고,
+   멈춰 있으면(vel<3) 곧 출발할 것으로 보고 구간 평균의 0.7 을 씁니다. 같은 로그에서 28 % · 19 %. */
+var PRED_ALGO="v2-vel0.9-stop0.7", PRED_W_VEL=0.9, PRED_STOP_F=0.7;
+var VEHICLE="bike";  /* bike | car — 로그에 남기는 용도. 속도 상한은 탈것과 무관하게 160 */
+function setVehicle(v){ VEHICLE = v==="car"?"car":"bike";
   try{ localStorage.setItem("caminoVehicle",VEHICLE); }catch(e){}
   document.querySelectorAll("[data-veh]").forEach(function(b){ b.classList.toggle("on", b.dataset.veh===VEHICLE); }); }
 try{ setVehicle(localStorage.getItem("caminoVehicle")||"bike"); }catch(e){}
@@ -967,15 +972,19 @@ function predict(w, atMs){
   var dtH=Math.min(now-b.t, PRED_MAX_MIN*60000)/3600000;          /* 너무 오래되면 그 자리에 멈춤 */
   var mode = (!b.test && b.km!==null) ? "km" : (b.d0km!==undefined ? "d0" : (typeof b.lat==="number" ? "xy" : null));
   if(!mode) return null;
-  var spd=null, hdg=null;
+  var avg=null, hdg=null;
   if(a && b.t-a.t>15000 && b.t-a.t<15*60000){
     var gapH=(b.t-a.t)/3600000;
-    if(mode==="km" && a.km!==null) spd=(b.km-a.km)/gapH;
-    else if(mode==="d0" && a.d0km!==undefined) spd=(b.d0km-a.d0km)/gapH;
-    else if(mode==="xy" && typeof a.lat==="number"){ spd=hav(a,b)/1000/gapH; hdg=bearing(a,b); }
+    if(mode==="km" && a.km!==null) avg=(b.km-a.km)/gapH;
+    else if(mode==="d0" && a.d0km!==undefined && a.d0km!==null) avg=(b.d0km-a.d0km)/gapH;
+    else if(mode==="xy" && typeof a.lat==="number"){ avg=hav(a,b)/1000/gapH; hdg=bearing(a,b); }
+    if(avg!==null) avg=Math.max(0,Math.min(PRED_MAX_KMH,avg));
   }
-  if(spd===null && b.vel!==null) spd=b.vel;        /* OwnTracks 가 준 속도(km/h) */
-  if(spd===null || spd<PRED_MIN_KMH || spd>PRED_MAX_KMH || (mode==="xy"&&hdg===null)) spd=0;
+  var vel=(b.vel!==null&&b.vel!==undefined)?Math.max(0,Math.min(PRED_MAX_KMH,b.vel)):null;
+  var spd;
+  if(vel!==null && avg!==null){ spd=PRED_W_VEL*vel+(1-PRED_W_VEL)*avg; if(vel<3) spd=Math.max(spd, PRED_STOP_F*avg); }
+  else spd = vel!==null ? vel : (avg!==null ? avg : 0);
+  if(spd<PRED_MIN_KMH || (mode==="xy"&&hdg===null)) spd=0;
   var ahead=spd*dtH, out={mode:mode, spd:spd, ahead:ahead, last:b, hdg:hdg, stale:(now-b.t)>PRED_MAX_MIN*60000};
   if(mode==="km"){ out.km=b.km+ahead; }
   else if(mode==="d0"){ out.km=Math.min(D0.total,b.d0km+ahead); }
