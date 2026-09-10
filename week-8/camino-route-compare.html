@@ -228,6 +228,8 @@
   .hud-src button{flex:1;border:1px solid var(--line);background:#fff;border-radius:8px;
     padding:6px;font-size:.72rem;font-weight:600;color:var(--soft);cursor:pointer}
   .hud-src button.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+  .hud-stat{font-size:.72rem;color:var(--ink);font-variant-numeric:tabular-nums;text-align:center;padding:2px 0 6px;min-height:1em}
+  .hud-stat:empty{display:none}
   .hud-play{display:flex;align-items:center;gap:8px}
   .hud-play button{width:44px;height:40px;border-radius:10px;border:none;background:var(--blue);
     color:#fff;font-size:1rem;cursor:pointer;flex:0 0 auto}
@@ -369,6 +371,7 @@
       <button data-src="live" id="hsrcL">실시간 위치</button>
       <button data-src="gps" id="hsrcG">폰 GPS</button>
     </div>
+    <div class="hud-stat" id="hstat"></div>
     <div class="hud-play" id="hplay">
       <button id="hpp">▶</button>
       <input type="range" id="hsl" min="0" max="1000" value="0">
@@ -411,7 +414,7 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:5000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"server",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20260909-16";
+var D0_VER="v20260910-17";
 try{ var _pm=localStorage.getItem("caminoPosMode"); if(_pm==="gps"&&GPS_ENABLED) NAV.posMode="gps"; }catch(e){}
 try{ var _m2=localStorage.getItem("caminoMap2d"); if(_m2==="0") OPT_MAP2D_INIT=false; }catch(e){}
 var OPT_BASE_INIT="map";
@@ -873,14 +876,89 @@ function liveHistPush(){
     if(f.test && typeof f.lat==="number" && D0.pts.length){
       var prev=h.length?h[h.length-1]:null, pk=(prev&&prev.d0km!==undefined&&prev.d0km!==null)?prev.d0km:undefined;
       var pr=projectOn(D0.pts,D0.cum,f.lat,f.lon,pk); if(pr&&pr.off<=400){ f.d0km=pr.km; f.d0off=pr.off; } }
+    /* 예측 로그 — 이 수신이 오기 직전, 수신 시각 기준으로 예측하던 자리와 비교 */
+    if(PLOG.s && w===NAV.who && NAV.on && NAV.src==="live") plogOnFix(w, f, h);
     h.push(f); if(h.length>20) h.shift();
   });
 }
+
+/* ══════════ 예측 오차 로그 ══════════
+   오차 = |예측 km − 수신으로 보정된 km| 를 수신마다 더한 것.  오차율 = 누적 오차 / 주행 거리 × 100.
+   로그(JSON)와 GPX 를 함께 보내면 알고리즘을 다시 돌려 볼 수 있게 원 자료(t, lat, lon, vel)도 남깁니다. */
+var PLOG={s:null, all:[]};
+var PLOG_KEY="caminoPredLog";
+function plogLoad(){ try{ PLOG.all=JSON.parse(localStorage.getItem(PLOG_KEY)||"[]"); }catch(e){ PLOG.all=[]; } }
+function plogSave(){ try{ localStorage.setItem(PLOG_KEY, JSON.stringify(PLOG.all)); }catch(e){ console.warn("로그 저장 실패",e); } }
+function plogStart(){
+  if(PLOG.s) plogEnd();
+  PLOG.s={ id:new Date().toISOString().replace(/[:.]/g,"-").slice(0,19), ver:D0_VER, who:NAV.who, vehicle:VEHICLE,
+    track:D0.pts.length?D0.name:"route-index", trackKm:D0.pts.length?+D0.total.toFixed(3):null,
+    params:{maxMin:PRED_MAX_MIN, minKmh:PRED_MIN_KMH, maxKmh:PRED_MAX_KMH},
+    start:new Date().toISOString(), end:null, fixes:[], sumErrKm:0, distKm:0, firstKm:null, lastKm:null, done:false, note:"" };
+}
+function plogOnFix(w, f, h){
+  var S=PLOG.s, prev=h.length?h[h.length-1]:null;
+  var fixKm = f.d0km!==undefined&&f.d0km!==null ? f.d0km : (!f.test&&f.km!==null ? f.km : null);
+  var pr = prev ? predict(w, f.t) : null;          /* 수신 시각에 예측이 가리키던 자리 */
+  var e={ i:S.fixes.length, t:new Date(f.t).toISOString(), recv:new Date().toISOString(),
+    gapS: prev ? Math.round((f.t-prev.t)/1000) : null,
+    lat:f.lat, lon:f.lon, vel:f.vel, off:(f.d0off!==undefined?Math.round(f.d0off):null),
+    fixKm: fixKm!==null?+fixKm.toFixed(4):null,
+    predKm: (pr&&pr.km!==undefined)?+pr.km.toFixed(4):null,
+    predSpd: pr?+pr.spd.toFixed(2):null, predAhead: pr?+(pr.ahead*1000).toFixed(0):null, mode: pr?pr.mode:null,
+    errM:null };
+  if(e.fixKm!==null && e.predKm!==null){ e.errM=Math.round(Math.abs(e.fixKm-e.predKm)*1000); S.sumErrKm+=Math.abs(e.fixKm-e.predKm); }
+  if(fixKm!==null){ if(S.firstKm===null) S.firstKm=fixKm; S.lastKm=fixKm; S.distKm=Math.max(0,fixKm-S.firstKm); }
+  S.fixes.push(e);
+  if(S.trackKm && fixKm!==null && fixKm>=S.trackKm*0.99 && !S.done){ S.done=true; plogSummaryToast(); }
+  plogStat();
+}
+function plogErrPct(S){ S=S||PLOG.s; if(!S||S.distKm<0.05) return null; return S.sumErrKm/S.distKm*100; }
+function sig4(x){ return x===null||x===undefined ? "—" : Number(x).toPrecision(4); }
+function plogEnd(){
+  var S=PLOG.s; if(!S) return;
+  S.end=new Date().toISOString(); S.errPct=plogErrPct(S)!==null?+plogErrPct(S).toPrecision(6):null;
+  if(S.fixes.length>=2){ PLOG.all.push(S); if(PLOG.all.length>30) PLOG.all.shift(); plogSave(); }
+  PLOG.s=null; renderStats();
+}
+function plogSummaryToast(){
+  var S=PLOG.s, t=$("hwpb"); if(!S||!t) return;
+  t.className="wpx-banner"; t.innerHTML='<div class="wb-head"><b>완주 · 예측 오차 '+sig4(plogErrPct(S))+' %</b></div>'
+    +'<div class="wb-cmt">'+S.fixes.length+'회 수신 · 주행 '+S.distKm.toFixed(2)+' km · 누적 오차 '+(S.sumErrKm*1000).toFixed(0)+' m · '+S.ver+'</div>';
+  WPX.lastBanner="__summary__"; setTimeout(function(){ if(WPX.lastBanner==="__summary__"){ WPX.lastBanner=""; } },15000);
+}
+/* 아래 띠에 주행 시간 · 오차율 */
+function plogStat(){
+  var el=$("hstat"); if(!el) return;
+  var S=PLOG.s, txt="";
+  if(S){ var sec=Math.round((Date.now()-new Date(S.start).getTime())/1000);
+    txt="주행 "+Math.floor(sec/3600)+":"+String(Math.floor(sec%3600/60)).padStart(2,"0")+":"+String(sec%60).padStart(2,"0")
+       +"  ·  수신 "+S.fixes.length+"회  ·  오차 "+sig4(plogErrPct(S))+" %"+(S.done?"  ·  완주":""); }
+  else if(NAV.src==="day0" && D0.total){ txt="궤적 재생 — 로그 없음"; }
+  else txt="";
+  if(el.textContent!==txt) el.textContent=txt;
+}
+function plogExportText(){
+  var all=PLOG.all.slice(); if(PLOG.s) all.push(PLOG.s);
+  return JSON.stringify({ver:D0_VER, exported:new Date().toISOString(), sessions:all}, null, 1);
+}
+function plogDownload(){
+  var blob=new Blob([plogExportText()],{type:"application/json"}), name="pred-log-"+NAV.who+"-"+new Date().toISOString().slice(0,10)+".json";
+  if(navigator.share && navigator.canShare && navigator.canShare({files:[new File([blob],name)]})){
+    navigator.share({files:[new File([blob],name,{type:"application/json"})], title:name}).catch(function(){}); return; }
+  var a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },2000);
+}
 /* 예측 결과 {mode:"km"|"d0"|"xy", km|lat/lon, spd(km/h), ahead(km), last:{...}} — 못 하면 null */
 var PRED_MAX_MIN=20, PRED_MIN_KMH=0.7, PRED_MAX_KMH=45;
-function predict(w){
+var VEHICLE="bike";  /* bike | car — 자동차면 속도 상한을 올립니다 */
+function setVehicle(v){ VEHICLE = v==="car"?"car":"bike"; PRED_MAX_KMH = VEHICLE==="car"?140:45;
+  try{ localStorage.setItem("caminoVehicle",VEHICLE); }catch(e){}
+  document.querySelectorAll("[data-veh]").forEach(function(b){ b.classList.toggle("on", b.dataset.veh===VEHICLE); }); }
+try{ setVehicle(localStorage.getItem("caminoVehicle")||"bike"); }catch(e){}
+function predict(w, atMs){
   var h=LIVEHIST[w]; if(!h.length) return null;
-  var b=h[h.length-1], a=h.length>1?h[h.length-2]:null, now=Date.now();
+  var b=h[h.length-1], a=h.length>1?h[h.length-2]:null, now=atMs||Date.now();
   /* DAY 0 궤적이 나중에 들어왔으면 그때 재 둡니다 */
   [a,b].forEach(function(f){ if(f&&f.test&&f.d0km===undefined&&typeof f.lat==="number"&&D0.pts.length){
     var pk=(f===b&&a&&typeof a.d0km==="number")?a.d0km:undefined;
@@ -1074,6 +1152,7 @@ function navTick(now){
     var n=$("hnorth"); if(n) n.style.transform="rotate("+(-NAV.hdg)+"deg)";
     hudLiveLabel();
     wpxRender(false);
+    if(!PLOG._t || Date.now()-PLOG._t>1000){ PLOG._t=Date.now(); plogStat(); }
   }
 }
 function fmtClock(ms){ var d=new Date(ms); return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0"); }
@@ -1109,12 +1188,13 @@ function setNav(on){
     if(!D0.pts.length) NAV.src=def;
     else if(NAV.src!=="live" && NAV.src!=="gps") NAV.src="day0";
     if(NAV.src==="gps") gpsStart();
+    if(NAV.src==="live") plogStart();
     if(NAV.src==="live" && !OPT.live){ var cl=$("cLive"); if(cl){ cl.checked=true; cl.dispatchEvent(new Event("change")); } }
     if(NAV.src==="day0" && !D0.playing) d0Play(true);
     syncHud(); ensureLoop();
   }else{
     viewer.camera.lookAtTransform(Cesium.Matrix4.IDENTITY);
-    NAV.hdg=null; gpsStop();
+    NAV.hdg=null; gpsStop(); plogEnd();
     if(!D0.pts.length) navShow(false);
     drawLive();
     syncD0UI();
@@ -1174,7 +1254,9 @@ function setPosMode(m){
 }
 function setWho(w){
   if(!WHO[w]) return;
+  if(PLOG.s && PLOG.s.who!==w){ plogEnd(); }
   NAV.who=w; NAV.hdg=null; NAV.dispKm=null; NAV.last=null; navPredReset();
+  if(NAV.on && NAV.src==="live" && !PLOG.s) plogStart();
   try{ localStorage.setItem("caminoNavWho",w); }catch(e){}
   document.querySelectorAll("[data-who]").forEach(function(b){ b.classList.toggle("on", b.dataset.who===w); });
   drawLive();
@@ -1228,11 +1310,11 @@ function setupHud(){
   on("hexit","click",function(){ setNav(false); });
   on("hzin","click",function(){ setZoom(-1); });
   on("hzout","click",function(){ setZoom(1); });
-  on("hsrc0","click",function(){ NAV.src="day0"; NAV.hdg=null; gpsStop(); if(!D0.playing) d0Play(true); syncHud(); });
+  on("hsrc0","click",function(){ NAV.src="day0"; NAV.hdg=null; gpsStop(); plogEnd(); if(!D0.playing) d0Play(true); syncHud(); });
   on("hwp","click",function(){ WPX.open=!WPX.open; $("hwpp").classList.toggle("hide",!WPX.open); $("hwp").classList.toggle("on",WPX.open); wpxRender(true); });
   on("hwpv","change",function(){ WPX.voice=$("hwpv").checked; if(WPX.voice) wpxSay("음성 안내를 켰습니다"); });
   on("hsrcG","click",function(){ NAV.src="gps"; NAV.hdg=null; WPX.key=""; gpsStart(); syncHud(); });
-  on("hsrcL","click",function(){ NAV.src="live"; NAV.hdg=null; NAV.dispKm=null; gpsStop();
+  on("hsrcL","click",function(){ NAV.src="live"; NAV.hdg=null; NAV.dispKm=null; gpsStop(); plogStart();
     if(!OPT.live){ var cl=$("cLive"); if(cl){ cl.checked=true; cl.dispatchEvent(new Event("change")); } }
     syncHud(); });
   on("hpp","click",function(){ d0Play(!D0.playing); });
@@ -1902,9 +1984,22 @@ function day0Card(){
       +'<div id="d0list"></div>'
       +'<div class="d0note">이 GPX 는 브라우저에 기억됩니다. <span style="color:#B0A070">판 '+D0_VER+'</span></div>';
   }
+  /* 탈것 · 예측 오차 로그 */
+  var n=PLOG.all.length, last=n?PLOG.all[n-1]:null;
+  h+='<div class="row2" style="margin-top:10px"><span>탈것</span></div>'
+    +'<div class="who mode"><button class="'+(VEHICLE==="bike"?" on":"")+'" data-veh="bike">자전거</button>'
+    +'<button class="'+(VEHICLE==="car"?" on":"")+'" data-veh="car">자동차</button></div>'
+    +'<div class="row2"><span>예측 오차 로그</span><b>'+n+'회'+(PLOG.s?' + 진행 중':'')+'</b></div>'
+    +(last?'<div class="row2"><span>마지막</span><b>'+esc(last.who.toUpperCase())+' · '+sig4(last.errPct)+' % · '+last.distKm.toFixed(1)+' km · '+esc(last.ver)+'</b></div>':'')
+    +'<div class="d0row"><button class="mini play" id="plogDl"'+(n||PLOG.s?'':' disabled')+'>로그 내려받기 · 공유</button>'
+    +'<button class="mini" id="plogClr"'+(n?'':' disabled')+'>로그 지우기</button></div>'
+    +'<div class="d0note">완주 뒤 이 로그와 주행 GPX 를 함께 보내 주면 예측 알고리즘을 고칩니다. 오차율 = 누적 |예측−보정| ÷ 주행 거리.</div>';
   return h+'</div></div>';
 }
 function bindDay0Card(){
+  document.querySelectorAll("#stats [data-veh]").forEach(function(b){ b.addEventListener("click",function(){ setVehicle(b.dataset.veh); }); });
+  on("plogDl","click",plogDownload);
+  on("plogClr","click",function(){ if(confirm("예측 로그 "+PLOG.all.length+"회를 지울까요?")){ PLOG.all=[]; plogSave(); renderStats(); } });
   on("d0file","change",function(e){ loadDay0File(e.target.files[0]); });
   on("d0drive","click", listDriveGpx);
   on("d0route","click", listRouteGpx);
@@ -2115,7 +2210,7 @@ function boot(token){
     step("지도 보기", function(){ OPT.map2d=OPT_MAP2D_INIT; if(OPT.map2d) setMap2d(true); });
     step("바탕 지도", function(){ setBase(OPT_BASE_INIT); });
     step("절전", function(){ OPT.eco=OPT_ECO_INIT; setEco(OPT.eco); });
-    step("DAY 0 복원", function(){ restoreDay0(); });
+    step("DAY 0 복원", function(){ plogLoad(); restoreDay0(); renderStats(); });
     $("load").classList.add("hide");
     setTimeout(flyAll, 300);
   }).catch(function(e){
