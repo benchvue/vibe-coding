@@ -414,7 +414,7 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:5000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"server",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20260912-23";
+var D0_VER="v20260912-24";
 try{ var _pm=localStorage.getItem("caminoPosMode"); if(_pm==="gps"&&GPS_ENABLED) NAV.posMode="gps"; }catch(e){}
 try{ var _m2=localStorage.getItem("caminoMap2d"); if(_m2==="0") OPT_MAP2D_INIT=false; }catch(e){}
 var OPT_BASE_INIT="map";
@@ -1492,7 +1492,10 @@ function wpxRender(force){
   if(cur===null||cur===undefined) html='<div class="wpx-none">위치를 아직 모릅니다</div>';
   else{
     WPX.list.forEach(function(w){
-      var a=(w.km-cur)*1000;
+      var a=(w.km-cur)*1000, id=w.day+":"+w.name;
+      /* 수신으로 위치가 뒤로 잡혀 명소가 다시 앞에 놓이면 알림을 다시 울리도록 되돌립니다 */
+      if(a>350 && WPX.said[id]) delete WPX.said[id];
+      else if(a>90 && WPX.said[id]>=2) WPX.said[id]=1;
       if(a>-30) up.push(w);
       else if(a>-250 && (!passed || w.km>passed.km)) passed=w;      /* 방금 지나친 것 (250 m 안) */
     });
