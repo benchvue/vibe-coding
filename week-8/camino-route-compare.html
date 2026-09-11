@@ -414,7 +414,7 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:5000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"server",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20260912-22";
+var D0_VER="v20260912-23";
 try{ var _pm=localStorage.getItem("caminoPosMode"); if(_pm==="gps"&&GPS_ENABLED) NAV.posMode="gps"; }catch(e){}
 try{ var _m2=localStorage.getItem("caminoMap2d"); if(_m2==="0") OPT_MAP2D_INIT=false; }catch(e){}
 var OPT_BASE_INIT="map";
@@ -1418,6 +1418,9 @@ function wpxTrack(){
     return {key:"d0:"+D0.name+":"+D0.pts.length, pts:D0.pts, cum:D0.cum};
   if(NAV.src==="day0" && D0.pts.length)
     return {key:"d0:"+D0.name+":"+D0.pts.length, pts:D0.pts, cum:D0.cum};
+  /* 실시간인데 위치가 DAY 0 궤적 위(시험 좌표)면 그 궤적의 명소를 씁니다 */
+  if(NAV.src==="live" && D0.pts.length){ var h=LIVEHIST[NAV.who], b=h&&h[h.length-1];
+    if(b && b.test && typeof b.d0km==="number") return {key:"d0:"+D0.name+":"+D0.pts.length, pts:D0.pts, cum:D0.cum}; }
   if(IDX&&IDX.length)
     return {key:"idx", pts:IDX.map(function(r){ return {lat:r[0],lon:r[1]}; }), cum:IDX.map(function(r){ return r[2]; })};
   return null;
@@ -1471,7 +1474,8 @@ function wpxBuild(){
 function wpxCurKm(){
   if(NAV.src==="gps") return GPS.fix ? GPS.fix.km : null;
   if(NAV.src==="day0" && D0.pts.length) return D0.km;
-  var v=LIVE[NAV.who]; if(v && typeof v.km==="number" && !v.test) return (NAV.dispKm!=null?NAV.dispKm:v.km);
+  /* 실시간: 예측 위치의 km (노선 색인 또는 DAY 0 궤적) */
+  var pr=predict(NAV.who); if(pr && (pr.mode==="km"||pr.mode==="d0") && typeof pr.km==="number") return pr.km;
   return null;
 }
 function wpxSideText(w){
