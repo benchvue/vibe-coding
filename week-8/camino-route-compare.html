@@ -414,7 +414,7 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:5000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"server",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20260911-21";
+var D0_VER="v20260912-22";
 try{ var _pm=localStorage.getItem("caminoPosMode"); if(_pm==="gps"&&GPS_ENABLED) NAV.posMode="gps"; }catch(e){}
 try{ var _m2=localStorage.getItem("caminoMap2d"); if(_m2==="0") OPT_MAP2D_INIT=false; }catch(e){}
 var OPT_BASE_INIT="map";
@@ -1013,6 +1013,7 @@ function gradeAt(km,mode){
   g=Math.max(-25,Math.min(25,g)); c[key]=g; return g;
 }
 function predSpeedAt(km,base,mode){
+  if(base<PRED_MIN_KMH) return 0;                 /* 정지 중(vel·구간평균 모두 0)이면 표를 써서 혼자 가지 않음 */
   if(VEHICLE==="car" || mode==="xy") return base;
   return PRED_W_TABLE*tableSpeed(gradeAt(km,mode)) + (1-PRED_W_TABLE)*base;
 }
