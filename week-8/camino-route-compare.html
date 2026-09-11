@@ -414,7 +414,7 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:5000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"server",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20260912-24";
+var D0_VER="v20260912-25";
 try{ var _pm=localStorage.getItem("caminoPosMode"); if(_pm==="gps"&&GPS_ENABLED) NAV.posMode="gps"; }catch(e){}
 try{ var _m2=localStorage.getItem("caminoMap2d"); if(_m2==="0") OPT_MAP2D_INIT=false; }catch(e){}
 var OPT_BASE_INIT="map";
@@ -1493,9 +1493,10 @@ function wpxRender(force){
   else{
     WPX.list.forEach(function(w){
       var a=(w.km-cur)*1000, id=w.day+":"+w.name;
-      /* 수신으로 위치가 뒤로 잡혀 명소가 다시 앞에 놓이면 알림을 다시 울리도록 되돌립니다 */
-      if(a>350 && WPX.said[id]) delete WPX.said[id];
-      else if(a>90 && WPX.said[id]>=2) WPX.said[id]=1;
+      /* 수신으로 위치가 뒤로 잡혀 명소가 다시 "멀리" 앞에 놓이면 알림을 되돌립니다.
+         예측이 앞뒤로 흔들리는 폭(수백 m)보다 넉넉히 — 600 m / 150 m. 같은 명소는 3분 안에 다시 안 울림 */
+      if(a>600 && WPX.said[id]) delete WPX.said[id];
+      else if(a>150 && WPX.said[id]>=2) WPX.said[id]=1;
       if(a>-30) up.push(w);
       else if(a>-250 && (!passed || w.km>passed.km)) passed=w;      /* 방금 지나친 것 (250 m 안) */
     });
@@ -1562,7 +1563,11 @@ function wpxTint(){
       if(e.polyline) e.polyline.width=inside?4:1.6; }
   });
 }
+var WPX_LAST={};
 function wpxAlert(w, ahead){
+  var id=w.day+":"+w.name+":"+(ahead>0?"near":"here"), now=Date.now();
+  if(WPX_LAST[id] && now-WPX_LAST[id]<180000) return;      /* 같은 알림 3분 안 반복 금지 */
+  WPX_LAST[id]=now;
   var side=wpxSideText(w);
   var msg=(ahead>0? ahead+" 미터 앞 " : "지금 ")+side+", "+(w.cmt||w.name);
   try{ if(navigator.vibrate) navigator.vibrate(ahead>0?[120,80,120]:[300]); }catch(e){}
@@ -1582,13 +1587,21 @@ function wpxBeep(n){
     }
   }catch(e){}
 }
+/* 말하던 것을 끊지 않고 뒤에 붙입니다. 밀린 것이 셋 넘으면 오래된 것은 버립니다 */
+var SAYQ=[];
 function wpxSay(text){
   try{
     if(!("speechSynthesis" in window)) return;
-    speechSynthesis.cancel();
-    var u=new SpeechSynthesisUtterance(text); u.lang="ko-KR"; u.rate=1.05;
-    speechSynthesis.speak(u);
+    SAYQ.push(text); if(SAYQ.length>3) SAYQ.shift();
+    if(speechSynthesis.speaking || speechSynthesis.pending) return;   /* 끝나면 onend 에서 이어 말함 */
+    sayNext();
   }catch(e){}
+}
+function sayNext(){
+  var t=SAYQ.shift(); if(!t) return;
+  var u=new SpeechSynthesisUtterance(t); u.lang="ko-KR"; u.rate=1.05;
+  u.onend=function(){ setTimeout(sayNext,150); }; u.onerror=function(){ setTimeout(sayNext,150); };
+  speechSynthesis.speak(u);
 }
 
 /* ── 도우미 ── */
