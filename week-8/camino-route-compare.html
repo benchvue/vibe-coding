@@ -414,7 +414,7 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:5000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"server",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20260910-18";
+var D0_VER="v20260911-21";
 try{ var _pm=localStorage.getItem("caminoPosMode"); if(_pm==="gps"&&GPS_ENABLED) NAV.posMode="gps"; }catch(e){}
 try{ var _m2=localStorage.getItem("caminoMap2d"); if(_m2==="0") OPT_MAP2D_INIT=false; }catch(e){}
 var OPT_BASE_INIT="map";
@@ -670,7 +670,14 @@ function parseGpxTimed(txt){
     pts.push({lat:la, lon:lo, ele:e?(parseFloat(e.textContent)||0):0, t:isNaN(tm)?null:tm});
   }
   var nm=doc.querySelector("trk > name");
-  return {pts:pts, name:nm?nm.textContent.trim():""};
+  var wpts=[], wn=doc.getElementsByTagName("wpt");
+  for(var j=0;j<wn.length;j++){
+    var W=wn[j], wla=parseFloat(W.getAttribute("lat")), wlo=parseFloat(W.getAttribute("lon"));
+    if(isNaN(wla)||isNaN(wlo)) continue;
+    var g=function(tag){ var el=W.getElementsByTagName(tag)[0]; return el?el.textContent.trim():""; };
+    wpts.push({lat:wla, lon:wlo, name:unmojibake(g("name")), cmt:unmojibake(g("cmt")||g("desc")), sym:g("sym")||"Waypoint"});
+  }
+  return {pts:pts, name:nm?nm.textContent.trim():"", wpts:wpts};
 }
 function loadDay0File(file){
   if(!file) return;
@@ -730,11 +737,11 @@ function loadDay0Text(txt,name){
   try{
     var p=parseGpxTimed(txt);
     if(p.pts.length<2) throw new Error("트랙 점이 2개 미만입니다");
-    setDay0(p.pts, p.name||String(name||"GPX").replace(/\.gpx$/i,""));
+    setDay0(p.pts, p.name||String(name||"GPX").replace(/\.gpx$/i,""), false, 0, p.wpts);
   }catch(e){ alert("GPX 를 읽지 못했습니다 — "+e.message); }
 }
-function setDay0(pts,name,quiet,day){
-  D0.day=day||0;
+function setDay0(pts,name,quiet,day,wpts){
+  D0.day=day||0; D0.wpts=wpts||[];
   var cum=[0];
   for(var i=1;i<pts.length;i++) cum.push(cum[i-1]+hav(pts[i-1],pts[i])/1000);
   var hasTime=pts.every(function(p){ return p.t!==null; });
@@ -742,6 +749,7 @@ function setDay0(pts,name,quiet,day){
   D0.pts=pts; D0.cum=cum; D0.total=cum[cum.length-1]; D0.hasTime=hasTime;
   D0.name=name; D0.km=0; D0.playing=false; D0.aReal=null;
   if(window.LIVEHIST) liveHistReproject();
+  buildSpeedTable(); PRED_CACHE={};
   if(!quiet && !D0.day) saveDay0();
   drawDay0();
   NAV.src="day0"; NAV.hdg=null;
@@ -756,14 +764,14 @@ var D0_KEY="caminoDay0";
 function saveDay0(){
   try{
     var rows=D0.pts.map(function(q){ return [+q.lat.toFixed(6), +q.lon.toFixed(6), Math.round(q.ele), q.t===null?null:Math.round(q.t/1000)]; });
-    localStorage.setItem(D0_KEY, JSON.stringify({name:D0.name, rows:rows, saved:Date.now()}));
+    localStorage.setItem(D0_KEY, JSON.stringify({name:D0.name, rows:rows, wpts:D0.wpts||[], saved:Date.now()}));
   }catch(e){ console.warn("DAY 0 저장 실패(용량?)", e); }
 }
 function restoreDay0(){
   try{
     var j=JSON.parse(localStorage.getItem(D0_KEY)||"null");
     if(!j||!j.rows||j.rows.length<2) return false;
-    setDay0(j.rows.map(function(r){ return {lat:r[0],lon:r[1],ele:r[2]||0,t:r[3]===null?null:r[3]*1000}; }), j.name||"DAY 0", true, 0);
+    setDay0(j.rows.map(function(r){ return {lat:r[0],lon:r[1],ele:r[2]||0,t:r[3]===null?null:r[3]*1000}; }), j.name||"DAY 0", true, 0, j.wpts||[]);
     return true;
   }catch(e){ return false; }
 }
@@ -817,6 +825,7 @@ function d0SetSpeed(v){ D0.speed=+v||1; D0.aReal=null; syncD0UI(); }
 function drawDay0(){
   var ds=viewer.entities;
   ENT.day0.forEach(function(e){ ds.remove(e); }); ENT.day0=[];
+  ENT.wpt=ENT.wpt.filter(function(e){ return !(e._wp&&e._wp.day===0); });   /* DAY 0 명소는 여기서 다시 만듦 */
   if(!D0.pts.length) return;
   var col=Cesium.Color.fromCssColorString("#F5B917");
   ENT.day0.push(ds.add({ name:"DAY 0 시험 주행",
@@ -825,6 +834,18 @@ function drawDay0(){
         color:col.withAlpha(.98), outlineColor:Cesium.Color.fromCssColorString("#3B2E00").withAlpha(.8),
         outlineWidth:1.5 }),
       depthFailMaterial:depthMat(col) } }));
+  (D0.wpts||[]).forEach(function(w){
+    var m=symOf(w.sym), h0=OPT.lift+2;
+    var e=ds.add({ name:w.name||"", position:Cesium.Cartesian3.fromDegrees(w.lon,w.lat,h0),
+      billboard:{ image:iconFor(w.sym), width:34, height:34, verticalOrigin:Cesium.VerticalOrigin.BOTTOM,
+        disableDepthTestDistance:Number.POSITIVE_INFINITY },
+      label:{ text:(w.cmt||w.name||"").slice(0,18), font:"600 12px 'IBM Plex Sans KR', sans-serif",
+        fillColor:Cesium.Color.fromCssColorString("#3B2E00"), showBackground:true, backgroundColor:Cesium.Color.WHITE.withAlpha(.9),
+        backgroundPadding:new Cesium.Cartesian2(6,4), verticalOrigin:Cesium.VerticalOrigin.TOP, pixelOffset:new Cesium.Cartesian2(0,4),
+        distanceDisplayCondition:new Cesium.DistanceDisplayCondition(0,6000), disableDepthTestDistance:Number.POSITIVE_INFINITY } });
+    e._wp={name:w.name||"", cmt:w.cmt||"", sym:w.sym, day:0, lat:w.lat, lon:w.lon};
+    ENT.day0.push(e); ENT.wpt.push(e);
+  });
   var last=D0.pts[D0.pts.length-1], top=last.ele*OPT.exag+900;
   ENT.day0.push(ds.add({ name:"DAY 0 끝",
     position:Cesium.Cartesian3.fromDegrees(last.lon,last.lat,top),
@@ -893,13 +914,16 @@ function plogStart(){
   if(PLOG.s) plogEnd();
   PLOG.s={ id:new Date().toISOString().replace(/[:.]/g,"-").slice(0,19), ver:D0_VER, who:NAV.who, vehicle:VEHICLE,
     track:D0.pts.length?D0.name:"route-index", trackKm:D0.pts.length?+D0.total.toFixed(3):null,
-    params:{algo:PRED_ALGO, wVel:PRED_W_VEL, stopF:PRED_STOP_F, maxMin:PRED_MAX_MIN, minKmh:PRED_MIN_KMH, maxKmh:PRED_MAX_KMH},
+    params:{algo:PRED_ALGO, wVel:PRED_W_VEL, stopF:PRED_STOP_F, wTable:PRED_W_TABLE, table:SPEED_TABLE.slice(), tableSrc:SPEED_TABLE_SRC,
+            maxMin:PRED_MAX_MIN, minKmh:PRED_MIN_KMH, maxKmh:PRED_MAX_KMH},
     start:new Date().toISOString(), end:null, fixes:[], sumErrKm:0, distKm:0, firstKm:null, lastKm:null, done:false, note:"" };
 }
 function plogOnFix(w, f, h){
   var S=PLOG.s, prev=h.length?h[h.length-1]:null;
   var fixKm = f.d0km!==undefined&&f.d0km!==null ? f.d0km : (!f.test&&f.km!==null ? f.km : null);
+  var saved=PRED_CACHE[w]; delete PRED_CACHE[w];
   var pr = prev ? predict(w, f.t) : null;          /* 수신 시각에 예측이 가리키던 자리 */
+  delete PRED_CACHE[w]; if(saved) PRED_CACHE[w]=saved;
   var e={ i:S.fixes.length, t:new Date(f.t).toISOString(), recv:new Date().toISOString(),
     gapS: prev ? Math.round((f.t-prev.t)/1000) : null,
     lat:f.lat, lon:f.lon, vel:f.vel, off:(f.d0off!==undefined?Math.round(f.d0off):null),
@@ -955,7 +979,56 @@ var PRED_MAX_MIN=20, PRED_MIN_KMH=0.7, PRED_MAX_KMH=160;
    v1 은 두 수신의 구간 평균 속도만 썼고 자전거 상한 45 를 넘으면 0 으로 봐서 오차 80~97 %.
    v2 는 OwnTracks 가 보낸 순간 속도(vel)를 0.9, 구간 평균을 0.1 로 섞고,
    멈춰 있으면(vel<3) 곧 출발할 것으로 보고 구간 평균의 0.7 을 씁니다. 같은 로그에서 28 % · 19 %. */
-var PRED_ALGO="v2-vel0.9-stop0.7", PRED_W_VEL=0.9, PRED_STOP_F=0.7;
+var PRED_ALGO="v3-grade0.7", PRED_W_VEL=0.9, PRED_STOP_F=0.7, PRED_W_TABLE=0.7;
+/* v3 (2026-09-11, 자전거 왕복 로그로 맞춤): 경사 → 속도 표를 두고 궤적을 따라 1초씩 적분합니다.
+   속도 = 0.7 × 표(그 지점 경사) + 0.3 × v2 속도.  9/9 주행에서 만든 표로 9/11 로그를 맞추면 36.9 → 13.8 %.
+   표는 DAY 0 GPX 에 시간이 있으면 그 주행에서 스스로 만들고, 없으면 아래 기본값(자전거)을 씁니다. */
+var GRADE_BINS=[[-99,-6],[-6,-3],[-3,-1],[-1,1],[1,3],[3,6],[6,99]];
+var SPEED_TABLE_DEFAULT=[38.0,29.2,20.9,16.7,12.8,9.7,8.8];     /* km/h, 9/9 자전거 왕복에서 */
+var SPEED_TABLE=SPEED_TABLE_DEFAULT.slice(), SPEED_TABLE_SRC="기본(자전거)";
+function tableSpeed(g){ for(var i=0;i<GRADE_BINS.length;i++) if(g>=GRADE_BINS[i][0]&&g<GRADE_BINS[i][1]) return SPEED_TABLE[i]; return 15; }
+/* DAY 0 GPX(시간 포함)에서 개인 경사표 만들기 — 100 m 구간마다 경사·속도를 재서 구간별 평균 */
+function buildSpeedTable(){
+  SPEED_TABLE=SPEED_TABLE_DEFAULT.slice(); SPEED_TABLE_SRC="기본(자전거)";
+  if(!D0.pts.length || !D0.hasTime || D0.day) return;
+  var sum=GRADE_BINS.map(function(){return 0;}), n=sum.slice();
+  for(var k=0;k+0.1<D0.total;k+=0.1){
+    var a=d0State(k), b=d0State(k+0.1); if(!a||!b||a.time===null||b.time===null) continue;
+    var g=(b.ele-a.ele)/100*100, dtH=(b.time-a.time)/3600000, v=dtH>0?0.1/dtH:0;
+    if(v<=3||v>=60) continue;
+    for(var i=0;i<GRADE_BINS.length;i++) if(g>=GRADE_BINS[i][0]&&g<GRADE_BINS[i][1]){ sum[i]+=v; n[i]++; break; }
+  }
+  var got=0; GRADE_BINS.forEach(function(_,i){ if(n[i]>=3){ SPEED_TABLE[i]=+(sum[i]/n[i]).toFixed(1); got++; } });
+  if(got) SPEED_TABLE_SRC="DAY 0 GPX ("+D0.name+")";
+}
+/* 궤적 위 km 의 경사(%) — 100 m 단위로 외워 둡니다 */
+var GRADE_CACHE={key:"",d0:{},idx:{}};
+function gradeAt(km,mode){
+  var key=mode+":"+Math.round(km*10), c=GRADE_CACHE[mode==="d0"?"d0":"idx"];
+  if(mode==="d0"){ var k2="d0:"+D0.name+":"+D0.pts.length; if(GRADE_CACHE.key!==k2){ GRADE_CACHE.key=k2; GRADE_CACHE.d0={}; c=GRADE_CACHE.d0; } }
+  if(c[key]!==undefined) return c[key];
+  var g=0;
+  if(mode==="d0"){ var a=d0State(Math.max(0,km-0.05)), b=d0State(Math.min(D0.total,km+0.05)); if(a&&b) g=(b.ele-a.ele)/100*100; }
+  else { var pa=kmToPos(Math.max(0,km-0.05)), pb=kmToPos(km+0.05); if(pa&&pb) g=(nearestEleAt(pb[0],pb[1])-nearestEleAt(pa[0],pa[1]))/100*100; }
+  g=Math.max(-25,Math.min(25,g)); c[key]=g; return g;
+}
+function predSpeedAt(km,base,mode){
+  if(VEHICLE==="car" || mode==="xy") return base;
+  return PRED_W_TABLE*tableSpeed(gradeAt(km,mode)) + (1-PRED_W_TABLE)*base;
+}
+/* 마지막 수신부터 시각 t 까지 궤적을 따라 적분 — 프레임마다 처음부터 하지 않고 이어서 합니다 */
+var PRED_CACHE={};
+function integrateKm(w,mode,startKm,fixT,base,toT){
+  var c=PRED_CACHE[w];
+  if(!c || c.fixT!==fixT || c.mode!==mode || c.base!==base || c.t>toT){ c={fixT:fixT,mode:mode,base:base,t:fixT,km:startKm}; PRED_CACHE[w]=c; }
+  var lim=mode==="d0"?D0.total:Infinity;
+  while(c.t<toT){
+    var step=Math.min(2000, toT-c.t);
+    c.km=Math.min(lim, c.km + predSpeedAt(c.km,base,mode)*step/3600000);
+    c.t+=step;
+  }
+  return c.km;
+}
 var VEHICLE="bike";  /* bike | car — 로그에 남기는 용도. 속도 상한은 탈것과 무관하게 160 */
 function setVehicle(v){ VEHICLE = v==="car"?"car":"bike";
   try{ localStorage.setItem("caminoVehicle",VEHICLE); }catch(e){}
@@ -985,10 +1058,11 @@ function predict(w, atMs){
   if(vel!==null && avg!==null){ spd=PRED_W_VEL*vel+(1-PRED_W_VEL)*avg; if(vel<3) spd=Math.max(spd, PRED_STOP_F*avg); }
   else spd = vel!==null ? vel : (avg!==null ? avg : 0);
   if(spd<PRED_MIN_KMH || (mode==="xy"&&hdg===null)) spd=0;
-  var ahead=spd*dtH, out={mode:mode, spd:spd, ahead:ahead, last:b, hdg:hdg, stale:(now-b.t)>PRED_MAX_MIN*60000};
-  if(mode==="km"){ out.km=b.km+ahead; }
-  else if(mode==="d0"){ out.km=Math.min(D0.total,b.d0km+ahead); }
-  else { var o=offsetLL(b.lat,b.lon,hdg||0,ahead*1000); out.lat=o[0]; out.lon=o[1]; }
+  var toT=Math.min(now, b.t+PRED_MAX_MIN*60000);
+  var out={mode:mode, spd:spd, last:b, hdg:hdg, stale:(now-b.t)>PRED_MAX_MIN*60000};
+  if(mode==="km"){ out.km=integrateKm(w,"km",b.km,b.t,spd,toT); out.ahead=out.km-b.km; }
+  else if(mode==="d0"){ out.km=integrateKm(w,"d0",b.d0km,b.t,spd,toT); out.ahead=out.km-b.d0km; }
+  else { var ahead=spd*dtH; out.ahead=ahead; var o=offsetLL(b.lat,b.lon,hdg||0,ahead*1000); out.lat=o[0]; out.lon=o[1]; }
   return out;
 }
 /* 덧칠할 노선 조각 — 마지막 수신 자리부터 추정 자리까지 */
@@ -1381,6 +1455,10 @@ function wpxBuild(){
   var tr=wpxTrack(); if(!tr){ WPX.list=[]; WPX.key=""; return; }
   if(tr.key===WPX.key) return;
   WPX.key=tr.key; WPX.list=[]; WPX.said={};
+  (D0.wpts||[]).forEach(function(w){
+    var p=projectOn(tr.pts,tr.cum,w.lat,w.lon);
+    if(p && p.off<=400) WPX.list.push({name:w.name||"", cmt:w.cmt||"", sym:w.sym, day:0, km:p.km, off:p.off, side:p.side, lat:w.lat, lon:w.lon});
+  });
   BIKE_DAYS.forEach(function(d){
     (DATA[d]&&DATA[d].wpts||[]).forEach(function(w){
       var p=projectOn(tr.pts,tr.cum,w.lat,w.lon);
@@ -1607,7 +1685,17 @@ var SYMS={
   "Church":    {e:"⛪", c:"#7A5EA8", n:"성당"},
   "Scenic Area":{e:"📷",c:"#1E7A46", n:"포토존"},
   "Restaurant":{e:"🍽", c:"#C2410C", n:"맛집"},
-  "Summit":    {e:"⛰", c:"#8E2C3A", n:"고개"}
+  "Summit":    {e:"⛰", c:"#8E2C3A", n:"고개"},
+  "Bar":       {e:"☕", c:"#8A5A2B", n:"카페·바"},
+  "Flag":      {e:"🚩", c:"#B91C1C", n:"출발·도착"},
+  "Water":     {e:"🚰", c:"#0E7490", n:"식수"},
+  "Bridge":    {e:"🌉", c:"#4B5563", n:"다리"},
+  "Bike Shop": {e:"🔧", c:"#374151", n:"자전거점"},
+  "Museum":    {e:"🏛", c:"#6B21A8", n:"박물관·유적"},
+  "Park":      {e:"🌳", c:"#15803D", n:"공원"},
+  "Shop":      {e:"🛒", c:"#0F766E", n:"가게"},
+  "Danger":    {e:"⚠️", c:"#D97706", n:"주의"},
+  "Toilet":    {e:"🚻", c:"#64748B", n:"화장실"}
 };
 function symOf(s){ return SYMS[s] || {e:"📍", c:"#6B7280", n:s||"지점"}; }
 var iconCache={};
@@ -1975,7 +2063,7 @@ function day0Card(){
       span=Math.floor(ms/3600000)+"시간 "+Math.round(ms%3600000/60000)+"분 · "+fmtClock(D0.pts[0].t)+" 출발"; }
     if(D0.day) h+='<div class="d0note" style="margin:0 0 6px;color:#7A5A00"><b>노선 DAY '+D0.day+'</b> 를 재생 중입니다. 기억해 둔 GPX 는 그대로 있습니다.</div>';
     h+='<div class="row2"><span>파일</span><b>'+esc(D0.name)+'</b></div>'
-      +'<div class="row2"><span>거리</span><b>'+D0.total.toFixed(1)+' km · '+D0.pts.length+'점</b></div>'
+      +'<div class="row2"><span>거리</span><b>'+D0.total.toFixed(1)+' km · '+D0.pts.length+'점 · 명소 '+((D0.wpts||[]).length)+'</b></div>'
       +'<div class="row2"><span>시간</span><b>'+(D0.hasTime?span:"없음 — 15 km/h 로 재생")+'</b></div>'
       +'<div class="d0row"><button class="mini play" id="d0pp">▶</button>'
       +'<select id="d0spd"><option value="1">1×</option><option value="5">5×</option>'
@@ -1998,6 +2086,8 @@ function day0Card(){
   h+='<div class="row2" style="margin-top:10px"><span>탈것</span></div>'
     +'<div class="who mode"><button class="'+(VEHICLE==="bike"?" on":"")+'" data-veh="bike">자전거</button>'
     +'<button class="'+(VEHICLE==="car"?" on":"")+'" data-veh="car">자동차</button></div>'
+    +'<div class="row2"><span>경사→속도 표</span><b style="font-size:.68rem">'+esc(SPEED_TABLE_SRC)+'</b></div>'
+    +'<div class="d0note" style="font-variant-numeric:tabular-nums">'+GRADE_BINS.map(function(b,i){ return (b[0]<=-99?"↓6+":b[1]>=99?"↑6+":(b[0]+"~"+b[1]))+"% "+SPEED_TABLE[i]; }).join(" · ")+' km/h</div>'
     +'<div class="row2"><span>예측 오차 로그</span><b>'+n+'회'+(PLOG.s?' + 진행 중':'')+'</b></div>'
     +(last?'<div class="row2"><span>마지막</span><b>'+esc(last.who.toUpperCase())+' · '+sig4(last.errPct)+' % · '+last.distKm.toFixed(1)+' km · '+esc(last.ver)+'</b></div>':'')
     +'<div class="d0row"><button class="mini play" id="plogDl"'+(n||PLOG.s?'':' disabled')+'>로그 내려받기 · 공유</button>'
