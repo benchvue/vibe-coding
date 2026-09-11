@@ -414,7 +414,7 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:5000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"server",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20260912-25";
+var D0_VER="v20260912-26";
 try{ var _pm=localStorage.getItem("caminoPosMode"); if(_pm==="gps"&&GPS_ENABLED) NAV.posMode="gps"; }catch(e){}
 try{ var _m2=localStorage.getItem("caminoMap2d"); if(_m2==="0") OPT_MAP2D_INIT=false; }catch(e){}
 var OPT_BASE_INIT="map";
@@ -1279,6 +1279,8 @@ function setNav(on){
   }else{
     viewer.camera.lookAtTransform(Cesium.Matrix4.IDENTITY);
     NAV.hdg=null; gpsStop(); plogEnd();
+    /* 날짜 노선을 재생하던 중이었으면 기억해 둔 DAY 0 GPX 로 되돌립니다 */
+    if(D0.day){ D0.playing=false; if(!restoreDay0()) clearDay0(); WPX.key=""; }
     if(!D0.pts.length) navShow(false);
     drawLive();
     syncD0UI();
