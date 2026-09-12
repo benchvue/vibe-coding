@@ -108,7 +108,7 @@
   .chk:hover{border-color:var(--flecha)}
   .chk input{width:17px;height:17px;accent-color:var(--blue);flex:0 0 auto}
   .chk .sw{width:16px;height:4px;border-radius:2px;flex:0 0 auto}
-  .chk .sw.walk{background:var(--walk)} .chk .sw.bike{background:var(--bike)}
+  .chk .sw.walk{background:var(--walk)} .sw.walk2{background:#7A5EA8} .chk .sw.bike{background:var(--bike)}
   .chk .sw.off{background:var(--off)}
   .chk span{flex:1;min-width:0;color:var(--ink)}
   .chk small{display:block;font-size:.66rem;color:var(--soft);margin-top:1px}
@@ -400,11 +400,11 @@ var WALK_DAYS = [1,2,3,4,5,6,7,9,10,11,12,13];
 var DIFF_DAYS = [2,10,11,12];               /* 우회로를 넣은 날 */
 var START = new Date(2027,4,9);
 
-var C_WALK = "#1F6FD0", C_BIKE = "#E0670F", C_OFF = "#C92A2A", C_OFFW = "#0B4C9E";
+var C_WALK = "#1F6FD0", C_BIKE = "#E0670F", C_OFF = "#C92A2A", C_OFFW = "#0B4C9E", C_WALK2 = "#7A5EA8";
 var DAY_HUE = [null,8,32,52,72,100,128,152,null,176,200,224,268,300];
 
 var $ = function(id){ return document.getElementById(id); };
-var viewer=null, DATA={}, ENT={walk:[],bike:[],offW:[],offB:[],wpt:[],day:[],live:[],day0:[],nav:[]};
+var viewer=null, DATA={}, ENT={walk:[],walk2:[],off2:[],bike:[],offW:[],offB:[],wpt:[],day:[],live:[],day0:[],nav:[]};
 var LIVE={}, IDX=null, liveTimer=null;
 /* 네비게이션 주행 모드 상태 */
 var ZOOM_M=[60,120,250,500,1000,2000,4000,8000,16000,32000,64000];   /* 카메라 거리 단계 (m) */
@@ -414,7 +414,7 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:5000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"server",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20260912-26";
+var D0_VER="v20260912-27";
 try{ var _pm=localStorage.getItem("caminoPosMode"); if(_pm==="gps"&&GPS_ENABLED) NAV.posMode="gps"; }catch(e){}
 try{ var _m2=localStorage.getItem("caminoMap2d"); if(_m2==="0") OPT_MAP2D_INIT=false; }catch(e){}
 var OPT_BASE_INIT="map";
@@ -432,7 +432,7 @@ var LIVEDRV={apiKey:"AIzaSyDzahk0Yhz3faRfMhDS2vQzQ2oADYXhPRg",
   exec:"https://script.google.com/macros/s/AKfycbz_hOt0SGogE6jSKgqlFxPaLEGUJb-_3_f11m9rpOJNAQzk0Bu6GqFfSa2fVxjkF_Aoyw/exec",
   key:"camino2027-bin-jin-x7k2m9"};
 var OPT_MAP2D_INIT=true;
-var OPT={map2d:true, base:"map", eco:true, walk:true,bike:true,off:true,wpt:true,live:false,dayColor:false,
+var OPT={map2d:true, base:"map", eco:true, walk:true, walk2:true,bike:true,off:true,wpt:true,live:false,dayColor:false,
          thresh:100, exag:1.0, lift:80, xray:true};
 
 
@@ -1745,7 +1745,7 @@ function fetchText(u){
   });
 }
 function loadAll(onProg){
-  var jobs=[], total=BIKE_DAYS.length+WALK_DAYS.length, done=0;
+  var jobs=[], total=BIKE_DAYS.length+WALK_DAYS.length, done=0;   /* v2 는 진행 표시에 안 셈 */
   var tick=function(){ done++; onProg(done,total); };
   BIKE_DAYS.forEach(function(d){
     var f="route/camino-2027-day"+String(d).padStart(2,"0")+".gpx";
@@ -1762,6 +1762,13 @@ function loadAll(onProg){
       DATA[d]=DATA[d]||{};
       DATA[d].walk=p.pts; tick();
     }).catch(function(e){ DATA[d]=DATA[d]||{}; DATA[d].walkErr=e.message; tick(); }));
+    /* 도보 v2 — compostelle.fr (VisuGPX) 원본을 자전거 일정 경계로 잘라 둔 것 */
+    var f2="route/walking-v2/camino-day"+String(d).padStart(2,"0")+".gpx";
+    jobs.push(fetchText(f2).then(function(t){
+      var p=parseGpx(t);
+      DATA[d]=DATA[d]||{};
+      DATA[d].walk2=p.pts;
+    }).catch(function(e){ DATA[d]=DATA[d]||{}; DATA[d].walk2Err=e.message; }));
   });
   return Promise.all(jobs);
 }
@@ -1788,6 +1795,8 @@ function toCart(pts,i0,i1){
 }
 
 function clearAll(){
+  ENT.walk2.forEach(function(e){ viewer.entities.remove(e); }); ENT.walk2=[];
+  ENT.off2.forEach(function(e){ viewer.entities.remove(e); }); ENT.off2=[];
   Object.keys(ENT).forEach(function(k){
     ENT[k].forEach(function(e){ viewer.entities.remove(e); });
     ENT[k]=[];
@@ -1811,6 +1820,25 @@ function draw(){
             outlineWidth:1.5 }),
           depthFailMaterial:depthMat(colWalk(d)) },
         show:OPT.walk }));
+    }
+    if(D.walk2 && D.walk2.length>1){
+      ENT.walk2.push(ds.add({
+        name:"도보 v2 DAY "+d+" (compostelle.fr)",
+        polyline:{ positions:toCart(D.walk2), width:3.5, clampToGround:false,
+          material:new Cesium.PolylineOutlineMaterialProperty({
+            color:Cesium.Color.fromCssColorString(C_WALK2).withAlpha(.95),
+            outlineColor:Cesium.Color.WHITE.withAlpha(.5), outlineWidth:1.2 }),
+          depthFailMaterial:depthMat(Cesium.Color.fromCssColorString(C_WALK2)) },
+        show:OPT.walk2 }));
+      if(D.cmp2){
+        D.cmp2.segB.forEach(function(s2){          /* segB = v2 가 v1 에서 벗어난 구간 */
+          ENT.off2.push(ds.add({ name:"도보 v2 ↔ v1 다른 구간 DAY "+d,
+            polyline:{ positions:toCart(D.walk2,s2[0],s2[1]), width:8, clampToGround:false,
+              material:Cesium.Color.fromCssColorString("#5B21B6").withAlpha(.95),
+              depthFailMaterial:depthMat(Cesium.Color.fromCssColorString("#5B21B6")) },
+            show:OPT.walk2 && OPT.off }));
+        });
+      }
     }
     if(D.bike && D.bike.length>1){
       ENT.bike.push(ds.add({
@@ -1906,6 +1934,8 @@ function esc(t){ return String(t==null?"":t)
   .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 function applyShow(){
   ENT.walk.forEach(function(e){ e.show=OPT.walk; });
+  ENT.walk2.forEach(function(e){ e.show=OPT.walk2; });
+  ENT.off2.forEach(function(e){ e.show=OPT.walk2 && OPT.off; });
   ENT.bike.forEach(function(e){ e.show=OPT.bike; });
   ENT.offB.forEach(function(e){ e.show=OPT.off && OPT.bike; });
   ENT.offW.forEach(function(e){ e.show=OPT.off && OPT.walk; });
@@ -2036,6 +2066,15 @@ function renderStats(){
       +'<div class="db">'
       +'<div class="row2"><span>자전거 총거리</span><b class="b">'+km(c.totB)+' km</b></div>'
       +'<div class="row2"><span>도보 총거리</span><b class="w">'+km(c.totW)+' km</b></div>';
+    if(D.walk2){
+      var c2=D.cmp2, w2=km(pathLen(D.walk2));
+      h+='<div class="row2"><span>도보 v2 (compostelle.fr)</span><b style="color:'+C_WALK2+'">'+w2+' km</b></div>';
+      if(c2){
+        var pct2=c2.totW ? Math.round(c2.offB/c2.totW*100) : 0;
+        h+='<div class="row2"><span>v1 ↔ v2 다른 길이</span><b style="color:#5B21B6">'+km(c2.offB)+' km · '+pct2+' %'
+          +(c2.maxGap>0?' · 최대 '+(c2.maxGap/1000).toFixed(1)+' km':'')+'</b></div>';
+      }
+    }
     if(diff){
       h+='<div class="bar"><i class="same" style="width:'+(100-pct)+'%"></i>'
         +'<i class="off" style="width:'+pct+'%"></i></div>'
@@ -2150,7 +2189,8 @@ function renderCtrl(){
   var el=$("ctrl");
   el.innerHTML =
      '<div class="grp"><h3>표시</h3>'
-    +chk("cWalk","도보 노선","산티아고 순례길 원본",OPT.walk,"walk")
+    +chk("cWalk","도보 노선 v1","산티아고 순례길 원본 (route/walking)",OPT.walk,"walk")
+    +chk("cWalk2","도보 노선 v2","compostelle.fr · VisuGPX 767 km · 보라",OPT.walk2,"walk2")
     +chk("cBike","자전거 노선","우회로를 반영한 실제 주행",OPT.bike,"bike")
     +chk("cOff","갈라지는 구간","굵게 강조합니다",OPT.off,"off")
     +chk("cWpt","알베르게 · 포토존 아이콘","가까이 가야 보입니다",OPT.wpt,"")
@@ -2223,6 +2263,7 @@ function renderCtrl(){
     +'</div></div>';
 
   bind("cWalk", function(v){ OPT.walk=v; applyShow(); });
+  bind("cWalk2", function(v){ OPT.walk2=v; applyShow(); });
   bind("cBike", function(v){ OPT.bike=v; applyShow(); });
   bind("cOff",  function(v){ OPT.off=v;  applyShow(); });
   bind("cWpt",  function(v){ OPT.wpt=v;  applyShow(); });
@@ -2284,6 +2325,8 @@ function recompute(){
   BIKE_DAYS.forEach(function(d){
     var D=DATA[d];
     if(D && D.bike && D.walk) D.cmp=compare(D.bike, D.walk, OPT.thresh);
+    /* 도보 v1 ↔ v2 — 같은 기준(thresh)으로 서로 벗어나는 구간을 잽니다 */
+    if(D && D.walk && D.walk2) D.cmp2=compare(D.walk2, D.walk, OPT.thresh);
   });
 }
 
