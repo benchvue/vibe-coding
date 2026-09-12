@@ -1799,7 +1799,16 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
   /* ══════ 상태 ══════ */
   var WX = null;        /* {locId:{off, days:[13]}} */
   var RIDE = {};        /* {day:{tid,name,sh,eh,km,gain,dur}} */
-  var INFO = "";
+  var INFO = "", DAYKIND = {}, INFO_YEARS = "", INFO_TZ = "CEST";   /* DAYKIND[i] = "lock" | "fc" | "norm" */
+  /* 날짜별 한 줄 — "5/9은 예년 평균(…)" 처럼 그 날 날짜로 씁니다 */
+  function dayInfo(i){
+    var d = tripDate(i), md = (d.getMonth()+1)+"/"+d.getDate()+"일은";
+    var k = DAYKIND[i], t;
+    if(k==="lock")      t = '🔒 '+md+' <b>그날의 실제 날씨로 확정 저장</b>(더 이상 다시 받지 않습니다)';
+    else if(k==="fc")   t = '🔴 '+md+' <b>실제 예보</b>';
+    else                t = md+' <b>예년 평균('+INFO_YEARS+'년 같은 날짜 실측 평균)</b>';
+    return t + ' · Open-Meteo · 현지시각 '+esc(INFO_TZ)+'(UTC+2) 기준';
+  }
   var uidN = 0;
 
   function renderDay(d){
@@ -1830,7 +1839,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
             + (ride.next ? ' · ⚠ 이 기록은 <b>자정을 넘어</b>서, 그래프에는 24시까지만 그렸습니다' : '')
           : ' · 🚴 주행기록(GPX)을 올리면 라이딩 시간대가 자동으로 표시됩니다';
       }
-      note.innerHTML = INFO + extra
+      note.innerHTML = dayInfo(i) + extra
         + ' <button type="button" class="wxreset" title="캐시와 확정 기록(🔒)을 지우고 다시 받습니다">↻ 초기화</button>';
       var rb = note.querySelector(".wxreset");
       if(rb) rb.addEventListener("click", resetAll);
@@ -1985,6 +1994,9 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       if(fcIdx.length)   parts.push('🔴 '+fcIdx.length+'일은 <b>실제 예보</b>');
       if(normIdx.length) parts.push((nLock||fcIdx.length?'나머지 ':'')+normIdx.length+'일은 <b>예년 평균('+years.slice().sort().join("·")+'년 같은 날짜 실측 평균)</b>');
       INFO = parts.join(' · ') + ' · Open-Meteo · 현지시각 '+esc(tzab)+'(UTC+2) 기준';
+      DAYKIND = {}; lockedIdx.concat(needLock).forEach(function(i){ DAYKIND[i]="lock"; });
+      fcIdx.forEach(function(i){ DAYKIND[i]="fc"; }); normIdx.forEach(function(i){ DAYKIND[i]="norm"; });
+      INFO_YEARS = years.slice().sort().join("·"); INFO_TZ = tzab;
       renderAll();
       pullRides();
     }).catch(function(){ fail("날씨 데이터를 불러오지 못했습니다."); });
