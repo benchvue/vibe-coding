@@ -757,16 +757,16 @@ window.CAMINO_LIVE = (function(){
   var WHO={bin:{n:"BIN",c:"#1E5FB4"}, jin:{n:"JIN",c:"#C92A2A"}};
   /* 중간 경유지 — [한글, 원어, lat, lon]. 그날 GPX 에 투영해 km 를 구하고, 노선에서 800 m 넘게 떨어지면 뺍니다 */
   var VIA={
-    1:[["생 미셸","Saint-Michel",43.1134,-1.2366],["론세스바예스","Roncesvalles",43.0092,-1.3195]],   /* 우회로 — 오리손·발카를로스는 지나지 않음 */
-    2:[["팜플로나","Pamplona",42.8169,-1.6432],["푸엔테 라 레이나","Puente la Reina",42.6720,-1.8150]],
+    1:[["생 미셸","Saint-Michel",43.1134,-1.2366],["최고점 1,240 m","우회로 정상",43.0299,-1.2278,"pass"],["론세스바예스","Roncesvalles",43.0092,-1.3195]],   /* 우회로 — 오리손·발카를로스는 지나지 않음 */
+    2:[["팜플로나","Pamplona",42.8169,-1.6432],["페르돈 고개","Alto del Perdón · 자전거 도로 고갯마루",42.7457,-1.7241,"pass"],["푸엔테 라 레이나","Puente la Reina",42.6720,-1.8150]],
     3:[["로스 아르코스","Los Arcos",42.5686,-2.1920],["로그로뇨","Logroño",42.4650,-2.4450]],
     4:[["나헤라","Nájera",42.4165,-2.7330],["산토 도밍고","Santo Domingo de la Calzada",42.4405,-2.9535]],
-    5:[["산 후안 데 오르테가","San Juan de Ortega",42.3760,-3.4370],["부르고스","Burgos",42.3410,-3.7040],["오르니요스","Hornillos del Camino",42.3386,-3.9250]],
+    5:[["오카 산","Montes de Oca · N-120 고갯길",42.3689,-3.3724,"pass"],["산 후안 데 오르테가","San Juan de Ortega",42.3760,-3.4370],["부르고스","Burgos",42.3410,-3.7040],["오르니요스","Hornillos del Camino",42.3386,-3.9250]],
     6:[["프로미스타","Frómista",42.2670,-4.4060],["카리온","Carrión de los Condes",42.3380,-4.6030],["칼사디야","Calzadilla de la Cueza",42.3245,-4.8000]],
     7:[["엘 부르고 라네로","El Burgo Ranero",42.4230,-5.2200],["만시야","Mansilla de las Mulas",42.4990,-5.4170]],
     9:[["산 마르틴","San Martín del Camino",42.5000,-5.8090],["아스토르가","Astorga",42.4575,-6.0560]],
-    10:[["몰리나세카","Molinaseca",42.5385,-6.5245],["폰페라다","Ponferrada",42.5460,-6.5920],["카카벨로스","Cacabelos",42.6000,-6.7230]],
-    11:[["오 세브레이로","O Cebreiro",42.7080,-7.0430],["트리아카스텔라","Triacastela",42.7560,-7.2400]],
+    10:[["철의 십자가","Cruz de Ferro · 1,500 m",42.4899,-6.3527,"pass"],["몰리나세카","Molinaseca",42.5385,-6.5245],["폰페라다","Ponferrada",42.5460,-6.5920],["카카벨로스","Cacabelos",42.6000,-6.7230]],
+    11:[["오 세브레이로","O Cebreiro · 1,300 m",42.7080,-7.0430,"pass"],["알토 도 포이오","Alto do Poio · 1,335 m",42.7345,-7.1667,"pass"],["트리아카스텔라","Triacastela",42.7560,-7.2400]],
     12:[["포르토마린","Portomarín",42.8075,-7.6160],["팔라스 데 레이","Palas de Rei",42.8730,-7.8690],["멜리데","Melide",42.9145,-8.0140]],
     13:[["오 페드로우소","O Pedrouzo",42.9060,-8.3620],["몬테 도 고소","Monte do Gozo",42.8880,-8.4980]]
   };
@@ -779,7 +779,7 @@ window.CAMINO_LIVE = (function(){
         var dy=(pts[i][0]-v[2])*111320, dx=(pts[i][1]-v[3])*111320*cl, dd=dx*dx+dy*dy;
         if(dd<best){ best=dd; bi=i; }
       }
-      if(Math.sqrt(best)<=800) out.push({n:v[0], sub:v[1], m:C[bi], i:bi});
+      if(Math.sqrt(best)<=800) out.push({n:v[0], sub:v[1], m:C[bi], i:bi, pass:v[4]==="pass"});
     });
     out.sort(function(a,b){ return a.m-b.m; });
     return out;
@@ -939,14 +939,14 @@ window.CAMINO_LIVE = (function(){
        이웃과 가까우면 이름을 그래프 안쪽 줄로 내려 겹치지 않게 */
     var vias=viaFor(d), lastX=-1e9, vcol="#7A5EA8";
     vias.forEach(function(v){
-      var x=X(v.m), inner = (Math.abs(x-lastX) < 90);
+      var x=X(v.m), inner = (Math.abs(x-lastX) < 90), col = v.pass ? "#8E2C3A" : vcol;
       lastX = inner ? lastX : x;
       var ny = inner ? PT+13 : PT-15, ky = inner ? PT+24 : PT-5;
       h+='<line x1="'+F(x)+'" y1="'+(inner?PT+28:PT-2)+'" x2="'+F(x)+'" y2="'+F(PT+ih)
-        +'" stroke="'+vcol+'" stroke-width="1.2" stroke-dasharray="3 3" opacity=".85"/>'
-        +'<circle cx="'+F(x)+'" cy="'+F(Y(E[v.i]))+'" r="3.6" fill="#fff" stroke="'+vcol+'" stroke-width="2"/>'
-        +'<text class="dp-name" x="'+F(x)+'" y="'+ny+'" text-anchor="middle" fill="'+vcol
-        +'" style="paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round">'+esc(v.n)+'</text>'
+        +'" stroke="'+col+'" stroke-width="1.2" stroke-dasharray="3 3" opacity=".85"/>'
+        +'<circle cx="'+F(x)+'" cy="'+F(Y(E[v.i]))+'" r="3.6" fill="#fff" stroke="'+col+'" stroke-width="2"/>'
+        +'<text class="dp-name" x="'+F(x)+'" y="'+ny+'" text-anchor="middle" fill="'+col
+        +'" style="paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round">'+(v.pass?"⛰ ":"")+esc(v.n)+'</text>'
         +'<text class="dp-ax" x="'+F(x)+'" y="'+ky+'" text-anchor="middle" style="paint-order:stroke;stroke:#fff;stroke-width:3px">'
         +(v.m/1000).toFixed(1)+' km</text>';
     });

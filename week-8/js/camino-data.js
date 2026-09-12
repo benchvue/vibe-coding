@@ -1460,8 +1460,8 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     sant : {k:"산티아고 데 콤포스텔라", o:"Santiago de Compostela", la:42.8805, lo:-8.5457},
     /* 고개 — 도시 사이 최고점. 산 날씨는 도시와 크게 다릅니다 */
     p1   : {k:"DAY 1 최고점",   o:"우회로 · 1,240 m",          la:43.0299, lo:-1.2278, pass:true},
-    p2   : {k:"페르돈 고개",    o:"Alto del Perdón · 770 m",   la:42.7397, lo:-1.7089, pass:true},
-    p5   : {k:"오카 산",        o:"Montes de Oca · 1,150 m",   la:42.3860, lo:-3.3650, pass:true},
+    p2   : {k:"페르돈 고개",    o:"Alto del Perdón · 자전거 도로 고갯마루", la:42.7457, lo:-1.7241, pass:true},
+    p5   : {k:"오카 산",        o:"Montes de Oca · N-120 고갯길", la:42.3689, lo:-3.3724, pass:true},
     p10  : {k:"철의 십자가",    o:"Cruz de Ferro · 1,500 m",   la:42.4899, lo:-6.3527, pass:true},
     p11  : {k:"오 세브레이로",  o:"O Cebreiro · 1,300 m",      la:42.7080, lo:-7.0430, pass:true}
   };
