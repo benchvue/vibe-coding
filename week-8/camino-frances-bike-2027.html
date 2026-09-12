@@ -972,7 +972,21 @@
   .dwx h4 small{color:var(--ink-soft);font-weight:400}
   .wxgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   .wxgrid.one{grid-template-columns:1fr;max-width:520px}
-  @media(max-width:760px){ .wxgrid{grid-template-columns:1fr} }
+  .wxgrid:has(.wxb.p){grid-template-columns:1fr 1fr 1fr}        /* 출발 · 고개 · 도착 */
+  @media(max-width:1100px){ .wxgrid:has(.wxb.p){grid-template-columns:1fr 1fr} }
+  @media(max-width:760px){ .wxgrid,.wxgrid:has(.wxb.p){grid-template-columns:1fr} }
+  .wxrain b{color:#1E5FB4} .wxwind b{color:#3F5C3A} .wxwind i{font-style:normal;color:#D97706;font-size:.7rem}
+  /* 앞으로 7일 띠 */
+  .wx7{background:#fff;border:1px dashed var(--line);border-radius:12px;padding:8px 10px}
+  .wx7.off{border-style:dotted;color:var(--ink-soft);font-size:.72rem}
+  .wx7h{font-size:.72rem;font-weight:700;color:var(--camino-blue);margin-bottom:6px}
+  .wx7r{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+  .wx7d{text-align:center;border-radius:8px;padding:5px 2px;line-height:1.25;font-variant-numeric:tabular-nums}
+  .wx7d.me{background:#FFF3C4;outline:1.5px solid var(--flecha)}
+  .wx7d small{display:block;font-size:.62rem;color:var(--ink-soft)}
+  .wx7d .ic{display:block;font-size:1.05rem;margin:2px 0}
+  .wx7d b{display:block;font-size:.8rem} .wx7d i{display:block;font-style:normal;font-size:.68rem;color:var(--ink-soft)}
+  .wx7d em{display:block;font-style:normal;font-size:.62rem}
   .wxcard{background:#fff;border:1px solid var(--line);border-radius:13px;overflow:hidden;
     box-shadow:0 4px 14px rgba(21,42,85,.07)}
   .wxhead{display:flex;align-items:center;gap:8px;padding:9px 11px;border-bottom:1px solid var(--line);

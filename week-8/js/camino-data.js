@@ -1457,8 +1457,15 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     vega : {k:"베가 데 발까르세",  o:"Vega de Valcarce",        la:42.6597, lo:-6.9250},
     sarr : {k:"사리아",            o:"Sarria",                  la:42.7776, lo:-7.4144},
     arzu : {k:"아르수아",          o:"Arzúa",                   la:42.9296, lo:-8.1620},
-    sant : {k:"산티아고 데 콤포스텔라", o:"Santiago de Compostela", la:42.8805, lo:-8.5457}
+    sant : {k:"산티아고 데 콤포스텔라", o:"Santiago de Compostela", la:42.8805, lo:-8.5457},
+    /* 고개 — 도시 사이 최고점. 산 날씨는 도시와 크게 다릅니다 */
+    p1   : {k:"DAY 1 최고점",   o:"우회로 · 1,240 m",          la:43.0299, lo:-1.2278, pass:true},
+    p2   : {k:"페르돈 고개",    o:"Alto del Perdón · 770 m",   la:42.7397, lo:-1.7089, pass:true},
+    p5   : {k:"오카 산",        o:"Montes de Oca · 1,150 m",   la:42.3860, lo:-3.3650, pass:true},
+    p10  : {k:"철의 십자가",    o:"Cruz de Ferro · 1,500 m",   la:42.4899, lo:-6.3527, pass:true},
+    p11  : {k:"오 세브레이로",  o:"O Cebreiro · 1,300 m",      la:42.7080, lo:-7.0430, pass:true}
   };
+  var PASS = {1:"p1", 2:"p2", 5:"p5", 10:"p10", 11:"p11"};
   var DAY = {
     1:["sjpp","zubi"],  2:["zubi","este"],  3:["este","nava"], 4:["nava","belo"],
     5:["belo","cast"],  6:["cast","saha"],  7:["saha","leon"], 8:["leon","leon"],
@@ -1502,7 +1509,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
      WX-       일반 캐시(만료 있음)
      WXLOCK-   지나간 날의 확정 날씨 — 만료 없음, 다시 받지 않음
      RIDELOCK- 그날의 라이딩 시간대 — 주행기록 파일이 바뀌면 갱신             */
-  var K_CACHE = "caminoWx-v3", K_LOCK = "caminoWxLock-v1", K_RIDE = "caminoRideLock-v4";
+  var K_CACHE = "caminoWx-v4", K_LOCK = "caminoWxLock-v1", K_RIDE = "caminoRideLock-v4";
   function ls(k){ try{ return JSON.parse(localStorage.getItem(k)||"null"); }catch(e){ return null; } }
   function lsSet(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true; }catch(e){ return false; } }
   function cacheGet(k,ttl){ var o=ls(K_CACHE+"-"+k); return (o && Date.now()-o.t<ttl) ? o.v : null; }
@@ -1522,8 +1529,9 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     var url = host
       + "?latitude=" + la + "&longitude=" + lo
       + "&start_date=" + sDate + "&end_date=" + eDate
-      + "&hourly=temperature_2m,weather_code"
-      + "&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset"
+      + "&hourly=temperature_2m,weather_code,precipitation,wind_speed_10m,wind_gusts_10m,wind_direction_10m"
+      + (kind==="archive" ? "" : ",precipitation_probability")
+      + "&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_sum,wind_speed_10m_max,wind_gusts_10m_max"
       + "&timezone=auto";
     return fetch(url).then(function(r){ if(!r.ok) throw 0; return r.json(); })
       .then(function(j){
@@ -1536,6 +1544,14 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
             days.push({
               t   : (Hh.temperature_2m||[]).slice(i*24,(i+1)*24),
               c   : (Hh.weather_code   ||[]).slice(i*24,(i+1)*24),
+              p   : (Hh.precipitation  ||[]).slice(i*24,(i+1)*24),
+              pp  : (Hh.precipitation_probability||[]).slice(i*24,(i+1)*24),
+              ws  : (Hh.wind_speed_10m ||[]).slice(i*24,(i+1)*24),
+              wg  : (Hh.wind_gusts_10m ||[]).slice(i*24,(i+1)*24),
+              wd  : (Hh.wind_direction_10m||[]).slice(i*24,(i+1)*24),
+              psum: D.precipitation_sum   ? D.precipitation_sum[i]   : null,
+              wmax: D.wind_speed_10m_max  ? D.wind_speed_10m_max[i]  : null,
+              gmax: D.wind_gusts_10m_max  ? D.wind_gusts_10m_max[i]  : null,
               hi  : D.temperature_2m_max ? D.temperature_2m_max[i] : null,
               lo  : D.temperature_2m_min ? D.temperature_2m_min[i] : null,
               code: D.weather_code      ? D.weather_code[i]        : null,
@@ -1567,27 +1583,41 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       if(!got.length) return;
       var days = [];
       for(var i=0;i<NDAYS;i++){
-        var t=[], c=[], hi=[], lo=[], codes=[], sr=null, ss=null;
+        var t=[], c=[], p=[], ws=[], wg=[], wx=[], wy=[], hi=[], lo=[], codes=[], psum=[], wmax=[], gmax=[], sr=null, ss=null;
         got.forEach(function(s){
           var d = s[id].days[i]; if(!d) return;
           for(var h=0;h<24;h++){
             if(d.t[h]!=null) (t[h]=t[h]||[]).push(d.t[h]);
             if(d.c[h]!=null) (c[h]=c[h]||[]).push(d.c[h]);
+            if(d.p &&d.p[h]!=null)  (p[h]=p[h]||[]).push(d.p[h]);
+            if(d.ws&&d.ws[h]!=null) (ws[h]=ws[h]||[]).push(d.ws[h]);
+            if(d.wg&&d.wg[h]!=null) (wg[h]=wg[h]||[]).push(d.wg[h]);
+            if(d.wd&&d.wd[h]!=null){ var r=d.wd[h]*Math.PI/180; (wx[h]=wx[h]||[]).push(Math.sin(r)); (wy[h]=wy[h]||[]).push(Math.cos(r)); }
           }
           if(d.hi!=null) hi.push(d.hi);
           if(d.lo!=null) lo.push(d.lo);
           if(d.code!=null) codes.push(d.code);
+          if(d.psum!=null) psum.push(d.psum);
+          if(d.wmax!=null) wmax.push(d.wmax);
+          if(d.gmax!=null) gmax.push(d.gmax);
           if(!sr && d.sr) sr=d.sr;
           if(!ss && d.ss) ss=d.ss;
         });
-        var T=[], C=[];
+        var T=[], C=[], P=[], WS=[], WG=[], WD=[];
         for(var h=0;h<24;h++){
           T[h] = t[h] ? Math.round(avg(t[h])*10)/10 : null;
           C[h] = c[h] ? mode(c[h]) : null;
+          P[h] = p[h] ? Math.round(avg(p[h])*10)/10 : null;
+          WS[h]= ws[h]? Math.round(avg(ws[h])) : null;
+          WG[h]= wg[h]? Math.round(avg(wg[h])) : null;
+          WD[h]= wx[h]? Math.round((Math.atan2(avg(wx[h]),avg(wy[h]))*180/Math.PI+360)%360) : null;
         }
-        days.push({ t:T, c:C, src:"normal",
+        days.push({ t:T, c:C, p:P, pp:[], ws:WS, wg:WG, wd:WD, src:"normal",
           hi: hi.length?Math.round(avg(hi)*10)/10:null,
           lo: lo.length?Math.round(avg(lo)*10)/10:null,
+          psum: psum.length?Math.round(avg(psum)*10)/10:null,
+          wmax: wmax.length?Math.round(avg(wmax)):null,
+          gmax: gmax.length?Math.round(avg(gmax)):null,
           code: codes.length?mode(codes):null, sr:sr, ss:ss });
       }
       out[id] = {tz:got[0][id].tz, ab:got[0][id].ab, off:got[0][id].off, days:days};
@@ -1619,9 +1649,14 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
   }
 
   /* ══════ 그래프 ══════ */
-  var W=360, H=190, X0=32, X1=350,
+  var W=360, H=218, X0=32, X1=350,
       ICON_Y=12, CODE_Y=20, RIDE_TXT=30, RIDE_Y=37, BG_TOP=24,
-      Y0=46, Y1=152, AXIS_Y=166, SUN_Y=179;
+      Y0=46, Y1=152, WIND_Y=166, WIND_TXT=178, AXIS_Y=194, SUN_Y=207;
+  function windArrow(x,y,deg,col){   /* 바람이 "가는" 방향으로 화살표 (기상 방향은 불어오는 쪽이라 +180) */
+    var a=(deg+180)%360;
+    return '<g transform="translate('+x+' '+y+') rotate('+a+')"><line x1="0" y1="5" x2="0" y2="-5" stroke="'+col+'" stroke-width="1.5"/>'
+         +'<polygon points="0,-6.5 -3.2,-1.5 3.2,-1.5" fill="'+col+'"/></g>';
+  }
   function X(h){ return X0 + (Math.max(0,Math.min(24,h))/24)*(X1-X0); }
 
   function chart(day, uid, ride){
@@ -1690,6 +1725,19 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       s+='<text x="'+(XR+4)+'" y="'+(BG_TOP-5)+'" font-size="6.6" text-anchor="start" fill="#C2410C">실측</text>';
     }
 
+    /* ☔ 강수 — 아래에서 올라오는 파란 막대 (막대 높이 = mm, 최대 34 px). 확률이 있으면 진하기로 */
+    var PR=day.p||[], PP=day.pp||[], pmax=0;
+    for(i=0;i<24;i++) if(PR[i]!=null && PR[i]>pmax) pmax=PR[i];
+    if(pmax>0){
+      var psc=Math.max(1.5,pmax), bw=(XR-X0)/24;
+      for(i=0;i<24;i++){
+        if(PR[i]==null || PR[i]<=0.05) continue;
+        var bh=Math.min(34, PR[i]/psc*34), op = PP[i]!=null ? 0.25+0.55*(PP[i]/100) : 0.55;
+        s+='<rect x="'+(Xp(i)+0.5)+'" y="'+(Y1-bh)+'" width="'+(bw-1)+'" height="'+bh+'" fill="#1E5FB4" opacity="'+op.toFixed(2)+'"/>';
+      }
+      s+='<text x="'+(XR-3)+'" y="'+(Y1-36)+'" font-size="7" text-anchor="end" fill="#1E5FB4">☔ '+psc.toFixed(1)+' mm/h</text>';
+    }
+
     /* 기상 기온 면적 + 선 */
     var pts=[], first=null, last=null;
     for(i=0;i<24;i++){ if(T[i]!=null){ pts.push(Xp(i+0.5)+","+Y(T[i])); if(first===null)first=i; last=i; } }
@@ -1748,6 +1796,21 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
         +'fill="'+G+'" stroke="#fff" stroke-width="2.4" paint-order="stroke" stroke-linejoin="round">'+lbl+'</text>';
     }
 
+    /* 💨 바람 — 3시간마다 화살표(가는 방향) + 풍속. 돌풍 25 km/h 넘으면 주황, 40 넘으면 빨강 */
+    var WS=day.ws||[], WG=day.wg||[], WD=day.wd||[], anyW=false;
+    for(i=0;i<24;i++) if(WS[i]!=null){ anyW=true; break; }
+    if(anyW){
+      s+='<text x="'+(X0-5)+'" y="'+(WIND_Y+3)+'" font-size="8" text-anchor="end" fill="#5B6270">💨</text>';
+      [1,4,7,10,13,16,19,22].forEach(function(h){
+        if(WS[h]==null) return;
+        var g=WG[h]!=null?WG[h]:WS[h], col = g>=40?"#B91C1C" : g>=25?"#D97706" : "#3F5C3A";
+        if(WD[h]!=null) s+=windArrow(Xp(h+0.5), WIND_Y, WD[h], col);
+        s+='<text x="'+Xp(h+0.5)+'" y="'+WIND_TXT+'" font-size="7.2" text-anchor="middle" fill="'+col+'"'+(g>=25?' font-weight="700"':'')+'>'
+          +Math.round(WS[h])+(WG[h]!=null&&WG[h]-WS[h]>=8?'<tspan font-size="6">/'+Math.round(WG[h])+'</tspan>':'')+'</text>';
+      });
+      s+='<text x="'+(XR)+'" y="'+(WIND_TXT)+'" font-size="6" text-anchor="end" fill="#8A8A8A">km/h · /돌풍</text>';
+    }
+
     /* 시간축 */
     s+='<line x1="'+X0+'" y1="'+Y1+'" x2="'+XR+'" y2="'+Y1+'" stroke="#D8D3C4"/>';
     [0,3,6,9,12,15,18,21,24].forEach(function(h){
@@ -1760,6 +1823,29 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     return s;
   }
 
+  /* ══════ 앞으로 7일 — 여행 7일 전부터 여행 끝까지만 뜹니다 ══════ */
+  var FC7 = null;   /* {locId:{days:[7]}} · 오늘부터 */
+  function stripHTML(d, locId){
+    var now=new Date(); now.setHours(0,0,0,0);
+    var t0=new Date(TRIP_Y,TRIP_M-1,TRIP_D1-7), t1=new Date(TRIP_Y,TRIP_M-1,TRIP_D1+NDAYS);
+    if(now<t0 || now>t1){
+      return '<div class="wx7 off" style="grid-column:1/-1"><small>📅 앞으로 7일 예보는 <b>'+(TRIP_M)+'/'+(TRIP_D1-7)+'</b> 부터 이 자리에 나타납니다 · '+esc(L[locId].k)+' 기준</small></div>';
+    }
+    var F=FC7 && FC7[locId]; if(!F) return '<div class="wx7 off" style="grid-column:1/-1"><small>📅 7일 예보를 불러오지 못했습니다</small></div>';
+    var trip=tripDate(d).getTime(), h='<div class="wx7" style="grid-column:1/-1"><div class="wx7h">📅 앞으로 7일 · '+esc(L[locId].k)+'</div><div class="wx7r">';
+    F.days.forEach(function(dy,k){
+      var dt=new Date(now.getTime()+k*86400000), w=wmo(dy.code!=null?dy.code:2);
+      var isTrip = Math.abs(dt.getTime()-trip)<43200000;
+      var g=dy.gmax!=null?dy.gmax:dy.wmax, wc = g>=40?"#B91C1C":g>=25?"#D97706":"#3F5C3A";
+      h+='<div class="wx7d'+(isTrip?" me":"")+'"><small>'+(dt.getMonth()+1)+'/'+dt.getDate()+'</small>'
+        +'<span class="ic">'+w[0]+'</span>'
+        +'<b>'+(dy.hi!=null?Math.round(dy.hi):"–")+'°</b><i>'+(dy.lo!=null?Math.round(dy.lo):"–")+'°</i>'
+        +'<em style="color:#1E5FB4">☔'+(dy.psum!=null?dy.psum.toFixed(0):"–")+'</em>'
+        +'<em style="color:'+wc+'">💨'+(dy.wmax!=null?Math.round(dy.wmax):"–")+'</em></div>';
+    });
+    return h+'</div></div>';
+  }
+
   /* ══════ 카드 ══════ */
   function cardHTML(role, loc, day, uid, ride){
     var w = wmo(day.code!=null?day.code:2);
@@ -1767,6 +1853,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     var dom = dayCodes.length ? wmo(mode(dayCodes)) : w;
     var badge = role==="s" ? '<span class="wxb s">출발</span>'
               : role==="e" ? '<span class="wxb e">도착</span>'
+              : role==="p" ? '<span class="wxb p" style="background:#6B21A8;color:#fff">고개</span>'
                            : '<span class="wxb r">휴식</span>';
     var tag = day.src==="locked"   ? '<span class="wxlk">🔒 확정 기록</span>'
             : day.src==="forecast" ? '<span class="wxfc">실제 예보</span>' : '';
@@ -1788,6 +1875,8 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       + '<span class="wxlo">최저 <b>'+(day.lo!=null?day.lo.toFixed(1):"–")+'°</b></span>'
       + '<span class="wxsun">🌅 '+hhmm(day.sr)+'</span>'
       + '<span class="wxsun">🌇 '+hhmm(day.ss)+'</span>'
+      + (day.psum!=null ? '<span class="wxrain">☔ <b>'+day.psum.toFixed(1)+'</b> mm</span>' : '')
+      + (day.wmax!=null ? '<span class="wxwind">💨 <b>'+Math.round(day.wmax)+'</b>'+(day.gmax!=null?' <i>돌풍 '+Math.round(day.gmax)+'</i>':'')+' km/h</span>' : '')
       + rideLine
       + (ride && ride.temp
           ? '<span class="wxmeas">🌡 실측 최고 <b>'+ride.temp.mx.toFixed(1)+'°</b> · 최저 <b>'
@@ -1819,14 +1908,17 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     var a = WX[pair[0]], b = WX[pair[1]];
     if(!a || !a.days[i]){ grid.innerHTML='<p class="wxerr">날씨 데이터를 불러오지 못했습니다.</p>'; return; }
     var ride = (d===REST_DAY) ? null : RIDE[d];
+    var pid=PASS[d], pw = pid && WX[pid] && WX[pid].days[i] ? WX[pid].days[i] : null;
     if(pair[0]===pair[1]){
       grid.classList.add("one");
       grid.innerHTML = cardHTML("r", L[pair[0]], a.days[i], ++uidN, null);
     }else{
       grid.classList.remove("one");
       grid.innerHTML = cardHTML("s", L[pair[0]], a.days[i], ++uidN, ride)
+                     + (pw ? cardHTML("p", L[pid], pw, ++uidN, ride) : "")
                      + cardHTML("e", L[pair[1]], b.days[i], ++uidN, ride);
     }
+    grid.insertAdjacentHTML("beforeend", stripHTML(d, pid||pair[1]));
     var note = box.querySelector(".wxnote");
     if(note){
       var extra = "";
@@ -1902,6 +1994,14 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
           return ok.length ? mergeYears(ok) : null;
         })
       : Promise.resolve(null);
+
+    /* ③ 앞으로 7일 (오늘부터) — 여행 7일 전부터만 */
+    var t0w=new Date(TRIP_Y,TRIP_M-1,TRIP_D1-7), t1w=new Date(TRIP_Y,TRIP_M-1,TRIP_D1+NDAYS);
+    if(now>=t0w && now<=t1w){
+      var e7=new Date(now.getTime()+6*86400000);
+      fetchRange("forecast", dstr(now.getFullYear(),now.getMonth()+1,now.getDate()), dstr(e7.getFullYear(),e7.getMonth()+1,e7.getDate()), 7, 3600e3)
+        .then(function(r){ FC7=r; renderAll(); }).catch(function(){});
+    }
 
     /* ② 예보 */
     var fcOff = fcIdx.length ? fcIdx[0] : 0;
