@@ -757,7 +757,7 @@ window.CAMINO_LIVE = (function(){
   var WHO={bin:{n:"BIN",c:"#1E5FB4"}, jin:{n:"JIN",c:"#C92A2A"}};
   /* 중간 경유지 — [한글, 원어, lat, lon]. 그날 GPX 에 투영해 km 를 구하고, 노선에서 800 m 넘게 떨어지면 뺍니다 */
   var VIA={
-    1:[["생 미셸","Saint-Michel",43.1134,-1.2366],["최고점 1,240 m","우회로 정상",43.0299,-1.2278,"pass"],["론세스바예스","Roncesvalles",43.0092,-1.3195]],   /* 우회로 — 오리손·발카를로스는 지나지 않음 */
+    1:[["생 미셸","Saint-Michel",43.1134,-1.2366],["최고점","우회로 정상",43.0299,-1.2278,"pass"],["론세스바예스","Roncesvalles",43.0092,-1.3195]],   /* 우회로 — 오리손·발카를로스는 지나지 않음 */
     2:[["팜플로나","Pamplona",42.8169,-1.6432],["페르돈 고개","Alto del Perdón · 자전거 도로 고갯마루",42.7457,-1.7241,"pass"],["푸엔테 라 레이나","Puente la Reina",42.6720,-1.8150]],
     3:[["로스 아르코스","Los Arcos",42.5686,-2.1920],["로그로뇨","Logroño",42.4650,-2.4450]],
     4:[["나헤라","Nájera",42.4165,-2.7330],["산토 도밍고","Santo Domingo de la Calzada",42.4405,-2.9535]],
@@ -779,7 +779,14 @@ window.CAMINO_LIVE = (function(){
         var dy=(pts[i][0]-v[2])*111320, dx=(pts[i][1]-v[3])*111320*cl, dd=dx*dx+dy*dy;
         if(dd<best){ best=dd; bi=i; }
       }
-      if(Math.sqrt(best)<=800) out.push({n:v[0], sub:v[1], m:C[bi], i:bi, pass:v[4]==="pass"});
+      if(Math.sqrt(best)>800) return;
+      var isPass = v[4]==="pass";
+      if(isPass && ELE[d]){
+        /* 고개는 좌표 근처(±6 km)에서 가장 높은 지점으로 옮깁니다 — 좌표가 마루에서 조금 비껴 있어도 봉우리에 찍히게 */
+        var E=ELE[d], lo=C[bi]-6000, hi=C[bi]+6000, top=-Infinity;
+        for(var j=0;j<E.length;j++){ if(C[j]<lo||C[j]>hi) continue; if(E[j]>top){ top=E[j]; bi=j; } }
+      }
+      out.push({n:v[0], sub:v[1], m:C[bi], i:bi, pass:isPass});
     });
     out.sort(function(a,b){ return a.m-b.m; });
     return out;
@@ -946,7 +953,7 @@ window.CAMINO_LIVE = (function(){
         +'" stroke="'+col+'" stroke-width="1.2" stroke-dasharray="3 3" opacity=".85"/>'
         +'<circle cx="'+F(x)+'" cy="'+F(Y(E[v.i]))+'" r="3.6" fill="#fff" stroke="'+col+'" stroke-width="2"/>'
         +'<text class="dp-name" x="'+F(x)+'" y="'+ny+'" text-anchor="middle" fill="'+col
-        +'" style="paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round">'+(v.pass?"⛰ ":"")+esc(v.n)+'</text>'
+        +'" style="paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round">'+(v.pass?"⛰ ":"")+esc(v.n)+(v.pass?" "+Math.round(E[v.i]).toLocaleString()+" m":"")+'</text>'
         +'<text class="dp-ax" x="'+F(x)+'" y="'+ky+'" text-anchor="middle" style="paint-order:stroke;stroke:#fff;stroke-width:3px">'
         +(v.m/1000).toFixed(1)+' km</text>';
     });
