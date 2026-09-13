@@ -121,7 +121,25 @@
     <type>photo</type>
     <cmt>사모스 수도원</cmt>
   </wpt>
-  <trk>
+    <wpt lat="42.664607" lon="-6.945456"><name>Fuente de La Carcel</name><desc>식수대 · 왼쪽 40 m · 0.0 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.665345" lon="-6.946559"><name>Bar Refugio del Cazador</name><desc>카페 · 길 위 · 0.1 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.665319" lon="-6.947675"><name>Bar Galicia</name><desc>바 · 길 위 · 0.2 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.671930" lon="-6.964446"><name>Café Bar Omega</name><desc>카페 · 오른쪽 15 m · 2.0 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.672213" lon="-6.965626"><name>식수대</name><desc>식수대 · 길 위 · 2.1 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.672805" lon="-6.967468"><name>바</name><desc>바 · 길 위 · 2.3 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.671112" lon="-6.980909"><name>식수대</name><desc>식수대 · 왼쪽 30 m · 3.6 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.672373" lon="-6.978246"><name>바</name><desc>바 · 길 위 · 3.9 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.725201" lon="-7.016544"><name>Fonte da Abraira</name><desc>식수대 · 오른쪽 25 m · 13.3 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.707617" lon="-7.042791"><name>식수대</name><desc>식수대 · 길 위 · 18.0 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.699809" lon="-7.072486"><name>식수대</name><desc>식수대 · 왼쪽 35 m · 21.4 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.756077" lon="-7.236224"><name>Cafe O Escondite</name><desc>카페 · 왼쪽 45 m · 40.8 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.756357" lon="-7.238796"><name>Cafe Bar Esther</name><desc>카페 · 왼쪽 25 m · 41.0 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.767302" lon="-7.308530"><name>Casa do Campo</name><desc>카페 · 오른쪽 30 m · 52.5 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.775884" lon="-7.402701"><name>식수대</name><desc>식수대 · 오른쪽 15 m · 61.7 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.775730" lon="-7.404498"><name>식수대</name><desc>식수대 · 길 위 · 61.8 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.775936" lon="-7.406458"><name>Adarve</name><desc>카페 · 길 위 · 62.0 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.774823" lon="-7.408092"><name>식수대</name><desc>식수대 · 길 위 · 62.3 km</desc><sym>Water</sym></wpt>
+<trk>
     <name>camino-day11-bike-tmp</name>
     <trkseg>
       <trkpt lat="42.6649300" lon="-6.9451100">

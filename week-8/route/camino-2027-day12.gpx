@@ -224,7 +224,55 @@
     <type>photo</type>
     <cmt>산 로케 예배당</cmt>
   </wpt>
-  <trk>
+    <wpt lat="42.777237" lon="-7.413752"><name>Escalinata</name><desc>카페 · 길 위 · 0.5 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.777196" lon="-7.413817"><name>식수대</name><desc>식수대 · 길 위 · 0.5 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.776858" lon="-7.417680"><name>Fonte de San Salvador</name><desc>식수대 · 길 위 · 0.9 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.777687" lon="-7.419710"><name>식수대</name><desc>식수대 · 왼쪽 25 m · 1.1 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.768602" lon="-7.445156"><name>A Fonte de Arriba</name><desc>식수대 · 길 위 · 4.3 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.766527" lon="-7.450970"><name>식수대</name><desc>식수대 · 길 위 · 4.9 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.771257" lon="-7.466685"><name>Taberna Mercado da Serra</name><desc>카페 · 오른쪽 40 m · 6.5 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.775135" lon="-7.471872"><name>Fonte dos Peregrinos</name><desc>식수대 · 길 위 · 7.2 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.780654" lon="-7.490104"><name>Peruscallo</name><desc>카페 · 왼쪽 45 m · 9.5 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.779252" lon="-7.515162"><name>식수대</name><desc>식수대 · 길 위 · 11.9 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.779777" lon="-7.516494"><name>Mirador de Brea</name><desc>카페 · 길 위 · 12.0 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.795743" lon="-7.602740"><name>식수대</name><desc>식수대 · 왼쪽 45 m · 21.2 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.825398" lon="-7.696137"><name>식수대</name><desc>식수대 · 오른쪽 30 m · 31.1 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.830523" lon="-7.704389"><name>Albergue Ortiz</name><desc>카페 · 오른쪽 30 m · 32.1 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.832008" lon="-7.709923"><name>Café-Bar O Castro</name><desc>카페 · 길 위 · 32.6 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.844254" lon="-7.747579"><name>Albergue-Bar Casa Molar</name><desc>카페 · 11:00-23:00 · 오른쪽 30 m · 36.4 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.843960" lon="-7.749116"><name>카페</name><desc>카페 · 왼쪽 30 m · 36.5 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.844276" lon="-7.749229"><name>Fonte da Capela</name><desc>식수대 · 길 위 · 36.5 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.852395" lon="-7.770158"><name>Bar Trisquel</name><desc>바 · 길 위 · 38.5 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.860115" lon="-7.781520"><name>Fonte do Peregrino</name><desc>식수대 · 길 위 · 39.9 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.860227" lon="-7.781751"><name>Café y Té Gratis</name><desc>카페 · 왼쪽 20 m · 39.9 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.865605" lon="-7.787811"><name>식수대</name><desc>식수대 · 길 위 · 40.7 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.865747" lon="-7.791019"><name>식수대</name><desc>식수대 · 길 위 · 41.0 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.873427" lon="-7.807160"><name>A Paso de Formiga</name><desc>바 · 길 위 · 42.6 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.873930" lon="-7.857601"><name>식수대</name><desc>식수대 · 길 위 · 47.1 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.872847" lon="-7.867402"><name>Café-Bar O&#x27;Cruceiro</name><desc>카페 · 길 위 · 47.9 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.872705" lon="-7.868387"><name>식수대</name><desc>식수대 · 길 위 · 48.0 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.873334" lon="-7.869861"><name>Guntina</name><desc>카페 · 길 위 · 48.2 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.874228" lon="-7.874820"><name>식수대</name><desc>식수대 · 길 위 · 48.7 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.873293" lon="-7.876609"><name>Valín Lama</name><desc>카페 · 길 위 · 48.9 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.874417" lon="-7.903467"><name>Albergue O Abrigadoiro</name><desc>바 · Apr-Oct 12:00-23:00 · 길 위 · 51.6 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.875083" lon="-7.905113"><name>The Essential Coffee Home</name><desc>카페 · Mo-Su 05:00-14:00 · 길 위 · 51.8 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.879003" lon="-7.926748"><name>Parada Casa Nova</name><desc>카페 · 길 위 · 53.7 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.884994" lon="-7.958898"><name>Casa de los Somoza</name><desc>카페 · 오른쪽 15 m · 56.7 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.884961" lon="-7.959061"><name>화장실</name><desc>화장실 · 길 위 · 56.7 km</desc><sym>Toilet</sym></wpt>
+  <wpt lat="42.898746" lon="-7.983085"><name>식수대</name><desc>식수대 · 길 위 · 59.4 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.900293" lon="-7.986108"><name>식수대</name><desc>식수대 · 길 위 · 59.7 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.908081" lon="-7.997595"><name>Fonte de Furelos</name><desc>식수대 · 길 위 · 61.0 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.909310" lon="-7.999920"><name>식수대</name><desc>식수대 · 길 위 · 61.3 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.913939" lon="-8.014252"><name>Burato</name><desc>카페 · Mo-Sa 06:00-23:00 · 길 위 · 62.6 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.914336" lon="-8.016588"><name>식수대</name><desc>식수대 · 길 위 · 62.9 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.913732" lon="-8.018717"><name>Fonte da Praza do Convento</name><desc>식수대 · 길 위 · 63.0 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.915579" lon="-8.057207"><name>Taberna de Parabispo</name><desc>카페 · 오른쪽 20 m · 66.6 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.915837" lon="-8.072059"><name>Cafetería El Alemán</name><desc>카페 · 길 위 · 67.9 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.915925" lon="-8.074174"><name>식수대</name><desc>식수대 · 길 위 · 68.1 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.915852" lon="-8.078295"><name>Fuente Saleta</name><desc>카페 · 왼쪽 40 m · 68.5 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.923765" lon="-8.094293"><name>Café-Bar No Camiño</name><desc>카페 · Mo-Su 09:00-17:00 · 오른쪽 20 m · 70.4 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.927552" lon="-8.159271"><name>Manolo</name><desc>카페 · 길 위 · 76.3 km</desc><sym>Bar</sym></wpt>
+<trk>
     <name>camino-day12-bike-tmp</name>
     <trkseg>
       <trkpt lat="42.7749000" lon="-7.4088500">

@@ -143,6 +143,59 @@
     <sym>Scenic Area</sym>
     <cmt>c/ Rocamador 6, Estella Â· Tel +34 948 550 549</cmt>
   </wpt>
+  <wpt lat="42.929102" lon="-1.502597"><name>식수대</name><desc>식수대 · 길 위 · 0.1 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.911128" lon="-1.517194"><name>식수대</name><desc>식수대 · 길 위 · 2.7 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.907868" lon="-1.524897"><name>식수대</name><desc>식수대 · 길 위 · 3.5 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.859410" lon="-1.575347"><name>화장실</name><desc>화장실 · 길 위 · 11.6 km</desc><sym>Toilet</sym></wpt>
+  <wpt lat="42.859060" lon="-1.575706"><name>식수대</name><desc>식수대 · 길 위 · 11.6 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.852598" lon="-1.583505"><name>식수대</name><desc>식수대 · 오른쪽 25 m · 12.8 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.852442" lon="-1.583868"><name>화장실</name><desc>화장실 · 길 위 · 12.8 km</desc><sym>Toilet</sym></wpt>
+  <wpt lat="42.835749" lon="-1.604559"><name>식수대</name><desc>식수대 · 길 위 · 15.8 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.832789" lon="-1.606823"><name>식수대</name><desc>식수대 · 길 위 · 16.2 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.826755" lon="-1.614535"><name>Amaiur</name><desc>바 · 길 위 · 17.1 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.825034" lon="-1.617446"><name>Cafetería Etxabe</name><desc>카페 · 오른쪽 15 m · 17.4 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.822544" lon="-1.625019"><name>식수대</name><desc>식수대 · 오른쪽 50 m · 18.3 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.820938" lon="-1.636521"><name>식수대</name><desc>식수대 · 길 위 · 19.3 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.820837" lon="-1.638780"><name>식수대</name><desc>식수대 · 길 위 · 19.5 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.819599" lon="-1.643149"><name>La pulga</name><desc>바 · 길 위 · 20.1 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.819323" lon="-1.642910"><name>Fuente de Navarrería</name><desc>식수대 · 길 위 · 20.2 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.817102" lon="-1.646323"><name>식수대</name><desc>식수대 · 길 위 · 20.6 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.817075" lon="-1.646677"><name>Etxe Zuri Handia</name><desc>카페 · 길 위 · 20.6 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.816911" lon="-1.646655"><name>Aseo Público Autolimpiable Plaza San Francisco</name><desc>화장실 · 길 위 · 20.6 km</desc><sym>Toilet</sym></wpt>
+  <wpt lat="42.817088" lon="-1.649120"><name>식수대</name><desc>식수대 · 길 위 · 20.8 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.814411" lon="-1.653023"><name>식수대</name><desc>식수대 · 길 위 · 21.3 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.808130" lon="-1.655145"><name>Arrasate</name><desc>카페 · 길 위 · 22.2 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.804774" lon="-1.659971"><name>식수대</name><desc>식수대 · 길 위 · 22.8 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.788187" lon="-1.676197"><name>식수대</name><desc>식수대 · 오른쪽 35 m · 25.3 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.786062" lon="-1.677839"><name>식수대</name><desc>식수대 · 길 위 · 25.5 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.748607" lon="-1.722216"><name>식수대</name><desc>식수대 · 길 위 · 31.3 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.748657" lon="-1.722369"><name>화장실</name><desc>화장실 · 오른쪽 15 m · 31.3 km</desc><sym>Toilet</sym></wpt>
+  <wpt lat="42.748389" lon="-1.722684"><name>식수대</name><desc>식수대 · 길 위 · 31.4 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.748144" lon="-1.722926"><name>Albergue San Andrés</name><desc>바 · 길 위 · 31.4 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.710374" lon="-1.759003"><name>식수대</name><desc>식수대 · 길 위 · 37.1 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.689994" lon="-1.770622"><name>식수대</name><desc>식수대 · 왼쪽 25 m · 39.8 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.681410" lon="-1.781599"><name>식수대</name><desc>식수대 · 길 위 · 41.1 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.680004" lon="-1.785590"><name>식수대</name><desc>식수대 · 길 위 · 41.6 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.671744" lon="-1.816211"><name>Bar Aloa</name><desc>바 · 길 위 · 44.5 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.671479" lon="-1.818049"><name>식수대</name><desc>식수대 · 길 위 · 44.6 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.669364" lon="-1.859529"><name>식수대</name><desc>식수대 · 길 위 · 48.8 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.669017" lon="-1.862368"><name>식수대</name><desc>식수대 · 길 위 · 49.1 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.668937" lon="-1.862635"><name>Bar El Cantero</name><desc>바 · 길 위 · 49.1 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.675657" lon="-1.888783"><name>식수대</name><desc>식수대 · 길 위 · 51.5 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.675846" lon="-1.891813"><name>식수대</name><desc>식수대 · 오른쪽 50 m · 51.7 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.675387" lon="-1.891201"><name>화장실</name><desc>화장실 · 길 위 · 51.8 km</desc><sym>Toilet</sym></wpt>
+  <wpt lat="42.672530" lon="-1.944937"><name>Eztitsu</name><desc>카페 · 왼쪽 25 m · 57.4 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.672545" lon="-1.945215"><name>식수대</name><desc>식수대 · 길 위 · 57.4 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.671953" lon="-1.947061"><name>식수대</name><desc>식수대 · 오른쪽 40 m · 57.5 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.663038" lon="-1.987838"><name>식수대</name><desc>식수대 · 오른쪽 20 m · 61.3 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.661578" lon="-1.990315"><name>식수대</name><desc>식수대 · 오른쪽 25 m · 61.6 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.660406" lon="-1.991092"><name>Marta</name><desc>카페 · 길 위 · 61.7 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.659262" lon="-1.991487"><name>화장실</name><desc>화장실 · 왼쪽 25 m · 61.9 km</desc><sym>Toilet</sym></wpt>
+  <wpt lat="42.658125" lon="-1.994059"><name>식수대</name><desc>식수대 · 길 위 · 62.1 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.667910" lon="-2.023086"><name>식수대</name><desc>식수대 · 길 위 · 65.4 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.669505" lon="-2.023788"><name>식수대</name><desc>식수대 · 길 위 · 65.5 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.669539" lon="-2.023770"><name>화장실</name><desc>화장실 · 길 위 · 65.5 km</desc><sym>Toilet</sym></wpt>
+  <wpt lat="42.669415" lon="-2.029190"><name>Parranda</name><desc>바 · 길 위 · 66.0 km</desc><sym>Bar</sym></wpt>
 <trk>
     <name>Camino day02</name>
     <trkseg>

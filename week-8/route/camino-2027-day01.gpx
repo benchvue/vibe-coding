@@ -62,7 +62,26 @@
     <sym>Lodging</sym>
     <cmt>Av. de Roncesvalles 22, Zubiri Â· Tel +34 697 186 560</cmt>
   </wpt>
- <trk>
+   <wpt lat="43.161834" lon="-1.238972"><name>식수대</name><desc>식수대 · 왼쪽 15 m · 0.2 km</desc><sym>Water</sym></wpt>
+  <wpt lat="43.162484" lon="-1.239268"><name>Café des Remparts</name><desc>카페 · 길 위 · 0.2 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="43.162465" lon="-1.239544"><name>화장실</name><desc>화장실 · 길 위 · 0.2 km</desc><sym>Toilet</sym></wpt>
+  <wpt lat="43.124383" lon="-1.244803"><name>Ferme Thurburia</name><desc>카페 · 길 위 · 5.6 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="43.118052" lon="-1.238957"><name>식수대</name><desc>식수대 · 길 위 · 7.4 km</desc><sym>Water</sym></wpt>
+  <wpt lat="43.108880" lon="-1.239154"><name>식수대</name><desc>식수대 · 길 위 · 8.5 km</desc><sym>Water</sym></wpt>
+  <wpt lat="43.108840" lon="-1.239167"><name>화장실</name><desc>화장실 · 길 위 · 8.5 km</desc><sym>Toilet</sym></wpt>
+  <wpt lat="43.032331" lon="-1.227105"><name>Azpegiko iturria</name><desc>식수대 · 길 위 · 21.7 km</desc><sym>Water</sym></wpt>
+  <wpt lat="43.008006" lon="-1.319305"><name>식수대</name><desc>식수대 · 왼쪽 25 m · 34.5 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.992980" lon="-1.330102"><name>식수대</name><desc>식수대 · 길 위 · 36.6 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.992988" lon="-1.330137"><name>화장실</name><desc>화장실 · 길 위 · 36.6 km</desc><sym>Toilet</sym></wpt>
+  <wpt lat="42.992913" lon="-1.330127"><name>식수대</name><desc>식수대 · 길 위 · 36.6 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.989166" lon="-1.334785"><name>Iribarren</name><desc>바 · 길 위 · 37.2 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.972959" lon="-1.352122"><name>식수대</name><desc>식수대 · 길 위 · 40.4 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.971395" lon="-1.354671"><name>식수대</name><desc>식수대 · 오른쪽 30 m · 40.7 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.930229" lon="-1.502374"><name>화장실</name><desc>화장실 · 길 위 · 59.6 km</desc><sym>Toilet</sym></wpt>
+  <wpt lat="42.930164" lon="-1.502427"><name>식수대</name><desc>식수대 · 길 위 · 59.6 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.930177" lon="-1.504382"><name>Cafe del Camino</name><desc>카페 · 길 위 · 59.8 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.930293" lon="-1.504381"><name>Fuente del agua del batueco</name><desc>식수대 · 길 위 · 59.8 km</desc><sym>Water</sym></wpt>
+<trk>
   <name>brouter_trekking_0</name>
   <trkseg>
    <trkpt lon="-1.238128" lat="43.163163"><ele>163.5</ele></trkpt>

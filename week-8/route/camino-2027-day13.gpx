@@ -47,7 +47,45 @@
     <type>photo</type>
     <cmt>산티아고 대성당</cmt>
   </wpt>
-  <trk>
+    <wpt lat="42.927552" lon="-8.159271"><name>Manolo</name><desc>카페 · 길 위 · 0.0 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.927135" lon="-8.160592"><name>식수대</name><desc>식수대 · 길 위 · 0.1 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.926172" lon="-8.163741"><name>O Filloas</name><desc>바 · 길 위 · 0.4 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.926920" lon="-8.168542"><name>식수대</name><desc>식수대 · 길 위 · 0.8 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.922552" lon="-8.186227"><name>Café-Bar Preguntoño</name><desc>카페 · Mo-Su 06:00-15:30 · 길 위 · 2.6 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.926728" lon="-8.195153"><name>Abaceria Galega</name><desc>카페 · 길 위 · 3.6 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.928642" lon="-8.214830"><name>Taberna Nova</name><desc>카페 · 오른쪽 25 m · 5.3 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.925086" lon="-8.224727"><name>Casa Calzada</name><desc>카페 · 길 위 · 6.2 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.918426" lon="-8.240718"><name>Café Bar Lino</name><desc>카페 · 오른쪽 30 m · 7.8 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.917884" lon="-8.242584"><name>Casa do Hórreo</name><desc>카페 · 길 위 · 8.0 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.922316" lon="-8.258363"><name>Casa da Boavista</name><desc>카페 · Tu-Su 08:00-17:00 · 길 위 · 9.5 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.917976" lon="-8.333651"><name>Lar Sant Yago</name><desc>카페 · 길 위 · 16.5 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.918456" lon="-8.335849"><name>식수대</name><desc>식수대 · 오른쪽 20 m · 16.7 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.914741" lon="-8.350093"><name>식수대</name><desc>식수대 · 길 위 · 18.0 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.907723" lon="-8.364812"><name>Bar Mirás</name><desc>바 · 길 위 · 19.6 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.905876" lon="-8.393436"><name>Pensión Bar Kilómetro 15</name><desc>바 · 길 위 · 22.5 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.899584" lon="-8.447024"><name>카페</name><desc>카페 · 오른쪽 30 m · 28.6 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.899754" lon="-8.446540"><name>식수대</name><desc>식수대 · 길 위 · 28.6 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.891881" lon="-8.476269"><name>Bar Cámping San Marcos</name><desc>카페 · 왼쪽 20 m · 32.3 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.889905" lon="-8.492933"><name>화장실</name><desc>화장실 · 왼쪽 20 m · 34.0 km</desc><sym>Toilet</sym></wpt>
+  <wpt lat="42.889727" lon="-8.493872"><name>식수대</name><desc>식수대 · 길 위 · 34.0 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.888511" lon="-8.497167"><name>식수대</name><desc>식수대 · 길 위 · 34.3 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.886460" lon="-8.509085"><name>식수대</name><desc>식수대 · 길 위 · 35.4 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.886093" lon="-8.511615"><name>식수대</name><desc>식수대 · 왼쪽 35 m · 35.6 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.886234" lon="-8.516248"><name>Compostela Dreams Café</name><desc>카페 · 길 위 · 36.0 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.886676" lon="-8.517300"><name>Café Bar 73</name><desc>카페 · 오른쪽 30 m · 36.1 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.886372" lon="-8.518352"><name>In Antrum</name><desc>카페 · 왼쪽 15 m · 36.2 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.886692" lon="-8.520150"><name>식수대</name><desc>식수대 · 길 위 · 36.3 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.887142" lon="-8.522819"><name>De Mon</name><desc>카페 · 길 위 · 36.5 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.887178" lon="-8.523837"><name>식수대</name><desc>식수대 · 길 위 · 36.6 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.886093" lon="-8.528899"><name>식수대</name><desc>식수대 · 길 위 · 37.1 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.885973" lon="-8.529513"><name>Decotío</name><desc>카페 · 길 위 · 37.1 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.885654" lon="-8.530521"><name>식수대</name><desc>식수대 · 길 위 · 37.2 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.884158" lon="-8.534143"><name>Tanque</name><desc>카페 · 길 위 · 37.6 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.881807" lon="-8.535356"><name>Churrería San Pedro</name><desc>카페 · 길 위 · 37.9 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.881161" lon="-8.537973"><name>식수대</name><desc>식수대 · 길 위 · 38.2 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.881675" lon="-8.539013"><name>Eiquí</name><desc>카페 · Mo-Th 15:30-18:30 · 길 위 · 38.3 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.881113" lon="-8.542822"><name>A Gramola</name><desc>카페 · 길 위 · 38.6 km</desc><sym>Bar</sym></wpt>
+<trk>
     <name>Camino day13</name>
     <trkseg>
       <trkpt lat="42.9276800" lon="-8.1592800">

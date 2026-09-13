@@ -146,7 +146,63 @@
     <type>photo</type>
     <cmt>카스트로헤리스 산토 도밍고 성당</cmt>
   </wpt>
-  <trk>
+    <wpt lat="42.417967" lon="-3.200123"><name>식수대</name><desc>식수대 · 길 위 · 0.7 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.417834" lon="-3.202011"><name>식수대</name><desc>식수대 · 길 위 · 0.9 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.412925" lon="-3.241583"><name>식수대</name><desc>식수대 · 길 위 · 4.4 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.413078" lon="-3.244559"><name>식수대</name><desc>식수대 · 오른쪽 35 m · 4.6 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.404323" lon="-3.261848"><name>식수대</name><desc>식수대 · 길 위 · 6.4 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.405775" lon="-3.281188"><name>식수대</name><desc>식수대 · 길 위 · 8.0 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.388896" lon="-3.309077"><name>식수대</name><desc>식수대 · 길 위 · 11.5 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.369558" lon="-3.375280"><name>El Oasis De Camino</name><desc>바 · Mo-Su 11:00-18:00 · 길 위 · 18.1 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.375765" lon="-3.437561"><name>식수대</name><desc>식수대 · 길 위 · 23.5 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.376021" lon="-3.437676"><name>Taberna Marcela</name><desc>바 · 길 위 · 23.5 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.369796" lon="-3.478637"><name>식수대</name><desc>식수대 · 길 위 · 27.0 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.369719" lon="-3.478872"><name>El Alquimista</name><desc>카페 · 길 위 · 27.1 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.370007" lon="-3.479033"><name>식수대</name><desc>식수대 · 길 위 · 27.1 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.371479" lon="-3.484748"><name>Fuente del Puente</name><desc>식수대 · 왼쪽 20 m · 27.6 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.376657" lon="-3.508234"><name>식수대</name><desc>식수대 · 길 위 · 29.6 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.377109" lon="-3.508564"><name>Cantina Atapuerca</name><desc>바 · 길 위 · 29.7 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.377587" lon="-3.509920"><name>식수대</name><desc>식수대 · 길 위 · 29.8 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.359416" lon="-3.581697"><name>식수대</name><desc>식수대 · 왼쪽 45 m · 37.6 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.360342" lon="-3.584305"><name>식수대</name><desc>식수대 · 오른쪽 20 m · 37.8 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.364768" lon="-3.619033"><name>식수대</name><desc>식수대 · 오른쪽 40 m · 41.4 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.364433" lon="-3.622574"><name>Iruñako</name><desc>카페 · 오른쪽 30 m · 41.7 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.358072" lon="-3.650935"><name>식수대</name><desc>식수대 · 길 위 · 44.3 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.354219" lon="-3.665793"><name>Liverpool</name><desc>바 · 길 위 · 45.6 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.353926" lon="-3.668578"><name>식수대</name><desc>식수대 · 길 위 · 45.9 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.351229" lon="-3.674224"><name>Molino Rojo</name><desc>바 · Mo,We-Su 12:00-15:30,19: · 길 위 · 46.5 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.350269" lon="-3.675610"><name>식수대</name><desc>식수대 · 길 위 · 46.7 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.348816" lon="-3.679835"><name>Plan B</name><desc>카페 · 길 위 · 47.1 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.348126" lon="-3.681273"><name>식수대</name><desc>식수대 · 길 위 · 47.2 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.346752" lon="-3.682387"><name>El Sótano - Café Cultural</name><desc>바 · Mo-Th 09:30-15:30,19:00- · 길 위 · 47.4 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.345199" lon="-3.687833"><name>Sociedad Santa María la Mayor</name><desc>바 · 길 위 · 48.0 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.343205" lon="-3.695761"><name>La Petenera</name><desc>카페 · 오른쪽 15 m · 48.7 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.342740" lon="-3.697097"><name>식수대</name><desc>식수대 · 길 위 · 48.8 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.343257" lon="-3.700654"><name>La Pícara</name><desc>카페 · 길 위 · 49.1 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.340449" lon="-3.705598"><name>식수대</name><desc>식수대 · 길 위 · 49.7 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.341722" lon="-3.713154"><name>식수대</name><desc>식수대 · 길 위 · 50.4 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.341934" lon="-3.713173"><name>Mesón Habana</name><desc>바 · 길 위 · 50.4 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.340810" lon="-3.716737"><name>식수대</name><desc>식수대 · 길 위 · 50.8 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.341002" lon="-3.726248"><name>식수대</name><desc>식수대 · 길 위 · 51.6 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.342868" lon="-3.735324"><name>화장실</name><desc>화장실 · 손님용 · 길 위 · 52.5 km</desc><sym>Toilet</sym></wpt>
+  <wpt lat="42.343134" lon="-3.738763"><name>식수대</name><desc>식수대 · 왼쪽 50 m · 52.8 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.343282" lon="-3.744811"><name>식수대</name><desc>식수대 · 왼쪽 40 m · 53.3 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.350049" lon="-3.767738"><name>식수대</name><desc>식수대 · 길 위 · 55.3 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.349139" lon="-3.815491"><name>Fuente El Peregrino</name><desc>식수대 · 오른쪽 25 m · 60.2 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.349341" lon="-3.820768"><name>식수대</name><desc>식수대 · 길 위 · 60.7 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.349058" lon="-3.822694"><name>식수대</name><desc>식수대 · 길 위 · 60.9 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.340358" lon="-3.833094"><name>식수대</name><desc>식수대 · 왼쪽 45 m · 62.3 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.338559" lon="-3.926297"><name>식수대</name><desc>식수대 · 길 위 · 70.1 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.312948" lon="-4.041872"><name>식수대</name><desc>식수대 · 오른쪽 25 m · 80.4 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.312649" lon="-4.043190"><name>카페</name><desc>카페 · 길 위 · 80.5 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.312692" lon="-4.045036"><name>식수대</name><desc>식수대 · 길 위 · 80.6 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.292378" lon="-4.127482"><name>El Jardín</name><desc>바 · 오른쪽 25 m · 88.5 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.292396" lon="-4.127829"><name>El Manzano</name><desc>바 · 오른쪽 30 m · 88.6 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.292568" lon="-4.131634"><name>식수대</name><desc>식수대 · 길 위 · 88.9 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.289918" lon="-4.133234"><name>식수대</name><desc>식수대 · 길 위 · 89.2 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.288256" lon="-4.136320"><name>식수대</name><desc>식수대 · 왼쪽 15 m · 89.5 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.288835" lon="-4.140637"><name>Fuente de la Plaza</name><desc>식수대 · 오른쪽 15 m · 89.9 km</desc><sym>Water</sym></wpt>
+<trk>
     <name>Camino day05</name>
     <trkseg>
       <trkpt lat="42.4205000" lon="-3.1925000">

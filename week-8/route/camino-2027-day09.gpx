@@ -111,7 +111,59 @@
     <type>photo</type>
     <cmt>아스토르가 대성당</cmt>
   </wpt>
-  <trk>
+    <wpt lat="42.598651" lon="-5.568416"><name>Confiterías León</name><desc>카페 · Su-Th 08:30-21:00 · 길 위 · 0.2 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.598999" lon="-5.569482"><name>La Hermita</name><desc>바 · 길 위 · 0.5 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.599223" lon="-5.570204"><name>식수대</name><desc>식수대 · 길 위 · 0.5 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.601417" lon="-5.570664"><name>Montañés</name><desc>바 · 길 위 · 0.8 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.601790" lon="-5.574227"><name>Luna</name><desc>카페 · Tu-Th 19:30-24:00, Fr 19 · 길 위 · 1.1 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.601924" lon="-5.574669"><name>식수대</name><desc>식수대 · 길 위 · 1.2 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.601718" lon="-5.578055"><name>식수대</name><desc>식수대 · 길 위 · 1.4 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.601801" lon="-5.580362"><name>식수대</name><desc>식수대 · 길 위 · 1.6 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.600541" lon="-5.584890"><name>식수대</name><desc>식수대 · 길 위 · 2.0 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.598787" lon="-5.592067"><name>식수대</name><desc>식수대 · 오른쪽 25 m · 2.7 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.598401" lon="-5.601194"><name>식수대</name><desc>식수대 · 오른쪽 50 m · 3.5 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.597324" lon="-5.602880"><name>Café Bar Geursa</name><desc>카페 · 길 위 · 3.6 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.597132" lon="-5.603384"><name>Bar Cafe Wisbon</name><desc>바 · 길 위 · 3.7 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.596378" lon="-5.605420"><name>El Capricho</name><desc>카페 · 길 위 · 3.8 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.596489" lon="-5.606179"><name>식수대</name><desc>식수대 · 길 위 · 3.9 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.595586" lon="-5.609447"><name>Bar Cervecería Babu Afrika</name><desc>바 · 길 위 · 4.2 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.582066" lon="-5.638060"><name>카페</name><desc>카페 · 길 위 · 7.1 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.579876" lon="-5.641961"><name>식수대</name><desc>식수대 · 오른쪽 35 m · 7.5 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.578355" lon="-5.642987"><name>Fuente El Cañin</name><desc>식수대 · 길 위 · 7.7 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.569237" lon="-5.682764"><name>식수대</name><desc>식수대 · 오른쪽 25 m · 11.3 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.561486" lon="-5.697490"><name>El Yantar del Peregrino</name><desc>카페 · 길 위 · 12.8 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.521633" lon="-5.761026"><name>식수대</name><desc>식수대 · 길 위 · 19.7 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.519708" lon="-5.764440"><name>식수대</name><desc>식수대 · 길 위 · 20.1 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.516852" lon="-5.767021"><name>식수대</name><desc>식수대 · 길 위 · 20.5 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.495072" lon="-5.808794"><name>식수대</name><desc>식수대 · 길 위 · 24.8 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.494882" lon="-5.809014"><name>Cubano</name><desc>바 · 길 위 · 24.8 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.494617" lon="-5.809089"><name>Los Picos</name><desc>바 · 길 위 · 24.8 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.464003" lon="-5.872268"><name>식수대</name><desc>식수대 · 길 위 · 31.2 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.463867" lon="-5.881575"><name>Cafeteria Jabel</name><desc>카페 · 오른쪽 20 m · 32.0 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.463506" lon="-5.882072"><name>식수대</name><desc>식수대 · 길 위 · 32.0 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.463422" lon="-5.885306"><name>식수대</name><desc>식수대 · 길 위 · 32.3 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.469575" lon="-5.910382"><name>식수대</name><desc>식수대 · 길 위 · 34.6 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.470107" lon="-5.915993"><name>식수대</name><desc>식수대 · 길 위 · 35.2 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.464412" lon="-5.925174"><name>카페</name><desc>카페 · 오른쪽 25 m · 36.2 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.460302" lon="-5.929667"><name>Bar Valle de Orbigo</name><desc>바 · 길 위 · 36.9 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.458724" lon="-5.930327"><name>식수대</name><desc>식수대 · 길 위 · 37.0 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.458711" lon="-5.930465"><name>Centro Social</name><desc>바 · 길 위 · 37.1 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.460577" lon="-5.983726"><name>Casa de los Dioses</name><desc>바 · 오른쪽 20 m · 42.0 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.454340" lon="-6.006109"><name>식수대</name><desc>식수대 · 길 위 · 44.1 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.454222" lon="-6.015845"><name>Café Bar Oasis</name><desc>카페 · 길 위 · 44.9 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.454280" lon="-6.017956"><name>식수대</name><desc>식수대 · 길 위 · 45.1 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.453657" lon="-6.052102"><name>La Cepediana</name><desc>카페 · 06:00-21:00 · 길 위 · 48.4 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.454019" lon="-6.052169"><name>식수대</name><desc>식수대 · 길 위 · 48.5 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.457331" lon="-6.056579"><name>Cafe Gaudí</name><desc>카페 · 길 위 · 49.1 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.457167" lon="-6.059705"><name>식수대</name><desc>식수대 · 길 위 · 49.4 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.458971" lon="-6.063290"><name>Fontana</name><desc>카페 · 길 위 · 49.8 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.458576" lon="-6.064217"><name>Restaurante Silva Cafetaria</name><desc>바 · 길 위 · 49.9 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.459676" lon="-6.104971"><name>식수대</name><desc>식수대 · 길 위 · 53.3 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.455122" lon="-6.159998"><name>식수대</name><desc>식수대 · 왼쪽 30 m · 57.9 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.455507" lon="-6.161928"><name>식수대</name><desc>식수대 · 길 위 · 58.1 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.462442" lon="-6.206646"><name>식수대</name><desc>식수대 · 왼쪽 35 m · 61.9 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.462653" lon="-6.208421"><name>식수대</name><desc>식수대 · 길 위 · 62.0 km</desc><sym>Water</sym></wpt>
+<trk>
     <name>Camino day09</name>
     <trkseg>
       <trkpt lat="42.5980500" lon="-5.5703500">
