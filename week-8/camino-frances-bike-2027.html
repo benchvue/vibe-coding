@@ -975,6 +975,10 @@
   .wxgrid:has(.wxb.p){grid-template-columns:1fr 1fr 1fr}        /* 출발 · 고개 · 도착 */
   @media(max-width:1100px){ .wxgrid:has(.wxb.p){grid-template-columns:1fr 1fr} }
   @media(max-width:760px){ .wxgrid,.wxgrid:has(.wxb.p){grid-template-columns:1fr} }
+  .foodpics{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin:0 0 14px}
+  .foodpics figure{margin:0;border-radius:12px;overflow:hidden;background:#F3EFE3;border:1px solid var(--line)}
+  .foodpics img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+  .foodpics figcaption{font-size:.72rem;padding:6px 8px;color:var(--ink-soft)}
   .wxrain b{color:#1E5FB4} .wxwind b{color:#3F5C3A} .wxwind i{font-style:normal;color:#D97706;font-size:.7rem}
   /* 앞으로 7일 띠 */
   .wx7{background:#fff;border:1px dashed var(--line);border-radius:12px;padding:8px 10px}
@@ -3245,6 +3249,14 @@
       <h2>길 위의 음식</h2>
       <p class="lead">순례도 넓게 보면 여행이고, 남는 추억엔 늘 음식이 있습니다. 우리 일정의 날짜에 맞춰 그 지방에서 꼭 먹어 볼 것.</p>
     </div>
+    <div class="foodpics">
+      <figure><img src="https://www.carolinescooking.com/wp-content/uploads/2024/08/Spanish-pintxos-recipe-featured-pic-sq.jpg" alt="핀초스 · 팜플로나" loading="lazy" referrerpolicy="no-referrer" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='images/food/pintxos.webp'}else{this.parentNode.style.display='none'}"><figcaption>핀초스 · 팜플로나 <a href="https://www.carolinescooking.com/" target="_blank" rel="noopener" style="color:var(--ink-soft);opacity:.8">· carolinescooking.com</a></figcaption></figure>
+      <figure><img src="https://blue-kitchen.com/wp-content/uploads/2010/11/patatas-riojanas.jpg" alt="파타타스 아 라 리오하나 · 로그로뇨" loading="lazy" referrerpolicy="no-referrer" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='images/food/patatas-riojana.webp'}else{this.parentNode.style.display='none'}"><figcaption>파타타스 아 라 리오하나 · 로그로뇨 <a href="https://blue-kitchen.com/" target="_blank" rel="noopener" style="color:var(--ink-soft);opacity:.8">· blue-kitchen.com</a></figcaption></figure>
+      <figure><img src="https://www.tasteatlas.com/images/dishes/ff6b075e076a4044a04c5af4217584a2.jpg?mw=800" alt="모르시야 · 부르고스" loading="lazy" referrerpolicy="no-referrer" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='images/food/morcilla.webp'}else{this.parentNode.style.display='none'}"><figcaption>모르시야 · 부르고스 <a href="https://www.tasteatlas.com/morcilla" target="_blank" rel="noopener" style="color:var(--ink-soft);opacity:.8">· TasteAtlas</a></figcaption></figure>
+      <figure><img src="https://www.tasteatlas.com/images/dishes/fcbee0d568a04f39b05738391d04773a.jpg?mw=800" alt="코시도 마라가토 · 아스토르가" loading="lazy" referrerpolicy="no-referrer" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='images/food/cocido-maragato.webp'}else{this.parentNode.style.display='none'}"><figcaption>코시도 마라가토 · 아스토르가 <a href="https://www.tasteatlas.com/cocido-maragato" target="_blank" rel="noopener" style="color:var(--ink-soft);opacity:.8">· TasteAtlas</a></figcaption></figure>
+      <figure><img src="https://i0.wp.com/www.kalofagas.ca/wp-content/uploads/2022/11/20221110_133505-01-scaled.jpeg?resize=800%2C800&ssl=1" alt="풀포 아 페이라 · 멜리데" loading="lazy" referrerpolicy="no-referrer" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='images/food/pulpo.webp'}else{this.parentNode.style.display='none'}"><figcaption>풀포 아 페이라 · 멜리데 <a href="https://www.kalofagas.ca/2022/11/14/galician-style-octopus/" target="_blank" rel="noopener" style="color:var(--ink-soft);opacity:.8">· kalofagas.ca</a></figcaption></figure>
+      <figure><img src="https://www.carolinescooking.com/wp-content/uploads/2021/02/tarta-de-Santiago-photo-1-720x540.jpg" alt="타르타 데 산티아고" loading="lazy" referrerpolicy="no-referrer" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='images/food/tarta-santiago.webp'}else{this.parentNode.style.display='none'}"><figcaption>타르타 데 산티아고 <a href="https://www.carolinescooking.com/" target="_blank" rel="noopener" style="color:var(--ink-soft);opacity:.8">· carolinescooking.com</a></figcaption></figure>
+    </div>
     <div class="sched-wrap">
       <table class="sched" style="min-width:640px">
         <thead><tr><th style="width:110px">DAY · 지방</th><th style="width:220px">음식</th><th>어디서 · 어떻게</th></tr></thead>
@@ -4007,8 +4019,9 @@
     <a href="#secL">숙소 · 예약 현황</a>
     <a href="#secS">산티아고 도착</a>
     <a href="#secC">자전거 둘 중 하나</a>
-    <a href="#secB">자전거 대여</a>
+    <a href="#secB">자전거 — 대여 또는 구입</a>
     <a href="#secG">GPS 기기에 넣기 (Edge · Connect)</a>
+    <a href="#secFood">🍽 길 위의 음식 (Comida)</a>
     <a href="#secX">💶 비용 (Gastos)</a>
     <a href="#secP">📕 디지털 순례자 여권</a>
     <a href="#sec4">Ⅳ · 파리 → 생장 기차</a>
