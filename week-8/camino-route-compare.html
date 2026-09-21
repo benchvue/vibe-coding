@@ -237,8 +237,21 @@
   .hud-play select{flex:0 0 66px;border:1px solid var(--line);border-radius:8px;padding:8px 4px;
     background:#fff;font-size:.74rem}
   .hud-play b{flex:0 0 66px;text-align:right;font-size:.78rem;font-variant-numeric:tabular-nums;color:var(--ink)}
-  .hud-wp{position:absolute;left:10px;top:calc(max(10px,env(safe-area-inset-top)) + 58px);max-width:min(78vw,380px);z-index:2}
-  #hud.banner-on .hud-wp{top:calc(max(10px,env(safe-area-inset-top)) + 58px + 112px)}
+  /* 진행 막대 — 오디오 플레이어처럼. 위 띠 바로 아래, 좌우 꽉 차게 */
+  .hud-prog{position:absolute;left:10px;right:10px;top:calc(max(10px,env(safe-area-inset-top)) + 54px);
+    background:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.7);border-radius:10px;padding:7px 12px 4px;
+    box-shadow:0 2px 10px rgba(21,42,85,.18)}
+  .hp-track{position:relative;height:8px;border-radius:4px;background:#E4DFD0;overflow:visible}
+  .hp-fill{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:linear-gradient(90deg,#1E5FB4,#3B82F6);width:0%}
+  .hp-knob{position:absolute;top:50%;width:16px;height:16px;border-radius:50%;background:#fff;border:3px solid #1E5FB4;
+    transform:translate(-50%,-50%);box-shadow:0 1px 4px rgba(0,0,0,.3);left:0%}
+  .hp-ticks{position:absolute;inset:0}
+  .hp-ticks i{position:absolute;top:-3px;width:2px;height:14px;background:#7A5EA8;opacity:.7;transform:translateX(-50%)}
+  .hp-ticks i.pass{background:#8E2C3A}
+  .hp-lbl{display:flex;justify-content:space-between;font-size:.66rem;color:var(--soft);margin-top:4px;font-variant-numeric:tabular-nums}
+  .hp-lbl #hpc{color:var(--blue);font-weight:700}
+  .hud-wp{position:absolute;left:10px;top:calc(max(10px,env(safe-area-inset-top)) + 54px + 44px);max-width:min(78vw,380px);z-index:2}
+  #hud.banner-on .hud-wp{top:calc(max(10px,env(safe-area-inset-top)) + 54px + 44px + 112px)}
   .hud-wp > button.mini-arrow{padding:6px 9px;font-size:.9rem}
   .hud-wp > button{border:1px solid rgba(255,255,255,.7);background:rgba(255,255,255,.94);color:var(--ink);
     border-radius:10px;padding:8px 12px;font-size:.78rem;font-weight:700;cursor:pointer;
@@ -261,7 +274,7 @@
   .wpx-voice{display:flex;align-items:center;gap:6px;font-size:.7rem;color:var(--soft);padding:6px 2px 2px;cursor:pointer}
   .wpx-voice input{accent-color:var(--flecha)}
   .wpx-banner{position:absolute;left:10px;right:10px;max-height:104px;overflow:hidden;
-    top:calc(max(10px,env(safe-area-inset-top)) + 58px);
+    top:calc(max(10px,env(safe-area-inset-top)) + 54px + 44px);
     background:#3B2E00;color:#FFF3C4;border-radius:14px;padding:10px 14px 11px;
     box-shadow:0 4px 18px rgba(0,0,0,.4);line-height:1.35}
   #hud.has-bot .wpx-banner{}
@@ -351,6 +364,10 @@
     <div class="hud-info"><b id="hkm">—</b><small id="hsub">위치를 기다리는 중</small></div>
     <button class="hud-exit" id="hexit">주행 끝</button>
   </div>
+  <div class="hud-prog" id="hprog">
+    <div class="hp-track"><div class="hp-ticks" id="hpticks"></div><div class="hp-fill" id="hpfill"></div><div class="hp-knob" id="hpknob"></div></div>
+    <div class="hp-lbl"><span id="hp0">0</span><span id="hpc">—</span><span id="hp1">—</span></div>
+  </div>
   <div class="hud-wp">
     <button id="hwp">📍 명소</button>
     <div id="hwpp" class="wpx-panel hide">
@@ -414,7 +431,7 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:5000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"server",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20260912-27";
+var D0_VER="v20260921-30";
 try{ var _pm=localStorage.getItem("caminoPosMode"); if(_pm==="gps"&&GPS_ENABLED) NAV.posMode="gps"; }catch(e){}
 try{ var _m2=localStorage.getItem("caminoMap2d"); if(_m2==="0") OPT_MAP2D_INIT=false; }catch(e){}
 var OPT_BASE_INIT="map";
@@ -623,6 +640,17 @@ function drawLive(){
   on("liveNow","click",function(){ refreshLive(); });
   on("liveGo","click",function(){ flyToLive(NAV.who); });
 }
+/* 읽는 간격 — 주행 모드에서 실시간을 따라갈 때는 15초, 평소엔 60초.
+   OwnTracks 를 30초로 보내도 페이지가 60초에 한 번만 읽으면 중간 수신을 버리게 됩니다 (9/21 발견). */
+var LIVE_POLL_NAV=15000, LIVE_POLL_IDLE=60000, liveTimerMs=0;
+function liveTimerStart(){
+  var ms = (NAV.on && NAV.src==="live") ? LIVE_POLL_NAV : LIVE_POLL_IDLE;
+  if(liveTimer && liveTimerMs===ms) return;
+  if(liveTimer) clearInterval(liveTimer);
+  liveTimerMs=ms;
+  liveTimer=setInterval(function(){ if(!document.hidden && OPT.live) refreshLive(); }, ms);
+}
+function liveTimerStop(){ if(liveTimer){ clearInterval(liveTimer); liveTimer=null; liveTimerMs=0; } }
 function refreshLive(){
   var el=document.getElementById("livemsg");
   if(el) el.textContent="위치를 읽는 중…";
@@ -952,6 +980,25 @@ function plogSummaryToast(){
   WPX.lastBanner="__summary__"; setTimeout(function(){ if(WPX.lastBanner==="__summary__"){ WPX.lastBanner=""; } },15000);
 }
 /* 아래 띠에 주행 시간 · 오차율 */
+/* 진행 막대 — 현재 km / 궤적 전체. 명소 자리는 보라 눈금, 고개는 적갈 */
+var HP={total:0, key:""};
+function hudProgress(curKm, pct){
+  var f=$("hpfill"), k=$("hpknob"), c=$("hpc"), e=$("hp1"); if(!f) return;
+  var total = (NAV.src==="day0"||(NAV.src==="live"&&LIVEHIST[NAV.who].length&&LIVEHIST[NAV.who][LIVEHIST[NAV.who].length-1].d0km!==undefined)) && D0.total
+              ? D0.total : (IDX&&IDX.length ? IDX[IDX.length-1][2] : 0);
+  if(!total){ $("hprog").style.display="none"; return; }
+  $("hprog").style.display="";
+  var p = pct!==null&&pct!==undefined ? pct : (curKm!==null&&curKm!==undefined ? curKm/total : 0);
+  p=Math.max(0,Math.min(1,p));
+  f.style.width=(p*100).toFixed(2)+"%"; k.style.left=(p*100).toFixed(2)+"%";
+  c.textContent=(curKm!==null&&curKm!==undefined?curKm.toFixed(1)+" / ":"")+total.toFixed(1)+" km · "+Math.round(p*100)+" %";
+  e.textContent=total.toFixed(0);
+  /* 눈금은 궤적이 바뀔 때만 다시 */
+  var key=(WPX.key||"")+":"+total.toFixed(2);
+  if(HP.key!==key){ HP.key=key; var t=$("hpticks"), h="";
+    (WPX.list||[]).forEach(function(w){ h+='<i class="'+(w.sym==="Summit"?"pass":"")+'" style="left:'+(w.km/total*100).toFixed(2)+'%" title="'+esc(w.cmt||w.name)+'"></i>'; });
+    t.innerHTML=h; }
+}
 function plogStat(){
   var el=$("hstat"); if(!el) return;
   var S=PLOG.s, txt="";
@@ -979,7 +1026,9 @@ var PRED_MAX_MIN=20, PRED_MIN_KMH=0.7, PRED_MAX_KMH=160;
    v1 은 두 수신의 구간 평균 속도만 썼고 자전거 상한 45 를 넘으면 0 으로 봐서 오차 80~97 %.
    v2 는 OwnTracks 가 보낸 순간 속도(vel)를 0.9, 구간 평균을 0.1 로 섞고,
    멈춰 있으면(vel<3) 곧 출발할 것으로 보고 구간 평균의 0.7 을 씁니다. 같은 로그에서 28 % · 19 %. */
-var PRED_ALGO="v3-grade0.7", PRED_W_VEL=0.9, PRED_STOP_F=0.7, PRED_W_TABLE=0.7;
+var PRED_ALGO="v4-table1.0-smooth", PRED_W_VEL=0.9, PRED_STOP_F=0.7, PRED_W_TABLE=1.0;
+/* v4 (2026-09-21, 자전거 로그 두 개로 검증): 움직이는 동안은 경사표 속도만 씁니다(순간 속도는 정지/출발 판정에만).
+   표는 칸 사이를 선형 보간해 계단을 없앴습니다. 9/11 로그 14.9 → 11.6 %, 9/21 로그 20.7 → 16.6 %. */
 /* v3 (2026-09-11, 자전거 왕복 로그로 맞춤): 경사 → 속도 표를 두고 궤적을 따라 1초씩 적분합니다.
    속도 = 0.7 × 표(그 지점 경사) + 0.3 × v2 속도.  9/9 주행에서 만든 표로 9/11 로그를 맞추면 36.9 → 13.8 %.
    표는 DAY 0 GPX 에 시간이 있으면 그 주행에서 스스로 만들고, 없으면 아래 기본값(자전거)을 씁니다. */
@@ -987,6 +1036,14 @@ var GRADE_BINS=[[-99,-6],[-6,-3],[-3,-1],[-1,1],[1,3],[3,6],[6,99]];
 var SPEED_TABLE_DEFAULT=[38.0,29.2,20.9,16.7,12.8,9.7,8.8];     /* km/h, 9/9 자전거 왕복에서 */
 var SPEED_TABLE=SPEED_TABLE_DEFAULT.slice(), SPEED_TABLE_SRC="기본(자전거)";
 function tableSpeed(g){ for(var i=0;i<GRADE_BINS.length;i++) if(g>=GRADE_BINS[i][0]&&g<GRADE_BINS[i][1]) return SPEED_TABLE[i]; return 15; }
+/* 칸 가운데 경사(-8 · -4.5 · -2 · 0 · 2 · 4.5 · 8 %) 사이를 직선으로 이어 부드럽게 */
+var GRADE_CENTERS=[-8,-4.5,-2,0,2,4.5,8];
+function tableSpeedSmooth(g){
+  g=Math.max(-8,Math.min(8,g));
+  for(var i=0;i<GRADE_CENTERS.length-1;i++) if(g<=GRADE_CENTERS[i+1]){
+    var t=(g-GRADE_CENTERS[i])/(GRADE_CENTERS[i+1]-GRADE_CENTERS[i]); return SPEED_TABLE[i]+(SPEED_TABLE[i+1]-SPEED_TABLE[i])*t; }
+  return SPEED_TABLE[SPEED_TABLE.length-1];
+}
 /* DAY 0 GPX(시간 포함)에서 개인 경사표 만들기 — 100 m 구간마다 경사·속도를 재서 구간별 평균 */
 function buildSpeedTable(){
   SPEED_TABLE=SPEED_TABLE_DEFAULT.slice(); SPEED_TABLE_SRC="기본(자전거)";
@@ -1013,9 +1070,9 @@ function gradeAt(km,mode){
   g=Math.max(-25,Math.min(25,g)); c[key]=g; return g;
 }
 function predSpeedAt(km,base,mode){
-  if(base<PRED_MIN_KMH) return 0;                 /* 정지 중(vel·구간평균 모두 0)이면 표를 써서 혼자 가지 않음 */
+  if(base<PRED_MIN_KMH) return 0;                 /* 정지 중이면 표를 써서 혼자 가지 않음 */
   if(VEHICLE==="car" || mode==="xy") return base;
-  return PRED_W_TABLE*tableSpeed(gradeAt(km,mode)) + (1-PRED_W_TABLE)*base;
+  return PRED_W_TABLE*tableSpeedSmooth(gradeAt(km,mode)) + (1-PRED_W_TABLE)*base;
 }
 /* 마지막 수신부터 시각 t 까지 궤적을 따라 적분 — 프레임마다 처음부터 하지 않고 이어서 합니다 */
 var PRED_CACHE={};
@@ -1058,6 +1115,8 @@ function predict(w, atMs){
   var spd;
   if(vel!==null && avg!==null){ spd=PRED_W_VEL*vel+(1-PRED_W_VEL)*avg; if(vel<3) spd=Math.max(spd, PRED_STOP_F*avg); }
   else spd = vel!==null ? vel : (avg!==null ? avg : 0);
+  /* 정지 판정 강화 — 순간 속도도, 직전 구간 평균도 3 km/h 미만이면 서 있는 것 (GPS 잡음 1~2 km/h 로 표가 굴러가지 않게) */
+  if(vel!==null && vel<3 && (avg===null || avg<3)) spd=0;
   if(spd<PRED_MIN_KMH || (mode==="xy"&&hdg===null)) spd=0;
   var toT=Math.min(now, b.t+PRED_MAX_MIN*60000);
   var out={mode:mode, spd:spd, last:b, hdg:hdg, stale:(now-b.t)>PRED_MAX_MIN*60000};
@@ -1233,6 +1292,7 @@ function navTick(now){
     }
     var pct = (s.pct!==null&&s.pct!==undefined) ? s.pct : (NAV.src==="day0"&&D0.total ? D0.km/D0.total : null);
     setHudText((s.km!==null&&s.km!==undefined?s.km.toFixed(2)+" km":"— km")+(pct!==null?"  ("+Math.round(pct*100)+" %)":""), sub);
+    if(!HP._t || Date.now()-HP._t>500){ HP._t=Date.now(); hudProgress(s.km, pct); }
     var n=$("hnorth"); if(n) n.style.transform="rotate("+(-NAV.hdg)+"deg)";
     hudLiveLabel();
     wpxRender(false);
@@ -1273,12 +1333,13 @@ function setNav(on){
     else if(NAV.src!=="live" && NAV.src!=="gps") NAV.src="day0";
     if(NAV.src==="gps") gpsStart();
     if(NAV.src==="live") plogStart();
+    if(OPT.live) liveTimerStart();
     if(NAV.src==="live" && !OPT.live){ var cl=$("cLive"); if(cl){ cl.checked=true; cl.dispatchEvent(new Event("change")); } }
     if(NAV.src==="day0" && !D0.playing) d0Play(true);
     syncHud(); ensureLoop();
   }else{
     viewer.camera.lookAtTransform(Cesium.Matrix4.IDENTITY);
-    NAV.hdg=null; gpsStop(); plogEnd();
+    NAV.hdg=null; gpsStop(); plogEnd(); if(OPT.live) liveTimerStart();
     /* 날짜 노선을 재생하던 중이었으면 기억해 둔 DAY 0 GPX 로 되돌립니다 */
     if(D0.day){ D0.playing=false; if(!restoreDay0()) clearDay0(); WPX.key=""; }
     if(!D0.pts.length) navShow(false);
@@ -1396,11 +1457,11 @@ function setupHud(){
   on("hexit","click",function(){ setNav(false); });
   on("hzin","click",function(){ setZoom(-1); });
   on("hzout","click",function(){ setZoom(1); });
-  on("hsrc0","click",function(){ NAV.src="day0"; NAV.hdg=null; gpsStop(); plogEnd(); if(!D0.playing) d0Play(true); syncHud(); });
+  on("hsrc0","click",function(){ NAV.src="day0"; NAV.hdg=null; gpsStop(); plogEnd(); if(OPT.live) liveTimerStart(); if(!D0.playing) d0Play(true); syncHud(); });
   on("hwp","click",function(){ WPX.open=!WPX.open; $("hwpp").classList.toggle("hide",!WPX.open); $("hwp").classList.toggle("on",WPX.open); wpxRender(true); });
   on("hwpv","change",function(){ WPX.voice=$("hwpv").checked; if(WPX.voice) wpxSay("음성 안내를 켰습니다"); });
   on("hsrcG","click",function(){ NAV.src="gps"; NAV.hdg=null; WPX.key=""; gpsStart(); syncHud(); });
-  on("hsrcL","click",function(){ NAV.src="live"; NAV.hdg=null; NAV.dispKm=null; gpsStop(); plogStart();
+  on("hsrcL","click",function(){ NAV.src="live"; NAV.hdg=null; NAV.dispKm=null; gpsStop(); plogStart(); if(OPT.live) liveTimerStart();
     if(!OPT.live){ var cl=$("cLive"); if(cl){ cl.checked=true; cl.dispatchEvent(new Event("change")); } }
     syncHud(); });
   on("hpp","click",function(){ d0Play(!D0.playing); });
@@ -2281,11 +2342,8 @@ function renderCtrl(){
     b.addEventListener("click",function(){ setWho(b.dataset.who); }); });
   bind("cLive",function(v){
     OPT.live=v;
-    if(liveTimer){ clearInterval(liveTimer); liveTimer=null; }
-    if(v){
-      refreshLive();
-      liveTimer=setInterval(function(){ if(!document.hidden) refreshLive(); },60000);
-    }else drawLive();
+    if(v){ refreshLive(); liveTimerStart(); }
+    else { liveTimerStop(); drawLive(); }
   });
 
   rangeCtl("rTh","vTh", function(v){ return v+" m"; }, null,
