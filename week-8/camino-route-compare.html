@@ -431,7 +431,7 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:5000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"server",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20260921-30";
+var D0_VER="v20260921-31";
 try{ var _pm=localStorage.getItem("caminoPosMode"); if(_pm==="gps"&&GPS_ENABLED) NAV.posMode="gps"; }catch(e){}
 try{ var _m2=localStorage.getItem("caminoMap2d"); if(_m2==="0") OPT_MAP2D_INIT=false; }catch(e){}
 var OPT_BASE_INIT="map";
@@ -574,14 +574,15 @@ function flyToLive(w){
 function agoText(at){
   var t=new Date(at).getTime();
   if(isNaN(t)) return "";
-  var m=Math.round((Date.now()-t)/60000), r;
-  if(m<2) r="방금";
+  var sec=Math.round((Date.now()-t)/1000), m=Math.round(sec/60), r;
+  if(sec<10) r="방금";
+  else if(sec<120) r=sec+"초 전";
   else if(m<60) r=m+"분 전";
   else { var h=Math.round(m/60); r = h<24 ? h+"시간 전" : Math.round(h/24)+"일 전"; }
   return r+" ("+fmt12(t)+")";
 }
-function fmt12(ms){ var d=new Date(ms), h=d.getHours(), mm=String(d.getMinutes()).padStart(2,"0");
-  return ((h%12)||12)+":"+mm+(h<12?" am":" pm"); }
+function fmt12(ms){ var d=new Date(ms), h=d.getHours(), mm=String(d.getMinutes()).padStart(2,"0"), ss=String(d.getSeconds()).padStart(2,"0");
+  return ((h%12)||12)+":"+mm+(h<12?" am":" pm")+" "+ss+"s"; }
 function drawLive(){
   liveHistPush();
   var ds=viewer.entities;
