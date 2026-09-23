@@ -450,7 +450,7 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:5000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"server",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20260923-33";
+var D0_VER="v20260923-34";
 try{ var _pm=localStorage.getItem("caminoPosMode"); if(_pm==="gps"&&GPS_ENABLED) NAV.posMode="gps"; }catch(e){}
 try{ var _m2=localStorage.getItem("caminoMap2d"); if(_m2==="0") OPT_MAP2D_INIT=false; }catch(e){}
 var OPT_BASE_INIT="map";
@@ -1534,12 +1534,13 @@ function turnGlyph(tn){
   var c=pts[Math.floor(n/2)], cl=Math.cos(c.lat*Math.PI/180), r=(tn.hin||0)*Math.PI/180;   /* 들어오는 방향을 북(위)으로 돌림 */
   var xy=pts.map(function(p){ var x=(p.lon-c.lon)*111320*cl, y=(p.lat-c.lat)*111320;
     return [x*Math.cos(r)-y*Math.sin(r), x*Math.sin(r)+y*Math.cos(r)]; });
-  var mx=0; xy.forEach(function(q){ mx=Math.max(mx,Math.abs(q[0]),Math.abs(q[1])); }); var sc=26/(mx||1);
+  var mx=0; xy.forEach(function(q){ mx=Math.max(mx,Math.abs(q[0]),Math.abs(q[1])); }); var sc=22/(mx||1);
   var P=xy.map(function(q){ return [(32+q[0]*sc).toFixed(1),(32-q[1]*sc).toFixed(1)]; });
   var d="M"+P.map(function(q){ return q[0]+" "+q[1]; }).join("L");
   var e=P[P.length-1], f=P[P.length-2], ang=Math.atan2(e[0]-f[0], -(e[1]-f[1]));      /* 화살촉 */
-  var hx=(+e[0]+6*Math.sin(ang)).toFixed(1), hy=(+e[1]-6*Math.cos(ang)).toFixed(1);
-  var lx=(+e[0]+4*Math.cos(ang)).toFixed(1), ly=(+e[1]+4*Math.sin(ang)).toFixed(1), rx=(+e[0]-4*Math.cos(ang)).toFixed(1), ry=(+e[1]-4*Math.sin(ang)).toFixed(1);
+  /* 화살촉 — 길이 13 · 폭 9 (전보다 4배 면적) */
+  var hx=(+e[0]+13*Math.sin(ang)).toFixed(1), hy=(+e[1]-13*Math.cos(ang)).toFixed(1);
+  var lx=(+e[0]+9*Math.cos(ang)).toFixed(1), ly=(+e[1]+9*Math.sin(ang)).toFixed(1), rx=(+e[0]-9*Math.cos(ang)).toFixed(1), ry=(+e[1]-9*Math.sin(ang)).toFixed(1);
   return '<svg viewBox="0 0 64 64">'
     +'<path d="'+d+'" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>'
     +'<path d="'+d+'" fill="none" stroke="#F5B917" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>'
