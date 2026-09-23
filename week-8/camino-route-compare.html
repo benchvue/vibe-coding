@@ -450,7 +450,7 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:5000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"server",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20260923-34";
+var D0_VER="v20260923-35";
 try{ var _pm=localStorage.getItem("caminoPosMode"); if(_pm==="gps"&&GPS_ENABLED) NAV.posMode="gps"; }catch(e){}
 try{ var _m2=localStorage.getItem("caminoMap2d"); if(_m2==="0") OPT_MAP2D_INIT=false; }catch(e){}
 var OPT_BASE_INIT="map";
@@ -1529,7 +1529,7 @@ function turnsBuild(tr){
 }
 function turnText(a){ var s=Math.abs(a); return (s>=150?"유턴":s>=100?"급"+(a<0?"좌":"우")+"회전":s>=60?(a<0?"좌":"우")+"회전":"살짝 "+(a<0?"왼쪽":"오른쪽")); }
 /* 회전 그림 — 실제 궤적 140 m 를 그대로 그립니다. 들어오는 방향이 위쪽. 회색 = 길, 노랑 = 진행. */
-function turnGlyph(tn){
+function turnGlyph(tn, curKm){
   var pts=tn.shape||[], n=pts.length; if(n<3) return '';
   var c=pts[Math.floor(n/2)], cl=Math.cos(c.lat*Math.PI/180), r=(tn.hin||0)*Math.PI/180;   /* 들어오는 방향을 북(위)으로 돌림 */
   var xy=pts.map(function(p){ var x=(p.lon-c.lon)*111320*cl, y=(p.lat-c.lat)*111320;
@@ -1545,7 +1545,19 @@ function turnGlyph(tn){
     +'<path d="'+d+'" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>'
     +'<path d="'+d+'" fill="none" stroke="#F5B917" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>'
     +'<polygon points="'+hx+','+hy+' '+lx+','+ly+' '+rx+','+ry+'" fill="#F5B917"/>'
-    +'<circle cx="'+P[0][0]+'" cy="'+P[0][1]+'" r="3.5" fill="#fff"/></svg>';
+    +dotAt(P, pts, curKm)+'</svg>';
+}
+/* 흰 점 = 지금 자리. 궤적을 따라 회전점 쪽으로 움직입니다 (70 m 밖이면 시작점에) */
+function dotAt(P, pts, curKm){
+  var i=0, t=0;
+  if(typeof curKm==="number"){
+    for(i=0;i<pts.length-1;i++) if(curKm<pts[i+1].km) break;
+    i=Math.max(0,Math.min(pts.length-2,i));
+    t=(curKm-pts[i].km)/((pts[i+1].km-pts[i].km)||1e-9); t=Math.max(0,Math.min(1,t));
+    if(curKm<pts[0].km){ i=0; t=0; }
+  }
+  var x=(+P[i][0]+(+P[i+1][0]-P[i][0])*t).toFixed(1), y=(+P[i][1]+(+P[i+1][1]-P[i][1])*t).toFixed(1);
+  return '<circle cx="'+x+'" cy="'+y+'" r="5" fill="#fff" stroke="#1E5FB4" stroke-width="2.5"/>';
 }
 function turnRender(cur){
   var box=$("hturn"); if(!box) return;
@@ -1553,11 +1565,11 @@ function turnRender(cur){
   var idx=-1; for(var i=0;i<TURNS.list.length;i++) if(TURNS.list[i].km-cur>-0.01){ idx=i; break; }
   var nxt=idx>=0?TURNS.list[idx]:null;
   if(!nxt || nxt.km-cur>3){ box.classList.add("hide"); return; }
-  var m=(nxt.km-cur)*1000, key=nxt.km+":"+Math.round(m/10);
+  var m=(nxt.km-cur)*1000, key=nxt.km+":"+Math.round(m/5);
   if(box.dataset.key===key) return; box.dataset.key=key;
   box.classList.remove("hide");
   var n2=TURNS.list[idx+1];
-  box.innerHTML=turnGlyph(nxt)+'<div><b>'+(m<1000?Math.round(m/10)*10+" m":(m/1000).toFixed(1)+" km")+'</b><small>'+turnText(nxt.ang)
+  box.innerHTML=turnGlyph(nxt, cur)+'<div><b>'+(m<1000?Math.round(m/10)*10+" m":(m/1000).toFixed(1)+" km")+'</b><small>'+turnText(nxt.ang)
     +(n2?' · 다음 '+fmtM((n2.km-cur)*1000)+' '+turnText(n2.ang):'')+'</small></div>';
 }
 
