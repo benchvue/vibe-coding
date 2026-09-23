@@ -205,8 +205,10 @@
     box-shadow:0 2px 10px rgba(21,42,85,.18);backdrop-filter:blur(6px)}
   .hud-info b{font-family:'Gowun Batang',serif;font-size:1.12rem;color:var(--blue);
     font-variant-numeric:tabular-nums;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .hud-info small{font-size:.66rem;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.25;
-    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .hud-info small{display:none}                                   /* 수신 시각은 아래 띠에 있으니 위에선 뺌 */
+  .hud-info{padding:4px 12px}
+  .hud-top{gap:6px}
+  .hud-who button,.hud-exit{min-height:40px}
   .hud-exit{border:1px solid rgba(255,255,255,.7);background:rgba(255,255,255,.94);color:var(--rioja);
     border-radius:12px;padding:0 13px;font-size:.8rem;font-weight:700;cursor:pointer;
     box-shadow:0 2px 10px rgba(21,42,85,.18)}
@@ -220,15 +222,16 @@
   .hud-zoom button:disabled{opacity:.35}
   .hud-zoom small{text-align:center;font-size:.66rem;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.6);
     font-variant-numeric:tabular-nums}
-  .hud-bot{position:absolute;left:10px;right:10px;bottom:max(12px,env(safe-area-inset-bottom));
+  .hud-bot{position:absolute;left:10px;right:10px;bottom:max(8px,env(safe-area-inset-bottom));
     background:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.7);border-radius:14px;
-    padding:9px 12px 10px;box-shadow:0 2px 12px rgba(21,42,85,.18);backdrop-filter:blur(6px)}
+    padding:6px 10px 5px;box-shadow:0 2px 12px rgba(21,42,85,.18);backdrop-filter:blur(6px)}
   .hud-bot.hide{display:none}
-  .hud-src{display:flex;gap:6px;margin-bottom:7px}
+  .hud-src{display:flex;gap:6px;margin-bottom:4px}
   .hud-src button{flex:1;border:1px solid var(--line);background:#fff;border-radius:8px;
-    padding:6px;font-size:.72rem;font-weight:600;color:var(--soft);cursor:pointer}
+    padding:6px 4px;font-size:.72rem;font-weight:600;color:var(--soft);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hud-src #hsrc0{flex:0 0 40%} .hud-src #hsrcL{flex:1 1 60%}          /* 왼쪽 40 % · 오른쪽 60 % */
   .hud-src button.on{background:var(--blue);color:#fff;border-color:var(--blue)}
-  .hud-stat{font-size:.72rem;color:var(--ink);font-variant-numeric:tabular-nums;text-align:center;padding:2px 0 6px;min-height:1em}
+  .hud-stat{font-size:.68rem;color:var(--ink);font-variant-numeric:tabular-nums;text-align:center;padding:1px 0 2px;min-height:1em}
   .hud-stat:empty{display:none}
   .hud-play{display:flex;align-items:center;gap:8px}
   .hud-play button{width:44px;height:40px;border-radius:10px;border:none;background:var(--blue);
@@ -238,8 +241,8 @@
     background:#fff;font-size:.74rem}
   .hud-play b{flex:0 0 66px;text-align:right;font-size:.78rem;font-variant-numeric:tabular-nums;color:var(--ink)}
   /* 진행 막대 — 오디오 플레이어처럼. 위 띠 바로 아래, 좌우 꽉 차게 */
-  .hud-prog{position:absolute;left:10px;right:10px;top:calc(max(10px,env(safe-area-inset-top)) + 54px);
-    background:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.7);border-radius:10px;padding:7px 12px 4px;
+  .hud-prog{position:absolute;left:10px;right:10px;top:calc(max(10px,env(safe-area-inset-top)) + 46px);
+    background:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.7);border-radius:10px;padding:5px 12px 2px;
     box-shadow:0 2px 10px rgba(21,42,85,.18)}
   .hp-track{position:relative;height:8px;border-radius:4px;background:#E4DFD0;overflow:visible}
   .hp-fill{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:linear-gradient(90deg,#1E5FB4,#3B82F6);width:0%}
@@ -248,16 +251,24 @@
   .hp-ticks{position:absolute;inset:0}
   .hp-ticks i{position:absolute;top:-3px;width:2px;height:14px;background:#7A5EA8;opacity:.7;transform:translateX(-50%)}
   .hp-ticks i.pass{background:#8E2C3A}
-  .hp-lbl{display:flex;justify-content:space-between;font-size:.66rem;color:var(--soft);margin-top:4px;font-variant-numeric:tabular-nums}
+  .hp-lbl{display:flex;justify-content:space-between;font-size:.62rem;color:var(--soft);margin-top:2px;font-variant-numeric:tabular-nums}
   .hp-lbl #hpc{color:var(--blue);font-weight:700}
-  .hud-turn{position:absolute;right:10px;top:calc(max(10px,env(safe-area-inset-top)) + 54px + 44px);z-index:3;
+  .hud-turn{position:absolute;right:10px;top:calc(max(10px,env(safe-area-inset-top)) + 46px + 34px);z-index:3;
     display:flex;align-items:center;gap:10px;background:rgba(20,24,36,.62);backdrop-filter:blur(6px);
     color:#fff;border-radius:14px;padding:8px 14px 8px 10px;box-shadow:0 3px 12px rgba(0,0,0,.3)}
   .hud-turn.hide{display:none}
-  .hud-turn b{display:block;font-size:1.25rem;line-height:1.1;font-variant-numeric:tabular-nums}
-  .hud-turn small{display:block;font-size:.7rem;opacity:.85;margin-top:2px}
-  .hud-wp{position:absolute;left:10px;top:calc(max(10px,env(safe-area-inset-top)) + 54px + 44px);max-width:min(58vw,380px);z-index:2}
-  #hud.banner-on .hud-wp{top:calc(max(10px,env(safe-area-inset-top)) + 54px + 44px + 112px)}
+  .hud-turn b{display:block;font-size:1.5rem;line-height:1.1;font-variant-numeric:tabular-nums}
+  .hud-turn small{display:block;font-size:.74rem;opacity:.85;margin-top:2px}
+  .hud-turn svg{width:66px;height:66px}
+  /* 노선 이탈 · 역주행 경고 */
+  .hud-off{position:absolute;left:10px;right:10px;top:50%;transform:translateY(-140%);z-index:5;
+    background:rgba(185,28,28,.9);color:#fff;border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:12px;
+    box-shadow:0 4px 16px rgba(0,0,0,.35)}
+  .hud-off.hide{display:none}
+  .hud-off b{display:block;font-size:1.1rem} .hud-off small{display:block;font-size:.78rem;opacity:.9}
+  .hud-off .arr{font-size:2rem;line-height:1;display:inline-block}
+  .hud-wp{position:absolute;left:10px;top:calc(max(10px,env(safe-area-inset-top)) + 46px + 34px);max-width:min(58vw,380px);z-index:2}
+  #hud.banner-on .hud-wp{top:calc(max(10px,env(safe-area-inset-top)) + 46px + 34px + 112px)}
   .hud-wp > button.mini-arrow{padding:6px 9px;font-size:.9rem}
   .hud-wp > button{border:1px solid rgba(255,255,255,.7);background:rgba(255,255,255,.94);color:var(--ink);
     border-radius:10px;padding:8px 12px;font-size:.78rem;font-weight:700;cursor:pointer;
@@ -280,7 +291,7 @@
   .wpx-voice{display:flex;align-items:center;gap:6px;font-size:.7rem;color:var(--soft);padding:6px 2px 2px;cursor:pointer}
   .wpx-voice input{accent-color:var(--flecha)}
   .wpx-banner{position:absolute;left:10px;right:10px;max-height:104px;overflow:hidden;
-    top:calc(max(10px,env(safe-area-inset-top)) + 54px + 44px);
+    top:calc(max(10px,env(safe-area-inset-top)) + 46px + 34px);
     background:#3B2E00;color:#FFF3C4;border-radius:14px;padding:10px 14px 11px;
     box-shadow:0 4px 18px rgba(0,0,0,.4);line-height:1.35}
   #hud.has-bot .wpx-banner{}
@@ -375,6 +386,7 @@
     <div class="hp-lbl"><span id="hp0">0</span><span id="hpc">—</span><span id="hp1">—</span></div>
   </div>
   <div class="hud-turn hide" id="hturn"></div>
+  <div class="hud-off hide" id="hoff"></div>
   <div class="hud-wp">
     <button id="hwp">📍 명소</button>
     <div id="hwpp" class="wpx-panel hide">
@@ -438,7 +450,7 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:5000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"server",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20260922-32";
+var D0_VER="v20260923-33";
 try{ var _pm=localStorage.getItem("caminoPosMode"); if(_pm==="gps"&&GPS_ENABLED) NAV.posMode="gps"; }catch(e){}
 try{ var _m2=localStorage.getItem("caminoMap2d"); if(_m2==="0") OPT_MAP2D_INIT=false; }catch(e){}
 var OPT_BASE_INIT="map";
@@ -928,7 +940,7 @@ function liveHistPush(){
     var h=LIVEHIST[w], t=new Date(v.at).getTime(); if(isNaN(t)) return;
     if(h.length && h[h.length-1].t===t) return;
     var f={t:t, km:(typeof v.km==="number")?v.km:null, lat:v.lat, lon:v.lon, test:!!v.test,
-           vel:(typeof v.vel==="number"&&v.vel>=0)?v.vel:null};
+           vel:(typeof v.vel==="number"&&v.vel>=0)?v.vel:null, off:(typeof v.off==="number")?v.off:null};
     /* 시험 좌표는 DAY 0 궤적 위 어디인지도 재 둡니다 */
     if(f.test && typeof f.lat==="number" && D0.pts.length){
       var prev=h.length?h[h.length-1]:null, pk=(prev&&prev.d0km!==undefined&&prev.d0km!==null)?prev.d0km:undefined;
@@ -1510,19 +1522,29 @@ function turnsBuild(tr){
     var d=((h2-h1+540)%360)-180;
     if(Math.abs(d)>=40 && (last<0 || samp[j].km-samp[last].km>0.06)){
       var best=j; for(var q=j;q<Math.min(samp.length-W,j+6);q++){ var a1=bearing(samp[q-W],samp[q]), a2=bearing(samp[q],samp[q+W]); var dd=((a2-a1+540)%360)-180; if(Math.abs(dd)>Math.abs(d)){ d=dd; best=q; } }
-      TURNS.list.push({km:samp[best].km, ang:Math.round(d)}); last=best; j=best+W;
+      var shape=samp.slice(Math.max(0,best-7), Math.min(samp.length,best+8));        /* 앞 70 m · 뒤 70 m */
+      TURNS.list.push({km:samp[best].km, ang:Math.round(d), shape:shape, hin:bearing(samp[best-W],samp[best])}); last=best; j=best+W;
     }
   }
 }
 function turnText(a){ var s=Math.abs(a); return (s>=150?"유턴":s>=100?"급"+(a<0?"좌":"우")+"회전":s>=60?(a<0?"좌":"우")+"회전":"살짝 "+(a<0?"왼쪽":"오른쪽")); }
-function turnGlyph(a){
-  var r=a*Math.PI/180, ex=24+17*Math.sin(r), ey=24-17*Math.cos(r);
-  var hx=ex+5*Math.sin(r), hy=ey-5*Math.cos(r);
-  var lx=ex+4*Math.cos(r), ly=ey+4*Math.sin(r), rx=ex-4*Math.cos(r), ry=ey-4*Math.sin(r);
-  return '<svg viewBox="0 0 48 48" width="44" height="44">'
-    +'<path d="M24 4V44M4 24H44" stroke="rgba(255,255,255,.35)" stroke-width="7" stroke-linecap="round"/>'
-    +'<path d="M24 44V24L'+ex.toFixed(1)+' '+ey.toFixed(1)+'" fill="none" stroke="#F5B917" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>'
-    +'<polygon points="'+hx.toFixed(1)+','+hy.toFixed(1)+' '+lx.toFixed(1)+','+ly.toFixed(1)+' '+rx.toFixed(1)+','+ry.toFixed(1)+'" fill="#F5B917"/></svg>';
+/* 회전 그림 — 실제 궤적 140 m 를 그대로 그립니다. 들어오는 방향이 위쪽. 회색 = 길, 노랑 = 진행. */
+function turnGlyph(tn){
+  var pts=tn.shape||[], n=pts.length; if(n<3) return '';
+  var c=pts[Math.floor(n/2)], cl=Math.cos(c.lat*Math.PI/180), r=(tn.hin||0)*Math.PI/180;   /* 들어오는 방향을 북(위)으로 돌림 */
+  var xy=pts.map(function(p){ var x=(p.lon-c.lon)*111320*cl, y=(p.lat-c.lat)*111320;
+    return [x*Math.cos(r)-y*Math.sin(r), x*Math.sin(r)+y*Math.cos(r)]; });
+  var mx=0; xy.forEach(function(q){ mx=Math.max(mx,Math.abs(q[0]),Math.abs(q[1])); }); var sc=26/(mx||1);
+  var P=xy.map(function(q){ return [(32+q[0]*sc).toFixed(1),(32-q[1]*sc).toFixed(1)]; });
+  var d="M"+P.map(function(q){ return q[0]+" "+q[1]; }).join("L");
+  var e=P[P.length-1], f=P[P.length-2], ang=Math.atan2(e[0]-f[0], -(e[1]-f[1]));      /* 화살촉 */
+  var hx=(+e[0]+6*Math.sin(ang)).toFixed(1), hy=(+e[1]-6*Math.cos(ang)).toFixed(1);
+  var lx=(+e[0]+4*Math.cos(ang)).toFixed(1), ly=(+e[1]+4*Math.sin(ang)).toFixed(1), rx=(+e[0]-4*Math.cos(ang)).toFixed(1), ry=(+e[1]-4*Math.sin(ang)).toFixed(1);
+  return '<svg viewBox="0 0 64 64">'
+    +'<path d="'+d+'" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>'
+    +'<path d="'+d+'" fill="none" stroke="#F5B917" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>'
+    +'<polygon points="'+hx+','+hy+' '+lx+','+ly+' '+rx+','+ry+'" fill="#F5B917"/>'
+    +'<circle cx="'+P[0][0]+'" cy="'+P[0][1]+'" r="3.5" fill="#fff"/></svg>';
 }
 function turnRender(cur){
   var box=$("hturn"); if(!box) return;
@@ -1534,8 +1556,43 @@ function turnRender(cur){
   if(box.dataset.key===key) return; box.dataset.key=key;
   box.classList.remove("hide");
   var n2=TURNS.list[idx+1];
-  box.innerHTML=turnGlyph(nxt.ang)+'<div><b>'+(m<1000?Math.round(m/10)*10+" m":(m/1000).toFixed(1)+" km")+'</b><small>'+turnText(nxt.ang)
+  box.innerHTML=turnGlyph(nxt)+'<div><b>'+(m<1000?Math.round(m/10)*10+" m":(m/1000).toFixed(1)+" km")+'</b><small>'+turnText(nxt.ang)
     +(n2?' · 다음 '+fmtM((n2.km-cur)*1000)+' '+turnText(n2.ang):'')+'</small></div>';
+}
+
+/* ══════════ 이탈 · 역주행 감시 ══════════
+   · 노선에서 100 m 넘게 벗어나면: 어느 쪽으로 얼마나 돌아가야 하는지 (진행 방향 기준 좌·우·뒤) + 음성
+   · 궤적 위인데 km 가 줄고 있으면(속도 5 km/h 이상): 반대 방향 경고 */
+var OFF={said:0, wrongSaid:0};
+function offRouteCheck(){
+  var box=$("hoff"); if(!box || !NAV.on || NAV.src!=="live"){ if(box) box.classList.add("hide"); return; }
+  var h=LIVEHIST[NAV.who], b=h[h.length-1], a=h.length>1?h[h.length-2]:null; if(!b){ box.classList.add("hide"); return; }
+  var now=Date.now(), msg=null;
+  /* 이탈 거리: 시험 좌표는 DAY 0 궤적 투영 거리, 스페인은 스크립트가 준 off */
+  var offM = (b.test && D0.pts.length) ? (typeof b.d0off==="number" ? b.d0off : (b.d0km===undefined||b.d0km===null ? 9999 : null)) : b.off;
+  if(offM!==null && offM!==undefined && offM>=100 && typeof b.lat==="number"){
+    /* 가장 가까운 궤적 점으로 가는 방향 */
+    var tgt=null;
+    if(b.test && D0.pts.length){ var pr=projectOn(D0.pts,D0.cum,b.lat,b.lon); if(pr){ var st=d0State(pr.km); if(st) tgt={lat:st.lat,lon:st.lon}; offM=pr.off; } }
+    else if(typeof b.km==="number"){ var pp=kmToPos(b.km); if(pp) tgt={lat:pp[0],lon:pp[1]}; }
+    var dirTxt="", arrow="↩";
+    if(tgt && NAV.hdg!==null){
+      var rel=((bearing(b,tgt)-NAV.hdg+540)%360)-180;
+      if(Math.abs(rel)<30){ dirTxt="앞쪽"; arrow="↑"; } else if(Math.abs(rel)>150){ dirTxt="뒤쪽"; arrow="↓"; }
+      else if(rel<0){ dirTxt=(rel<-110?"왼쪽 뒤":"왼쪽"); arrow=rel<-110?"↙":"←"; } else { dirTxt=(rel>110?"오른쪽 뒤":"오른쪽"); arrow=rel>110?"↘":"→"; }
+    }
+    msg={cls:"", arrow:arrow, b:"노선 이탈 "+fmtM(offM), s:(dirTxt?dirTxt+" "+fmtM(offM)+" 지점에 노선":"가까운 노선으로 돌아가세요")};
+    if(now-OFF.said>60000){ OFF.said=now; wpxBeep(3); if(WPX.voice) wpxSay("노선에서 "+Math.round(offM/10)*10+" 미터 벗어났습니다. "+(dirTxt?dirTxt+"으로 돌아가세요":"")); }
+  }else if(a && typeof b.vel==="number" && b.vel>=5){
+    var kb = (b.test? b.d0km : b.km), ka = (a.test? a.d0km : a.km);
+    if(typeof kb==="number" && typeof ka==="number" && ka-kb>0.08 && b.t-a.t<180000){
+      msg={cls:"", arrow:"⟲", b:"반대 방향", s:"노선을 거꾸로 가고 있습니다 ("+fmtM((ka-kb)*1000)+" 뒤로)"};
+      if(now-OFF.wrongSaid>60000){ OFF.wrongSaid=now; wpxBeep(3); if(WPX.voice) wpxSay("반대 방향입니다. 돌아가세요."); }
+    }
+  }
+  if(!msg){ box.classList.add("hide"); box.dataset.k=""; return; }
+  var k=msg.b+msg.s; if(box.dataset.k!==k){ box.dataset.k=k; box.innerHTML='<span class="arr">'+msg.arrow+'</span><div><b>'+msg.b+'</b><small>'+msg.s+'</small></div>'; }
+  box.classList.remove("hide");
 }
 
 /* ══════════ 다가올 명소 안내 ══════════
@@ -1618,7 +1675,7 @@ function wpxRender(force){
   wpxBuild();
   var cur=wpxCurKm(), box=$("hwpl"), btn=$("hwp"); if(!box) return;
   var html="", up=[], passed=null;
-  if(cur===null||cur===undefined) html='<div class="wpx-none">위치를 아직 모릅니다</div>';
+  if(cur===null||cur===undefined){ html='<div class="wpx-none">위치를 아직 모릅니다</div>'; offRouteCheck(); }
   else{
     WPX.list.forEach(function(w){
       var a=(w.km-cur)*1000, id=w.day+":"+w.name;
@@ -1656,6 +1713,7 @@ function wpxRender(force){
   wpxBanner(cur, up, passed);
   wpxTint();
   turnsBuild(wpxTrack()); turnRender(cur);
+  offRouteCheck();
 }
 /* 화면 아래 꽉 찬 안내 띠 — 300 m 안에 들어오면 지나칠 때까지 거리를 바꿔 가며 보이고,
    지나친 뒤 250 m 까지는 "방금 지나침" 으로 남습니다 */
