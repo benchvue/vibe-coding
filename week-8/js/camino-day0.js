@@ -9,9 +9,9 @@
      · 최근 7일 예측 오차율 (비교하기의 주행 로그)
 
    GPX 는 어디서 오나 (위가 먼저)
-     1. 비교하기(camino-route-compare.html)에서 그 사람으로 올린 DAY 0  — 브라우저 저장소 caminoDay0:bin / :jin
-        비교하기에서 새로 올리면 이 페이지가 열려 있어도 바로 다시 그립니다.
-     2. 이 카드의 "GPX 올리기" 로 고른 파일   — 같은 저장소에 넣으므로 비교하기에도 그대로 보입니다.
+     1. 오늘 주행 GPX — 비교하기 또는 이 카드의 "오늘 주행 GPX 올리기" (저장소 caminoRide:bin / :jin)
+        올리면 그 시간의 예측 로그를 실제 위치로 채점하고, 이 페이지가 열려 있어도 바로 다시 그립니다.
+     2. 비교하기에서 그 사람으로 넣은 DAY 0 길잡이 궤적 (caminoDay0:bin / :jin)
      3. 폴더의 기본 파일 route/day0-bin.gpx · route/day0-jin.gpx  (다른 폰에서도 보이게 하려면 여기에)
    오차 로그: 이 폰의 로그 + 가져온 로그 + logs/pred-log.json
    ══════════════════════════════════════════════════════════════════════ */
@@ -119,7 +119,7 @@
       + '<span class="dkm" data-f="km"></span></header>'
       + '<div data-f="body"><div class="d0empty">GPX 를 찾는 중…</div></div>'
       + '<footer class="dfoot"><span data-f="src">—</span>'
-      + '<label class="d0btn">GPX 올리기<input type="file" data-act="file"></label>'
+      + '<label class="d0btn">오늘 주행 GPX 올리기<input type="file" data-act="file"></label>'
       + '<button class="d0btn" data-act="static" type="button">기본 파일로</button>'
       + '<a class="d0btn" href="'+esc(CFG.compare)+'" target="_blank" rel="noopener">비교하기 열기</a></footer>'
       + '</article>';
@@ -134,7 +134,7 @@
       f("sub").textContent=W.place+" · 아직 GPX 가 없습니다";
       f("km").textContent="";
       f("body").innerHTML='<div class="d0empty">'+W.n+' 의 DAY 0 GPX 가 없습니다.<br>'
-        +'비교하기에서 <b>'+W.n+'</b> 로 GPX 를 넣거나, 아래 <b>GPX 올리기</b> 를 누르세요.</div>'+errBlock(who);
+        +'비교하기에서 <b>'+W.n+'</b> 로 GPX 를 넣거나, 아래 <b>오늘 주행 GPX 올리기</b> 를 누르세요.</div>'+errBlock(who);
       f("src").textContent="GPX 없음";
       bindErr(el, who);
       return;
@@ -429,8 +429,68 @@
     return '<div class="d0err"><h5>최근 7일 예측 오차율 · '+W.n+' <small>'+W.place+' 날짜 기준 · 막대 위 % · 아래 평균 오차 m · 점선은 중간에 멈춘 날</small></h5>'
       + '<div style="max-width:560px">'+CS.errChartSvg(ss, who, {w:420, h:70})+'</div>'
       + lastTxt
+      + posBlock(who, last)
       + '<div class="row"><label class="d0btn">로그 JSON 가져오기<input type="file" multiple data-act="log"></label>'
       + '<span>다른 폰에서 받은 pred-log-*.json 을 넣으면 이 폰에서도 그 사람 그래프가 보입니다.</span></div></div>';
+  }
+  function saveTruth(S){
+    [CS.KEY.plog, CS.KEY.plogImp].forEach(function(k){
+      try{ var arr=JSON.parse(localStorage.getItem(k)||"[]"), hit=false;
+        arr.forEach(function(x){ if(x.id===S.id && x.who===S.who){ x.truth=S.truth; hit=true; } });
+        if(hit) localStorage.setItem(k, JSON.stringify(arr)); }catch(e){} });
+    /* 폴더 로그(logs/pred-log.json)에서 온 세션이면 가져온 로그 칸에 채점과 함께 넣어 둠 */
+    if(STATIC_LOGS.indexOf(S)>=0) CS.plogImport([S]);
+  }
+  /* ─────────── 예측 위치 오차 (마지막 주행) ───────────
+     명소 앞에서 "이미 지나감 / 아직 도착 못함" 으로 보이던 것이 로그에 보이는지 — km 별로 그립니다.
+       보라: 예측 − 수신 (수신이 올 때 예측이 어디 있었나)
+       초록: 화면 − 실제 (오늘 주행 GPX 를 올리면 · 새 판 로그부터)
+     0 위 = 화면이 앞섬(이미 지나간 것처럼) · 0 아래 = 뒤처짐(아직 못 온 것처럼) · 세로 눈금 = 명소 */
+  function posBlock(who, S){
+    if(!S) return "";
+    var F=S.fixes||[], W=CS.WHO[who];
+    if(!F.length) return '<div class="row" style="margin-top:10px">위치 오차 그래프 — 이 로그는 요약만 있어 그릴 수 없습니다. 원본 pred-log JSON 을 가져오면 그려집니다.</div>';
+    var T=S.truth||null;
+    if(!T){ var r=CS.loadRide(who); if(r){ T=CS.rideTruth(S, r.pts); } }
+    var pr=[], ds=[], rest=[], prev=null;
+    F.forEach(function(f,i){
+      if(typeof f.fixKm!=="number") return;
+      var ok=prev!==null && Math.abs(f.fixKm-prev)<=Math.max(1,80*(f.gapS||60)/3600); prev=f.fixKm;
+      if(f.rest){ rest.push(f.fixKm); return; }
+      if(ok && typeof f.predKm==="number") pr.push([f.fixKm,(f.predKm-f.fixKm)*1000]);
+      if(T && T.per && T.per[i] && T.per[i][1]!==null && typeof f.dispKm==="number") ds.push([T.per[i][0],(f.dispKm-T.per[i][1])*1000]);
+    });
+    if(!pr.length) return "";
+    /* 명소 km — 그 사람의 길잡이 궤적(또는 기본 파일) 기준 */
+    var route=CS.loadDay0(who), wk=[];
+    var rsrc=route?{pts:route.pts,wpts:route.wpts}:(STATE[who]&&!STATE[who].ride?STATE[who].src:null);
+    if(rsrc&&rsrc.wpts&&rsrc.wpts.length){ var RA=analyse(rsrc); orderWpts(rsrc,RA).forEach(function(o){ wk.push([o.km,wname(o.w)]); }); }
+    var km1=Math.max.apply(null,pr.map(function(a){return a[0];}))||1, Wd=720, H=170, L=38, R=10, Tp=10, B=22, M=300;
+    var X=function(k){ return L+(Wd-L-R)*k/km1; }, Y=function(v){ v=Math.max(-M,Math.min(M,v)); return Tp+(H-Tp-B)*(1-(v+M)/(2*M)); };
+    var s='<svg viewBox="0 0 '+Wd+' '+H+'" style="width:100%;display:block" role="img" aria-label="예측 위치 오차">';
+    s+='<rect x="'+L+'" y="'+Y(M)+'" width="'+(Wd-L-R)+'" height="'+(Y(50)-Y(M))+'" fill="#FDF0E6"/><rect x="'+L+'" y="'+Y(-50)+'" width="'+(Wd-L-R)+'" height="'+(Y(-M)-Y(-50))+'" fill="#EEF3FB"/>';
+    [-300,-150,0,150,300].forEach(function(v){ s+='<line x1="'+L+'" x2="'+(Wd-R)+'" y1="'+Y(v)+'" y2="'+Y(v)+'" stroke="'+(v?'#EFEADC':'#9A9280')+'"/><text x="'+(L-4)+'" y="'+(Y(v)+3)+'" font-size="9" text-anchor="end" fill="#9A9280">'+(v>0?'+':'')+v+'</text>'; });
+    s+='<text x="'+(L+4)+'" y="'+(Y(M)+10)+'" font-size="9" fill="#C2410C">화면이 앞섬 · 이미 지나간 것처럼</text><text x="'+(L+4)+'" y="'+(Y(-M)-4)+'" font-size="9" fill="#1E5FB4">뒤처짐 · 아직 못 온 것처럼</text>';
+    wk.forEach(function(w){ if(w[0]<=km1) s+='<line x1="'+X(w[0])+'" x2="'+X(w[0])+'" y1="'+Tp+'" y2="'+(H-B)+'" stroke="#7A4FB5" stroke-opacity=".35" stroke-dasharray="2 3"><title>'+esc(w[1])+'</title></line>'; });
+    rest.forEach(function(k){ s+='<circle cx="'+X(k)+'" cy="'+Y(0)+'" r="3" fill="#6B4E00"><title>휴식</title></circle>'; });
+    var ks=niceStep(km1/8); for(var k=0;k<=km1;k+=ks) s+='<text x="'+X(k)+'" y="'+(H-6)+'" font-size="9" text-anchor="middle" fill="#9A9280">'+k+(k===0?' km':'')+'</text>';
+    var line=function(a,c,w){ return '<path d="'+a.map(function(q,i){ return (i?'L':'M')+X(q[0]).toFixed(1)+','+Y(q[1]).toFixed(1); }).join('')+'" fill="none" stroke="'+c+'" stroke-width="'+w+'" stroke-linejoin="round"/>'; };
+    s+=line(pr,'#7C3AED',1.4); if(ds.length) s+=line(ds,'#1E7A46',1.8);
+    (T&&T.marks||S.marks||[]).forEach(function(m){ var v=typeof m.dispErrM==="number"?m.dispErrM:m.diffM; if(typeof v!=="number") return;
+      s+='<circle cx="'+X(m.wpKm)+'" cy="'+Y(v)+'" r="5" fill="#F5B917" stroke="#3B2E00"><title>여기예요 · '+esc(m.name)+' · '+(v>0?'+':'')+v+' m</title></circle>'; });
+    s+='</svg>';
+    /* 명소 앞뒤 300 m 에서 50 m 넘게 앞서거나 뒤진 횟수 */
+    var near=function(k){ return wk.some(function(w){ return Math.abs(w[0]-k)<=0.3; }); };
+    var src=ds.length?ds:pr, nN=0, nA=0, nB=0; src.forEach(function(q){ if(!wk.length||near(q[0])){ nN++; if(q[1]>50) nA++; else if(q[1]<-50) nB++; } });
+    var what=ds.length?'화면 − 실제':'예측 − 수신';
+    return '<div style="margin-top:12px"><h5>예측 위치 오차 · '+W.n+' '+CS.ymd(Date.parse(S.start),W.tz).slice(5).replace("-","/")+' <small>'
+      +'<span class="d0lg"><i style="border-color:#7C3AED"></i>예측 − 수신</span> '
+      +(ds.length?'<span class="d0lg"><i style="border-color:#1E7A46"></i>화면 − 실제 (주행 GPX)</span> ':'')
+      +(wk.length?'<span class="d0lg"><i style="border-color:#7A4FB5;border-top-style:dashed"></i>명소</span>':'')+'</small></h5>'
+      + s
+      + '<div class="row">'+(wk.length?'명소 앞뒤 300 m':'전 구간')+'에서 '+what+' 50 m 넘게 <b style="color:#C2410C">앞섬 '+nA+'</b> · <b style="color:#1E5FB4">뒤짐 '+nB+'</b> / '+nN+'회'
+      + (T?' · 수신 지연 중간값 <b>'+Math.round(T.lagMedS)+'초</b>'+(T.predMedAbsM!==null?' · 수신 시각 예측 오차 중간값 <b>'+Math.round(T.predMedAbsM)+' m</b>':''):'')
+      + (ds.length?'':' · 초록선(화면 − 실제)은 새 비교하기로 달린 로그 + 오늘 주행 GPX 가 있으면 나옵니다')+'</div></div>';
   }
   function bindErr(el, who){
     var inp=el.querySelector('[data-act="log"]'); if(!inp || inp._b) return; inp._b=1;
@@ -445,16 +505,21 @@
 
   /* ─────────── GPX 불러오기 ─────────── */
   function fromStore(who){
+    var r=CS.loadRide(who);
+    if(r) return {src:{pts:r.pts, name:r.name, wpts:r.wpts}, from:"오늘 주행 GPX", file:r.file, saved:r.saved, ride:true};
     var j=CS.loadDay0(who); if(!j) return null;
-    return {src:{pts:j.pts, name:j.name, wpts:j.wpts}, from:"비교하기 · 저장된 DAY 0", file:j.file, saved:j.saved};
+    return {src:{pts:j.pts, name:j.name, wpts:j.wpts}, from:"비교하기 · 저장된 DAY 0 길잡이", file:j.file, saved:j.saved};
   }
+  function storeSig(who){ var r=CS.loadRide(who), j=CS.loadDay0(who); return (r?r.saved:0)+"|"+(j?j.saved:0); }
   function fromStatic(who){
     var url=CFG.files[who]; if(!url) return Promise.resolve(null);
     return fetch(url,{cache:"no-cache"}).then(function(r){ if(!r.ok) throw 0; return r.text(); })
       .then(function(t){ var g=CS.parseGpx(t); return g.pts.length<2?null:{src:g, from:"폴더 기본 파일", file:url.split("/").pop(), saved:null}; })
       .catch(function(){ return null; });
   }
+  var SIG={bin:"",jin:""};
   function load(who, preferStatic){
+    SIG[who]=storeSig(who);
     var s=preferStatic?null:fromStore(who);
     if(s){ STATE[who]=s; render(who); return Promise.resolve(); }
     return fromStatic(who).then(function(x){ STATE[who]=x; render(who); });
@@ -466,8 +531,14 @@
       fl.text().then(function(t){
         var g=CS.parseGpx(t); if(g.pts.length<2) throw new Error("트랙 점이 2개 미만");
         var name=g.name||fl.name.replace(/\.gpx$/i,"");
-        try{ CS.saveDay0(who, g.pts, name, g.wpts, {file:fl.name}); }catch(err){ console.warn("저장 실패(용량?)",err); }
-        STATE[who]={src:{pts:g.pts,name:name,wpts:g.wpts}, from:"이 카드에서 올림", file:fl.name, saved:Date.now()}; render(who); flash(who);
+        /* 같은 사람 · 겹치는 시간의 예측 로그를 실제 위치로 채점해 로그에 붙임 */
+        var ss=allSessions().filter(function(S){ return S.who===who; }), best=null;
+        ss.forEach(function(S){ var T=CS.rideTruth(S, g.pts); if(T && (!best || T.n>best.T.n)) best={S:S,T:T}; });
+        var extra={file:fl.name};
+        if(best){ best.S.truth=best.T; saveTruth(best.S); extra.truth={sid:best.S.id, n:best.T.n}; }
+        try{ CS.saveRide(who, g.pts, name, g.wpts, extra); }catch(err){ console.warn("저장 실패(용량?)",err); }
+        STATE[who]=fromStore(who) || {src:{pts:g.pts,name:name,wpts:g.wpts}, from:"오늘 주행 GPX", file:fl.name, saved:Date.now(), ride:true};
+        render(who); flash(who);
       }).catch(function(err){ alert("GPX 를 읽지 못했습니다 — "+err.message); });
       e.target.value="";
     });
@@ -479,13 +550,14 @@
   window.addEventListener("storage",function(e){
     if(!e.key) return;
     ["bin","jin"].forEach(function(w){ if(e.key===CS.d0Key(w)){ var s=fromStore(w); if(s){ STATE[w]=s; render(w); flash(w); } else load(w); } });
+    ["bin","jin"].forEach(function(w){ if(e.key===CS.rideKey(w)){ STATE[w]=fromStore(w); if(STATE[w]){ render(w); flash(w); } else load(w); } });
     if(e.key===CS.KEY.plog || e.key===CS.KEY.plogImp) rerenderErr();
   });
   /* 같은 폰에서 비교하기를 다녀오면 저장 시각을 비교해 다시 그림 */
   document.addEventListener("visibilitychange",function(){
     if(document.hidden) return;
-    ["bin","jin"].forEach(function(w){ var j=CS.loadDay0(w), st=STATE[w];
-      if(j && (!st || st.saved!==j.saved)){ STATE[w]=fromStore(w); render(w); flash(w); } });
+    ["bin","jin"].forEach(function(w){ var sig=storeSig(w);
+      if(sig!=="0|0" && SIG[w]!==sig){ SIG[w]=sig; STATE[w]=fromStore(w); render(w); flash(w); } });
     rerenderErr();
   });
 

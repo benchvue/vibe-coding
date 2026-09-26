@@ -22,7 +22,8 @@
   CS.KEY = {
     d0:      "caminoDay0",          /* + ":bin" / ":jin" */
     plog:    "caminoPredLog",       /* 이 폰에서 쌓인 로그 */
-    plogImp: "caminoPredLogImport"  /* 가져온 로그 (다른 사람 폰에서 받은 JSON) */
+    plogImp: "caminoPredLogImport", /* 가져온 로그 (다른 사람 폰에서 받은 JSON) */
+    ride:    "caminoRide"           /* + ":bin" / ":jin" — 그날 다 달리고 올린 실제 주행 GPX */
   };
 
   /* ── 거리 ── */
@@ -93,6 +94,96 @@
     }catch(e){ return null; }
   };
 
+  /* ── 오늘 주행 GPX (실제로 달린 기록) — DAY 0 궤적(길잡이)과 따로 둡니다 ── */
+  CS.rideKey = function(who){ return CS.KEY.ride+":"+(who||"bin"); };
+  CS.saveRide = function(who, pts, name, wpts, extra){
+    /* 1초 간격 기록은 너무 커서 3초·5 m 안쪽 점은 건너뜀 (기온·고도는 유지) */
+    var keep=[], last=null;
+    pts.forEach(function(q,i){ if(!last || i===pts.length-1 || (q.t!==null&&last.t!==null&&q.t-last.t>=3000) || CS.hav(last,q)>=5){ keep.push(q); last=q; } });
+    var rows=keep.map(function(q){ return [+q.lat.toFixed(6), +q.lon.toFixed(6), Math.round(q.ele),
+      q.t===null||q.t===undefined?null:Math.round(q.t/1000), q.at===null||q.at===undefined?null:q.at]; });
+    var j={name:name||"오늘 주행", rows:rows, wpts:wpts||[], saved:Date.now(), who:who};
+    if(extra) for(var k in extra) j[k]=extra[k];
+    localStorage.setItem(CS.rideKey(who), JSON.stringify(j));
+    return j;
+  };
+  CS.loadRide = function(who){
+    try{
+      var j=JSON.parse(localStorage.getItem(CS.rideKey(who))||"null");
+      if(!j||!j.rows||j.rows.length<2) return null;
+      return { name:j.name, wpts:j.wpts||[], saved:j.saved, file:j.file||"", truth:j.truth||null,
+        pts:j.rows.map(function(r){ return {lat:r[0], lon:r[1], ele:r[2]||0, t:r[3]===null?null:r[3]*1000, at:r[4]===undefined?null:r[4]}; }) };
+    }catch(e){ return null; }
+  };
+
+  /* ── 실제 주행 GPX 로 예측 로그를 채점 ──
+     로그에는 수신 순간(recv)의 표시 위치(dispKm)와 수신 시각(t)의 예측(predKm)이 있습니다.
+     실제 GPX 로 그 순간 정말 어디 있었는지(truth)를 길잡이 궤적 위 km 로 바꿔 비교합니다.
+       표시 − 실제 > 0 : 화면이 앞서 있음 (명소를 "이미 지나감" 으로 보임)
+       표시 − 실제 < 0 : 화면이 뒤처짐   (명소에 "아직 도착 못함" 으로 보임) */
+  function trackIndex(pts){ var cum=[0]; for(var i=1;i<pts.length;i++) cum.push(cum[i-1]+CS.hav(pts[i-1],pts[i])/1000); return cum; }
+  CS.projectKm = function(pts, cum, lat, lon, hintKm, winKm){
+    var r=Math.PI/180, cl=Math.cos(lat*r), best=Infinity, bk=null, lo=0, hi=pts.length-1;
+    if(typeof hintKm==="number"){ winKm=winKm||2;
+      while(lo<hi && cum[lo]<hintKm-winKm) lo++; hi=lo; while(hi<pts.length-1 && cum[hi]<hintKm+winKm) hi++; }
+    for(var i=Math.max(0,lo);i<Math.min(pts.length-1,hi+1);i++){
+      var a=pts[i], b=pts[i+1], ax=(a.lon-lon)*111320*cl, ay=(a.lat-lat)*111320, bx=(b.lon-lon)*111320*cl, by=(b.lat-lat)*111320;
+      var sx=bx-ax, sy=by-ay, L2=sx*sx+sy*sy, t=L2?Math.max(0,Math.min(1,-(ax*sx+ay*sy)/L2)):0, px=ax+sx*t, py=ay+sy*t, d=px*px+py*py;
+      if(d<best){ best=d; bk=cum[i]+(cum[i+1]-cum[i])*t; }
+    }
+    return bk===null?null:{km:bk, off:Math.sqrt(best)};
+  };
+  function posAt(pts, ms){
+    var lo=0, hi=pts.length-1; if(ms<=pts[0].t) return pts[0]; if(ms>=pts[hi].t) return pts[hi];
+    while(hi-lo>1){ var m=(lo+hi)>>1; if(pts[m].t<=ms) lo=m; else hi=m; }
+    var a=pts[lo], b=pts[hi], f=(ms-a.t)/((b.t-a.t)||1);
+    return {lat:a.lat+(b.lat-a.lat)*f, lon:a.lon+(b.lon-a.lon)*f};
+  }
+  function med(a){ if(!a.length) return null; var b=a.slice().sort(function(x,y){return x-y;}); return b[Math.floor(b.length/2)]; }
+  /* 길잡이 궤적이 없어도 되게, 실제 주행 GPX 하나로 계산합니다.
+     그 시각 실제 자리 = 주행 GPX 의 누적 거리(시간으로 보간) → 수신 좌표를 같은 GPX 에 투영해 차이를 구하고
+     로그의 fixKm 에 더해 "로그 궤적 위 실제 km" 로 옮깁니다. 왕복 궤적도 시간으로 찾으므로 헷갈리지 않습니다. */
+  CS.rideTruth = function(S, ride){
+    var rp=ride.filter(function(q){ return q.t!==null; }); if(rp.length<2||!S||!S.fixes||!S.fixes.length) return null;
+    var s0=Date.parse(S.start), s1=Date.parse(S.end||S.fixes[S.fixes.length-1].recv);
+    if(rp[rp.length-1].t<s0-600000 || rp[0].t>s1+600000) return null;            /* 시간이 안 겹침 */
+    var cum=trackIndex(rp), T0=rp[0].t, T1=rp[rp.length-1].t;
+    function cumAt(ms){ var lo=0, hi=rp.length-1; if(ms<=rp[0].t) return 0; if(ms>=rp[hi].t) return cum[hi];
+      while(hi-lo>1){ var m=(lo+hi)>>1; if(rp[m].t<=ms) lo=m; else hi=m; }
+      return cum[lo]+(cum[hi]-cum[lo])*(ms-rp[lo].t)/((rp[hi].t-rp[lo].t)||1); }
+    function rel(f, ms){                      /* 수신 f 를 기준으로 시각 ms 의 실제 km (로그 궤적 기준) */
+      var ct=cumAt(Date.parse(f.t)), p=CS.projectKm(rp,cum,f.lat,f.lon,ct,1);
+      if(!p||p.off>120) return null; return f.fixKm + (cumAt(ms)-p.km); }
+    var lag=[], fixE=[], predE=[], dispE=[], per=[];
+    S.fixes.forEach(function(f){
+      var tt=Date.parse(f.t), tv=Date.parse(f.recv), row=null;
+      if(tt>=T0 && tt<=T1 && typeof f.fixKm==="number" && typeof f.lat==="number"){
+        var ct=cumAt(tt), p=CS.projectKm(rp,cum,f.lat,f.lon,ct,1);
+        if(p && p.off<=120){
+          var kT=f.fixKm+(ct-p.km), kR=tv<=T1?f.fixKm+(cumAt(tv)-p.km):null;
+          row=[+kT.toFixed(4), kR===null?null:+kR.toFixed(4)];
+          lag.push((tv-tt)/1000); fixE.push((ct-p.km)*1000);
+          if(!f.rest){
+            if(typeof f.predKm==="number" && f.errM!==null && f.errM<1500) predE.push((f.predKm-kT)*1000);
+            if(typeof f.dispKm==="number" && kR!==null) dispE.push((f.dispKm-kR)*1000); }
+        }
+      }
+      per.push(row);
+    });
+    if(!lag.length) return null;
+    var marks=(S.marks||[]).map(function(m){ var ms=Date.parse(m.at), ref=null;
+      S.fixes.forEach(function(f){ if(Date.parse(f.t)<=ms && typeof f.fixKm==="number" && typeof f.lat==="number") ref=f; });
+      var o={}; for(var x in m) o[x]=m[x]; if(!ref||ms<T0||ms>T1) return o;
+      var k=rel(ref, ms); if(k===null) return o;
+      o.truthKm=+k.toFixed(4); o.dispErrM=typeof m.dispKm==="number"?Math.round((m.dispKm-k)*1000):null; o.atWpM=Math.round((k-m.wpKm)*1000); return o; });
+    var abs=function(a){ return a.map(Math.abs); }, big=function(a,sg){ return a.filter(function(x){ return sg>0?x>50:x<-50; }).length; };
+    return { at:new Date().toISOString(), n:lag.length, lagMedS:med(lag),
+      fixMedAbsM:med(abs(fixE)), predMedAbsM:med(abs(predE)), predMedM:med(predE),
+      dispN:dispE.length, dispMedAbsM:med(abs(dispE)), dispMedM:med(dispE),
+      dispAhead:big(dispE,1), dispBehind:big(dispE,-1),
+      predAhead:big(predE,1), predBehind:big(predE,-1), per:per, marks:marks };
+  };
+
   /* ── 시간대별 날짜 ── */
   CS.ymd = function(ms, tz){
     try{
@@ -116,7 +207,7 @@
   CS.plogRecalc = function(S){
     var F=S.fixes||[];
     if(!F.length) return { distKm:S.distKm||0, errPct:S.errPct, meanErrM:S.meanErrM, skipped:0, n:0, src:"stored" };
-    var prev=null, dist=0, seg=0, sumErr=0, sumGap=0, sumErrGap=0, skipped=0, n=0;
+    var prev=null, dist=0, seg=0, sumErr=0, sumGap=0, sumErrGap=0, skipped=0, restN=0, n=0;
     for(var i=0;i<F.length;i++){
       var f=F[i], fk=(typeof f.fixKm==="number")?f.fixKm:null, g=f.gapS||60, jump=false;
       if(prev!==null && fk!==null){
@@ -125,14 +216,15 @@
         else seg+=dk;
       }
       if(f.errM!==null && f.errM!==undefined){
-        if(jump || prev===null){ skipped++; }
+        if(f.rest){ restN++; }
+        else if(jump || prev===null){ skipped++; }
         else { sumErr+=f.errM/1000*g/60; sumGap+=g; sumErrGap+=f.errM*g; n++; }
       }
       if(fk!==null) prev=fk;
     }
     dist+=Math.max(0,seg);
     return { distKm:dist, errPct: dist>=0.05 ? sumErr/dist*100 : null,
-             meanErrM: sumGap ? sumErrGap/sumGap : null, skipped:skipped, n:n, src:"recalc" };
+             meanErrM: sumGap ? sumErrGap/sumGap : null, skipped:skipped, restN:restN, n:n, src:"recalc" };
   };
 
   /* 로그 합치기 — 같은 id·사람은 한 번만 (fixes 가 있는 쪽을 남김) */

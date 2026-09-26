@@ -257,6 +257,25 @@
     display:flex;align-items:center;gap:10px;background:rgba(20,24,36,.62);backdrop-filter:blur(6px);
     color:#fff;border-radius:14px;padding:8px 14px 8px 10px;box-shadow:0 3px 12px rgba(0,0,0,.3)}
   .hud-turn.hide{display:none}
+  /* 명소 띠가 떠 있으면 회전 카드는 띠 안으로 들어갑니다 (겹쳐서 명소를 가리던 문제) */
+  #hud.banner-on .hud-turn{display:none}
+  .wb-turn{display:flex;align-items:center;gap:8px;margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,.18)}
+  .wb-turn svg{width:40px;height:40px;flex:0 0 40px}
+  .wb-turn b{font-size:1.05rem;color:#fff;font-variant-numeric:tabular-nums} .wb-turn small{font-size:.78rem;opacity:.85}
+  .wb-here{margin-left:auto;border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.12);color:#FFF3C4;
+    border-radius:18px;padding:4px 10px;font:inherit;font-size:.72rem;font-weight:700;cursor:pointer;white-space:nowrap}
+  .wb-here:active{background:var(--flecha);color:#3B2E00}
+  .wb-mark{font-size:.74rem;margin-top:4px;color:#CDEBD9}
+  /* 휴식 */
+  .hud-rest{display:flex;gap:6px;margin-bottom:4px}
+  .hud-rest button{flex:1;border:1px solid #D4B35A;background:#FFF8E1;color:#6B4E00;border-radius:8px;padding:7px 4px;
+    font-size:.78rem;font-weight:700;cursor:pointer}
+  .hud-rest button.on{background:#1E7A46;border-color:#1E7A46;color:#fff}
+  .hud-restchip{position:absolute;left:50%;transform:translateX(-50%);top:calc(max(10px,env(safe-area-inset-top)) + 46px + 40px);
+    background:rgba(107,78,0,.92);color:#FFF3C4;border-radius:20px;padding:6px 14px;font-size:.8rem;font-weight:700;z-index:4;
+    box-shadow:0 2px 10px rgba(0,0,0,.3);white-space:nowrap}
+  .hud-restchip.hide{display:none}
+  #hud.resting .hud-turn,#hud.resting .wpx-banner{display:none}
   .hud-turn b{display:block;font-size:1.5rem;line-height:1.1;font-variant-numeric:tabular-nums}
   .hud-turn small{display:block;font-size:.74rem;opacity:.85;margin-top:2px}
   .hud-turn svg{width:66px;height:66px}
@@ -268,7 +287,7 @@
   .hud-off b{display:block;font-size:1.1rem} .hud-off small{display:block;font-size:.78rem;opacity:.9}
   .hud-off .arr{font-size:2rem;line-height:1;display:inline-block}
   .hud-wp{position:absolute;left:10px;top:calc(max(10px,env(safe-area-inset-top)) + 46px + 34px);max-width:min(58vw,380px);z-index:2}
-  #hud.banner-on .hud-wp{top:calc(max(10px,env(safe-area-inset-top)) + 46px + 34px + 112px)}
+  #hud.banner-on .hud-wp{top:calc(max(10px,env(safe-area-inset-top)) + 46px + 34px + var(--bh,104px) + 8px)}
   .hud-wp > button.mini-arrow{padding:6px 9px;font-size:.9rem}
   .hud-wp > button{border:1px solid rgba(255,255,255,.7);background:rgba(255,255,255,.94);color:var(--ink);
     border-radius:10px;padding:8px 12px;font-size:.78rem;font-weight:700;cursor:pointer;
@@ -290,7 +309,7 @@
   .wpx-none{font-size:.72rem;color:var(--soft);padding:6px 2px}
   .wpx-voice{display:flex;align-items:center;gap:6px;font-size:.7rem;color:var(--soft);padding:6px 2px 2px;cursor:pointer}
   .wpx-voice input{accent-color:var(--flecha)}
-  .wpx-banner{position:absolute;left:10px;right:10px;max-height:104px;overflow:hidden;
+  .wpx-banner{position:absolute;left:10px;right:10px;max-height:168px;overflow:hidden;
     top:calc(max(10px,env(safe-area-inset-top)) + 46px + 34px);
     background:#3B2E00;color:#FFF3C4;border-radius:14px;padding:10px 14px 11px;
     box-shadow:0 4px 18px rgba(0,0,0,.4);line-height:1.35}
@@ -401,7 +420,9 @@
     <small id="hzlv">600 m</small>
     <button id="hzout" aria-label="축소">－</button>
   </div>
+  <div class="hud-restchip hide" id="hrchip"></div>
   <div class="hud-bot hide" id="hbot">
+    <div class="hud-rest" id="hrestrow"><button id="hrest" type="button">☕ 휴식 — 예측 멈춤</button></div>
     <div class="hud-src">
       <button data-src="day0" id="hsrc0">DAY 0 시험 주행</button>
       <button data-src="live" id="hsrcL">실시간 위치</button>
@@ -452,7 +473,7 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:5000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"server",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20260926-37";
+var D0_VER="v20260926-38";
 var CS=window.CaminoShared||null;   /* js/camino-shared.js — 없으면 예전 방식대로 */
 try{ var _pm=localStorage.getItem("caminoPosMode"); if(_pm==="gps"&&GPS_ENABLED) NAV.posMode="gps"; }catch(e){}
 try{ var _m2=localStorage.getItem("caminoMap2d"); if(_m2==="0") OPT_MAP2D_INIT=false; }catch(e){}
@@ -961,6 +982,8 @@ function liveHistPush(){
       /* 앞 수신이 10분 넘게 묵었으면 힌트로 쓰지 않음 — 왕복 궤적에서 지난 주행의 도착점(58.9 km)을
          이번 출발로 잘못 잡던 문제 (9/26 JIN). 힌트가 없으면 가장 앞 km(출발)를 고릅니다. */
       var prev=h.length?h[h.length-1]:null, pk=(prev&&prev.d0km!==undefined&&prev.d0km!==null&&t-prev.t<600000)?prev.d0km:undefined;
+      /* 힌트는 "앞 수신 자리 + 순간 속도 × 지난 시간" — 왕복 구간에서 가는 길/오는 길을 시간으로 가름 */
+      if(pk!==undefined){ var vv=(f.vel!==null?f.vel:(prev.vel!==null?prev.vel:0)); pk+=Math.max(0,vv)*(t-prev.t)/3600000; }
       var pr=projectOn(D0.pts,D0.cum,f.lat,f.lon,pk); if(pr&&pr.off<=400){ f.d0km=pr.km; f.d0off=pr.off; } }
     /* 예측 로그 — 이 수신이 오기 직전, 수신 시각 기준으로 예측하던 자리와 비교 */
     if(PLOG.s && w===NAV.who && NAV.on && NAV.src==="live") plogOnFix(w, f, h);
@@ -968,6 +991,38 @@ function liveHistPush(){
   });
 }
 
+/* ══════════ 휴식 ══════════
+   휴식 단추를 누르면 그 자리에 위치를 고정하고 예측 · 오차 계산을 멈춥니다.
+   재출발을 누르면 그 순간부터 0 km/h 에서 경사표 속도로 다시 붙습니다 (쉬기 전 속도로 앞질러 가지 않게).
+   폰이 잠들어 페이지가 다시 열려도 이어지도록 저장해 둡니다. */
+var REST={who:null, since:null, km:null, resumeAt:null, resumeWho:null};
+try{ var _rs=JSON.parse(localStorage.getItem("caminoRest")||"null"); if(_rs) for(var _k in _rs) REST[_k]=_rs[_k]; }catch(e){}
+function restSave(){ try{ localStorage.setItem("caminoRest", JSON.stringify(REST)); }catch(e){} }
+function restOn(w){ return !!REST.since && REST.who===(w||NAV.who); }
+function restToggle(){
+  var w=NAV.who, now=Date.now();
+  if(restOn(w)){
+    if(PLOG.s && PLOG.s.who===w) (PLOG.s.rests=PLOG.s.rests||[]).push({from:new Date(REST.since).toISOString(), to:new Date(now).toISOString(), km:REST.km});
+    REST.since=null; REST.resumeAt=now; REST.resumeWho=w;
+    wpxBeep(1); if(WPX.voice) wpxSay("다시 출발합니다");
+  }else{
+    var pr=predict(w); REST.who=w; REST.since=now; REST.km=(pr&&typeof pr.km==="number")?+pr.km.toFixed(4):null; REST.resumeAt=null;
+    if(WPX.voice) wpxSay("휴식. 위치를 고정합니다");
+  }
+  PRED_CACHE={}; NAV.dispKm=null; restSave(); restUI();
+}
+function restUI(){
+  var b=$("hrest"), row=$("hrestrow"), chip=$("hrchip"), hud=$("hud"); if(!b) return;
+  var live=NAV.on && NAV.src==="live", on=live && restOn();
+  row.style.display = live ? "" : "none";
+  b.classList.toggle("on", on);
+  b.textContent = on ? "▶ 재출발 — 지금부터 다시 예측" : "☕ 휴식 — 예측 멈춤";
+  hud.classList.toggle("resting", on);
+  if(on){ var s=Math.round((Date.now()-REST.since)/1000);
+    var t="☕ 휴식 "+Math.floor(s/60)+":"+String(s%60).padStart(2,"0")+(REST.km!==null?" · "+REST.km.toFixed(1)+" km 에 고정":"");
+    if(chip.textContent!==t) chip.textContent=t; chip.classList.remove("hide"); }
+  else chip.classList.add("hide");
+}
 /* ══════════ 예측 오차 로그 ══════════
    오차 = |예측 km − 수신으로 보정된 km| 를 수신마다 더한 것.  오차율 = 누적 오차 / 주행 거리 × 100.
    로그(JSON)와 GPX 를 함께 보내면 알고리즘을 다시 돌려 볼 수 있게 원 자료(t, lat, lon, vel)도 남깁니다. */
@@ -981,10 +1036,12 @@ function plogStart(){
     track:D0.pts.length?D0.name:"route-index", trackKm:D0.pts.length?+D0.total.toFixed(3):null,
     params:{algo:PRED_ALGO, wVel:PRED_W_VEL, stopF:PRED_STOP_F, wTable:PRED_W_TABLE, table:SPEED_TABLE.slice(), tableSrc:SPEED_TABLE_SRC,
             maxMin:PRED_MAX_MIN, minKmh:PRED_MIN_KMH, maxKmh:PRED_MAX_KMH},
-    start:new Date().toISOString(), end:null, fixes:[], sumErrKm:0, distKm:0, firstKm:null, lastKm:null, done:false, note:"" };
+    start:new Date().toISOString(), end:null, fixes:[], marks:[], rests:[], sumErrKm:0, distKm:0, firstKm:null, lastKm:null, done:false, note:"" };
 }
 function plogOnFix(w, f, h){
   var S=PLOG.s, prev=h.length?h[h.length-1]:null;
+  /* 이 수신이 도착한 순간 화면이 보여 주던 자리 — 실제 주행 GPX 를 올리면 이것을 채점합니다 */
+  var disp=prev?predict(w):null, dispKm=(disp&&typeof disp.km==="number")?+disp.km.toFixed(4):null;
   var fixKm = f.d0km!==undefined&&f.d0km!==null ? f.d0km : (!f.test&&f.km!==null ? f.km : null);
   var saved=PRED_CACHE[w]; delete PRED_CACHE[w];
   var pr = prev ? predict(w, f.t) : null;          /* 수신 시각에 예측이 가리키던 자리 */
@@ -995,12 +1052,19 @@ function plogOnFix(w, f, h){
     fixKm: fixKm!==null?+fixKm.toFixed(4):null,
     predKm: (pr&&pr.km!==undefined)?+pr.km.toFixed(4):null,
     predSpd: pr?+pr.spd.toFixed(2):null, predAhead: pr?+(pr.ahead*1000).toFixed(0):null, mode: pr?pr.mode:null,
-    errM:null };
+    errM:null, dispKm:dispKm, rest:restOn(w)||undefined };
+  /* 그림자 예측 — 화면엔 쓰지 않고 로그에만. "직전 2분 실제 속도로 밀기" 와 비교하려고 */
+  (function(){ var fx=S.fixes, j=-1; for(var q=fx.length-1;q>=0;q--) if(typeof fx[q].fixKm==="number"&&!fx[q].jump){ j=q; break; }
+    if(j<0) return; var tj=Date.parse(fx[j].t), k=j;
+    while(k>0 && tj-Date.parse(fx[k].t)<120000) k--;
+    var dts=(tj-Date.parse(fx[k].t))/1000; if(dts<20) return;
+    var R=Math.max(0,(fx[j].fixKm-fx[k].fixKm)/dts);                 /* km/s */
+    e.predKmR=+(fx[j].fixKm+R*(f.t-tj)/1000).toFixed(4); })();
   /* 궤적 위 자리가 한 번에 튀면(80 km/h 보다 빠른 이동) 오차 합 · 거리에서 뺍니다 */
   var lastFixKm=null; for(var q=S.fixes.length-1;q>=0;q--) if(S.fixes[q].fixKm!==null){ lastFixKm=S.fixes[q].fixKm; break; }
   if(e.fixKm!==null && lastFixKm!==null && Math.abs(e.fixKm-lastFixKm)>Math.max(1,80*(e.gapS||60)/3600)) e.jump=true;
   if(e.fixKm!==null && e.predKm!==null){ e.errM=Math.round(Math.abs(e.fixKm-e.predKm)*1000); }
-  if(e.errM!==null && !e.jump){
+  if(e.errM!==null && !e.jump && !e.rest){
     var gm=(e.gapS||60)/60;                                            /* 수신 간격으로 가중 — 30초 로그와 60초 로그를 같은 잣대로 */
     S.sumErrKm+=Math.abs(e.fixKm-e.predKm)*gm; S.sumGapS=(S.sumGapS||0)+(e.gapS||60); S.sumErrGap=(S.sumErrGap||0)+e.errM*(e.gapS||60); }
   if(fixKm!==null){ if(S.firstKm===null) S.firstKm=fixKm;
@@ -1011,11 +1075,21 @@ function plogOnFix(w, f, h){
   if(S.trackKm && fixKm!==null && fixKm>=S.trackKm*0.99 && !S.done){ S.done=true; plogSummaryToast(); }
   plogStat();
 }
+/* 명소 띠의 "여기예요" — 명소 앞에 실제로 섰을 때 누르면 그 순간 화면 위치와 명소 km 차이를 남깁니다 */
+function plogMark(){
+  var f=WPX.bannerWp, cur=wpxCurKm(); if(!f) return;
+  var diff=(typeof cur==="number")?Math.round((cur-f.km)*1000):null;
+  var m={at:new Date().toISOString(), name:f.name, cmt:f.cmt||"", wpKm:+f.km.toFixed(4), dispKm:typeof cur==="number"?+cur.toFixed(4):null, diffM:diff};
+  if(PLOG.s) PLOG.s.marks.push(m);
+  WPX.markMsg={t:Date.now(), txt: diff===null?"기록했습니다":"기록 · 화면이 "+(Math.abs(diff)<15?"정확합니다":(diff>0?fmtM(diff)+" 앞서":fmtM(diff)+" 뒤처져")+" 있었습니다")};
+  wpxBeep(1); WPX.lastBanner=""; wpxRender(true);
+}
 function plogErrPct(S){ S=S||PLOG.s; if(!S||S.distKm<0.05) return null; return S.sumErrKm/S.distKm*100; }   /* 60초당 오차 합 ÷ 거리 */
 function plogMeanErr(S){ S=S||PLOG.s; if(!S||!S.sumGapS) return null; return S.sumErrGap/S.sumGapS; }         /* 시간가중 평균 오차 m */
 function sig4(x){ return x===null||x===undefined ? "—" : Number(x).toPrecision(4); }
 function plogEnd(){
   var S=PLOG.s; if(!S) return;
+  if(restOn(S.who)){ (S.rests=S.rests||[]).push({from:new Date(REST.since).toISOString(), to:new Date().toISOString(), km:REST.km}); REST.since=null; REST.resumeAt=null; restSave(); }
   S.end=new Date().toISOString(); S.errPct=plogErrPct(S)!==null?+plogErrPct(S).toPrecision(6):null;
   S.meanErrM=plogMeanErr(S)!==null?Math.round(plogMeanErr(S)):null; S.metric="errPct=Σ|err|·(gap/60s)/dist · meanErrM=시간가중 · 튄 수신 제외";
   if(!S.done && S.trackKm) S.note=(S.note?S.note+" · ":"")+"중간 멈춤 "+S.distKm.toFixed(1)+"/"+S.trackKm.toFixed(1)+" km";
@@ -1025,7 +1099,8 @@ function plogEnd(){
 function plogSummaryToast(){
   var S=PLOG.s, t=$("hwpb"); if(!S||!t) return;
   t.className="wpx-banner"; t.innerHTML='<div class="wb-head"><b>완주 · 예측 오차 '+sig4(plogErrPct(S))+' % · 평균 '+(plogMeanErr(S)!==null?Math.round(plogMeanErr(S)):"—")+' m</b></div>'
-    +'<div class="wb-cmt">'+S.fixes.length+'회 수신 · 주행 '+S.distKm.toFixed(2)+' km · '+S.ver+' · '+PRED_ALGO+'</div>';
+    +'<div class="wb-cmt">'+S.fixes.length+'회 수신 · 주행 '+S.distKm.toFixed(2)+' km · '+S.ver+' · '+PRED_ALGO+'</div>'
+    +'<div class="wb-next">주행 끝 → 통계 DAY 0 카드의 "오늘 주행 GPX 올리기" 로 채점 · 보기 갱신</div>';
   WPX.lastBanner="__summary__"; setTimeout(function(){ if(WPX.lastBanner==="__summary__"){ WPX.lastBanner=""; } },15000);
 }
 /* 아래 띠에 주행 시간 · 오차율 */
@@ -1153,7 +1228,7 @@ function predict(w, atMs){
   var b=h[h.length-1], a=h.length>1?h[h.length-2]:null, now=atMs||Date.now();
   /* DAY 0 궤적이 나중에 들어왔으면 그때 재 둡니다 */
   [a,b].forEach(function(f){ if(f&&f.test&&f.d0km===undefined&&typeof f.lat==="number"&&D0.pts.length){
-    var pk=(f===b&&a&&typeof a.d0km==="number"&&b.t-a.t<600000)?a.d0km:undefined;
+    var pk=(f===b&&a&&typeof a.d0km==="number"&&b.t-a.t<600000)?a.d0km+Math.max(0,(b.vel!==null?b.vel:(a.vel||0)))*(b.t-a.t)/3600000:undefined;
     var pr=projectOn(D0.pts,D0.cum,f.lat,f.lon,pk); f.d0km = (pr&&pr.off<=400) ? pr.km : null; } });
   if(b.d0km===null) b.d0km=undefined;
   var dtH=Math.min(now-b.t, PRED_MAX_MIN*60000)/3600000;          /* 너무 오래되면 그 자리에 멈춤 */
@@ -1174,11 +1249,16 @@ function predict(w, atMs){
   /* 정지 판정 강화 — 순간 속도도, 직전 구간 평균도 3 km/h 미만이면 서 있는 것 (GPS 잡음 1~2 km/h 로 표가 굴러가지 않게) */
   if(vel!==null && vel<3 && (avg===null || avg<3)) spd=0;
   if(spd<PRED_MIN_KMH || (mode==="xy"&&hdg===null)) spd=0;
-  var toT=Math.min(now, b.t+PRED_MAX_MIN*60000);
-  var out={mode:mode, spd:spd, last:b, hdg:hdg, stale:(now-b.t)>PRED_MAX_MIN*60000};
-  var v0 = (spd>0 && vel!==null) ? Math.max(3, vel) : spd;          /* 출발 속도 = 수신 순간 속도 */
-  if(mode==="km"){ out.km=integrateKm(w,"km",b.km,b.t,spd,toT,v0); out.ahead=out.km-b.km; }
-  else if(mode==="d0"){ out.km=integrateKm(w,"d0",b.d0km,b.t,spd,toT,v0); out.ahead=out.km-b.d0km; }
+  /* 휴식 중이면 제자리 · 재출발 뒤 아직 새 수신이 없으면 재출발 시각부터 0 → 표 속도 */
+  var t0=b.t, resting=restOn(w), resumed=false, v0;
+  if(resting){ spd=0; }
+  else if(REST.resumeAt && REST.resumeWho===w && b.t<REST.resumeAt && now>REST.resumeAt && mode!=="xy"){
+    t0=REST.resumeAt; spd=Math.max(spd, 12); resumed=true; }
+  var toT=Math.min(now, t0+PRED_MAX_MIN*60000);
+  var out={mode:mode, spd:spd, last:b, hdg:hdg, stale:!resting && (now-t0)>PRED_MAX_MIN*60000, rest:resting, resumed:resumed};
+  v0 = resumed ? 0 : (spd>0 && vel!==null) ? Math.max(3, vel) : spd;          /* 출발 속도 = 수신 순간 속도 */
+  if(mode==="km"){ out.km=integrateKm(w,"km",b.km,t0,spd,toT,v0); out.ahead=out.km-b.km; }
+  else if(mode==="d0"){ out.km=integrateKm(w,"d0",b.d0km,t0,spd,toT,v0); out.ahead=out.km-b.d0km; }
   else { var ahead=spd*dtH; out.ahead=ahead; var o=offsetLL(b.lat,b.lon,hdg||0,ahead*1000); out.lat=o[0]; out.lon=o[1]; }
   return out;
 }
@@ -1228,6 +1308,7 @@ function riderState(){
     if(out.hdg===null && NAV.last && NAV.last.who===w && hav(NAV.last,out)>8) out.hdg=bearing(NAV.last,out);
     if(!NAV.last || NAV.last.who!==w || hav(NAV.last,out)>8) NAV.last={who:w,lat:out.lat,lon:out.lon};
   }
+  if(pr.rest) spdTxt=" · 휴식 중 (고정)"; else if(pr.resumed) spdTxt=" · 재출발 → +"+(pr.ahead*1000).toFixed(0)+" m";
   out.sub=where+" · 수신 "+recv+spdTxt+(pr.stale?" · 오래돼 멈춤":"");
   out.pred=pr;
   return out;
@@ -1488,7 +1569,7 @@ function syncHud(){
   $("hsrc0").classList.toggle("on",NAV.src==="day0");
   $("hsrc0").textContent=(D0.day?"DAY "+D0.day+" 노선 재생":"DAY 0 시험 주행");
   $("hsrcL").classList.toggle("on",NAV.src==="live");
-  hudLiveLabel();
+  hudLiveLabel(); restUI();
   $("hplay").style.display = NAV.src==="day0" ? "" : "none";
   document.querySelectorAll("[data-who]").forEach(function(b){ b.classList.toggle("on", b.dataset.who===NAV.who); });
   setZoom(0);
@@ -1514,6 +1595,9 @@ function setupHud(){
   document.querySelectorAll("#hud [data-who]").forEach(function(b){
     b.addEventListener("click",function(){ setWho(b.dataset.who); }); });
   on("hexit","click",function(){ setNav(false); });
+  on("hrest","click",restToggle);
+  on("hwpb","click",function(e){ if(e.target && e.target.closest && e.target.closest("[data-here]")) plogMark(); });
+  setInterval(restUI, 1000);
   on("hzin","click",function(){ setZoom(-1); });
   on("hzout","click",function(){ setZoom(1); });
   on("hsrc0","click",function(){ NAV.src="day0"; NAV.hdg=null; gpsStop(); plogEnd(); if(OPT.live) liveTimerStart(); if(!D0.playing) d0Play(true); syncHud(); });
@@ -1533,40 +1617,69 @@ function setupHud(){
 
 /* ══════════ 다음 회전 안내 ══════════
    궤적을 10 m 간격으로 다시 찍어 30 m 앞뒤 방향 변화가 40° 넘는 곳을 "회전"으로 잡습니다. 궤적이 바뀔 때 한 번만. */
-var TURNS={list:[], key:""};
+var TURNS={list:[], key:"", show:[]};
+/* 회전 안내는 "갈림길에서 방향을 바꾸는 곳" 에만 (JIN 피드백 9/26)
+   1. 모양: 앞 20~60 m 와 뒤 20~60 m 의 방향 차가 60° 이상이고, 그 앞뒤 구간은 각각 곧아야(25° 미만) 함
+      → 한 길이 크게 휘어 도는 굽이(강변 자전거길 등)는 앞뒤가 계속 휘므로 빠짐. "살짝" 안내는 없앰.
+   2. 길 지도(OpenStreetMap)로 그 자리에 실제로 길이 셋 이상 만나는지 확인 — 되면 갈림길만 남김.
+      지도를 못 받으면(오프라인) 1번 모양만으로. 결과는 궤적마다 저장해 두고 다시 묻지 않음.
+   3. 유턴(150° 이상 · 회차 지점)은 늘 안내. */
+var TURN_MIN=60, TURN_STRAIGHT=25;
 function turnsBuild(tr){
-  if(!tr){ TURNS.list=[]; TURNS.key=""; return; }
+  if(!tr){ TURNS.list=[]; TURNS.show=[]; TURNS.key=""; return; }
   if(TURNS.key===tr.key) return;
-  TURNS.key=tr.key; TURNS.list=[];
+  TURNS.key=tr.key; TURNS.list=[]; TURNS.show=[];
   var pts=tr.pts, cum=tr.cum, n=pts.length; if(n<3) return;
   if(cum[n-1]*1000/n > 60) return;              /* 점 간격이 60 m 넘게 성기면(노선 색인) 회전을 잡을 수 없음 */
   var samp=[], k=0, i=0, total=cum[n-1];
   while(k<=total){ while(i<n-2 && cum[i+1]<k) i++;
     var t=(k-cum[i])/((cum[i+1]-cum[i])||1e-9); samp.push({km:k, lat:pts[i].lat+(pts[i+1].lat-pts[i].lat)*t, lon:pts[i].lon+(pts[i+1].lon-pts[i].lon)*t}); k+=0.01; }
-  /* 두 잣대로 봅니다 — 30 m 창에서 40° (모퉁이) 또는 60 m 창에서 50° (넓게 도는 굽이).
-     9/25 에 자전거가 넓게 돈 좌회전이 30 m 창에서 39° 라 빠진 적이 있음 */
-  var found=[];
-  [[3,40],[6,50]].forEach(function(cfg){
-    var W=cfg[0], TH=cfg[1], last=-1;
-    for(var j=W;j<samp.length-W;j++){
-      var h1=bearing(samp[j-W],samp[j]), h2=bearing(samp[j],samp[j+W]);
-      var d=((h2-h1+540)%360)-180;
-      if(Math.abs(d)>=TH && (last<0 || samp[j].km-samp[last].km>0.06)){
-        var best=j; for(var q=j;q<Math.min(samp.length-W,j+2*W);q++){ var a1=bearing(samp[q-W],samp[q]), a2=bearing(samp[q],samp[q+W]); var dd=((a2-a1+540)%360)-180; if(Math.abs(dd)>Math.abs(d)){ d=dd; best=q; } }
-        found.push({km:samp[best].km, ang:Math.round(d), i:best, W:W}); last=best; j=best+W;
-      }
+  var S=samp, hb=function(a,b){ return bearing(S[a],S[b]); }, ad=function(x,y){ return ((y-x+540)%360)-180; };
+  for(var j=10;j<S.length-10;j++){
+    var d=ad(hb(j-6,j-2),hb(j+2,j+6)); if(Math.abs(d)<TURN_MIN) continue;
+    var best=j, bd=d;
+    for(var q=j;q<Math.min(S.length-10,j+6);q++){ var d2=ad(hb(q-6,q-2),hb(q+2,q+6)); if(Math.abs(d2)>Math.abs(bd)){ bd=d2; best=q; } }
+    var pre=Math.abs(ad(hb(best-10,best-6),hb(best-6,best-2))), post=Math.abs(ad(hb(best+2,best+6),hb(best+6,best+10)));
+    var last=TURNS.list[TURNS.list.length-1];
+    if((pre<TURN_STRAIGHT && post<TURN_STRAIGHT) || Math.abs(bd)>=150){
+      if(!last || S[best].km-last.km>0.08) TURNS.list.push(mk(best,bd));
     }
-  });
-  found.sort(function(a,b){ return a.km-b.km; });
-  found.forEach(function(f){
-    var prev=TURNS.list[TURNS.list.length-1];
-    if(prev && f.km-prev.km<0.06){ if(Math.abs(f.ang)>Math.abs(prev.ang)) TURNS.list[TURNS.list.length-1]=mk(f); return; }   /* 같은 굽이는 하나로 */
-    TURNS.list.push(mk(f));
-  });
-  function mk(f){ var shape=samp.slice(Math.max(0,f.i-7), Math.min(samp.length,f.i+8));
-    return {km:f.km, ang:f.ang, shape:shape, hin:bearing(samp[Math.max(0,f.i-3)],samp[f.i])}; }
+    j=best+6;
+  }
+  function mk(ix,ang){ var shape=samp.slice(Math.max(0,ix-7), Math.min(samp.length,ix+8));
+    return {km:samp[ix].km, ang:Math.round(ang), shape:shape, hin:bearing(samp[Math.max(0,ix-3)],samp[ix]), lat:samp[ix].lat, lon:samp[ix].lon, jx:null}; }
+  turnsFilter();
+  turnsJunction(tr.key);
 }
-function turnText(a){ var s=Math.abs(a); return (s>=150?"유턴":s>=100?"급"+(a<0?"좌":"우")+"회전":s>=60?(a<0?"좌":"우")+"회전":"살짝 "+(a<0?"왼쪽":"오른쪽")); }
+function turnsFilter(){ TURNS.show=TURNS.list.filter(function(t){ return Math.abs(t.ang)>=150 || t.jx!==false; }); }
+var JX_SKIP=/^(footway|steps|corridor|elevator|platform|proposed|construction|bus_stop|services|rest_area|via_ferrata)$/;
+function turnsJunction(key){
+  var list=TURNS.list; if(!list.length) return;
+  var ck="caminoJx:"+key.slice(0,80), cached=null;
+  try{ cached=JSON.parse(localStorage.getItem(ck)||"null"); }catch(e){}
+  if(cached && cached.length===list.length){ list.forEach(function(t,i){ t.jx=cached[i]; }); turnsFilter(); return; }
+  var q="[out:json][timeout:25];("+list.map(function(t){ return "way(around:25,"+t.lat.toFixed(6)+","+t.lon.toFixed(6)+")[highway];"; }).join("")+");out body geom;";
+  fetch("https://overpass-api.de/api/interpreter",{method:"POST", body:"data="+encodeURIComponent(q)})
+    .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function(j){
+      if(TURNS.key!==key) return;
+      var deg={}, pos={};
+      (j.elements||[]).forEach(function(w){ if(w.type!=="way"||!w.nodes||!w.geometry) return;
+        if(JX_SKIP.test((w.tags&&w.tags.highway)||"")) return;
+        var L=w.nodes.length; w.nodes.forEach(function(id,i){ deg[id]=(deg[id]||0)+((i===0||i===L-1)?1:2); pos[id]=w.geometry[i]; }); });
+      var res=list.map(function(t){ for(var id in deg){ if(deg[id]>=3 && pos[id] && hav(t,{lat:pos[id].lat,lon:pos[id].lon})<=25) return true; } return false; });
+      list.forEach(function(t,i){ t.jx=res[i]; }); turnsFilter();
+      try{ localStorage.setItem(ck, JSON.stringify(res)); }catch(e){}
+      console.log("회전 안내: 모양으로 "+list.length+"곳 → 갈림길 "+TURNS.show.length+"곳");
+    }).catch(function(e){ console.warn("길 지도 확인 못함 — 모양으로만 안내", e); });
+}
+function turnText(a){ var s=Math.abs(a); return (s>=150?"유턴":s>=100?"급"+(a<0?"좌":"우")+"회전":(a<0?"좌":"우")+"회전"); }
+var TURN_SHOW_KM=1.0;     /* 1 km 안으로 다가온 갈림길만 */
+function turnNext(cur){
+  if(cur===null||cur===undefined||!TURNS.show.length) return null;
+  for(var i=0;i<TURNS.show.length;i++) if(TURNS.show[i].km-cur>-0.01){ var t=TURNS.show[i]; return t.km-cur<=TURN_SHOW_KM ? {t:t, n2:TURNS.show[i+1]||null} : null; }
+  return null;
+}
 /* 회전 그림 — 실제 궤적 140 m 를 그대로 그립니다. 들어오는 방향이 위쪽. 회색 = 길, 노랑 = 진행. */
 function turnGlyph(tn, curKm){
   var pts=tn.shape||[], n=pts.length; if(n<3) return '';
@@ -1600,16 +1713,17 @@ function dotAt(P, pts, curKm){
 }
 function turnRender(cur){
   var box=$("hturn"); if(!box) return;
-  if(cur===null||cur===undefined||!TURNS.list.length){ box.classList.add("hide"); return; }
-  var idx=-1; for(var i=0;i<TURNS.list.length;i++) if(TURNS.list[i].km-cur>-0.01){ idx=i; break; }
-  var nxt=idx>=0?TURNS.list[idx]:null;
-  if(!nxt || nxt.km-cur>3){ box.classList.add("hide"); return; }
-  var m=(nxt.km-cur)*1000, key=nxt.km+":"+Math.round(m/5);
+  var nt=turnNext(cur); if(!nt){ box.classList.add("hide"); box.dataset.key=""; return; }
+  var nxt=nt.t, m=(nxt.km-cur)*1000, key=nxt.km+":"+Math.round(m/5);
   if(box.dataset.key===key) return; box.dataset.key=key;
   box.classList.remove("hide");
-  var n2=TURNS.list[idx+1];
   box.innerHTML=turnGlyph(nxt, cur)+'<div><b>'+(m<1000?Math.round(m/10)*10+" m":(m/1000).toFixed(1)+" km")+'</b><small>'+turnText(nxt.ang)
-    +(n2?' · 다음 '+fmtM((n2.km-cur)*1000)+' '+turnText(n2.ang):'')+'</small></div>';
+    +(nt.n2&&nt.n2.km-cur<=2?' · 다음 '+fmtM((nt.n2.km-cur)*1000)+' '+turnText(nt.n2.ang):'')+'</small></div>';
+}
+function turnMiniHtml(cur){
+  var nt=turnNext(cur); if(!nt) return "";
+  var m=(nt.t.km-cur)*1000;
+  return '<div class="wb-turn">'+turnGlyph(nt.t,cur)+'<div><b>'+fmtM(m)+' '+turnText(nt.t.ang)+'</b></div></div>';
 }
 
 /* ══════════ 이탈 · 역주행 감시 ══════════
@@ -1669,28 +1783,35 @@ function wpxTrack(){
    왕복 궤적처럼 같은 길을 두 번 지나면 후보가 여럿 생깁니다. prefKm(직전 위치)에 가장 가까운
    후보를 고르고, 직전이 없으면 작은 km 쪽(출발 방향)을 고릅니다. */
 function projectOn(pts,cum,lat,lon,prefKm){
-  var r=Math.PI/180, cl=Math.cos(lat*r), cands=[], best=Infinity;
-  for(var i=0;i<pts.length-1;i++){
+  /* 궤적 위 자리 찾기 (v2, 2026-09-26)
+     한 번 지나가는 곳마다 "가장 가까운 점(거리의 골짜기)" 하나씩을 후보로 둡니다.
+     예전에는 km 가 1 km 안에 있는 후보를 하나로 합쳐, 짧은 왕복 구간(유턴 · 회차)에서 가는 길과 오는 길이
+     한 후보로 섞였고 GPS 잡음에 따라 200~300 m 뒤로 튀었습니다 (9/26 BIN 로그의 ±300 m 가시 · JIN 명소 어긋남).
+     후보가 여럿이면 prefKm(= 앞 수신 + 속도×시간, 곧 "지금쯤 여기" ) 에 가장 가까운 것. 없으면 가장 앞 km. */
+  var r=Math.PI/180, cl=Math.cos(lat*r), n=pts.length-1, D=new Array(n), K=new Array(n), SD=new Array(n), best=Infinity;
+  for(var i=0;i<n;i++){
     var a=pts[i], b=pts[i+1];
     var ax=(a.lon-lon)*111320*cl, ay=(a.lat-lat)*111320;
     var bx=(b.lon-lon)*111320*cl, by=(b.lat-lat)*111320;
     var sx=bx-ax, sy=by-ay, L2=sx*sx+sy*sy;
     var t=L2? Math.max(0,Math.min(1,-(ax*sx+ay*sy)/L2)) : 0;
-    var px=ax+sx*t, py=ay+sy*t, d2=px*px+py*py;
-    if(d2<best) best=d2;
-    if(d2<250*250){ var cross=sx*(0-ay)-sy*(0-ax);
-      cands.push({km:cum[i]+(cum[i+1]-cum[i])*t, off:Math.sqrt(d2), side:cross>0?1:-1}); }
+    var px=ax+sx*t, py=ay+sy*t;
+    D[i]=Math.sqrt(px*px+py*py); K[i]=cum[i]+(cum[i+1]-cum[i])*t; SD[i]=(sx*(0-ay)-sy*(0-ax))>0?1:-1;
+    if(D[i]<best) best=D[i];
   }
-  if(!cands.length) return null;
-  /* 같은 지나감(km 이 1 km 안에 몰린 것)끼리는 가장 가까운 것만 남김 */
-  cands.sort(function(a,b){ return a.km-b.km; });
-  var groups=[]; cands.forEach(function(c){ var g=groups[groups.length-1];
-    if(g && c.km-g.km<1.0){ if(c.off<g.off){ g.km=c.km; g.off=c.off; g.side=c.side; } } else groups.push({km:c.km,off:c.off,side:c.side}); });
-  /* 가장 가까운 후보의 3배 안, 최소 150 m 까지는 후보로 둡니다 — 왕복 궤적의 출발점이
-     집에서 100 m 쯤 떨어져 있어도 "출발" 로 잡히게 */
-  var lim=Math.max(150, Math.sqrt(best)*3);
-  var ok=groups.filter(function(g){ return g.off<=lim; });
-  if(!ok.length) ok=groups;
+  var mins=[];
+  for(var j=0;j<n;j++){
+    if(D[j]>250) continue;
+    if((j===0||D[j]<=D[j-1]) && (j===n-1||D[j]<=D[j+1])){
+      var m=mins[mins.length-1];
+      if(m && K[j]-m.km<0.03){ if(D[j]<m.off){ m.km=K[j]; m.off=D[j]; m.side=SD[j]; } }
+      else mins.push({km:K[j], off:D[j], side:SD[j]});
+    }
+  }
+  if(!mins.length) return null;
+  var lim=Math.max(40, best*3);
+  var ok=mins.filter(function(g){ return g.off<=lim; });
+  if(!ok.length) ok=mins;
   if(typeof prefKm==="number") ok.sort(function(a,b){ return Math.abs(a.km-prefKm)-Math.abs(b.km-prefKm); });
   else ok.sort(function(a,b){ return a.km-b.km; });
   return ok[0];
@@ -1764,9 +1885,10 @@ function wpxRender(force){
     }else{ btn.textContent="📍 ▸"+(up.length?" "+fmtM((up[0].km-cur)*1000):""); btn.classList.add("mini-arrow"); }
   }
   if(html!==WPX.lastHtml){ WPX.lastHtml=html; box.innerHTML=html; }
+  turnsBuild(wpxTrack());
   wpxBanner(cur, up, passed);
   wpxTint();
-  turnsBuild(wpxTrack()); turnRender(cur);
+  turnRender(cur);
   offRouteCheck();
 }
 /* 화면 아래 꽉 찬 안내 띠 — 300 m 안에 들어오면 지나칠 때까지 거리를 바꿔 가며 보이고,
@@ -1774,10 +1896,16 @@ function wpxRender(force){
 function wpxBanner(cur, up, passed){
   var b=$("hwpb"); if(!b) return;
   var f=up&&up[0], a=f?(f.km-cur)*1000:null, h="";
+  WPX.bannerWp=null;
+  if(restOn()){ b.className="wpx-banner hide"; WPX.lastBanner=""; $("hud").classList.remove("banner-on"); return; }
   if(f && a<=WPX_R){
-    h='<div class="wb-head"><b>'+(a>15?fmtM(a)+" 앞":"지금")+'</b><span>'+wpxSideText(f)+'</span></div>'
+    WPX.bannerWp=f;
+    h='<div class="wb-head"><b>'+(a>15?fmtM(a)+" 앞":"지금")+'</b><span>'+wpxSideText(f)+'</span>'
+     +(PLOG.s?'<button class="wb-here" type="button" data-here="1">여기예요</button>':'')+'</div>'
      +'<div class="wb-name">'+esc(f.name)+'</div>'
      +(f.cmt?'<div class="wb-cmt">'+esc(f.cmt)+'</div>':'')
+     +(WPX.markMsg&&Date.now()-WPX.markMsg.t<6000?'<div class="wb-mark">✓ '+esc(WPX.markMsg.txt)+'</div>':'')
+     +turnMiniHtml(cur)
      +(up[1]?'<div class="wb-next">다음 · '+fmtM((up[1].km-cur)*1000)+' · '+esc(up[1].cmt||up[1].name)+'</div>':'');
     b.className="wpx-banner";
   }else if(passed){
@@ -1785,6 +1913,7 @@ function wpxBanner(cur, up, passed){
     h='<div class="wb-head"><b>방금 지나침</b><span>'+(passed.off<20?"뒤 ":(passed.side>0?"왼쪽 ":"오른쪽 ")+Math.round(passed.off/10)*10+" m · 뒤 ")+fmtM(back)+'</span></div>'
      +'<div class="wb-name">'+esc(passed.name)+'</div>'
      +(passed.cmt?'<div class="wb-cmt">'+esc(passed.cmt)+'</div>':'')
+     +turnMiniHtml(cur)
      +(f?'<div class="wb-next">다음 · '+fmtM(a)+' · '+esc(f.cmt||f.name)+'</div>':'');
     b.className="wpx-banner passed";
     if(WPX.said[id]!==3){ WPX.said[id]=3;
@@ -1792,6 +1921,7 @@ function wpxBanner(cur, up, passed){
   }else{ b.className="wpx-banner hide"; WPX.lastBanner=""; }
   if(h!==WPX.lastBanner){ WPX.lastBanner=h; b.innerHTML=h; }
   $("hud").classList.toggle("banner-on", !!h);
+  if(h) $("hud").style.setProperty("--bh", b.offsetHeight+"px");
 }
 /* 원 안(300 m)에 들어온 명소 아이콘은 노랗게 키웁니다 */
 function wpxTint(){
@@ -2384,6 +2514,14 @@ function day0Card(){
       +'<div id="d0list"></div>'
       +'<div class="d0note">이 GPX 는 브라우저에 기억됩니다. <span style="color:#B0A070">판 '+D0_VER+'</span></div>';
   }
+  /* 오늘 주행 GPX — 다 달리고 올리면 보기 페이지 DAY 0 카드가 그 기록(그날 날씨 · 기온)으로 바뀌고
+     예측 로그를 실제 위치로 채점합니다 */
+  var ride=CS?CS.loadRide(NAV.who):null;
+  h+='<div class="d0ride" style="margin-top:10px;border:1px dashed #9FCBB1;background:#F2FAF5;border-radius:10px;padding:8px 10px">'
+    +'<div class="row2"><span>오늘 주행 GPX · '+WHO[NAV.who].n+'</span><b>'+(ride?esc(ride.file||ride.name)+' · '+new Date(ride.saved).toLocaleString("ko-KR",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"}):'아직 없음')+'</b></div>'
+    +(ride&&ride.truth?truthLine(ride.truth):'')
+    +'<div class="d0row"><label class="mini play" style="padding:8px 12px;cursor:pointer">오늘 주행 GPX 올리기<input type="file" id="rideFile" style="display:none"></label></div>'
+    +'<div class="d0note">가민 등에서 내보낸 GPX 를 올리면 보기 페이지의 DAY 0 카드가 바로 바뀝니다. 같은 시간의 예측 로그가 있으면 "화면이 실제보다 앞섰나 · 뒤졌나" 를 채점합니다.</div></div>';
   /* 탈것 · 예측 오차 로그 */
   var n=PLOG.all.length, last=n?PLOG.all[n-1]:null;
   h+='<div class="row2" style="margin-top:10px"><span>경사→속도 표</span><b style="font-size:.68rem">'+esc(SPEED_TABLE_SRC)+'</b></div>'
@@ -2408,8 +2546,35 @@ function errChart(who){
   return '<div class="row2"><span>최근 7일 오차율 · '+WHO[who].n+'</span><b style="font-size:.64rem;color:var(--soft)">'+CS.WHO[who].place+' 날짜</b></div>'
     +'<div style="margin:2px 0 6px">'+CS.errChartSvg(plogAllForChart(), who, {w:260, h:60, ink:"var(--ink)", soft:"var(--soft)"})+'</div>';
 }
+function truthLine(T){
+  var f=function(v){ return v===null||v===undefined?"—":Math.round(v)+" m"; };
+  return '<div class="d0note" style="color:#146B3C">채점 '+T.n+'회 · 수신 지연 '+(T.lagMedS!==null?Math.round(T.lagMedS)+'초':'—')
+    +(T.dispN?' · 화면 오차 '+f(T.dispMedAbsM)+' (앞섬 '+T.dispAhead+' · 뒤짐 '+T.dispBehind+'회, 50 m 넘게)':' · 예측 오차 '+f(T.predMedAbsM)+' (앞섬 '+T.predAhead+' · 뒤짐 '+T.predBehind+'회)')
+    +(T.marks&&T.marks.length?' · 여기예요 '+T.marks.length+'회':'')+'</div>';
+}
+function rideUpload(file){
+  if(!file||!CS) return;
+  file.text().then(function(txt){
+    var g=CS.parseGpx(txt); if(g.pts.length<2) throw new Error("트랙 점이 2개 미만");
+    var who=NAV.who, trk=CS.loadDay0(who), track=trk?trk.pts:null;
+    /* 같은 사람 · 겹치는 시간의 로그를 찾아 채점 */
+    var cands=PLOG.all.filter(function(S){ return S.who===who; }), imp=[]; try{ imp=JSON.parse(localStorage.getItem(CS.KEY.plogImp)||"[]"); }catch(e){}
+    var best=null, where=null;
+    cands.concat(imp.filter(function(S){ return S.who===who; })).forEach(function(S){
+      var T=CS.rideTruth(S, g.pts); if(T && (!best || T.n>best.T.n)){ best={S:S,T:T}; } });
+    var extra={file:file.name};
+    if(best){ best.S.truth=best.T; extra.truth={sid:best.S.id, n:best.T.n, lagMedS:best.T.lagMedS, dispN:best.T.dispN, dispMedAbsM:best.T.dispMedAbsM,
+        dispAhead:best.T.dispAhead, dispBehind:best.T.dispBehind, predMedAbsM:best.T.predMedAbsM, predAhead:best.T.predAhead, predBehind:best.T.predBehind, marks:best.T.marks};
+      if(PLOG.all.indexOf(best.S)>=0) plogSave(); else try{ localStorage.setItem(CS.KEY.plogImp, JSON.stringify(imp)); }catch(e){} }
+    CS.saveRide(who, g.pts, g.name||file.name.replace(/\.gpx$/i,""), g.wpts, extra);
+    renderStats();
+    alert(WHO[who].n+" 오늘 주행 GPX 를 저장했습니다 — 보기 페이지 DAY 0 카드에 바로 나옵니다."
+      +(best?"\n예측 로그 "+best.T.n+"회를 실제 위치로 채점했습니다.":"\n같은 시간의 예측 로그는 없습니다."));
+  }).catch(function(e){ alert("GPX 를 읽지 못했습니다 — "+e.message); });
+}
 function bindDay0Card(){
   VEHICLE="bike";
+  on("rideFile","change",function(e){ rideUpload(e.target.files[0]); e.target.value=""; });
   on("plogDl","click",plogDownload);
   on("plogImp","change",function(e){ if(!CS) return; var fs=[].slice.call(e.target.files||[]), add=0;
     Promise.all(fs.map(function(f){ return f.text().then(function(t){ try{ add+=CS.plogImport(JSON.parse(t)); }catch(err){ alert(f.name+" — "+err.message); } }); }))
