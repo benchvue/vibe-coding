@@ -421,6 +421,8 @@
 <script src="https://unpkg.com/cesium@1.119/Build/Cesium/Cesium.js"></script>
 <script>window.CESIUM_BASE_URL = "https://unpkg.com/cesium@1.119/Build/Cesium/";</script>
 <script src="camino-token.js" onerror="window.__noTokenFile=1"></script>
+<!-- 보기 페이지와 함께 쓰는 부분 (DAY 0 저장 형식 · GPX 읽기 · 오차 로그 계산 · 7일 그래프) -->
+<script src="js/camino-shared.js"></script>
 <script>
 /* ══════════════════════════════════════════════════════════════════════
    도보 vs 자전거 경로 비교 · Camino Francés 2027
@@ -450,7 +452,8 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:5000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"server",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20260925-36";
+var D0_VER="v20260926-37";
+var CS=window.CaminoShared||null;   /* js/camino-shared.js — 없으면 예전 방식대로 */
 try{ var _pm=localStorage.getItem("caminoPosMode"); if(_pm==="gps"&&GPS_ENABLED) NAV.posMode="gps"; }catch(e){}
 try{ var _m2=localStorage.getItem("caminoMap2d"); if(_m2==="0") OPT_MAP2D_INIT=false; }catch(e){}
 var OPT_BASE_INIT="map";
@@ -706,6 +709,7 @@ function idxHeading(kmv){
 
 /* ── DAY 0 · GPX 가져오기 ── */
 function parseGpxTimed(txt){
+  if(CS) return CS.parseGpx(txt);          /* 가민 기온(atemp) · <n> 이름까지 읽음 */
   var doc=new DOMParser().parseFromString(txt,"application/xml");
   if(doc.querySelector("parsererror")) throw new Error("GPX 형식 오류");
   var pts=[], nodes=doc.getElementsByTagName("trkpt");
@@ -783,6 +787,7 @@ function simDay(d, enterNav){
 }
 function loadDay0Text(txt,name){
   try{
+    D0.file=String(name||"");
     var p=parseGpxTimed(txt);
     if(p.pts.length<2) throw new Error("트랙 점이 2개 미만입니다");
     setDay0(p.pts, p.name||String(name||"GPX").replace(/\.gpx$/i,""), false, 0, p.wpts);
@@ -812,7 +817,8 @@ var D0_KEY="caminoDay0";
 function d0Key(){ return D0_KEY+":"+(NAV.who||"bin"); }      /* 사람마다 따로 기억 · 따로 지움 */
 function saveDay0(){
   try{
-    var rows=D0.pts.map(function(q){ return [+q.lat.toFixed(6), +q.lon.toFixed(6), Math.round(q.ele), q.t===null?null:Math.round(q.t/1000)]; });
+    if(CS){ CS.saveDay0(NAV.who||"bin", D0.pts, D0.name, D0.wpts||[], {file:D0.file||""}); D0.saved=Date.now(); return; }   /* 보기 페이지 DAY 0 카드가 바로 받아 그림 */
+    var rows=D0.pts.map(function(q){ return [+q.lat.toFixed(6), +q.lon.toFixed(6), Math.round(q.ele), q.t===null?null:Math.round(q.t/1000), q.at===undefined?null:q.at]; });
     localStorage.setItem(d0Key(), JSON.stringify({name:D0.name, rows:rows, wpts:D0.wpts||[], saved:Date.now()}));
   }catch(e){ console.warn("DAY 0 저장 실패(용량?)", e); }
 }
@@ -820,10 +826,18 @@ function restoreDay0(){
   try{
     var j=JSON.parse(localStorage.getItem(d0Key()) || localStorage.getItem(D0_KEY) || "null");   /* 옛 공용 키도 읽음 */
     if(!j||!j.rows||j.rows.length<2) return false;
-    setDay0(j.rows.map(function(r){ return {lat:r[0],lon:r[1],ele:r[2]||0,t:r[3]===null?null:r[3]*1000}; }), j.name||"DAY 0", true, 0, j.wpts||[]);
+    D0.saved=j.saved||null;
+    setDay0(j.rows.map(function(r){ return {lat:r[0],lon:r[1],ele:r[2]||0,t:r[3]===null?null:r[3]*1000,at:r[4]===undefined?null:r[4]}; }), j.name||"DAY 0", true, 0, j.wpts||[]);
     return true;
   }catch(e){ return false; }
 }
+/* 보기 페이지에서 GPX 를 올리면 여기도 바로 바뀜 (주행 중이 아닐 때) */
+window.addEventListener("storage",function(e){
+  if(!e.key || NAV.on) return;
+  if(e.key===d0Key() && !D0.day){ if(!restoreDay0()){ D0.pts=[]; D0.cum=[]; D0.total=0; D0.name=""; D0.wpts=[]; if(viewer) drawDay0(); } renderStats(); }
+  if(e.key===PLOG_KEY && !PLOG.s){ plogLoad(); renderStats(); }
+  if(CS && e.key===CS.KEY.plogImp) renderStats();
+});
 function clearDay0(){
   try{ localStorage.removeItem(d0Key()); localStorage.removeItem(D0_KEY); }catch(e){}
   D0.pts=[]; D0.cum=[]; D0.total=0; D0.km=0; D0.playing=false; D0.name=""; D0.wpts=[];
@@ -944,7 +958,9 @@ function liveHistPush(){
            vel:(typeof v.vel==="number"&&v.vel>=0)?v.vel:null, off:(typeof v.off==="number")?v.off:null};
     /* 시험 좌표는 DAY 0 궤적 위 어디인지도 재 둡니다 */
     if(f.test && typeof f.lat==="number" && D0.pts.length){
-      var prev=h.length?h[h.length-1]:null, pk=(prev&&prev.d0km!==undefined&&prev.d0km!==null)?prev.d0km:undefined;
+      /* 앞 수신이 10분 넘게 묵었으면 힌트로 쓰지 않음 — 왕복 궤적에서 지난 주행의 도착점(58.9 km)을
+         이번 출발로 잘못 잡던 문제 (9/26 JIN). 힌트가 없으면 가장 앞 km(출발)를 고릅니다. */
+      var prev=h.length?h[h.length-1]:null, pk=(prev&&prev.d0km!==undefined&&prev.d0km!==null&&t-prev.t<600000)?prev.d0km:undefined;
       var pr=projectOn(D0.pts,D0.cum,f.lat,f.lon,pk); if(pr&&pr.off<=400){ f.d0km=pr.km; f.d0off=pr.off; } }
     /* 예측 로그 — 이 수신이 오기 직전, 수신 시각 기준으로 예측하던 자리와 비교 */
     if(PLOG.s && w===NAV.who && NAV.on && NAV.src==="live") plogOnFix(w, f, h);
@@ -980,10 +996,17 @@ function plogOnFix(w, f, h){
     predKm: (pr&&pr.km!==undefined)?+pr.km.toFixed(4):null,
     predSpd: pr?+pr.spd.toFixed(2):null, predAhead: pr?+(pr.ahead*1000).toFixed(0):null, mode: pr?pr.mode:null,
     errM:null };
-  if(e.fixKm!==null && e.predKm!==null){ e.errM=Math.round(Math.abs(e.fixKm-e.predKm)*1000);
+  /* 궤적 위 자리가 한 번에 튀면(80 km/h 보다 빠른 이동) 오차 합 · 거리에서 뺍니다 */
+  var lastFixKm=null; for(var q=S.fixes.length-1;q>=0;q--) if(S.fixes[q].fixKm!==null){ lastFixKm=S.fixes[q].fixKm; break; }
+  if(e.fixKm!==null && lastFixKm!==null && Math.abs(e.fixKm-lastFixKm)>Math.max(1,80*(e.gapS||60)/3600)) e.jump=true;
+  if(e.fixKm!==null && e.predKm!==null){ e.errM=Math.round(Math.abs(e.fixKm-e.predKm)*1000); }
+  if(e.errM!==null && !e.jump){
     var gm=(e.gapS||60)/60;                                            /* 수신 간격으로 가중 — 30초 로그와 60초 로그를 같은 잣대로 */
     S.sumErrKm+=Math.abs(e.fixKm-e.predKm)*gm; S.sumGapS=(S.sumGapS||0)+(e.gapS||60); S.sumErrGap=(S.sumErrGap||0)+e.errM*(e.gapS||60); }
-  if(fixKm!==null){ if(S.firstKm===null) S.firstKm=fixKm; S.lastKm=fixKm; S.distKm=Math.max(0,fixKm-S.firstKm); }
+  if(fixKm!==null){ if(S.firstKm===null) S.firstKm=fixKm;
+    if(lastFixKm!==null && !e.jump) S.segKm=(S.segKm||0)+(fixKm-lastFixKm);
+    if(e.jump){ S.doneKm=(S.doneKm||0)+Math.max(0,S.segKm||0); S.segKm=0; }
+    S.lastKm=fixKm; S.distKm=(S.doneKm||0)+Math.max(0,S.segKm||0); }
   S.fixes.push(e);
   if(S.trackKm && fixKm!==null && fixKm>=S.trackKm*0.99 && !S.done){ S.done=true; plogSummaryToast(); }
   plogStat();
@@ -994,7 +1017,8 @@ function sig4(x){ return x===null||x===undefined ? "—" : Number(x).toPrecision
 function plogEnd(){
   var S=PLOG.s; if(!S) return;
   S.end=new Date().toISOString(); S.errPct=plogErrPct(S)!==null?+plogErrPct(S).toPrecision(6):null;
-  S.meanErrM=plogMeanErr(S)!==null?Math.round(plogMeanErr(S)):null; S.metric="errPct=Σ|err|·(gap/60s)/dist · meanErrM=시간가중";
+  S.meanErrM=plogMeanErr(S)!==null?Math.round(plogMeanErr(S)):null; S.metric="errPct=Σ|err|·(gap/60s)/dist · meanErrM=시간가중 · 튄 수신 제외";
+  if(!S.done && S.trackKm) S.note=(S.note?S.note+" · ":"")+"중간 멈춤 "+S.distKm.toFixed(1)+"/"+S.trackKm.toFixed(1)+" km";
   if(S.fixes.length>=2){ PLOG.all.push(S); if(PLOG.all.length>30) PLOG.all.shift(); plogSave(); }
   PLOG.s=null; renderStats();
 }
@@ -1129,7 +1153,7 @@ function predict(w, atMs){
   var b=h[h.length-1], a=h.length>1?h[h.length-2]:null, now=atMs||Date.now();
   /* DAY 0 궤적이 나중에 들어왔으면 그때 재 둡니다 */
   [a,b].forEach(function(f){ if(f&&f.test&&f.d0km===undefined&&typeof f.lat==="number"&&D0.pts.length){
-    var pk=(f===b&&a&&typeof a.d0km==="number")?a.d0km:undefined;
+    var pk=(f===b&&a&&typeof a.d0km==="number"&&b.t-a.t<600000)?a.d0km:undefined;
     var pr=projectOn(D0.pts,D0.cum,f.lat,f.lon,pk); f.d0km = (pr&&pr.off<=400) ? pr.km : null; } });
   if(b.d0km===null) b.d0km=undefined;
   var dtH=Math.min(now-b.t, PRED_MAX_MIN*60000)/3600000;          /* 너무 오래되면 그 자리에 멈춤 */
@@ -2366,35 +2390,30 @@ function day0Card(){
     +'<div class="d0note" style="font-variant-numeric:tabular-nums">'+GRADE_BINS.map(function(b,i){ return (b[0]<=-99?"↓6+":b[1]>=99?"↑6+":(b[0]+"~"+b[1]))+"% "+SPEED_TABLE[i]; }).join(" · ")+' km/h</div>'
     +errChart(NAV.who)
     +'<div class="row2"><span>예측 오차 로그</span><b>'+n+'회'+(PLOG.s?' + 진행 중':'')+'</b></div>'
-    +(last?'<div class="row2"><span>마지막</span><b>'+esc(last.who.toUpperCase())+' · '+sig4(last.errPct)+' %'+(last.meanErrM?' · 평균 '+last.meanErrM+' m':'')+' · '+last.distKm.toFixed(1)+' km · '+esc(last.ver)+'</b></div>':'')
+    +(last?(function(){ var r=CS?CS.plogRecalc(last):{errPct:last.errPct,meanErrM:last.meanErrM,distKm:last.distKm};
+        return '<div class="row2"><span>마지막</span><b>'+esc(last.who.toUpperCase())+' · '+sig4(r.errPct)+' %'+(r.meanErrM!==null&&r.meanErrM!==undefined?' · 평균 '+Math.round(r.meanErrM)+' m':'')+' · '+r.distKm.toFixed(1)+' km'+(last.done?'':' · 중간 멈춤')+' · '+esc(last.ver)+'</b></div>'; })():'')
     +'<div class="d0row"><button class="mini play" id="plogDl"'+(n||PLOG.s?'':' disabled')+'>로그 내려받기 · 공유</button>'
-    +'<button class="mini" id="plogClr"'+(n?'':' disabled')+'>로그 지우기</button></div>'
+    +'<button class="mini" id="plogClr"'+(n?'':' disabled')+'>로그 지우기</button>'
+    +'<label class="mini" style="padding:6px 10px;cursor:pointer">로그 가져오기<input type="file" id="plogImp" multiple style="display:none"></label></div>'
     +'<div class="d0note">완주 뒤 이 로그와 주행 GPX 를 함께 보내 주면 예측 알고리즘을 고칩니다. 오차율 = Σ|예측−보정|×(수신 간격/60초) ÷ 주행 거리 — 수신 간격이 달라도 비교됨. 평균 = 시간가중 평균 오차.</div>';
   return h+'</div></div>';
 }
-/* 최근 7일 오차율 막대 — 그 사람 세션만, 하루에 여럿이면 가장 긴 것 */
+/* 최근 7일 오차율 막대 — js/camino-shared.js 로 옮김 (보기 페이지 DAY 0 카드와 같은 그림)
+   · 그 사람 시간대로 날짜를 나눔 (JIN 한국 · BIN 미국 동부)
+   · 옛 로그도 튄 수신을 빼고 다시 계산 → 중간에 멈춘 주행 · 왕복 궤적 첫 수신 문제도 그려짐
+   · 이 폰 로그 + "로그 가져오기" 로 넣은 다른 사람 로그를 함께 */
+function plogAllForChart(){ var a=PLOG.all.slice(); if(PLOG.s) a.push(PLOG.s); return CS ? CS.plogMerge([a, CS.plogLocal()]) : a; }
 function errChart(who){
-  var days={}, now=new Date(); now.setHours(0,0,0,0);
-  PLOG.all.filter(function(S){ return S.who===who && S.errPct!=null && S.distKm>=3; }).forEach(function(S){
-    var d=new Date(S.start); d.setHours(0,0,0,0); var k=d.getTime();
-    if(!days[k] || S.distKm>days[k].distKm) days[k]=S;
-  });
-  var cols=[], mx=0;
-  for(var i=6;i>=0;i--){ var k=now.getTime()-i*86400000, S=days[k]; cols.push({k:k,S:S}); if(S) mx=Math.max(mx,S.errPct); }
-  if(!mx) return '<div class="row2"><span>최근 7일 오차율</span><b style="color:var(--soft)">기록 없음</b></div>';
-  var W=260, H=64, bw=W/7, h='<div class="row2"><span>최근 7일 오차율 · '+WHO[who].n+'</span></div>'
-    +'<svg viewBox="0 0 '+W+' '+(H+18)+'" style="width:100%;display:block;margin:2px 0 6px">';
-  cols.forEach(function(c,i){ var d=new Date(c.k), x=i*bw+4;
-    if(c.S){ var bh=Math.max(2,c.S.errPct/mx*H), col=c.S.errPct<=10?"#1E7A46":c.S.errPct<=20?"#D97706":"#B91C1C";
-      h+='<rect x="'+x+'" y="'+(H-bh)+'" width="'+(bw-8)+'" height="'+bh+'" rx="3" fill="'+col+'"/>'
-        +'<text x="'+(x+(bw-8)/2)+'" y="'+(H-bh-3)+'" font-size="9" text-anchor="middle" fill="var(--ink)">'+c.S.errPct.toFixed(1)+'%'+(c.S.meanErrM?'·'+c.S.meanErrM+'m':'')+'</text>'; }
-    else h+='<rect x="'+x+'" y="'+(H-2)+'" width="'+(bw-8)+'" height="2" rx="1" fill="#E4DFD0"/>';
-    h+='<text x="'+(x+(bw-8)/2)+'" y="'+(H+13)+'" font-size="9" text-anchor="middle" fill="var(--soft)">'+(d.getMonth()+1)+'/'+d.getDate()+'</text>'; });
-  return h+'</svg>';
+  if(!CS) return '<div class="row2"><span>최근 7일 오차율</span><b style="color:var(--soft)">js/camino-shared.js 없음</b></div>';
+  return '<div class="row2"><span>최근 7일 오차율 · '+WHO[who].n+'</span><b style="font-size:.64rem;color:var(--soft)">'+CS.WHO[who].place+' 날짜</b></div>'
+    +'<div style="margin:2px 0 6px">'+CS.errChartSvg(plogAllForChart(), who, {w:260, h:60, ink:"var(--ink)", soft:"var(--soft)"})+'</div>';
 }
 function bindDay0Card(){
   VEHICLE="bike";
   on("plogDl","click",plogDownload);
+  on("plogImp","change",function(e){ if(!CS) return; var fs=[].slice.call(e.target.files||[]), add=0;
+    Promise.all(fs.map(function(f){ return f.text().then(function(t){ try{ add+=CS.plogImport(JSON.parse(t)); }catch(err){ alert(f.name+" — "+err.message); } }); }))
+      .then(function(){ renderStats(); if(fs.length) alert("가져온 세션 "+add+"개 · 보기 페이지 DAY 0 카드에도 나옵니다"); }); });
   on("plogClr","click",function(){ if(confirm("예측 로그 "+PLOG.all.length+"회를 지울까요?")){ PLOG.all=[]; plogSave(); renderStats(); } });
   on("d0file","change",function(e){ loadDay0File(e.target.files[0]); });
   on("d0drive","click", listDriveGpx);
