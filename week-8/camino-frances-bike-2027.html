@@ -975,6 +975,9 @@
   .wxgrid:has(.wxb.p){grid-template-columns:1fr 1fr 1fr}        /* 출발 · 고개 · 도착 */
   @media(max-width:1100px){ .wxgrid:has(.wxb.p){grid-template-columns:1fr 1fr} }
   @media(max-width:760px){ .wxgrid,.wxgrid:has(.wxb.p){grid-template-columns:1fr} }
+  .comfig{background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 12px 8px;margin:0 0 14px}
+  .comfig svg{width:100%;height:auto;display:block}
+  .comfig figcaption{font-size:.74rem;color:var(--ink-soft);margin-top:6px;line-height:1.5}
   .foodpics{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin:0 0 14px}
   .foodpics figure{margin:0;border-radius:12px;overflow:hidden;background:#F3EFE3;border:1px solid var(--line)}
   .foodpics img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
@@ -3290,6 +3293,75 @@
       <h2>인터콤 — Sena BiKom 20 듀얼팩</h2>
       <p class="lead">Jin 이 산 헬멧 인터콤. 800 m 안에서 서로 말하고, 폰과 이어 전화·음악·음성 안내를 듣습니다. 20 g · IPX7 · 통화 8시간 · 충전 2.5시간.
       아래는 <a href="https://static.senakorea.kr/docs/ug/UserGuide_BiKom_20_1.2.1_Kr_PB08.pdf" target="_blank" rel="noopener">한국어 매뉴얼</a>과 영문 1.3 매뉴얼을 우리 용도로 정리한 것입니다.</p>
+    </div>
+
+    <h3 class="gh3">어디에 무엇이 있나</h3>
+    <div class="comfig">
+      <svg viewBox="0 0 640 360" role="img" aria-label="BiKom 20 각 부분">
+        <defs>
+          <linearGradient id="bkBody" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F4F1EA"/><stop offset="1" stop-color="#C9C4B6"/></linearGradient>
+          <marker id="bkArr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#152A55"/></marker>
+        </defs>
+        <!-- 본체 (옆에서 본 모양, 살짝 기울임) -->
+        <g transform="translate(300 40) rotate(8)">
+          <rect x="0" y="0" width="92" height="190" rx="22" fill="url(#bkBody)" stroke="#8E8A7E" stroke-width="2"/>
+          <text x="46" y="122" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#5B5750" text-anchor="middle" transform="rotate(90 46 100)">BiKom</text>
+          <!-- 왼쪽 옆면 단추 세 개 -->
+          <rect x="-8" y="34" width="14" height="30" rx="5" fill="#3B3F47"/>
+          <rect x="-8" y="74" width="14" height="42" rx="5" fill="#1E5FB4"/>
+          <rect x="-8" y="126" width="14" height="30" rx="5" fill="#3B3F47"/>
+          <text x="-1" y="53" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">+</text>
+          <text x="-1" y="145" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">−</text>
+          <!-- LED -->
+          <circle cx="76" cy="14" r="4" fill="#1E7A46"/>
+          <!-- 마이크 팔 -->
+          <path d="M60 178 Q40 250 -40 300" fill="none" stroke="#3B3F47" stroke-width="9" stroke-linecap="round"/>
+          <ellipse cx="-44" cy="303" rx="15" ry="11" fill="#6B7280"/>
+          <!-- USB-C -->
+          <rect x="30" y="184" width="30" height="10" rx="5" fill="#2A2E36"/>
+          <rect x="35" y="187" width="20" height="4" rx="2" fill="#9AA0A8"/>
+        </g>
+        <!-- 라벨 (왼쪽) -->
+        <g font-family="'IBM Plex Sans KR', sans-serif" fill="#152A55">
+          <line x1="150" y1="88" x2="292" y2="88" stroke="#152A55" stroke-width="1.5" marker-end="url(#bkArr)"/>
+          <text x="20" y="84" font-size="14" font-weight="700">① (+) 소리 크게</text>
+          <text x="20" y="102" font-size="11" fill="#6B7280">1초: 다음 곡 · 3초: 단축 다이얼</text>
+
+          <line x1="150" y1="138" x2="292" y2="138" stroke="#152A55" stroke-width="1.5" marker-end="url(#bkArr)"/>
+          <text x="20" y="134" font-size="14" font-weight="700" fill="#1E5FB4">② 가운데 — 거의 모든 것</text>
+          <text x="20" y="152" font-size="11" fill="#6B7280">탭: 인터콤 켜기/끄기 · 전화 받기</text>
+          <text x="20" y="166" font-size="11" fill="#6B7280">두 번 탭: 채널 · 3초: Siri / 오픈↔그룹</text>
+          <text x="20" y="180" font-size="11" fill="#6B7280">5초: 폰 페어링 · 그룹 만들기 · 8초: 메시 리셋</text>
+
+          <line x1="150" y1="212" x2="292" y2="200" stroke="#152A55" stroke-width="1.5" marker-end="url(#bkArr)"/>
+          <text x="20" y="214" font-size="14" font-weight="700">③ (−) 소리 작게</text>
+          <text x="20" y="232" font-size="11" fill="#6B7280">1초: 이전 곡</text>
+
+          <line x1="150" y1="300" x2="248" y2="300" stroke="#152A55" stroke-width="1.5" marker-end="url(#bkArr)"/>
+          <text x="20" y="296" font-size="14" font-weight="700">⑥ 마이크 팔</text>
+          <text x="20" y="314" font-size="11" fill="#6B7280">위로 접으면 "Mic off" · 내리면 "Mic on"</text>
+          <text x="20" y="328" font-size="11" fill="#6B7280">입 앞 2~3 cm · 스폰지 끼우기</text>
+        </g>
+        <!-- 라벨 (오른쪽) -->
+        <g font-family="'IBM Plex Sans KR', sans-serif" fill="#152A55">
+          <line x1="500" y1="56" x2="395" y2="52" stroke="#152A55" stroke-width="1.5" marker-end="url(#bkArr)"/>
+          <text x="505" y="52" font-size="14" font-weight="700">④ 상태 · 충전 LED</text>
+          <text x="505" y="70" font-size="11" fill="#6B7280">충전 중 빨강 · 완충 파랑</text>
+          <text x="505" y="84" font-size="11" fill="#6B7280">페어링 중 빨강·파랑 깜빡</text>
+
+          <line x1="500" y1="240" x2="372" y2="230" stroke="#152A55" stroke-width="1.5" marker-end="url(#bkArr)"/>
+          <text x="505" y="236" font-size="14" font-weight="700">⑤ USB-C 충전</text>
+          <text x="505" y="254" font-size="11" fill="#6B7280">2.5시간 완충 · 0~45 °C 에서만</text>
+          <text x="505" y="268" font-size="11" fill="#6B7280">비 온 뒤엔 마른 다음 꽂기</text>
+        </g>
+        <!-- 켜기·끄기 상자 -->
+        <g transform="translate(410 300)">
+          <rect x="0" y="0" width="215" height="48" rx="10" fill="#FFF3C4" stroke="#F5B917"/>
+          <text x="10" y="19" font-family="'IBM Plex Sans KR', sans-serif" font-size="12" font-weight="700" fill="#3B2E00">켜기: ② + ① 같이 1초 → "Hello"</text>
+          <text x="10" y="37" font-family="'IBM Plex Sans KR', sans-serif" font-size="12" font-weight="700" fill="#3B2E00">끄기: ② + ① 같이 한 번 탭 → "Good-bye"</text>
+        </g>
+      </svg>
+      <figcaption>헬멧 왼쪽 턱끈에 달았을 때 안쪽에서 본 모양. 단추 셋이 세로로 나란히 — 위 (+) · 가운데 · 아래 (−). 가운데만 파랗게 튀어나와 장갑 끼고도 손끝으로 찾습니다.</figcaption>
     </div>
 
     <h3 class="gh3">단추 세 개로 다 합니다</h3>
