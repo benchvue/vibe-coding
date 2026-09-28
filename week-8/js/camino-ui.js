@@ -541,3 +541,24 @@
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",paint);
   else paint();
 })();
+
+/* ══ 앵커 다시 맞추기 ══
+   #secCom 처럼 주소에 앵커를 붙여 열면 브라우저가 먼저 그 자리로 가는데, 그 뒤에 날짜 카드·숙소·항공이
+   끼워 넣어지고 이미지가 로드되면서 내용이 아래로 밀립니다. 주입이 끝난 뒤와 그림이 다 뜬 뒤에 한 번씩 다시 갑니다. */
+(function(){
+  function go(){
+    var h=location.hash; if(!h||h.length<2) return;
+    var el=document.getElementById(decodeURIComponent(h.slice(1))); if(!el) return;
+    el.scrollIntoView({block:"start"});
+  }
+  var armed=false;
+  function arm(){
+    if(armed) return; armed=true;
+    document.addEventListener("camino:parts-ready", function(){ go(); setTimeout(go,300); setTimeout(go,1200); });
+    window.addEventListener("load", function(){ setTimeout(go,200); });
+    /* 위치 자료(명소·날씨)가 카드 높이를 바꾼 뒤에도 한 번 더 */
+    setTimeout(go,2500); setTimeout(go,5000);
+  }
+  if(location.hash) arm();
+  window.addEventListener("hashchange", function(){ armed=false; arm(); go(); });
+})();
