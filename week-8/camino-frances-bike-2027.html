@@ -3400,6 +3400,78 @@
       </table>
     </div>
 
+    <h3 class="gh3">연결 구조 — 인터콤 · 음성 안내 · 실시간 위치가 어떻게 얽히나</h3>
+    <div class="comfig">
+      <svg viewBox="0 0 720 400" role="img" aria-label="연결 구조도">
+        <defs>
+          <marker id="cxA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#152A55"/></marker>
+          <marker id="cxB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#7A5EA8"/></marker>
+        </defs>
+        <g font-family="'IBM Plex Sans KR', sans-serif">
+          <!-- 사람 둘 -->
+          <g id="bin">
+            <rect x="30" y="60" width="130" height="150" rx="14" fill="#EAF1FB" stroke="#1E5FB4" stroke-width="2"/>
+            <text x="95" y="84" text-anchor="middle" font-size="15" font-weight="700" fill="#1E5FB4">BIN</text>
+            <rect x="52" y="96" width="86" height="40" rx="8" fill="#fff" stroke="#8E8A7E"/>
+            <text x="95" y="112" text-anchor="middle" font-size="11" font-weight="700" fill="#152A55">iPhone</text>
+            <text x="95" y="127" text-anchor="middle" font-size="9.5" fill="#6B7280">비교 페이지 · OwnTracks</text>
+            <rect x="52" y="152" width="86" height="40" rx="8" fill="#fff" stroke="#8E8A7E"/>
+            <text x="95" y="168" text-anchor="middle" font-size="11" font-weight="700" fill="#152A55">BiKom 20</text>
+            <text x="95" y="183" text-anchor="middle" font-size="9.5" fill="#6B7280">헬멧</text>
+            <!-- 폰 ↔ 헤드셋 블루투스 -->
+            <path d="M95 136V152" stroke="#1E5FB4" stroke-width="2.5" stroke-dasharray="4 3"/>
+            <text x="142" y="147" font-size="9.5" fill="#1E5FB4">BT: 안내음성·전화</text>
+          </g>
+          <g id="jin">
+            <rect x="560" y="60" width="130" height="150" rx="14" fill="#FBEAEA" stroke="#C92A2A" stroke-width="2"/>
+            <text x="625" y="84" text-anchor="middle" font-size="15" font-weight="700" fill="#C92A2A">JIN</text>
+            <rect x="582" y="96" width="86" height="40" rx="8" fill="#fff" stroke="#8E8A7E"/>
+            <text x="625" y="112" text-anchor="middle" font-size="11" font-weight="700" fill="#152A55">iPhone</text>
+            <text x="625" y="127" text-anchor="middle" font-size="9.5" fill="#6B7280">비교 페이지 · OwnTracks</text>
+            <rect x="582" y="152" width="86" height="40" rx="8" fill="#fff" stroke="#8E8A7E"/>
+            <text x="625" y="168" text-anchor="middle" font-size="11" font-weight="700" fill="#152A55">BiKom 20</text>
+            <text x="625" y="183" text-anchor="middle" font-size="9.5" fill="#6B7280">헬멧</text>
+            <path d="M625 136V152" stroke="#C92A2A" stroke-width="2.5" stroke-dasharray="4 3"/>
+            <text x="470" y="147" font-size="9.5" fill="#C92A2A">BT: 안내음성·전화</text>
+          </g>
+          <!-- 메시 인터콤 (헤드셋 ↔ 헤드셋 직접) -->
+          <path d="M140 172 Q360 300 580 172" fill="none" stroke="#7A5EA8" stroke-width="4"/>
+          <text x="360" y="252" text-anchor="middle" font-size="12" font-weight="700" fill="#7A5EA8">메시 인터콤 3.0 — 헤드셋끼리 직접 · 800 m (마을·숲 200~300 m)</text>
+          <text x="360" y="268" text-anchor="middle" font-size="10" fill="#7A5EA8">폰·인터넷과 무관 · 그룹 메시로 둘만</text>
+          <!-- 서버 경로 -->
+          <rect x="255" y="20" width="210" height="72" rx="12" fill="#FFF8E6" stroke="#F5B917" stroke-width="2"/>
+          <text x="360" y="42" text-anchor="middle" font-size="12" font-weight="700" fill="#3B2E00">Cloudflare Worker → 앱스 스크립트</text>
+          <text x="360" y="60" text-anchor="middle" font-size="10" fill="#6B7280">OwnTracks 30~180초마다 위치 (LTE/5G)</text>
+          <text x="360" y="76" text-anchor="middle" font-size="10" fill="#6B7280">두 페이지가 15초마다 읽어 서로 위치 표시</text>
+          <path d="M138 100 C 200 60, 220 56, 252 56" fill="none" stroke="#152A55" stroke-width="1.6" marker-end="url(#cxA)"/>
+          <path d="M582 100 C 520 60, 500 56, 468 56" fill="none" stroke="#152A55" stroke-width="1.6" marker-end="url(#cxA)"/>
+          <path d="M252 70 C 220 70, 200 90, 140 116" fill="none" stroke="#152A55" stroke-width="1.6" stroke-dasharray="3 3" marker-end="url(#cxA)"/>
+          <path d="M468 70 C 500 70, 520 90, 580 116" fill="none" stroke="#152A55" stroke-width="1.6" stroke-dasharray="3 3" marker-end="url(#cxA)"/>
+          <!-- 세 층 요약 -->
+          <g transform="translate(30 300)">
+            <rect x="0" y="0" width="660" height="82" rx="12" fill="#F7F5EE" stroke="#D8D3C4"/>
+            <text x="14" y="20" font-size="11.5" font-weight="700" fill="#7A5EA8">① 보라 — 목소리.</text><text x="132" y="20" font-size="11" fill="#3B3F47">헤드셋 둘 사이 직접. 신호 없어도 됨. 800 m 넘게 떨어지면 끊겼다가 다시 붙음.</text>
+            <text x="14" y="42" font-size="11.5" font-weight="700" fill="#1E5FB4">② 파랑·빨강 점선 — 내 폰 → 내 헤드셋.</text><text x="262" y="42" font-size="11" fill="#3B3F47">비교 페이지의 명소·회전 음성, 전화. 각자 자기 것만.</text>
+            <text x="14" y="64" font-size="11.5" font-weight="700" fill="#3B2E00">③ 검정 — 위치.</text><text x="118" y="64" font-size="11" fill="#3B3F47">OwnTracks → 서버 → 두 페이지. 상대가 어디쯤인지 지도에. 목소리와는 별개 경로.</text>
+          </g>
+        </g>
+      </svg>
+      <figcaption>세 경로는 서로 독립입니다. 인터넷이 끊겨도 ①은 되고, 헤드셋을 안 써도 ③은 됩니다. ②와 ①이 한 헤드셋에서 만나는 것이 유일한 겹침이라 아래 "동시에 되나"가 문제가 됩니다.</figcaption>
+    </div>
+
+    <h3 class="gh3">Jin 이 한국에서 혼자 시험하는 순서</h3>
+    <div class="sched-wrap">
+      <table class="sched" style="min-width:560px">
+        <tbody>
+          <tr><td style="width:44px">①</td><td><b>인터콤만</b> — 듀얼팩이니 두 대를 다 켜고 그룹 메시 → 한 대는 헬멧, 한 대는 책상에 두고 다른 방에서 "들려?" 이 단계에서 폰은 필요 없습니다</td></tr>
+          <tr><td>②</td><td><b>폰 + 헤드셋만</b> — 헬멧 것을 폰과 페어링 → 비교 페이지 DAY 0 시험 주행 20× + 음성 안내 켜기 → 명소 음성이 헤드셋으로 나오는지. 이때 인터콤은 꺼 둠 (가운데 탭 → "Mesh intercom off")</td></tr>
+          <tr><td>③</td><td><b>둘 다 켜고</b> — 인터콤 켜서 책상 것에서 말소리를 흘려 두고(라디오 틀어 두면 됨), 동시에 ②를 반복 → <b>말소리 나는 동안 명소 음성이 같이 들리는가</b>. 이게 위 질문의 답입니다</td></tr>
+          <tr><td>④</td><td><b>실주행</b> — 헬멧 쓰고 동네 한 바퀴: OwnTracks Move + 비교 페이지 실시간 위치 + 인터콤 켠 채. 집에서 Bin 이 Jin 위치를 페이지로 보며 카톡으로 "지금 어디 보임" 맞춰 보기</td></tr>
+          <tr><td>⑤</td><td>③의 결과를 카톡으로 → 이 페이지의 "동시에 되나" 문장을 확정으로 바꿉니다</td></tr>
+        </tbody>
+      </table>
+    </div>
+
     <h3 class="gh3">비교 페이지 음성 안내를 들으면서 둘이 통화할 수 있나</h3>
     <div class="note">
       <b>짧은 답: 통화는 됩니다. 안내 음성이 통화 중에도 같이 들리느냐는 확인이 필요합니다.</b><br>
