@@ -81,6 +81,16 @@
   <wpt lat="42.930164" lon="-1.502427"><name>식수대</name><desc>식수대 · 길 위 · 59.6 km</desc><sym>Water</sym></wpt>
   <wpt lat="42.930177" lon="-1.504382"><name>Cafe del Camino</name><desc>카페 · 길 위 · 59.8 km</desc><sym>Bar</sym></wpt>
   <wpt lat="42.930293" lon="-1.504381"><name>Fuente del agua del batueco</name><desc>식수대 · 길 위 · 59.8 km</desc><sym>Water</sym></wpt>
+  <wpt lat="43.163657" lon="-1.234324"><name>Porte Saint-Jacques</name><desc>순례자의 문·성 야고보 문</desc><sym>Scenic Area</sym></wpt>
+  <wpt lat="43.110962" lon="-1.238540"><name>Refuge Orisson</name><desc>오리손 산장</desc><sym>Lodging</sym></wpt>
+  <wpt lat="43.061403" lon="-1.268052"><name>Food Truck</name><desc>피레네 산길의 푸드트럭</desc><sym>Bar</sym></wpt>
+  <wpt lat="43.009720" lon="-1.319740"><name>Roncesvalles</name><desc>론세스바예스 마을</desc><sym>Flag</sym></wpt>
+  <wpt lat="43.009898" lon="-1.319485"><name>Real Colegiata de Santa María de Roncesvalles</name><desc>론세스바예스 산타 마리아 성당</desc><sym>Church</sym></wpt>
+  <wpt lat="42.993811" lon="-1.329630"><name>Food Mart</name><desc>부르게테의 식료품점</desc><sym>Shop</sym></wpt>
+  <wpt lat="42.990730" lon="-1.334960"><name>Hostal Burguete</name><desc>부르게테의 역사적인 숙소</desc><sym>Lodging</sym></wpt>
+  <wpt lat="42.941730" lon="-1.470640"><name>Foodtruck de Fermín Paularena, Alto de Erro</name><desc>에로 고개 푸드트럭 · 정확한 매장 위치 확인 필요</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.931652" lon="-1.504977"><name>Zubiri</name><desc>수비리 마을</desc><sym>Flag</sym></wpt>
+  <wpt lat="42.929860" lon="-1.503340"><name>Puente de la Rabia</name><desc>광견병 전설이 전해지는 라비아 다리</desc><sym>Bridge</sym></wpt>
 <trk>
   <name>brouter_trekking_0</name>
   <trkseg>

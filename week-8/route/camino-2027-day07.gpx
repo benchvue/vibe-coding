@@ -130,6 +130,15 @@
   <wpt lat="42.593755" lon="-5.568039"><name>식수대</name><desc>식수대 · 길 위 · 54.1 km</desc><sym>Water</sym></wpt>
   <wpt lat="42.595053" lon="-5.569223"><name>La Sacristía</name><desc>바 · 길 위 · 54.3 km</desc><sym>Bar</sym></wpt>
   <wpt lat="42.597708" lon="-5.570409"><name>El Capricho</name><desc>바 · 왼쪽 20 m · 54.6 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.368770" lon="-5.036280"><name>Puente Canto</name><desc>사아군 외곽 세아강 칸토 다리</desc><sym>Bridge</sym></wpt>
+  <wpt lat="42.387000" lon="-5.145000"><name>Ermita de Nuestra Señora de Perales</name><desc>페랄레스 성모 경당</desc><sym>Church</sym></wpt>
+  <wpt lat="42.438750" lon="-5.253850"><name>El Burgo Ranero</name><desc>엘 부르고 라네로 마을</desc><sym>Flag</sym></wpt>
+  <wpt lat="42.474910" lon="-5.356000"><name>Reliegos</name><desc>렐리에고스의 옛 와인 저장고 · 정확한 매장 위치 확인 필요</desc><sym>Scenic Area</sym></wpt>
+  <wpt lat="42.498940" lon="-5.417460"><name>Mansilla de las Mulas</name><desc>만시야 데 라스 물라스 마을</desc><sym>Flag</sym></wpt>
+  <wpt lat="42.499100" lon="-5.417400"><name>Estatua del Peregrino</name><desc>앉아서 쉬는 순례자 석상</desc><sym>Scenic Area</sym></wpt>
+  <wpt lat="42.598050" lon="-5.570350"><name>León</name><desc>레온 시내</desc><sym>Flag</sym></wpt>
+  <wpt lat="42.599420" lon="-5.567180"><name>Catedral de León</name><desc>레온 대성당 · 경로에서 약 301m 떨어짐; 방문 시 경로 확인</desc><sym>Church</sym></wpt>
+  <wpt lat="42.598000" lon="-5.570500"><name>Casa Botines</name><desc>가우디의 카사 보티네스</desc><sym>Museum</sym></wpt>
 <trk>
     <name>Camino day07</name>
     <trkseg>

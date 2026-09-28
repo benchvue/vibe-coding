@@ -202,6 +202,18 @@
   <wpt lat="42.289918" lon="-4.133234"><name>식수대</name><desc>식수대 · 길 위 · 89.2 km</desc><sym>Water</sym></wpt>
   <wpt lat="42.288256" lon="-4.136320"><name>식수대</name><desc>식수대 · 왼쪽 15 m · 89.5 km</desc><sym>Water</sym></wpt>
   <wpt lat="42.288835" lon="-4.140637"><name>Fuente de la Plaza</name><desc>식수대 · 오른쪽 15 m · 89.9 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.373117" lon="-3.341944"><name>Monumento La Pedraja</name><desc>라 페드라하 기념비</desc><sym>Museum</sym></wpt>
+  <wpt lat="42.375670" lon="-3.436650"><name>San Juan de Ortega</name><desc>산 후안 데 오르테가 마을</desc><sym>Flag</sym></wpt>
+  <wpt lat="42.375556" lon="-3.436667"><name>Iglesia de San Juan de Ortega</name><desc>산 후안 데 오르테가 성당</desc><sym>Church</sym></wpt>
+  <wpt lat="42.380125" lon="-3.532413"><name>Cruz de Atapuerca</name><desc>아타푸에르카 언덕 십자가</desc><sym>Scenic Area</sym></wpt>
+  <wpt lat="42.341282" lon="-3.701215"><name>Plaza Mayor de Burgos</name><desc>부르고스 마요르 광장</desc><sym>Scenic Area</sym></wpt>
+  <wpt lat="42.340990" lon="-3.704760"><name>Burgos</name><desc>부르고스 시내</desc><sym>Flag</sym></wpt>
+  <wpt lat="42.340806" lon="-3.704472"><name>Catedral de Santa María de Burgos</name><desc>부르고스 대성당</desc><sym>Church</sym></wpt>
+  <wpt lat="42.338430" lon="-3.925850"><name>Hornillos del Camino</name><desc>오르니요스 델 카미노 마을</desc><sym>Flag</sym></wpt>
+  <wpt lat="42.341000" lon="-3.939000"><name>Mirador de Hornillos del Camino</name><desc>오르니요스 전망 지점 · 경로에서 약 472m 떨어짐; 방문 시 경로 확인</desc><sym>Scenic Area</sym></wpt>
+  <wpt lat="42.292570" lon="-4.099140"><name>Monasterio de San Antón</name><desc>산 안톤 수도원 아치</desc><sym>Museum</sym></wpt>
+  <wpt lat="42.291350" lon="-4.136140"><name>Castillo de Castrojeriz</name><desc>카스트로헤리스 성터</desc><sym>Museum</sym></wpt>
+  <wpt lat="42.289300" lon="-4.141900"><name>Castrojeriz</name><desc>카스트로헤리스 마을</desc><sym>Flag</sym></wpt>
 <trk>
     <name>Camino day05</name>
     <trkseg>

@@ -163,6 +163,16 @@
   <wpt lat="42.455507" lon="-6.161928"><name>식수대</name><desc>식수대 · 길 위 · 58.1 km</desc><sym>Water</sym></wpt>
   <wpt lat="42.462442" lon="-6.206646"><name>식수대</name><desc>식수대 · 왼쪽 35 m · 61.9 km</desc><sym>Water</sym></wpt>
   <wpt lat="42.462653" lon="-6.208421"><name>식수대</name><desc>식수대 · 길 위 · 62.0 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.580000" lon="-5.641500"><name>Basílica de la Virgen del Camino</name><desc>라 비르헨 델 카미노 성모 성당</desc><sym>Church</sym></wpt>
+  <wpt lat="42.568900" lon="-5.683000"><name>Iglesia de Valverde de la Virgen</name><desc>발베르데 성당 종탑의 황새 둥지</desc><sym>Church</sym></wpt>
+  <wpt lat="42.494640" lon="-5.809270"><name>San Martín del Camino</name><desc>산 마르틴 델 카미노 마을</desc><sym>Flag</sym></wpt>
+  <wpt lat="42.463980" lon="-5.877860"><name>Puente de Órbigo</name><desc>오르비고강의 파소 온로소 다리</desc><sym>Bridge</sym></wpt>
+  <wpt lat="42.453970" lon="-5.999930"><name>Crucero de Santo Toribio</name><desc>산토 토리비오 십자가</desc><sym>Scenic Area</sym></wpt>
+  <wpt lat="42.454390" lon="-6.052880"><name>Astorga</name><desc>아스토르가 시내</desc><sym>Flag</sym></wpt>
+  <wpt lat="42.454330" lon="-6.052990"><name>Ayuntamiento de Astorga</name><desc>아스토르가 시청사 종탑</desc><sym>Scenic Area</sym></wpt>
+  <wpt lat="42.457820" lon="-6.055940"><name>Palacio de Gaudí de Astorga</name><desc>가우디 주교궁</desc><sym>Museum</sym></wpt>
+  <wpt lat="42.458100" lon="-6.056000"><name>Catedral de Santa María de Astorga</name><desc>아스토르가 대성당</desc><sym>Church</sym></wpt>
+  <wpt lat="42.456250" lon="-6.165680"><name>Rabanal del Camino</name><desc>라바날 델 카미노 마을</desc><sym>Flag</sym></wpt>
 <trk>
     <name>Camino day09</name>
     <trkseg>

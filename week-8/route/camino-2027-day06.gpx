@@ -146,6 +146,21 @@
   <wpt lat="42.370690" lon="-5.023580"><name>식수대</name><desc>식수대 · 길 위 · 81.7 km</desc><sym>Water</sym></wpt>
   <wpt lat="42.370666" lon="-5.027872"><name>Asturcon</name><desc>카페 · 길 위 · 82.1 km</desc><sym>Bar</sym></wpt>
   <wpt lat="42.370787" lon="-5.028961"><name>식수대</name><desc>식수대 · 길 위 · 82.2 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.287240" lon="-4.179070"><name>Alto de Mostelares</name><desc>모스텔라레스 고개 전망</desc><sym>Summit</sym></wpt>
+  <wpt lat="42.286884" lon="-4.185091"><name>El otro Mirador</name><desc>메세타 평원을 보는 서쪽 전망대</desc><sym>Scenic Area</sym></wpt>
+  <wpt lat="42.268330" lon="-4.405200"><name>Iglesia de San Pedro de Frómista</name><desc>프로미스타 산 페드로 성당</desc><sym>Church</sym></wpt>
+  <wpt lat="42.267000" lon="-4.406000"><name>Canal de Castilla</name><desc>카스티야 수로 갑문</desc><sym>Scenic Area</sym></wpt>
+  <wpt lat="42.267700" lon="-4.406000"><name>Plaza de San Telmo</name><desc>산 텔모 광장</desc><sym>Scenic Area</sym></wpt>
+  <wpt lat="42.266030" lon="-4.406320"><name>Frómista</name><desc>프로미스타 마을</desc><sym>Flag</sym></wpt>
+  <wpt lat="42.267300" lon="-4.406900"><name>Iglesia de San Martín de Frómista</name><desc>프로미스타 산 마르틴 성당</desc><sym>Church</sym></wpt>
+  <wpt lat="42.337240" lon="-4.601860"><name>Carrión de los Condes</name><desc>카리온 데 로스 콘데스 마을</desc><sym>Flag</sym></wpt>
+  <wpt lat="42.337460" lon="-4.601670"><name>Iglesia de Santa María del Camino</name><desc>산타 마리아 델 카미노 성당</desc><sym>Church</sym></wpt>
+  <wpt lat="42.341000" lon="-4.606500"><name>Monasterio de San Zoilo</name><desc>산 소일로 수도원</desc><sym>Museum</sym></wpt>
+  <wpt lat="42.329170" lon="-4.803800"><name>Calzadilla de la Cueza</name><desc>칼사디야 데 라 쿠에사 마을</desc><sym>Flag</sym></wpt>
+  <wpt lat="42.370800" lon="-4.999900"><name>Ermita de la Virgen del Puente</name><desc>사아군 입구 성모 경당</desc><sym>Church</sym></wpt>
+  <wpt lat="42.370740" lon="-5.030170"><name>Sahagún</name><desc>사아군 마을</desc><sym>Flag</sym></wpt>
+  <wpt lat="42.372940" lon="-5.030090"><name>Arco de San Benito</name><desc>사아군 산 베니토 아치</desc><sym>Museum</sym></wpt>
+  <wpt lat="42.371900" lon="-5.032000"><name>Oficina de Turismo de Sahagún</name><desc>옛 삼위일체 성당의 관광안내소</desc><sym>Museum</sym></wpt>
 <trk>
     <name>Camino day06</name>
     <trkseg>

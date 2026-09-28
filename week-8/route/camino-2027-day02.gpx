@@ -196,6 +196,21 @@
   <wpt lat="42.669505" lon="-2.023788"><name>식수대</name><desc>식수대 · 길 위 · 65.5 km</desc><sym>Water</sym></wpt>
   <wpt lat="42.669539" lon="-2.023770"><name>화장실</name><desc>화장실 · 길 위 · 65.5 km</desc><sym>Toilet</sym></wpt>
   <wpt lat="42.669415" lon="-2.029190"><name>Parranda</name><desc>바 · 길 위 · 66.0 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.879580" lon="-1.564770"><name>La Parada de Zuriain</name><desc>수리아인의 카페·바 · 정확한 매장 위치 확인 필요</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.836300" lon="-1.604300"><name>Puente de la Trinidad de Arre</name><desc>트리니다드 데 아레의 아치형 다리</desc><sym>Bridge</sym></wpt>
+  <wpt lat="42.820012" lon="-1.640827"><name>Catedral de Santa María la Real</name><desc>팜플로나 대성당</desc><sym>Church</sym></wpt>
+  <wpt lat="42.821800" lon="-1.641700"><name>Portal de Francia</name><desc>팜플로나 구시가지의 프랑스문</desc><sym>Scenic Area</sym></wpt>
+  <wpt lat="42.818560" lon="-1.644390"><name>Ayuntamiento de Pamplona</name><desc>팜플로나 시청·산페르민 축제 장소</desc><sym>Scenic Area</sym></wpt>
+  <wpt lat="42.817480" lon="-1.643250"><name>Café Iruña</name><desc>팜플로나의 카페 이루냐</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.817520" lon="-1.645440"><name>Pamplona</name><desc>팜플로나 시내</desc><sym>Flag</sym></wpt>
+  <wpt lat="42.811880" lon="-1.649600"><name>Ciudadela de Pamplona</name><desc>팜플로나 요새</desc><sym>Scenic Area</sym></wpt>
+  <wpt lat="42.786456" lon="-1.677217"><name>Cizur Menor</name><desc>시수르 메노르 마을 · 정확한 매장 위치 확인 필요</desc><sym>Scenic Area</sym></wpt>
+  <wpt lat="42.735707" lon="-1.742548"><name>Alto del Perdón</name><desc>용서의 언덕 순례자 조형물 · 경로에서 약 1450m 떨어짐; 방문 시 경로 확인</desc><sym>Summit</sym></wpt>
+  <wpt lat="42.673412" lon="-1.809656"><name>Iglesia del Crucifijo</name><desc>십자가상 성당</desc><sym>Church</sym></wpt>
+  <wpt lat="42.672170" lon="-1.814260"><name>Puente la Reina</name><desc>푸엔테 라 레이나 마을</desc><sym>Flag</sym></wpt>
+  <wpt lat="42.671346" lon="-1.818841"><name>Puente de la Reina</name><desc>푸엔테 라 레이나의 중세 석조 다리</desc><sym>Bridge</sym></wpt>
+  <wpt lat="42.669919" lon="-2.025331"><name>Iglesia del Santo Sepulcro</name><desc>에스테야 성묘 성당의 조각 정문</desc><sym>Church</sym></wpt>
+  <wpt lat="42.669420" lon="-2.029300"><name>Estella</name><desc>에스테야 마을</desc><sym>Flag</sym></wpt>
 <trk>
     <name>Camino day02</name>
     <trkseg>

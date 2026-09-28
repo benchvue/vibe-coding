@@ -272,6 +272,16 @@
   <wpt lat="42.915852" lon="-8.078295"><name>Fuente Saleta</name><desc>카페 · 왼쪽 40 m · 68.5 km</desc><sym>Bar</sym></wpt>
   <wpt lat="42.923765" lon="-8.094293"><name>Café-Bar No Camiño</name><desc>카페 · Mo-Su 09:00-17:00 · 오른쪽 20 m · 70.4 km</desc><sym>Bar</sym></wpt>
   <wpt lat="42.927552" lon="-8.159271"><name>Manolo</name><desc>카페 · 길 위 · 76.3 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.785165" lon="-7.542200"><name>A Pena / 100 km marker</name><desc>산티아고까지 100 km 표지석</desc><sym>Scenic Area</sym></wpt>
+  <wpt lat="42.796345" lon="-7.602367"><name>Vilachá</name><desc>빌라차 마을</desc><sym>Flag</sym></wpt>
+  <wpt lat="42.805140" lon="-7.616820"><name>Portomarín</name><desc>포르토마린 마을</desc><sym>Flag</sym></wpt>
+  <wpt lat="42.807790" lon="-7.615550"><name>Igrexa de San Xoán de Portomarín</name><desc>포르토마린 산 소안 성당 · 경로에서 약 312m 떨어짐; 방문 시 경로 확인</desc><sym>Church</sym></wpt>
+  <wpt lat="42.873010" lon="-7.868400"><name>Palas de Rei</name><desc>팔라스 데 레이 마을</desc><sym>Flag</sym></wpt>
+  <wpt lat="42.874000" lon="-7.868000"><name>Igrexa de San Tirso</name><desc>팔라스 데 레이 산 티르소 성당</desc><sym>Church</sym></wpt>
+  <wpt lat="42.913420" lon="-8.012500"><name>Pulpería Ezequiel</name><desc>멜리데 문어 요리 전문점</desc><sym>Restaurant</sym></wpt>
+  <wpt lat="42.913580" lon="-8.012790"><name>Melide</name><desc>멜리데 마을</desc><sym>Flag</sym></wpt>
+  <wpt lat="42.913600" lon="-8.012800"><name>Capela de San Roque</name><desc>멜리데 산 로케 경당</desc><sym>Church</sym></wpt>
+  <wpt lat="42.927680" lon="-8.159280"><name>Arzúa</name><desc>아르수아 마을</desc><sym>Flag</sym></wpt>
 <trk>
     <name>camino-day12-bike-tmp</name>
     <trkseg>

@@ -85,6 +85,9 @@
   <wpt lat="42.881161" lon="-8.537973"><name>식수대</name><desc>식수대 · 길 위 · 38.2 km</desc><sym>Water</sym></wpt>
   <wpt lat="42.881675" lon="-8.539013"><name>Eiquí</name><desc>카페 · Mo-Th 15:30-18:30 · 길 위 · 38.3 km</desc><sym>Bar</sym></wpt>
   <wpt lat="42.881113" lon="-8.542822"><name>A Gramola</name><desc>카페 · 길 위 · 38.6 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.907210" lon="-8.364020"><name>O Pedrouzo</name><desc>오 페드로우소 마을</desc><sym>Flag</sym></wpt>
+  <wpt lat="42.889400" lon="-8.493900"><name>Monte do Gozo pilgrim statue</name><desc>몬테 도 고소 순례자 동상</desc><sym>Scenic Area</sym></wpt>
+  <wpt lat="42.880640" lon="-8.544500"><name>Catedral de Santiago de Compostela</name><desc>산티아고 대성당</desc><sym>Church</sym></wpt>
 <trk>
     <name>Camino day13</name>
     <trkseg>

@@ -139,6 +139,17 @@
   <wpt lat="42.775730" lon="-7.404498"><name>식수대</name><desc>식수대 · 길 위 · 61.8 km</desc><sym>Water</sym></wpt>
   <wpt lat="42.775936" lon="-7.406458"><name>Adarve</name><desc>카페 · 길 위 · 62.0 km</desc><sym>Bar</sym></wpt>
   <wpt lat="42.774823" lon="-7.408092"><name>식수대</name><desc>식수대 · 길 위 · 62.3 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.707700" lon="-7.043000"><name>Galicia boundary marker</name><desc>갈리시아 경계석</desc><sym>Scenic Area</sym></wpt>
+  <wpt lat="42.708030" lon="-7.045040"><name>O Cebreiro</name><desc>오 세브레이로 마을</desc><sym>Flag</sym></wpt>
+  <wpt lat="42.707800" lon="-7.044700"><name>Igrexa de Santa María a Real do Cebreiro</name><desc>오 세브레이로 왕립 산타 마리아 성당</desc><sym>Church</sym></wpt>
+  <wpt lat="42.707800" lon="-7.044600"><name>Busto de Elías Valiña</name><desc>노란 화살표를 보급한 엘리아스 발리냐 신부 흉상</desc><sym>Museum</sym></wpt>
+  <wpt lat="42.707900" lon="-7.045500"><name>Pallozas de O Cebreiro</name><desc>오 세브레이로의 전통 초가지붕 가옥</desc><sym>Scenic Area</sym></wpt>
+  <wpt lat="42.698889" lon="-7.084056"><name>Alto de San Roque</name><desc>산 로케 고개의 순례자 청동상</desc><sym>Summit</sym></wpt>
+  <wpt lat="42.712300" lon="-7.126100"><name>Alto do Poio</name><desc>포이오 고개 카페·바</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.738540" lon="-7.273950"><name>Triacastela</name><desc>트리아카스텔라 마을</desc><sym>Flag</sym></wpt>
+  <wpt lat="42.731500" lon="-7.336500"><name>Mirador de Samos</name><desc>사모스 수도원 전망 지점 · 경로에서 약 3545m 떨어짐; 방문 시 경로 확인</desc><sym>Scenic Area</sym></wpt>
+  <wpt lat="42.731400" lon="-7.325700"><name>Mosteiro de San Xulián de Samos</name><desc>사모스 수도원 · 경로에서 약 2713m 떨어짐; 방문 시 경로 확인</desc><sym>Church</sym></wpt>
+  <wpt lat="42.774900" lon="-7.408850"><name>Sarria</name><desc>사리아 마을</desc><sym>Flag</sym></wpt>
 <trk>
     <name>camino-day11-bike-tmp</name>
     <trkseg>

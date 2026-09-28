@@ -168,6 +168,18 @@
   <wpt lat="42.665610" lon="-6.929010"><name>식수대</name><desc>식수대 · 길 위 · 72.8 km</desc><sym>Water</sym></wpt>
   <wpt lat="42.664474" lon="-6.943783"><name>Rocas</name><desc>카페 · 길 위 · 74.1 km</desc><sym>Bar</sym></wpt>
   <wpt lat="42.664607" lon="-6.945456"><name>Fuente de La Carcel</name><desc>식수대 · 왼쪽 45 m · 74.3 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.481500" lon="-6.283000"><name>Monasterio Benedictino de San Salvador del Monte Irago</name><desc>라바날 베네딕토회 수도원</desc><sym>Church</sym></wpt>
+  <wpt lat="42.489700" lon="-6.334800"><name>Cruz de Ferro</name><desc>철십자가</desc><sym>Summit</sym></wpt>
+  <wpt lat="42.538600" lon="-6.519000"><name>Puente Románico de Molinaseca</name><desc>몰리나세카 입구 아치 다리</desc><sym>Bridge</sym></wpt>
+  <wpt lat="42.537590" lon="-6.518980"><name>Molinaseca</name><desc>몰리나세카 마을</desc><sym>Flag</sym></wpt>
+  <wpt lat="42.547160" lon="-6.593910"><name>Ponferrada</name><desc>폰페라다 시내</desc><sym>Flag</sym></wpt>
+  <wpt lat="42.546900" lon="-6.598000"><name>Castillo de los Templarios</name><desc>폰페라다 템플 기사단 성채 · 경로에서 약 336m 떨어짐; 방문 시 경로 확인</desc><sym>Museum</sym></wpt>
+  <wpt lat="42.589700" lon="-6.691460"><name>Cacabelos</name><desc>카카벨로스 마을</desc><sym>Flag</sym></wpt>
+  <wpt lat="42.606000" lon="-6.811800"><name>Iglesia de Santiago</name><desc>비야프랑카 산티아고 성당·용서의 문</desc><sym>Church</sym></wpt>
+  <wpt lat="42.606420" lon="-6.810860"><name>Villafranca del Bierzo</name><desc>비야프랑카 델 비에르소 마을</desc><sym>Flag</sym></wpt>
+  <wpt lat="42.607600" lon="-6.808300"><name>Iglesia de San Nicolás El Real</name><desc>비야프랑카 산 니콜라스 성당</desc><sym>Church</sym></wpt>
+  <wpt lat="42.607800" lon="-6.810700"><name>San Nicolás El Real</name><desc>비야프랑카 산 니콜라스 건물</desc><sym>Scenic Area</sym></wpt>
+  <wpt lat="42.664930" lon="-6.945110"><name>Vega de Valcarce</name><desc>베가 데 발카르세 마을</desc><sym>Flag</sym></wpt>
 <trk>
     <name>camino-day10-bike-tmp</name>
     <trkseg>

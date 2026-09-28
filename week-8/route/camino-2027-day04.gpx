@@ -112,6 +112,17 @@
   <wpt lat="42.427886" lon="-3.135858"><name>식수대</name><desc>식수대 · 길 위 · 53.4 km</desc><sym>Water</sym></wpt>
   <wpt lat="42.416252" lon="-3.179672"><name>식수대</name><desc>식수대 · 길 위 · 57.4 km</desc><sym>Water</sym></wpt>
   <wpt lat="42.421313" lon="-3.189845"><name>Eterna</name><desc>바 · 길 위 · 58.5 km</desc><sym>Bar</sym></wpt>
+  <wpt lat="42.403828" lon="-2.626238"><name>Ventosa</name><desc>벤토사 마을 진입 구간 · 경로에서 약 882m 떨어짐; 방문 시 경로 확인</desc><sym>Scenic Area</sym></wpt>
+  <wpt lat="42.416755" lon="-2.729862"><name>Río Najerilla</name><desc>나헤리야강 강변</desc><sym>Scenic Area</sym></wpt>
+  <wpt lat="42.417280" lon="-2.731880"><name>Nájera</name><desc>나헤라 마을</desc><sym>Flag</sym></wpt>
+  <wpt lat="42.416731" lon="-2.735507"><name>Monasterio de Santa María la Real</name><desc>나헤라 산타 마리아 라 레알 수도원</desc><sym>Church</sym></wpt>
+  <wpt lat="42.411889" lon="-2.896060"><name>Cirueña</name><desc>시루에나 주변 밀밭</desc><sym>Scenic Area</sym></wpt>
+  <wpt lat="42.440790" lon="-2.952120"><name>Santo Domingo de la Calzada</name><desc>산토 도밍고 데 라 칼사다 마을</desc><sym>Flag</sym></wpt>
+  <wpt lat="42.440935" lon="-2.953619"><name>Catedral de Santo Domingo de la Calzada</name><desc>산토 도밍고 대성당</desc><sym>Church</sym></wpt>
+  <wpt lat="42.449230" lon="-3.030264"><name>Grañón</name><desc>그라뇽 마을 주변 전망</desc><sym>Scenic Area</sym></wpt>
+  <wpt lat="42.420722" lon="-3.188278"><name>Iglesia de Santa María de Belorado</name><desc>벨로라도 산타 마리아 성당·동굴 인근</desc><sym>Church</sym></wpt>
+  <wpt lat="42.420420" lon="-3.189470"><name>Ermita de Nuestra Señora de Belén</name><desc>벨렌의 성모 경당</desc><sym>Church</sym></wpt>
+  <wpt lat="42.420500" lon="-3.192500"><name>Belorado</name><desc>벨로라도 마을</desc><sym>Flag</sym></wpt>
 <trk>
     <name>Camino day04</name>
     <trkseg>

@@ -170,6 +170,18 @@
   <wpt lat="42.434935" lon="-2.550872"><name>식수대</name><desc>식수대 · 길 위 · 59.9 km</desc><sym>Water</sym></wpt>
   <wpt lat="42.432085" lon="-2.559161"><name>바</name><desc>바 · 길 위 · 60.8 km</desc><sym>Bar</sym></wpt>
   <wpt lat="42.429229" lon="-2.560363"><name>식수대</name><desc>식수대 · 길 위 · 61.1 km</desc><sym>Water</sym></wpt>
+  <wpt lat="42.653355" lon="-2.042021"><name>La Forja de Ayegui</name><desc>아예기 전통 대장간</desc><sym>Shop</sym></wpt>
+  <wpt lat="42.651018" lon="-2.043651"><name>Fuente del Vino de Bodegas Irache</name><desc>이라체 와인의 샘</desc><sym>Scenic Area</sym></wpt>
+  <wpt lat="42.568980" lon="-2.193110"><name>Los Arcos</name><desc>로스 아르코스 마을</desc><sym>Flag</sym></wpt>
+  <wpt lat="42.568940" lon="-2.192770"><name>Iglesia de Santa María de Los Arcos</name><desc>로스 아르코스 산타 마리아 성당</desc><sym>Church</sym></wpt>
+  <wpt lat="42.515250" lon="-2.371390"><name>Iglesia de Santa María de Viana</name><desc>비아나 산타 마리아 성당</desc><sym>Church</sym></wpt>
+  <wpt lat="42.514600" lon="-2.373500"><name>Ruinas de la Iglesia de San Pedro</name><desc>비아나 산 페드로 성당 유적</desc><sym>Museum</sym></wpt>
+  <wpt lat="42.468260" lon="-2.445250"><name>Logroño</name><desc>로그로뇨 시내</desc><sym>Flag</sym></wpt>
+  <wpt lat="42.467153" lon="-2.445561"><name>Concatedral de Santa María de la Redonda</name><desc>로그로뇨 산타 마리아 대성당</desc><sym>Church</sym></wpt>
+  <wpt lat="42.467883" lon="-2.447586"><name>Iglesia de Santiago el Real</name><desc>로그로뇨 산티아고 성당</desc><sym>Church</sym></wpt>
+  <wpt lat="42.444950" lon="-2.503803"><name>Pantano de la Grajera</name><desc>그라헤라 저수지</desc><sym>Scenic Area</sym></wpt>
+  <wpt lat="42.429854" lon="-2.561416"><name>Iglesia de Santa María de la Asunción</name><desc>나바레테 성모승천성당</desc><sym>Church</sym></wpt>
+  <wpt lat="42.429650" lon="-2.562320"><name>Navarrete</name><desc>나바레테 마을</desc><sym>Flag</sym></wpt>
 <trk>
     <name>Camino day03</name>
     <trkseg>
