@@ -198,6 +198,10 @@
     border:1px solid rgba(255,255,255,.7)}
   .hud-who button{border:none;padding:0 15px;font-size:.86rem;font-weight:700;cursor:pointer;
     background:rgba(255,255,255,.94);color:var(--soft);min-height:46px}
+  .hud-who.one button{padding:0 12px;min-width:56px}
+  .hud-rest{border:1px solid rgba(255,255,255,.7);background:rgba(255,255,255,.94);color:var(--blue);border-radius:12px;
+    padding:0 11px;font-size:.8rem;font-weight:700;cursor:pointer;box-shadow:0 2px 10px rgba(21,42,85,.18);min-height:40px;white-space:nowrap}
+  .hud-rest.on{background:#D97706;color:#fff;border-color:#D97706}
   .hud-who button.on.bin{background:#1E5FB4;color:#fff}
   .hud-who button.on.jin{background:#C92A2A;color:#fff}
   .hud-info{flex:1;min-width:0;background:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.7);
@@ -374,10 +378,8 @@
 <!-- 네비게이션 주행 모드 — 지도 위에만 뜨는 조작부 -->
 <div id="hud">
   <div class="hud-top">
-    <div class="hud-who">
-      <button class="bin" data-who="bin">BIN</button>
-      <button class="jin" data-who="jin">JIN</button>
-    </div>
+    <div class="hud-who one"><button class="bin on" id="hwho" data-who="bin" title="탭하면 사람 바꿈">BIN</button></div>
+    <button class="hud-rest" id="hrest">휴식</button>
     <div class="hud-info"><b id="hkm">—</b><small id="hsub">위치를 기다리는 중</small></div>
     <button class="hud-exit" id="hexit">주행 끝</button>
   </div>
@@ -449,10 +451,10 @@ var ZOOM_M=[60,120,250,500,1000,2000,4000,8000,16000,32000,64000];   /* 카메�
 /* 폰 GPS (브라우저 geolocation) — 5초에 한 번 받아들입니다 */
 var GPS_ENABLED=false;     /* 폰 GPS 출처 — 당분간 끔. true 로 바꾸면 설정·HUD 에 다시 나타납니다 */
 var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:5000};
-var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"server",
+var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"server", rest:false,
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20260928-37";
+var D0_VER="v20260929-38";
 try{ var _pm=localStorage.getItem("caminoPosMode"); if(_pm==="gps"&&GPS_ENABLED) NAV.posMode="gps"; }catch(e){}
 try{ var _m2=localStorage.getItem("caminoMap2d"); if(_m2==="0") OPT_MAP2D_INIT=false; }catch(e){}
 var OPT_BASE_INIT="map";
@@ -947,7 +949,16 @@ function liveHistPush(){
     /* 시험 좌표는 DAY 0 궤적 위 어디인지도 재 둡니다 */
     if(f.test && typeof f.lat==="number" && D0.pts.length){
       var prev=h.length?h[h.length-1]:null, pk=(prev&&prev.d0km!==undefined&&prev.d0km!==null)?prev.d0km:undefined;
-      var pr=projectOn(D0.pts,D0.cum,f.lat,f.lon,pk); if(pr&&pr.off<=400){ f.d0km=pr.km; f.d0off=pr.off; } }
+      /* 수신 공백 동안 갔을 만한 거리를 더한 "기대 km" 로 후보를 고릅니다.
+         9/29: 7분 공백 뒤 직전 km(2.67)에 가까운 엉뚱한 후보(2.97)를 잡아 실제(4.24)와 1.3 km 어긋난 적 있음 */
+      var lo, hi;
+      if(pk!==undefined && prev){ var dtH=(t-prev.t)/3600000;
+        /* 공백 동안의 속도는 그 순간 속도보다 세션 평균이 믿을 만함 (신호등 앞에서 9 km/h 였어도 그 뒤 13 km/h 로 달림) */
+        var first=h[0], sAvg=(first && prev.t>first.t && typeof first.d0km==="number") ? (prev.d0km-first.d0km)/((prev.t-first.t)/3600000) : 0;
+        var v=Math.max(10, sAvg, (typeof prev.vel==="number"?prev.vel:0));
+        if(dtH>0.25){ pk=undefined; }                                /* 15분 넘게 비었으면 그냥 가장 가까운 곳 */
+        else { lo=pk-0.15; hi=pk+45*dtH+0.3; pk=pk+v*dtH; } }
+      var pr=projectOn(D0.pts,D0.cum,f.lat,f.lon,pk,lo,hi); if(pr&&pr.off<=400){ f.d0km=pr.km; f.d0off=pr.off; } }
     /* 예측 로그 — 이 수신이 오기 직전, 수신 시각 기준으로 예측하던 자리와 비교 */
     if(PLOG.s && w===NAV.who && NAV.on && NAV.src==="live") plogOnFix(w, f, h);
     h.push(f); if(h.length>20) h.shift();
@@ -1154,6 +1165,7 @@ function predict(w, atMs){
   if(spd<PRED_MIN_KMH || (mode==="xy"&&hdg===null)) spd=0;
   var toT=Math.min(now, b.t+PRED_MAX_MIN*60000);
   var out={mode:mode, spd:spd, last:b, hdg:hdg, stale:(now-b.t)>PRED_MAX_MIN*60000};
+  if(NAV.rest){ spd=0; }                                             /* 휴식 중엔 그 자리 */
   var v0 = (spd>0 && vel!==null) ? Math.max(3, vel) : spd;          /* 출발 속도 = 수신 순간 속도 */
   if(mode==="km"){ out.km=integrateKm(w,"km",b.km,b.t,spd,toT,v0); out.ahead=out.km-b.km; }
   else if(mode==="d0"){ out.km=integrateKm(w,"d0",b.d0km,b.t,spd,toT,v0); out.ahead=out.km-b.d0km; }
@@ -1374,7 +1386,7 @@ function setNav(on){
     syncHud(); ensureLoop();
   }else{
     viewer.camera.lookAtTransform(Cesium.Matrix4.IDENTITY);
-    NAV.hdg=null; gpsStop(); plogEnd(); if(OPT.live) liveTimerStart();
+    NAV.hdg=null; gpsStop(); plogEnd(); if(OPT.live) liveTimerStart(); if(NAV.rest) setRest(false);
     /* 날짜 노선을 재생하던 중이었으면 기억해 둔 DAY 0 GPX 로 되돌립니다 */
     if(D0.day){ D0.playing=false; if(!restoreDay0()) clearDay0(); WPX.key=""; }
     if(!D0.pts.length) navShow(false);
@@ -1443,8 +1455,16 @@ function setWho(w){
   if(NAV.on && NAV.src==="live" && !PLOG.s) plogStart();
   try{ localStorage.setItem("caminoNavWho",w); }catch(e){}
   document.querySelectorAll("[data-who]").forEach(function(b){ b.classList.toggle("on", b.dataset.who===w); });
+  var hb=$("hwho"); if(hb){ hb.textContent=WHO[w].n; hb.className=w+" on"; hb.dataset.who=w; }
   drawLive();
   if(NAV.on||D0.pts.length) ensureLoop();
+}
+/* 휴식 — 예측을 멈추고 마지막 수신 자리에 세웁니다. 재출발하면 다시 예측. 로그에도 남김 */
+function setRest(on){
+  NAV.rest=!!on; var b=$("hrest"); if(b){ b.textContent=NAV.rest?"재출발":"휴식"; b.classList.toggle("on",NAV.rest); }
+  PRED_CACHE={};
+  if(PLOG.s){ (PLOG.s.rests=PLOG.s.rests||[]).push({t:new Date().toISOString(), on:NAV.rest}); }
+  if(NAV.rest) wpxSay("휴식. 안내를 멈춥니다."); else wpxSay("재출발. 안내를 다시 합니다.");
 }
 function setZoom(d){
   NAV.zi=Math.max(0,Math.min(ZOOM_M.length-1,NAV.zi+d));
@@ -1489,8 +1509,8 @@ function hudLiveLabel(){
   if(t!==_hudLbl){ _hudLbl=t; b.textContent=t; }
 }
 function setupHud(){
-  document.querySelectorAll("#hud [data-who]").forEach(function(b){
-    b.addEventListener("click",function(){ setWho(b.dataset.who); }); });
+  on("hwho","click",function(){ var nx=NAV.who==="bin"?"jin":"bin"; if(confirm(WHO[nx].n+" 으로 바꿀까요?")) setWho(nx); });
+  on("hrest","click",function(){ setRest(!NAV.rest); });
   on("hexit","click",function(){ setNav(false); });
   on("hzin","click",function(){ setZoom(-1); });
   on("hzout","click",function(){ setZoom(1); });
@@ -1648,7 +1668,7 @@ function wpxTrack(){
 /* 점을 궤적에 투영 — {km, off(m), side(+1 왼쪽 / -1 오른쪽)}
    왕복 궤적처럼 같은 길을 두 번 지나면 후보가 여럿 생깁니다. prefKm(직전 위치)에 가장 가까운
    후보를 고르고, 직전이 없으면 작은 km 쪽(출발 방향)을 고릅니다. */
-function projectOn(pts,cum,lat,lon,prefKm){
+function projectOn(pts,cum,lat,lon,prefKm,loKm,hiKm){
   var r=Math.PI/180, cl=Math.cos(lat*r), cands=[], best=Infinity;
   for(var i=0;i<pts.length-1;i++){
     var a=pts[i], b=pts[i+1];
@@ -1671,6 +1691,8 @@ function projectOn(pts,cum,lat,lon,prefKm){
   var lim=Math.max(150, Math.sqrt(best)*3);
   var ok=groups.filter(function(g){ return g.off<=lim; });
   if(!ok.length) ok=groups;
+  /* 갈 수 있었던 범위(직전 km − 150 m … 직전 km + 최고속도×시간) 안의 후보를 먼저 — 8자 노선처럼 같은 자리를 여러 번 지나면 필수 */
+  if(typeof loKm==="number" && typeof hiKm==="number"){ var inr=ok.filter(function(g){ return g.km>=loKm && g.km<=hiKm; }); if(inr.length) ok=inr; }
   if(typeof prefKm==="number") ok.sort(function(a,b){ return Math.abs(a.km-prefKm)-Math.abs(b.km-prefKm); });
   else ok.sort(function(a,b){ return a.km-b.km; });
   return ok[0];
@@ -1705,6 +1727,7 @@ function wpxSideText(w){
 function fmtM(m){ m=Math.abs(m); return m<1000 ? Math.round(m/10)*10+" m" : (m/1000).toFixed(1)+" km"; }
 function wpxRender(force){
   if(!NAV.on) return;
+  if(NAV.rest){ var bb=$("hwpb"); if(bb) bb.classList.add("hide"); var tb=$("hturn"); if(tb) tb.classList.add("hide"); var ob=$("hoff"); if(ob) ob.classList.add("hide"); return; }
   var now=Date.now(); if(!force && now-WPX.lastT<700) return; WPX.lastT=now;
   wpxBuild();
   var cur=wpxCurKm(), box=$("hwpl"), btn=$("hwp"); if(!box) return;
@@ -1800,6 +1823,8 @@ var _ac=null;
 function wpxBeep(n){
   try{
     _ac=_ac||new (window.AudioContext||window.webkitAudioContext)();
+    if(_ac.state==="suspended") _ac.resume();
+    audioRelease();
     for(var i=0;i<n;i++){
       var o=_ac.createOscillator(), g=_ac.createGain();
       o.frequency.value=880; o.connect(g); g.connect(_ac.destination);
@@ -1820,11 +1845,15 @@ function wpxSay(text){
   }catch(e){}
 }
 function sayNext(){
-  var t=SAYQ.shift(); if(!t) return;
+  var t=SAYQ.shift(); if(!t){ audioRelease(); return; }
   var u=new SpeechSynthesisUtterance(t); u.lang="ko-KR"; u.rate=1.05;
   u.onend=function(){ setTimeout(sayNext,150); }; u.onerror=function(){ setTimeout(sayNext,150); };
   speechSynthesis.speak(u);
 }
+/* 세나 헤드셋은 폰 오디오가 "열려 있는" 동안 메시 인터콤을 내려 둡니다. 안내가 끝나면 2초 뒤 오디오 세션을 닫아
+   헤드셋이 스스로 메시로 돌아가게 합니다 (Jin 2026-09-29 관찰: 폰→메시 복귀가 수동이었음). */
+var _relT=null;
+function audioRelease(){ clearTimeout(_relT); _relT=setTimeout(function(){ try{ if(_ac && _ac.state==="running" && !speechSynthesis.speaking && !SAYQ.length) _ac.suspend(); }catch(e){} },2000); }
 
 /* ── 도우미 ── */
 function dstr(d){ var x=new Date(START); x.setDate(x.getDate()+(d-1));
@@ -2341,12 +2370,12 @@ function day0Card(){
       +'<br><span style="color:#B0A070">판 '+D0_VER+'</span></div>';
   }else{
     var span="";
-    if(D0.hasTime){ var ms=D0.pts[D0.pts.length-1].t-D0.pts[0].t;
-      span=Math.floor(ms/3600000)+"시간 "+Math.round(ms%3600000/60000)+"분 · "+fmtClock(D0.pts[0].t)+" 출발"; }
+    if(D0.hasTime){ var ms=D0.pts[D0.pts.length-1].t-D0.pts[0].t, sec=Math.round(ms/1000);
+      span=Math.floor(sec/3600)+"시간 "+Math.floor(sec%3600/60)+"분 "+(sec%60)+"초 · "+fmtClock(D0.pts[0].t)+":"+String(new Date(D0.pts[0].t).getSeconds()).padStart(2,"0")+" 출발"; }
     if(D0.day) h+='<div class="d0note" style="margin:0 0 6px;color:#7A5A00"><b>노선 DAY '+D0.day+'</b> 를 재생 중입니다. 기억해 둔 GPX 는 그대로 있습니다.</div>';
     h+='<div class="row2"><span>누구 것</span><b style="color:'+WHO[NAV.who].c+'">'+WHO[NAV.who].n+' 의 DAY 0</b></div>';
     h+='<div class="row2"><span>파일</span><b>'+esc(D0.name)+'</b></div>'
-      +'<div class="row2"><span>거리</span><b>'+D0.total.toFixed(1)+' km · '+D0.pts.length+'점 · 명소 '+((D0.wpts||[]).length)+'</b></div>'
+      +'<div class="row2"><span>거리</span><b>'+D0.total.toFixed(2)+' km · '+D0.pts.length+'점 · 명소 '+((D0.wpts||[]).length)+'</b></div>'
       +'<div class="row2"><span>시간</span><b>'+(D0.hasTime?span:"없음 — 15 km/h 로 재생")+'</b></div>'
       +'<div class="d0row"><button class="mini play" id="d0pp">▶</button>'
       +'<select id="d0spd"><option value="1">1×</option><option value="5">5×</option>'
