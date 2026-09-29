@@ -265,6 +265,10 @@
   .hud-turn small{display:block;font-size:.74rem;opacity:.85;margin-top:2px}
   .hud-turn svg{width:66px;height:66px}
   /* 노선 이탈 · 역주행 경고 */
+  .hud-here{position:absolute;left:12px;bottom:calc(max(8px,env(safe-area-inset-bottom)) + 96px);z-index:4;
+    width:64px;height:64px;border-radius:50%;border:2px solid #fff;background:#8E2C3A;color:#fff;font-size:.8rem;font-weight:700;
+    box-shadow:0 3px 12px rgba(0,0,0,.35);cursor:pointer;line-height:1.1;touch-action:manipulation}
+  .hud-here:active{background:#B91C1C}
   .hud-off{position:absolute;left:10px;right:10px;top:50%;transform:translateY(-140%);z-index:5;
     background:rgba(185,28,28,.9);color:#fff;border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:12px;
     box-shadow:0 4px 16px rgba(0,0,0,.35)}
@@ -389,6 +393,7 @@
   </div>
   <div class="hud-turn hide" id="hturn"></div>
   <div class="hud-off hide" id="hoff"></div>
+  <button class="hud-here" id="hhere" title="명소를 실제로 지나는 순간 누르세요">📌 여기!</button>
   <div class="hud-wp">
     <button id="hwp">📍 명소</button>
     <div id="hwpp" class="wpx-panel hide">
@@ -454,7 +459,7 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:5000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"server", rest:false,
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20260929-38";
+var D0_VER="v20260930-39";
 try{ var _pm=localStorage.getItem("caminoPosMode"); if(_pm==="gps"&&GPS_ENABLED) NAV.posMode="gps"; }catch(e){}
 try{ var _m2=localStorage.getItem("caminoMap2d"); if(_m2==="0") OPT_MAP2D_INIT=false; }catch(e){}
 var OPT_BASE_INIT="map";
@@ -1459,6 +1464,22 @@ function setWho(w){
   drawLive();
   if(NAV.on||D0.pts.length) ensureLoop();
 }
+/* 📌 여기! — 명소를 실제로 지나는 순간 누르면, 그때 예측 위치와 가장 가까운 명소의 km 차이를 로그에 남깁니다.
+   "안내가 실제보다 얼마나 앞/뒤인가"를 재는 유일한 방법 — 사람이 기준점을 찍어 주는 것 */
+function markHere(){
+  var cur=wpxCurKm(), now=Date.now(), tr=wpxTrack();
+  var near=null; (WPX.list||[]).forEach(function(w){ if(!near || Math.abs(w.km-cur)<Math.abs(near.km-cur)) near=w; });
+  var h=LIVEHIST[NAV.who], b=h&&h[h.length-1];
+  var m={t:new Date(now).toISOString(), predKm:cur!=null?+cur.toFixed(4):null,
+         lastFixKm:b&&typeof b.d0km==="number"?+b.d0km.toFixed(4):(b&&typeof b.km==="number"?+b.km.toFixed(4):null),
+         lastFixAgoS:b?Math.round((now-b.t)/1000):null,
+         poi:near?near.name:null, poiKm:near?+near.km.toFixed(4):null,
+         deltaM:(near&&cur!=null)?Math.round((cur-near.km)*1000):null};   /* + 면 안내 위치가 실제보다 앞서 있음 */
+  if(PLOG.s) (PLOG.s.marks=PLOG.s.marks||[]).push(m);
+  var txt = near&&cur!=null ? (near.cmt||near.name)+" · 예측이 실제보다 "+(m.deltaM>=0?m.deltaM+" m 앞":(-m.deltaM)+" m 뒤") : "표시 저장";
+  var t=$("hwpb"); if(t){ t.className="wpx-banner"; t.innerHTML='<div class="wb-head"><b>📌 '+txt+'</b></div><div class="wb-cmt">'+(cur!=null?cur.toFixed(2)+" km":"")+(m.lastFixAgoS!=null?' · 마지막 수신 '+m.lastFixAgoS+'초 전':'')+'</div>'; WPX.lastBanner="__mark__"; setTimeout(function(){ if(WPX.lastBanner==="__mark__") WPX.lastBanner=""; },5000); }
+  wpxBeep(1); if(WPX.voice) wpxSay("표시했습니다");
+}
 /* 휴식 — 예측을 멈추고 마지막 수신 자리에 세웁니다. 재출발하면 다시 예측. 로그에도 남김 */
 function setRest(on){
   NAV.rest=!!on; var b=$("hrest"); if(b){ b.textContent=NAV.rest?"재출발":"휴식"; b.classList.toggle("on",NAV.rest); }
@@ -1511,6 +1532,7 @@ function hudLiveLabel(){
 function setupHud(){
   on("hwho","click",function(){ var nx=NAV.who==="bin"?"jin":"bin"; if(confirm(WHO[nx].n+" 으로 바꿀까요?")) setWho(nx); });
   on("hrest","click",function(){ setRest(!NAV.rest); });
+  on("hhere","click",markHere);
   on("hexit","click",function(){ setNav(false); });
   on("hzin","click",function(){ setZoom(-1); });
   on("hzout","click",function(){ setZoom(1); });
@@ -1852,8 +1874,8 @@ function sayNext(){
 }
 /* 세나 헤드셋은 폰 오디오가 "열려 있는" 동안 메시 인터콤을 내려 둡니다. 안내가 끝나면 2초 뒤 오디오 세션을 닫아
    헤드셋이 스스로 메시로 돌아가게 합니다 (Jin 2026-09-29 관찰: 폰→메시 복귀가 수동이었음). */
-var _relT=null;
-function audioRelease(){ clearTimeout(_relT); _relT=setTimeout(function(){ try{ if(_ac && _ac.state==="running" && !speechSynthesis.speaking && !SAYQ.length) _ac.suspend(); }catch(e){} },2000); }
+var _relT=null, AUDIO_RELEASE_MS=600;   /* 안내 끝나고 이만큼 뒤에 오디오를 닫음 — 짧을수록 메시 복귀가 빠름 */
+function audioRelease(){ clearTimeout(_relT); _relT=setTimeout(function(){ try{ if(_ac && _ac.state==="running" && !speechSynthesis.speaking && !SAYQ.length) _ac.suspend(); }catch(e){} },AUDIO_RELEASE_MS); }
 
 /* ── 도우미 ── */
 function dstr(d){ var x=new Date(START); x.setDate(x.getDate()+(d-1));
