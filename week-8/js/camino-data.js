@@ -3363,13 +3363,30 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       +'<div class="d0chart"><p class="wxload">날씨 불러오는 중…</p></div><p class="wxnote"></p></div>';
     return h;
   }
+  /* 파일 받기 — 어느 경로가 왜 실패했는지 남깁니다 (공용 driveText 는 "여권 자료…" 한 줄만 주어서) */
+  function getText(id, label){
+    var uc="https://drive.google.com/uc?export=download&id="+id, c=[], why=[];
+    c.push(["Drive API", "https://www.googleapis.com/drive/v3/files/"+id+"?alt=media&key="+PHOTOS.apiKey+"&_="+Date.now()]);
+    if(PHOTOS.gpxProxy) c.push(["앱스 스크립트 프록시", PHOTOS.gpxProxy+(PHOTOS.gpxProxy.indexOf("?")<0?"?":"&")+"id="+id+"&_="+Date.now()]);
+    c.push(["allorigins", "https://api.allorigins.win/raw?url="+encodeURIComponent(uc+"&_="+Date.now())]);
+    c.push(["corsproxy", "https://corsproxy.io/?url="+encodeURIComponent(uc)]);
+    function tryK(k){
+      if(k>=c.length) return Promise.reject(new Error(label+" 을 받지 못했습니다 — "+why.join(" · ")));
+      var ac=("AbortController" in window)?new AbortController():null, to=ac?setTimeout(function(){ ac.abort(); },20000):null;
+      return fetch(c[k][1], ac?{signal:ac.signal, cache:"no-store"}:{cache:"no-store"})
+        .then(function(r){ if(to) clearTimeout(to); if(!r.ok) throw new Error("HTTP "+r.status); return r.text(); })
+        .then(function(t){ if(!t || t.length<2) throw new Error("빈 응답"); if(/^\s*<(!doctype|html)/i.test(t)) throw new Error("HTML 응답(권한?)"); return t; })
+        .catch(function(e){ why.push(c[k][0]+": "+(e.name==="AbortError"?"시간 초과":(e.message||e))); return tryK(k+1); });
+    }
+    return tryK(0);
+  }
   function run(){
     if(!window.CAMINO_DRIVE){ root.innerHTML='<p class="wxnote">Drive 설정이 없습니다</p>'; return; }
     root.innerHTML='<p class="wxload">DAY 0 기록을 읽는 중…</p>';
     window.CAMINO_DRIVE.files().then(function(files){
       var f=files.filter(function(x){ return x.name==="progress.json"; })[0];
-      if(!f) throw new Error("progress.json 이 없습니다");
-      return window.CAMINO_DRIVE.text(f.id);
+      if(!f) throw new Error("db/progress.json 이 없습니다 — 업로드 페이지 🚴 탭에서 한 번 저장되면 생깁니다");
+      return getText(f.id, "progress.json");
     }).then(function(t){
       var j=JSON.parse(t), rides=(j.rides||[]).filter(function(r){ return r.day===0 && !r.del && r.fileId; });
       rides.sort(function(a,b){ return (b.date||"")<(a.date||"")?-1:1; });
@@ -3378,7 +3395,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       if(!rides.length){ root.innerHTML='<p class="wxnote">아직 올린 DAY 0 기록이 없습니다. <a href="upload-camino.html">업로드 페이지</a> 🚴 탭에서 DAY 0 로 올리세요.</p>'; return; }
       root.innerHTML='';
       rides.forEach(function(r){
-        window.CAMINO_DRIVE.text(r.fileId).then(function(txt){
+        getText(r.fileId, "day0/"+(r.name||"track")).then(function(txt){
           var pts=parseGpx(txt).filter(function(q){ return q.t; }); if(pts.length<2) throw new Error("트랙 없음");
           var st=stats(pts);
           root.insertAdjacentHTML("beforeend", card(r,pts,st));
@@ -3387,7 +3404,8 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
             .catch(function(e){ el.querySelector(".d0chart").innerHTML='<p class="wxnote">날씨를 못 받았습니다 — '+esc(e.message||e)+'</p>'; });
         }).catch(function(e){ root.insertAdjacentHTML("beforeend",'<p class="wxnote">'+esc(WHO[r.owner]?WHO[r.owner].n:r.owner)+' '+esc(r.date||"")+' — 기록을 못 읽었습니다 ('+esc(e.message||e)+')</p>'); });
       });
-    }).catch(function(e){ root.innerHTML='<p class="wxnote">'+esc(e.message||e)+'</p>'; });
+    }).catch(function(e){ root.innerHTML='<p class="wxnote">⚠ '+esc(e.message||e)+' <button type="button" id="d0retry" class="mini" style="margin-left:8px">다시 시도</button></p>';
+      var b=document.getElementById("d0retry"); if(b) b.addEventListener("click", run); });
   }
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded", run); else setTimeout(run, 800);
 })();
