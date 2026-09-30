@@ -982,6 +982,8 @@
   .foodpics figure{margin:0;border-radius:12px;overflow:hidden;background:#F3EFE3;border:1px solid var(--line)}
   .foodpics img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
   .foodpics figcaption{font-size:.72rem;padding:6px 8px;color:var(--ink-soft)}
+  .d0card .wxh small{display:block;font-weight:400;color:var(--ink-soft);margin-top:2px}
+  .d0chart{margin:6px 0}
   .wxrain b{color:#1E5FB4} .wxwind b{color:#3F5C3A} .wxwind i{font-style:normal;color:#D97706;font-size:.7rem}
   /* 앞으로 7일 띠 */
   .wx7{background:#fff;border:1px dashed var(--line);border-radius:12px;padding:8px 10px}
@@ -2288,6 +2290,18 @@
 
 <!-- ───────── Ⅲ. 날짜별 카드 ───────── -->
 <div class="daynav" id="dayNavHost"></div>
+<!-- ───────── DAY 0 시험 주행 ───────── -->
+<section id="secDay0" style="padding-top:22px">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="no">Prueba</div>
+      <h2>DAY 0 · 시험 주행</h2>
+      <p class="lead">출발 전 미국(BIN)·한국(JIN)에서 탄 기록. 업로드 페이지 🚴 탭에서 DAY 0 로 올리면 여기에 그날 날씨와 자전거 센서 기온이 함께 나옵니다. 사람마다 최근 3회.</p>
+    </div>
+    <div class="wxgrid" id="day0wx"><p class="wxload">DAY 0 기록을 읽는 중…</p></div>
+  </div>
+</section>
+
 <section id="sec3" style="padding-top:22px">
   <div class="wrap">
     <div class="sec-head">
@@ -4241,6 +4255,7 @@
     <a href="#top">⬆ 맨 위로</a>
     <a href="#sec1">Ⅰ · 고도 프로필</a>
     <a href="#sec2">Ⅱ · 일정 한눈에</a>
+    <a href="#secDay0">🧪 DAY 0 시험 주행</a>
     <a href="#sec3">Ⅲ · 날짜별 카드 (D1~D13)</a>
     <a href="#secL">숙소 · 예약 현황</a>
     <a href="#secS">산티아고 도착</a>

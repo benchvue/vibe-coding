@@ -2980,7 +2980,7 @@ const pgOnSignedIn=()=>{
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20260904-1313";
+  var BUILD="20260930-1";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
@@ -4107,6 +4107,7 @@ const rdRender = () => {
 
   const live = rdData.rides.filter(r=>!r.del);
   const by = w => live.filter(r=>r.owner===w && r.day>0).sort((a,b)=>a.day-b.day);
+  const test = w => live.filter(r=>r.owner===w && r.day===0);
   const sum = w => {
     const a=by(w);
     return {n:a.length,
@@ -4116,7 +4117,7 @@ const rdRender = () => {
   const B=sum("bin"), J=sum("jin");
 
   let h='<div class="rdsum">'
-    + rdCard("BIN", B, "bin") + rdCard("JIN", J, "jin") + '</div>';
+    + rdCard("BIN", B, "bin", test("bin")) + rdCard("JIN", J, "jin", test("jin")) + '</div>';
 
   const who=rdWho();
   if(who){
@@ -4172,10 +4173,12 @@ const rdRender = () => {
   root.innerHTML=h;
   rdBind();
 };
-const rdCard = (n,s,c) =>
+const rdCard = (n,s,c,t) =>
   '<div class="rdc2 '+c+'"><small>'+n+'</small>'
   +'<b>'+s.cum.toFixed(1)+' km</b>'
-  +'<i>'+s.n+'일 · 실제 '+s.dist.toFixed(1)+' km · 고도 '+s.asc.toLocaleString()+' m</i></div>';
+  +'<i>'+s.n+'일 · 실제 '+s.dist.toFixed(1)+' km · 고도 '+s.asc.toLocaleString()+' m</i>'
+  +(t&&t.length?'<i style="display:block;margin-top:3px;color:#7A5A00">🧪 DAY 0 시험 '+t.length+'회 · '+t.reduce((a,r)=>a+r.dist,0).toFixed(1)+' km · 최근 '+rdEsc(t.map(r=>r.date||"").sort().pop()||"")+'</i>':'')
+  +'</div>';
 
 /* 파일 이름에서 날짜를 짐작합니다 — 카톡이 TaskFile_ 을 붙여도 찾아냅니다 */
 const rdGuessDay = (name) => {
