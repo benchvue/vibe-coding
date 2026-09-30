@@ -3858,6 +3858,7 @@ $("lgReloadBtn").addEventListener("click",()=>{ lgLoaded=false; lgLoad(); });
 
 const RD_FILE = "progress.json";
 const RD_DAYS = [
+  [0,"",          "DAY 0 · 시험 주행 (미국·한국)",0,0],     /* 계획 노선 없음 · 누적 km 에 안 셈 · day0/ 폴더 */
   [1,"2027-05-09","생장 → 수비리",45.8,0.0],
   [2,"2027-05-10","수비리 → 에스테야",68.9,45.8],
   [3,"2027-05-11","에스테야 → 나바레테",61.3,114.7],
@@ -3922,6 +3923,7 @@ const rdStats = (pts) => {
 /* ── 계획 노선에 맞춰 누적 km 찾기 ── */
 const rdMatch = (last, day) => {
   const dd=rdDay(day);
+  if(+day===0) return Promise.resolve({cumKm:0, off:0});     /* DAY 0 는 계획 노선이 없음 */
   const url="route/camino-2027-day"+String(day).padStart(2,"0")+".gpx";
   return fetch(url,{cache:"force-cache"})
     .then(r=>{ if(!r.ok) throw new Error(url+" 를 찾지 못했습니다"); return r.text(); })
@@ -4072,12 +4074,14 @@ const rdUpload = async (file, day) => {
   }catch(e){ set("⚠ 올리지 못했습니다: "+rdEsc(e.message),"err"); return; }
 
   /* 같은 사람·같은 날 기록은 갈아 끼웁니다 */
-  const old=rdData.rides.find(r=>r.owner===who && r.day===+day && !r.del);
+  const old = +day===0 ? null : rdData.rides.find(r=>r.owner===who && r.day===+day && !r.del);
   if(old){ old.del=true; old.ts=Date.now();
     if(old.fileId) driveTrash(old.fileId).catch(()=>{}); }
 
+  let rdate=dd[1];
+  if(+day===0){ const m=txt.match(/<time>([^<]+)<\/time>/); if(m){ const d=new Date(m[1]); if(!isNaN(d)) rdate=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); } }
   rdData.rides.push({
-    id:rdId(), owner:who, day:+day, date:dd[1],
+    id:rdId(), owner:who, day:+day, date:rdate,
     cumKm:mt.cumKm, dist:Math.round(st.dist*100)/100, asc:st.asc, dsc:st.dsc,
     hrs:st.hrs, ele:st.eleEnd, off:mt.off,
     fileId, name, memo:"", del:false, ts:Date.now()
@@ -4085,6 +4089,8 @@ const rdUpload = async (file, day) => {
   rdQueue(); rdRender();
 
   const planKm=dd[3], diff=st.dist-planKm;
+  if(+day===0){ set("<b>DAY 0 시험 주행 기록했습니다.</b> "+st.dist.toFixed(2)+" km"+(st.asc?" · 획득고도 "+st.asc.toLocaleString()+" m":"")
+      +" · day0/"+rdEsc(name)+"<br><small>본 사이트 DAY 0 날씨 카드에 센서 기온 그래프로 나타납니다.</small>","ok"); return; }
   set("<b>DAY "+day+" 기록했습니다.</b> 누적 <b>"+mt.cumKm.toFixed(1)+" km</b> · "
     +"실제 주행 "+st.dist.toFixed(1)+" km"
     +(Math.abs(diff)>=0.3 ? " (계획보다 "+(diff>0?"+":"")+diff.toFixed(1)+" km)" : "")
@@ -4100,7 +4106,7 @@ const rdRender = () => {
   if(!rdLoaded){ root.innerHTML='<p class="wxload">주행 기록을 불러오는 중…</p>'; return; }
 
   const live = rdData.rides.filter(r=>!r.del);
-  const by = w => live.filter(r=>r.owner===w).sort((a,b)=>a.day-b.day);
+  const by = w => live.filter(r=>r.owner===w && r.day>0).sort((a,b)=>a.day-b.day);
   const sum = w => {
     const a=by(w);
     return {n:a.length,
@@ -4117,7 +4123,7 @@ const rdRender = () => {
     h+='<div class="rdup">'
       +'<label>어느 날<select id="rdDay">'
         + RD_DAYS.map(d=>'<option value="'+d[0]+'">DAY '+d[0]+' · '+rdEsc(d[2])
-            +' ('+d[3].toFixed(1)+' km)</option>').join("")
+            +(d[0]?' ('+d[3].toFixed(1)+' km)':'')+'</option>').join("")
       +'</select></label>'
       +'<label class="rdfile">오늘 주행 GPX'
         +'<input type="file" id="rdGpx">'
@@ -4142,10 +4148,10 @@ const rdRender = () => {
       const rows=live.filter(r=>r.day===d[0]);
       if(!rows.length) return;
       h+='<div class="rdd"><div class="rddh"><b>DAY '+d[0]+'</b>'
-        +'<span>'+d[1].slice(5).replace("-","/")+'</span>'
-        +'<em>'+rdEsc(d[2])+'</em><i>계획 '+d[3].toFixed(1)+' km</i></div>';
-      rows.sort((a,b)=>a.owner<b.owner?-1:1).forEach(r=>{
-        const diff=r.dist-d[3];
+        +'<span>'+(d[1]?d[1].slice(5).replace("-","/"):"시험")+'</span>'
+        +'<em>'+rdEsc(d[2])+'</em>'+(d[0]?'<i>계획 '+d[3].toFixed(1)+' km</i>':'<i>날짜별로 쌓임</i>')+'</div>';
+      rows.sort((a,b)=>(a.owner<b.owner?-1:1)||((b.date||"")<(a.date||"")?-1:1)).forEach(r=>{
+        const diff = d[0] ? r.dist-d[3] : 0;
         const mine=r.owner===who;
         h+='<div class="rdr '+r.owner+'" data-id="'+r.id+'">'
           +'<i class="who '+r.owner+'">'+r.owner.toUpperCase()+'</i>'
@@ -4153,7 +4159,7 @@ const rdRender = () => {
             +(Math.abs(diff)>=0.3?'<u>'+(diff>0?"+":"")+diff.toFixed(1)+'</u>':'')+'</span>'
           +'<span class="rdv"><b>'+(r.asc||0).toLocaleString()+'</b> m'+'</span>'
           +(r.hrs?'<span class="rdv"><b>'+r.hrs.toFixed(1)+'</b> h</span>':'')
-          +'<span class="rdc">누적 '+r.cumKm.toFixed(1)+' km</span>'
+          +(d[0]?'<span class="rdc">누적 '+r.cumKm.toFixed(1)+' km</span>':'<span class="rdc">'+rdEsc(r.date||"")+'</span>')
           +(r.off>300?'<span class="rdoff">'+r.off+' m 이탈</span>':'')
           +(mine?'<button type="button" class="rddel" title="지우기">×</button>':'')
           +'</div>';
