@@ -459,7 +459,7 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:5000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"server", rest:false,
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20260930-39";
+var D0_VER="v20260930-40";
 try{ var _pm=localStorage.getItem("caminoPosMode"); if(_pm==="gps"&&GPS_ENABLED) NAV.posMode="gps"; }catch(e){}
 try{ var _m2=localStorage.getItem("caminoMap2d"); if(_m2==="0") OPT_MAP2D_INIT=false; }catch(e){}
 var OPT_BASE_INIT="map";
@@ -724,7 +724,10 @@ function parseGpxTimed(txt){
     if(isNaN(la)||isNaN(lo)) continue;
     var e=n.getElementsByTagName("ele")[0], t=n.getElementsByTagName("time")[0];
     var tm=t?Date.parse(t.textContent.trim()):NaN;
-    pts.push({lat:la, lon:lo, ele:e?(parseFloat(e.textContent)||0):0, t:isNaN(tm)?null:tm});
+    /* 가민 센서 기온 — ns3:atemp · gpxtpx:atemp · gpxdata:temp 등 접두사가 제각각이라 이름 끝으로 찾음 */
+    var tp=null, ex=n.getElementsByTagName("*");
+    for(var q=0;q<ex.length;q++){ var ln=(ex[q].localName||ex[q].nodeName).toLowerCase(); if(ln==="atemp"||ln==="temp"||ln==="temperature"){ var tv=parseFloat(ex[q].textContent); if(!isNaN(tv)) tp=tv; break; } }
+    pts.push({lat:la, lon:lo, ele:e?(parseFloat(e.textContent)||0):0, t:isNaN(tm)?null:tm, tp:tp});
   }
   var nm=doc.querySelector("trk > name");
   var wpts=[], wn=doc.getElementsByTagName("wpt");
@@ -821,7 +824,7 @@ var D0_KEY="caminoDay0";
 function d0Key(){ return D0_KEY+":"+(NAV.who||"bin"); }      /* 사람마다 따로 기억 · 따로 지움 */
 function saveDay0(){
   try{
-    var rows=D0.pts.map(function(q){ return [+q.lat.toFixed(6), +q.lon.toFixed(6), Math.round(q.ele), q.t===null?null:Math.round(q.t/1000)]; });
+    var rows=D0.pts.map(function(q){ return [+q.lat.toFixed(6), +q.lon.toFixed(6), Math.round(q.ele), q.t===null?null:Math.round(q.t/1000), (q.tp==null?null:+q.tp.toFixed(1))]; });
     localStorage.setItem(d0Key(), JSON.stringify({name:D0.name, rows:rows, wpts:D0.wpts||[], saved:Date.now()}));
   }catch(e){ console.warn("DAY 0 저장 실패(용량?)", e); }
 }
@@ -829,7 +832,7 @@ function restoreDay0(){
   try{
     var j=JSON.parse(localStorage.getItem(d0Key()) || localStorage.getItem(D0_KEY) || "null");   /* 옛 공용 키도 읽음 */
     if(!j||!j.rows||j.rows.length<2) return false;
-    setDay0(j.rows.map(function(r){ return {lat:r[0],lon:r[1],ele:r[2]||0,t:r[3]===null?null:r[3]*1000}; }), j.name||"DAY 0", true, 0, j.wpts||[]);
+    setDay0(j.rows.map(function(r){ return {lat:r[0],lon:r[1],ele:r[2]||0,t:r[3]===null?null:r[3]*1000,tp:(r[4]==null?null:r[4])}; }), j.name||"DAY 0", true, 0, j.wpts||[]);
     return true;
   }catch(e){ return false; }
 }
@@ -2415,6 +2418,10 @@ function day0Card(){
       +'<div id="d0list"></div>'
       +'<div class="d0note">이 GPX 는 브라우저에 기억됩니다. <span style="color:#B0A070">판 '+D0_VER+'</span></div>';
   }
+  if(D0.pts.length && D0.hasTime){
+    h+='<div class="row2" style="margin-top:10px"><span>🌡 그날 날씨와 센서 기온</span><b id="wxd0st" style="font-size:.68rem;color:var(--soft)">불러오는 중…</b></div>'
+      +'<div id="wxd0"></div>';
+  }
   /* 탈것 · 예측 오차 로그 */
   var n=PLOG.all.length, last=n?PLOG.all[n-1]:null;
   h+='<div class="row2" style="margin-top:10px"><span>경사→속도 표</span><b style="font-size:.68rem">'+esc(SPEED_TABLE_SRC)+'</b></div>'
@@ -2447,7 +2454,65 @@ function errChart(who){
     h+='<text x="'+(x+(bw-8)/2)+'" y="'+(H+13)+'" font-size="9" text-anchor="middle" fill="var(--soft)">'+(d.getMonth()+1)+'/'+d.getDate()+'</text>'; });
   return h+'</svg>';
 }
+/* ══ DAY 0 날씨 비교 — Open-Meteo 로 그날·그 자리 시간별 날씨를 받아 가민 센서 기온과 겹쳐 그림 ══ */
+var WXD0={cache:{}};
+function wxDay0(){
+  var box=$("wxd0"), st=$("wxd0st"); if(!box||!D0.pts.length||!D0.hasTime) return;
+  var p0=D0.pts[0], p1=D0.pts[D0.pts.length-1], mid=D0.pts[Math.floor(D0.pts.length/2)];
+  var d0=new Date(p0.t), d1=new Date(p1.t);
+  function ds(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+  var key=ds(d0)+"|"+mid.lat.toFixed(2)+","+mid.lon.toFixed(2);
+  var ageD=(Date.now()-p0.t)/86400000;
+  /* 최근 7일은 예보 API(past_days), 더 오래되면 실측 아카이브 */
+  var url = ageD<7
+    ? "https://api.open-meteo.com/v1/forecast?latitude="+mid.lat.toFixed(4)+"&longitude="+mid.lon.toFixed(4)+"&past_days=7&forecast_days=1&hourly=temperature_2m,precipitation,wind_speed_10m,weather_code&timezone=auto"
+    : "https://archive-api.open-meteo.com/v1/archive?latitude="+mid.lat.toFixed(4)+"&longitude="+mid.lon.toFixed(4)+"&start_date="+ds(d0)+"&end_date="+ds(d1)+"&hourly=temperature_2m,precipitation,wind_speed_10m,weather_code&timezone=auto";
+  var draw=function(j){
+    var H=j.hourly, times=H.time.map(function(t){ return Date.parse(t); });
+    var t0=p0.t-3600000, t1=p1.t+3600000, idx=[];
+    times.forEach(function(t,i){ if(t>=t0-1800000 && t<=t1+1800000) idx.push(i); });
+    if(idx.length<2){ st.textContent="그날 자료 없음"; return; }
+    var wT=idx.map(function(i){ return [times[i], H.temperature_2m[i]]; }), wP=idx.map(function(i){ return [times[i], H.precipitation[i]||0]; });
+    var sens=D0.pts.filter(function(q){ return q.tp!=null; }).map(function(q){ return [q.t,q.tp]; });
+    var allT=wT.map(function(x){return x[1];}).concat(sens.map(function(x){return x[1];})).filter(function(v){return v!=null;});
+    var tmin=Math.floor(Math.min.apply(null,allT)-1), tmax=Math.ceil(Math.max.apply(null,allT)+1);
+    var W=360, Hh=150, X0=34, X1=350, Y0=14, Y1=118;
+    var X=function(t){ return X0+(t-t0)/(t1-t0)*(X1-X0); }, Y=function(v){ return Y1-(v-tmin)/(tmax-tmin)*(Y1-Y0); };
+    var svg='<svg viewBox="0 0 '+W+' '+Hh+'" style="width:100%;display:block;background:#fff;border:1px solid var(--line);border-radius:10px">';
+    for(var v=tmin;v<=tmax;v+=Math.max(1,Math.round((tmax-tmin)/5))){ svg+='<line x1="'+X0+'" y1="'+Y(v)+'" x2="'+X1+'" y2="'+Y(v)+'" stroke="#EEE9DA"/><text x="'+(X0-4)+'" y="'+(Y(v)+3)+'" font-size="8" text-anchor="end" fill="#8A8A8A">'+v+'°</text>'; }
+    /* 라이딩 시간대 */
+    svg+='<rect x="'+X(p0.t)+'" y="'+Y0+'" width="'+(X(p1.t)-X(p0.t))+'" height="'+(Y1-Y0)+'" fill="#F5B917" opacity=".12"/>';
+    /* 비 */
+    var pmax=Math.max(0.5,Math.max.apply(null,wP.map(function(x){return x[1];})));
+    wP.forEach(function(x){ if(x[1]>0.05){ var bh=x[1]/pmax*30; svg+='<rect x="'+(X(x[0])-6)+'" y="'+(Y1-bh)+'" width="12" height="'+bh+'" fill="#1E5FB4" opacity=".35"/>'; } });
+    /* 기상 기온 (파랑) */
+    svg+='<polyline fill="none" stroke="#1E5FB4" stroke-width="2" points="'+wT.map(function(x){ return X(x[0])+","+Y(x[1]); }).join(" ")+'"/>';
+    /* 센서 기온 (주황 점선) */
+    if(sens.length){ var step=Math.max(1,Math.floor(sens.length/240)); var pts2=[]; for(var i=0;i<sens.length;i+=step) pts2.push(X(sens[i][0])+","+Y(sens[i][1]));
+      svg+='<polyline fill="none" stroke="#E0670F" stroke-width="2" stroke-dasharray="5 3" points="'+pts2.join(" ")+'"/>'; }
+    /* 시간축 */
+    for(var t=Math.ceil(t0/3600000)*3600000;t<=t1;t+=3600000){ var d=new Date(t); svg+='<text x="'+X(t)+'" y="'+(Y1+12)+'" font-size="8" text-anchor="middle" fill="#8A8A8A">'+d.getHours()+'시</text>'; }
+    svg+='<text x="'+X0+'" y="'+(Hh-3)+'" font-size="8" fill="#1E5FB4">— 기상(Open-Meteo)</text><text x="'+(X0+110)+'" y="'+(Hh-3)+'" font-size="8" fill="#E0670F">- - 자전거 센서</text><text x="'+(X1)+'" y="'+(Hh-3)+'" font-size="8" text-anchor="end" fill="#1E5FB4">▮ 비 mm</text></svg>';
+    /* 요약 */
+    var inRide=wT.filter(function(x){ return x[0]>=p0.t&&x[0]<=p1.t; }).map(function(x){return x[1];});
+    var sv=sens.map(function(x){return x[1];});
+    var avg=function(a){ return a.length?a.reduce(function(p,c){return p+c;},0)/a.length:null; };
+    var wa=avg(inRide), sa=avg(sv);
+    var sum='기상 '+(inRide.length?Math.min.apply(null,inRide).toFixed(1)+'~'+Math.max.apply(null,inRide).toFixed(1)+'° (평균 '+wa.toFixed(1)+'°)':'—')
+      +(sv.length?' · 센서 '+Math.min.apply(null,sv).toFixed(1)+'~'+Math.max.apply(null,sv).toFixed(1)+'° (평균 '+sa.toFixed(1)+'°)':' · 센서 기온 없음')
+      +((wa!=null&&sa!=null)?' · 센서가 '+(sa-wa>=0?'+':'')+(sa-wa).toFixed(1)+'° '+(Math.abs(sa-wa)>2?'— 햇빛·복사열 영향':''):'')
+      +' · 비 '+wP.filter(function(x){return x[0]>=p0.t&&x[0]<=p1.t;}).reduce(function(p,c){return p+c[1];},0).toFixed(1)+' mm';
+    st.textContent=ds(d0)+' · '+mid.lat.toFixed(3)+','+mid.lon.toFixed(3); box.innerHTML=svg+'<div class="d0note" style="margin-top:4px">'+sum+'</div>';
+  };
+  if(WXD0.cache[key]){ draw(WXD0.cache[key]); return; }
+  try{ var c=localStorage.getItem("caminoWxD0:"+key); if(c){ WXD0.cache[key]=JSON.parse(c); draw(WXD0.cache[key]); return; } }catch(e){}
+  fetch(url,{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){
+    WXD0.cache[key]=j; try{ localStorage.setItem("caminoWxD0:"+key, JSON.stringify(j)); }catch(e){}
+    draw(j);
+  }).catch(function(e){ st.textContent="날씨를 못 받았습니다 — "+(e.message||e); });
+}
 function bindDay0Card(){
+  setTimeout(wxDay0, 50);
   VEHICLE="bike";
   on("plogDl","click",plogDownload);
   on("plogClr","click",function(){ if(confirm("예측 로그 "+PLOG.all.length+"회를 지울까요?")){ PLOG.all=[]; plogSave(); renderStats(); } });
