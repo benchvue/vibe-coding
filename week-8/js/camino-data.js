@@ -3323,35 +3323,57 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       : "https://archive-api.open-meteo.com/v1/archive?latitude="+mid.lat.toFixed(4)+"&longitude="+mid.lon.toFixed(4)+"&start_date="+ds(d0)+"&end_date="+ds(d1)+"&hourly=temperature_2m,precipitation,wind_speed_10m,weather_code&timezone=auto";
     return fetch(url,{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){ try{ if(ageD>=1) localStorage.setItem(key,JSON.stringify(j)); }catch(e){} return j; });
   }
+  /* 궤적 누적 km — 시간·센서·고도를 모두 거리 축에 얹기 위해 */
+  function cumKm(pts){ var c=[0]; for(var i=1;i<pts.length;i++) c.push(c[i-1]+hav(pts[i-1],pts[i])/1000); return c; }
+  function kmAtTime(pts, cum, t){
+    if(t<=pts[0].t) return 0; if(t>=pts[pts.length-1].t) return cum[cum.length-1];
+    var lo=0, hi=pts.length-1; while(hi-lo>1){ var m=(lo+hi)>>1; if(pts[m].t<=t) lo=m; else hi=m; }
+    var f=(t-pts[lo].t)/((pts[hi].t-pts[lo].t)||1); return cum[lo]+(cum[hi]-cum[lo])*f;
+  }
   function chart(pts, st, j){
     var H=j.hourly, times=H.time.map(function(t){ return Date.parse(t); });
-    var t0=st.t0-3600000, t1=st.t1+3600000, idx=[];
-    times.forEach(function(t,i){ if(t>=t0-1800000 && t<=t1+1800000) idx.push(i); });
-    if(idx.length<2) return {svg:'<p class="wxnote">그날 날씨 자료가 없습니다</p>', sum:""};
-    var wT=idx.map(function(i){ return [times[i], H.temperature_2m[i]]; }), wP=idx.map(function(i){ return [times[i], H.precipitation[i]||0]; }), wW=idx.map(function(i){ return [times[i], H.wind_speed_10m[i]||0]; });
-    var sens=pts.filter(function(q){ return q.tp!=null&&q.t; }).map(function(q){ return [q.t,q.tp]; });
-    var allT=wT.map(function(x){return x[1];}).concat(sens.map(function(x){return x[1];})).filter(function(v){return v!=null;});
+    var cum=cumKm(pts), total=cum[cum.length-1];
+    /* 라이딩 시간 안의 시간별 날씨만 — 거리 축이라 그 밖은 놓을 자리가 없음 */
+    var wT=[], wP=[], wW=[];
+    times.forEach(function(t,i){ if(t>=st.t0-1800000 && t<=st.t1+1800000){ var k=Math.max(0,Math.min(total,kmAtTime(pts,cum,t)));
+      wT.push([k,H.temperature_2m[i],t]); wP.push([k,H.precipitation[i]||0]); wW.push(H.wind_speed_10m[i]||0); } });
+    if(wT.length<2) return {svg:'<p class="wxnote">그날 날씨 자료가 없습니다</p>', sum:""};
+    var sens=[]; pts.forEach(function(q,i){ if(q.tp!=null) sens.push([cum[i],q.tp]); });
+    var allT=wT.map(function(x){return x[1];}).concat(sens.map(function(x){return x[1];}));
     var tmin=Math.floor(Math.min.apply(null,allT)-1), tmax=Math.ceil(Math.max.apply(null,allT)+1);
-    var W=360, Hh=160, X0=34, X1=350, Y0=14, Y1=124;
-    var X=function(t){ return X0+(t-t0)/(t1-t0)*(X1-X0); }, Y=function(v){ return Y1-(v-tmin)/(tmax-tmin)*(Y1-Y0); };
-    var s='<svg viewBox="0 0 '+W+' '+Hh+'" style="width:100%;display:block;background:#fff;border:1px solid var(--line);border-radius:10px">';
+    var W=360, X0=34, X1=350, X=function(k){ return X0+k/total*(X1-X0); };
+    /* ── 위: 기온·비 ── */
+    var Y0=12, Y1=112, Y=function(v){ return Y1-(v-tmin)/(tmax-tmin)*(Y1-Y0); }, s='';
     for(var v=tmin;v<=tmax;v+=Math.max(1,Math.round((tmax-tmin)/5))) s+='<line x1="'+X0+'" y1="'+Y(v)+'" x2="'+X1+'" y2="'+Y(v)+'" stroke="#EEE9DA"/><text x="'+(X0-4)+'" y="'+(Y(v)+3)+'" font-size="8" text-anchor="end" fill="#8A8A8A">'+v+'°</text>';
-    s+='<rect x="'+X(st.t0)+'" y="'+Y0+'" width="'+(X(st.t1)-X(st.t0))+'" height="'+(Y1-Y0)+'" fill="#F5B917" opacity=".12"/>';
     var pmax=Math.max(0.5,Math.max.apply(null,wP.map(function(x){return x[1];})));
-    wP.forEach(function(x){ if(x[1]>0.05){ var bh=x[1]/pmax*30; s+='<rect x="'+(X(x[0])-6)+'" y="'+(Y1-bh)+'" width="12" height="'+bh+'" fill="#1E5FB4" opacity=".35"/>'; } });
+    wP.forEach(function(x){ if(x[1]>0.05){ var bh=x[1]/pmax*30; s+='<rect x="'+(X(x[0])-5)+'" y="'+(Y1-bh)+'" width="10" height="'+bh+'" fill="#1E5FB4" opacity=".35"/>'; } });
     s+='<polyline fill="none" stroke="#1E5FB4" stroke-width="2" points="'+wT.map(function(x){ return X(x[0])+","+Y(x[1]); }).join(" ")+'"/>';
-    if(sens.length){ var step=Math.max(1,Math.floor(sens.length/240)), pp=[]; for(var i=0;i<sens.length;i+=step) pp.push(X(sens[i][0])+","+Y(sens[i][1]));
+    wT.forEach(function(x){ s+='<circle cx="'+X(x[0])+'" cy="'+Y(x[1])+'" r="2.2" fill="#1E5FB4"/><text x="'+X(x[0])+'" y="'+(Y(x[1])-5)+'" font-size="7" text-anchor="middle" fill="#1E5FB4">'+new Date(x[2]).getHours()+'시</text>'; });
+    if(sens.length){ var step=Math.max(1,Math.floor(sens.length/300)), pp=[]; for(var i=0;i<sens.length;i+=step) pp.push(X(sens[i][0])+","+Y(sens[i][1]));
       s+='<polyline fill="none" stroke="#E0670F" stroke-width="2" stroke-dasharray="5 3" points="'+pp.join(" ")+'"/>'; }
-    for(var t=Math.ceil(t0/3600000)*3600000;t<=t1;t+=3600000) s+='<text x="'+X(t)+'" y="'+(Y1+12)+'" font-size="8" text-anchor="middle" fill="#8A8A8A">'+new Date(t).getHours()+'시</text>';
-    s+='<text x="'+X0+'" y="'+(Hh-3)+'" font-size="8" fill="#1E5FB4">— 기상(Open-Meteo)</text><text x="'+(X0+110)+'" y="'+(Hh-3)+'" font-size="8" fill="#E0670F">- - 자전거 센서</text><text x="'+X1+'" y="'+(Hh-3)+'" font-size="8" text-anchor="end" fill="#1E5FB4">▮ 비</text></svg>';
-    var inR=function(a){ return a.filter(function(x){ return x[0]>=st.t0&&x[0]<=st.t1; }).map(function(x){return x[1];}); };
-    var wr=inR(wT), sv=sens.map(function(x){return x[1];}), ww=inR(wW), avg=function(a){ return a.length?a.reduce(function(p,c){return p+c;},0)/a.length:null; };
+    s+='<text x="'+X0+'" y="'+(Y1+11)+'" font-size="8" fill="#1E5FB4">— 기상 (시각 표시)</text><text x="'+(X0+100)+'" y="'+(Y1+11)+'" font-size="8" fill="#E0670F">- - 자전거 센서</text><text x="'+X1+'" y="'+(Y1+11)+'" font-size="8" text-anchor="end" fill="#1E5FB4">▮ 비</text>';
+    /* ── 아래: 고도 프로파일 ── */
+    var E0=138, E1=208, emin=Infinity, emax=-Infinity; pts.forEach(function(q){ if(q.ele<emin) emin=q.ele; if(q.ele>emax) emax=q.ele; });
+    emin=Math.floor(emin/50)*50; emax=Math.ceil(emax/50)*50; if(emax-emin<100) emax=emin+100;
+    var YE=function(e){ return E1-(e-emin)/(emax-emin)*(E1-E0); };
+    var estep=Math.max(1,Math.floor(pts.length/400)), ep=[]; for(var i=0;i<pts.length;i+=estep) ep.push(X(cum[i])+","+YE(pts[i].ele));
+    ep.push(X(total)+","+YE(pts[pts.length-1].ele));
+    for(var e=emin;e<=emax;e+=Math.max(50,Math.round((emax-emin)/4/50)*50)) s+='<line x1="'+X0+'" y1="'+YE(e)+'" x2="'+X1+'" y2="'+YE(e)+'" stroke="#EEE9DA"/><text x="'+(X0-4)+'" y="'+(YE(e)+3)+'" font-size="8" text-anchor="end" fill="#8A8A8A">'+e+'</text>';
+    s+='<path d="M'+ep[0]+'L'+ep.join("L")+'L'+X(total)+' '+E1+'L'+X0+' '+E1+'Z" fill="#3F5C3A" opacity=".25"/>'
+      +'<polyline fill="none" stroke="#3F5C3A" stroke-width="1.5" points="'+ep.join(" ")+'"/>'
+      +'<text x="'+(X0)+'" y="'+(E0-3)+'" font-size="8" fill="#3F5C3A">고도 m · ↑'+st.asc.toLocaleString()+' ↓'+st.dsc.toLocaleString()+'</text>';
+    /* 거리 축 */
+    var kstep = total>40?10: total>15?5: total>6?2:1;
+    for(var k=0;k<=total;k+=kstep) s+='<line x1="'+X(k)+'" y1="'+E1+'" x2="'+X(k)+'" y2="'+(E1+3)+'" stroke="#8A8A8A"/><text x="'+X(k)+'" y="'+(E1+12)+'" font-size="8" text-anchor="middle" fill="#8A8A8A">'+k+'</text>';
+    s+='<text x="'+X1+'" y="'+(E1+12)+'" font-size="8" text-anchor="end" fill="#8A8A8A">km</text>';
+    var svg='<svg viewBox="0 0 '+W+' 224" style="width:100%;display:block;background:#fff;border:1px solid var(--line);border-radius:10px">'+s+'</svg>';
+    var wr=wT.map(function(x){return x[1];}), sv=sens.map(function(x){return x[1];}), avg=function(a){ return a.length?a.reduce(function(p,c){return p+c;},0)/a.length:null; };
     var wa=avg(wr), sa=avg(sv);
-    var sum='🌡 기상 '+(wr.length?Math.min.apply(null,wr).toFixed(1)+'~'+Math.max.apply(null,wr).toFixed(1)+'° (평균 '+wa.toFixed(1)+'°)':'—')
+    var sum='🌡 기상 '+Math.min.apply(null,wr).toFixed(1)+'~'+Math.max.apply(null,wr).toFixed(1)+'° (평균 '+wa.toFixed(1)+'°)'
       +(sv.length?' · 센서 '+Math.min.apply(null,sv).toFixed(1)+'~'+Math.max.apply(null,sv).toFixed(1)+'° (평균 '+sa.toFixed(1)+'°)':' · 센서 기온 없음')
       +((wa!=null&&sa!=null)?' · 센서 '+(sa-wa>=0?'+':'')+(sa-wa).toFixed(1)+'°'+(Math.abs(sa-wa)>2?' (햇빛·복사열)':''):'')
-      +' · ☔ '+inR(wP).reduce(function(p,c){return p+c;},0).toFixed(1)+' mm'+(ww.length?' · 💨 최대 '+Math.round(Math.max.apply(null,ww))+' km/h':'');
-    return {svg:s, sum:sum};
+      +' · ☔ '+wP.reduce(function(p,c){return p+c[1];},0).toFixed(1)+' mm'+(wW.length?' · 💨 최대 '+Math.round(Math.max.apply(null,wW))+' km/h':'');
+    return {svg:svg, sum:sum};
   }
   function card(r, pts, st){
     var who=WHO[r.owner]||{n:r.owner,c:"#666"};
