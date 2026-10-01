@@ -459,7 +459,7 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:5000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"server", rest:false,
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20260930-40";
+var D0_VER="v20261001-41";
 try{ var _pm=localStorage.getItem("caminoPosMode"); if(_pm==="gps"&&GPS_ENABLED) NAV.posMode="gps"; }catch(e){}
 try{ var _m2=localStorage.getItem("caminoMap2d"); if(_m2==="0") OPT_MAP2D_INIT=false; }catch(e){}
 var OPT_BASE_INIT="map";
@@ -1416,6 +1416,61 @@ function setEco(on){
   sc.globe.showGroundAtmosphere = !OPT.eco;
   sc.postProcessStages.fxaa.enabled = !OPT.eco;
   sc.globe.tileCacheSize = OPT.eco ? 60 : 100;
+}
+/* ══════════ 오프라인 타일 — Service Worker 캐시를 노선 둘레로 미리 채웁니다 ══════════ */
+var TILES={src:"d0", zooms:[13,14,15,16], cache:"camino-tiles-v1", running:false, host:"https://tile.openstreetmap.org"};
+if("serviceWorker" in navigator){ navigator.serviceWorker.register("sw.js",{scope:"./"}).catch(function(e){ console.warn("SW 등록 실패",e); }); }
+function tileXY(lat,lon,z){ var n=Math.pow(2,z), x=Math.floor((lon+180)/360*n), r=lat*Math.PI/180, y=Math.floor((1-Math.log(Math.tan(r)+1/Math.cos(r))/Math.PI)/2*n); return [x,y]; }
+function tileTrack(){
+  if(TILES.src==="d0") return D0.pts.length?D0.pts:null;
+  var d=+($("tileDay")||{}).value||1, D=DATA[d]; return (D&&D.bike)?D.bike:null;
+}
+/* 노선을 100 m 간격으로 찍고, 줌마다 그 타일 + 둘레 1 타일(z16 은 2) */
+function tileList(pts){
+  var set={}, list=[], acc=0;
+  for(var i=0;i<pts.length;i++){
+    if(i>0){ acc+=hav(pts[i-1],pts[i]); if(acc<100) continue; acc=0; }
+    TILES.zooms.forEach(function(z){ var xy=tileXY(pts[i].lat,pts[i].lon,z), r=z>=16?2:1;
+      for(var dx=-r;dx<=r;dx++) for(var dy=-r;dy<=r;dy++){ var k=z+"/"+(xy[0]+dx)+"/"+(xy[1]+dy); if(!set[k]){ set[k]=1; list.push(k); } } });
+  }
+  return list;
+}
+function tileInfo(){
+  var el=$("tileInfo"); if(!el) return;
+  var pts=tileTrack();
+  if(!pts){ el.textContent=TILES.src==="d0"?"DAY 0 궤적이 없습니다":"그 날 노선이 아직 안 읽혔습니다"; return; }
+  var n=tileList(pts).length, mb=(n*18/1024).toFixed(1);
+  var txt="타일 "+n+"장 · 약 "+mb+" MB";
+  if(navigator.storage&&navigator.storage.estimate){ navigator.storage.estimate().then(function(e){
+    el.textContent=txt+" · 쓸 수 있는 공간 "+((e.quota-e.usage)/1048576/1024).toFixed(2)+" GB · 지금 캐시 "+(e.usage/1048576).toFixed(0)+" MB"; }); }
+  else el.textContent=txt;
+  if(!("serviceWorker" in navigator)) el.textContent+=" · 이 브라우저는 오프라인 캐시를 지원하지 않습니다";
+}
+function tilePrefetch(){
+  if(TILES.running) return;
+  var pts=tileTrack(); if(!pts){ alert("받을 궤적이 없습니다"); return; }
+  if(!("caches" in window)){ alert("이 브라우저는 캐시를 지원하지 않습니다"); return; }
+  if(navigator.storage&&navigator.storage.persist) navigator.storage.persist().catch(function(){});
+  var list=tileList(pts), done=0, fail=0, skipped=0, bar=$("tileBar"), msg=$("tileMsg"), go=$("tileGo");
+  TILES.running=true; go.disabled=true; go.textContent="받는 중";
+  caches.open(TILES.cache).then(function(c){
+    var i=0;
+    function next(){
+      if(i>=list.length || !TILES.running){ TILES.running=false; go.disabled=false; go.textContent="받기";
+        msg.textContent="끝 — 받음 "+done+" · 이미 있음 "+skipped+" · 실패 "+fail+" / "+list.length+"장"; tileInfo(); return; }
+      var batch=list.slice(i, i+4); i+=4;
+      Promise.all(batch.map(function(k){ var url=TILES.host+"/"+k+".png";
+        return c.match(url).then(function(hit){ if(hit){ skipped++; return; }
+          return fetch(url,{mode:"cors"}).then(function(r){ if(!r.ok) throw new Error(r.status); return c.put(url, r); }).then(function(){ done++; }); })
+        .catch(function(e){ fail++; if(String(e).indexOf("Quota")>=0){ TILES.running=false; msg.textContent="공간이 부족합니다"; } }); }))
+      .then(function(){ var p=Math.min(100,(i/list.length)*100); bar.style.width=p.toFixed(1)+"%"; msg.textContent=Math.round(p)+" % · 받음 "+done+" · 실패 "+fail; setTimeout(next, 250); });   /* 초당 ~16장 */
+    }
+    next();
+  });
+}
+function tileClear(){
+  if(!confirm("받아 둔 지도 타일을 모두 지울까요?")) return;
+  caches.delete(TILES.cache).then(function(){ $("tileMsg").textContent="지웠습니다"; $("tileBar").style.width="0%"; tileInfo(); });
 }
 /* 바탕 지도 — "map" 은 OpenStreetMap 이 그린 지도, "sat" 은 Cesium ion 위성 사진 */
 function setBase(kind){
@@ -2562,6 +2617,15 @@ function renderCtrl(){
     +'<div class="who mode"><button class="srv'+(NAV.posMode!=="gps"?" on":"")+'" data-mode="server">서버 (OwnTracks · 3분)</button>'
     +'<button class="gps'+(NAV.posMode==="gps"?" on":"")+'" data-mode="gps">폰 GPS (5초)</button></div>' : '')
     +chk("cEco","화면 절전","초당 24프레임 · 해상도 낮춤 · 지형 타일 줄임 — 폰 발열을 크게 줄입니다",OPT.eco,"")
+    +'<div class="grp"><h3>오프라인 타일 (미리 받기)</h3>'
+    +'<div class="legend">Wi-Fi 에서 그날 노선 둘레 1 km 의 OSM 지도 타일(z13~16)을 받아 두면 주행 중 지도 통신이 0 이 되고, 신호 없는 골짜기에서도 지도가 남습니다. 그린 지도(OSM)에만 해당 — 위성·3D 지형은 안 됨.</div>'
+    +'<div class="who mode" id="tileSrc"><button class="on" data-tsrc="d0">DAY 0 궤적</button><button data-tsrc="day">노선 DAY</button></div>'
+    +'<div class="d0row"><select id="tileDay" style="flex:1">'+BIKE_DAYS.map(function(d){ return '<option value="'+d+'">DAY '+d+'</option>'; }).join("")+'</select>'
+    +'<button class="mini play" id="tileGo">받기</button><button class="mini" id="tileClr">지우기</button></div>'
+    +'<div class="row2" style="margin-top:6px"><span id="tileInfo" style="font-size:.7rem;color:var(--soft)">…</span></div>'
+    +'<div class="d0slide" style="margin-top:4px"><div class="bar"><i class="same" id="tileBar" style="width:0%;background:var(--blue)"></i></div></div>'
+    +'<div class="row2"><span id="tileMsg" style="font-size:.7rem;color:var(--soft)"></span></div>'
+    +'</div>'
     +'<div class="row2" style="margin:8px 0 4px"><span>바탕 지도</span></div>'
     +'<div class="who mode"><button class="'+(OPT.base==="map"?" on":"")+'" data-base="map">그린 지도 (OSM)</button>'
     +'<button class="'+(OPT.base==="sat"?" on":"")+'" data-base="sat">위성 사진</button></div>'
@@ -2632,6 +2696,10 @@ function renderCtrl(){
     b.addEventListener("click",function(){ setMap2d(b.dataset.map==="2d"); }); });
   document.querySelectorAll("#ctrl [data-base]").forEach(function(b){
     b.addEventListener("click",function(){ setBase(b.dataset.base); }); });
+  document.querySelectorAll("#tileSrc [data-tsrc]").forEach(function(b){
+    b.addEventListener("click",function(){ TILES.src=b.dataset.tsrc; document.querySelectorAll("#tileSrc button").forEach(function(x){ x.classList.toggle("on",x===b); }); tileInfo(); }); });
+  on("tileDay","change",tileInfo); on("tileGo","click",tilePrefetch); on("tileClr","click",tileClear);
+  tileInfo();
   document.querySelectorAll("#ctrl [data-who]").forEach(function(b){
     b.addEventListener("click",function(){ setWho(b.dataset.who); }); });
   bind("cLive",function(v){
