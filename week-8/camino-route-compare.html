@@ -459,7 +459,7 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:5000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"server", rest:false,
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20261001-41";
+var D0_VER="v20261001-42";
 try{ var _pm=localStorage.getItem("caminoPosMode"); if(_pm==="gps"&&GPS_ENABLED) NAV.posMode="gps"; }catch(e){}
 try{ var _m2=localStorage.getItem("caminoMap2d"); if(_m2==="0") OPT_MAP2D_INIT=false; }catch(e){}
 var OPT_BASE_INIT="map";
@@ -1002,8 +1002,10 @@ function plogOnFix(w, f, h){
     predSpd: pr?+pr.spd.toFixed(2):null, predAhead: pr?+(pr.ahead*1000).toFixed(0):null, mode: pr?pr.mode:null,
     errM:null };
   if(e.fixKm!==null && e.predKm!==null){ e.errM=Math.round(Math.abs(e.fixKm-e.predKm)*1000);
-    var gm=(e.gapS||60)/60;                                            /* 수신 간격으로 가중 — 30초 로그와 60초 로그를 같은 잣대로 */
-    S.sumErrKm+=Math.abs(e.fixKm-e.predKm)*gm; S.sumGapS=(S.sumGapS||0)+(e.gapS||60); S.sumErrGap=(S.sumErrGap||0)+e.errM*(e.gapS||60); }
+    /* 2 km 넘게 뛰면 노선을 잘라 간 것(지름길·구간 생략) — 예측이 알 수 없는 일이라 오차에 안 넣고 "cut" 으로만 남김 */
+    if(e.errM>2000){ e.cut=true; S.cuts=(S.cuts||0)+1; }
+    else { var gm=(e.gapS||60)/60;                                     /* 수신 간격으로 가중 — 30초 로그와 60초 로그를 같은 잣대로 */
+      S.sumErrKm+=Math.abs(e.fixKm-e.predKm)*gm; S.sumGapS=(S.sumGapS||0)+(e.gapS||60); S.sumErrGap=(S.sumErrGap||0)+e.errM*(e.gapS||60); } }
   if(fixKm!==null){ if(S.firstKm===null) S.firstKm=fixKm; S.lastKm=fixKm; S.distKm=Math.max(0,fixKm-S.firstKm); }
   S.fixes.push(e);
   if(S.trackKm && fixKm!==null && fixKm>=S.trackKm*0.99 && !S.done){ S.done=true; plogSummaryToast(); }
