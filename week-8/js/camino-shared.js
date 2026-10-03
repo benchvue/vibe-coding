@@ -298,5 +298,55 @@
     return h+'</svg>';
   };
 
+  /* ── 좌표 읽기 — 두 형식 모두
+       십진수      43.042122,-1.247377   ·  43.042122 -1.247377
+       도분초      43°02'05.45"N 1°13'55.30"W   ·  N43 2 5.45 W1 13 55.3   ·  43°02.091'N
+       구글 지도 주소  …/@43.04,-1.24,17z  ·  ?q=43.04,-1.24
+     돌려주는 값 {lat, lon} · 못 읽으면 {err:"…"} */
+  CS.parseLatLon = function(input){
+    var s=String(input||"").trim(); if(!s) return {err:"좌표를 넣으세요"};
+    var m=s.match(/@(-?\d+\.\d+),\s*(-?\d+\.\d+)/) || s.match(/[?&](?:q|ll|query|center)=(-?\d+\.?\d*),\s*(-?\d+\.?\d*)/);
+    if(m) return fin(+m[1], +m[2]);
+    var t=s.toUpperCase().replace(/[′’‘`´]/g,"'").replace(/[″”“]/g,'"').replace(/''/g,'"').replace(/[º˚]/g,"°");
+    var tok=t.match(/[NSEW]|[-−]?\d+(?:\.\d+)?/g);
+    if(!tok) return {err:"숫자를 찾지 못했습니다"};
+    var groups=[], cur={n:[],h:null}, pre=null;
+    tok.forEach(function(x){
+      if(/^[NSEW]$/.test(x)){
+        if(cur.n.length){ if(!cur.h){ cur.h=x; } else pre=x; groups.push(cur); cur={n:[],h:null}; }
+        else pre=x;
+      }else{
+        if(!cur.n.length && pre){ cur.h=pre; pre=null; }
+        cur.n.push(parseFloat(x.replace("−","-")));
+      }
+    });
+    if(cur.n.length) groups.push(cur);
+    /* 글자 없이 숫자만 4개 · 6개면 반씩 (도분 · 도분초) · 2개면 십진수 */
+    if(groups.length===1 && !groups[0].h && (groups[0].n.length===4||groups[0].n.length===6||groups[0].n.length===2)){
+      var g=groups[0], k=g.n.length/2; groups=[{n:g.n.slice(0,k)},{n:g.n.slice(k)}];
+    }
+    if(groups.length!==2) return {err:"위도와 경도 두 개를 찾지 못했습니다"};
+    var val=function(g){
+      if(g.n.length>3) return NaN;
+      if(g.n[1]!==undefined && g.n[1]>=60) return NaN; if(g.n[2]!==undefined && g.n[2]>=60) return NaN;
+      var neg=g.n[0]<0, v=Math.abs(g.n[0])+(g.n[1]||0)/60+(g.n[2]||0)/3600;
+      if(neg || g.h==="S" || g.h==="W") v=-v; return v; };
+    var A=groups[0], B=groups[1], lat, lon;
+    if(A.h==="E"||A.h==="W"||B.h==="N"||B.h==="S"){ lat=val(B); lon=val(A); } else { lat=val(A); lon=val(B); }
+    return fin(lat, lon);
+    function fin(la, lo){
+      if(!isFinite(la)||!isFinite(lo)) return {err:"분 · 초는 60 보다 작아야 합니다"};
+      if(Math.abs(la)>90) return {err:"위도는 -90 ~ 90"}; if(Math.abs(lo)>180) return {err:"경도는 -180 ~ 180"};
+      return {lat:la, lon:lo};
+    }
+  };
+  CS.fmtDMS = function(lat, lon){
+    var f=function(v, p, n){ var h=v<0?n:p; v=Math.abs(v); var d=Math.floor(v), mm=(v-d)*60, m=Math.floor(mm), sc=(mm-m)*60;
+      if(sc>=59.995){ sc=0; m++; } if(m>=60){ m=0; d++; }
+      return d+"°"+String(m).padStart(2,"0")+"'"+sc.toFixed(2).padStart(5,"0")+'"'+h; };
+    return f(lat,"N","S")+" "+f(lon,"E","W");
+  };
+  CS.fmtDec = function(lat, lon){ return lat.toFixed(6)+","+lon.toFixed(6); };
+
   G.CaminoShared = CS;
 })(window);

@@ -975,15 +975,10 @@
   .wxgrid:has(.wxb.p){grid-template-columns:1fr 1fr 1fr}        /* 출발 · 고개 · 도착 */
   @media(max-width:1100px){ .wxgrid:has(.wxb.p){grid-template-columns:1fr 1fr} }
   @media(max-width:760px){ .wxgrid,.wxgrid:has(.wxb.p){grid-template-columns:1fr} }
-  .comfig{background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 12px 8px;margin:0 0 14px}
-  .comfig svg{width:100%;height:auto;display:block}
-  .comfig figcaption{font-size:.74rem;color:var(--ink-soft);margin-top:6px;line-height:1.5}
   .foodpics{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin:0 0 14px}
   .foodpics figure{margin:0;border-radius:12px;overflow:hidden;background:#F3EFE3;border:1px solid var(--line)}
   .foodpics img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
   .foodpics figcaption{font-size:.72rem;padding:6px 8px;color:var(--ink-soft)}
-  .d0card .wxh small{display:block;font-weight:400;color:var(--ink-soft);margin-top:2px}
-  .d0chart{margin:6px 0}
   .wxrain b{color:#1E5FB4} .wxwind b{color:#3F5C3A} .wxwind i{font-style:normal;color:#D97706;font-size:.7rem}
   /* 앞으로 7일 띠 */
   .wx7{background:#fff;border:1px dashed var(--line);border-radius:12px;padding:8px 10px}
@@ -2290,18 +2285,6 @@
 
 <!-- ───────── Ⅲ. 날짜별 카드 ───────── -->
 <div class="daynav" id="dayNavHost"></div>
-<!-- ───────── DAY 0 시험 주행 ───────── -->
-<section id="secDay0" style="padding-top:22px">
-  <div class="wrap">
-    <div class="sec-head">
-      <div class="no">Prueba</div>
-      <h2>DAY 0 · 시험 주행</h2>
-      <p class="lead">출발 전 미국(BIN)·한국(JIN)에서 탄 기록. 업로드 페이지 🚴 탭에서 DAY 0 로 올리면 여기에 그날 날씨와 자전거 센서 기온이 함께 나옵니다. 사람마다 최근 3회.</p>
-    </div>
-    <div class="wxgrid" id="day0wx"><p class="wxload">DAY 0 기록을 읽는 중…</p></div>
-  </div>
-</section>
-
 <section id="sec3" style="padding-top:22px">
   <div class="wrap">
     <div class="sec-head">
@@ -3299,229 +3282,6 @@
   </div>
 </section>
 
-<!-- ───────── 인터콤 ───────── -->
-<section id="secCom" style="padding-top:0">
-  <div class="wrap">
-    <div class="sec-head">
-      <div class="no">Intercomunicador</div>
-      <h2>인터콤 — Sena BiKom 20 듀얼팩</h2>
-      <p class="lead">Jin 이 산 헬멧 인터콤. 800 m 안에서 서로 말하고, 폰과 이어 전화·음악·음성 안내를 듣습니다. 20 g · IPX7 · 통화 8시간 · 충전 2.5시간.
-      아래는 <a href="https://static.senakorea.kr/docs/ug/UserGuide_BiKom_20_1.2.1_Kr_PB08.pdf" target="_blank" rel="noopener">한국어 매뉴얼</a>과 영문 1.3 매뉴얼을 우리 용도로 정리한 것입니다.</p>
-    </div>
-
-    <h3 class="gh3">어디에 무엇이 있나</h3>
-    <div class="comfig">
-      <svg viewBox="0 0 640 360" role="img" aria-label="BiKom 20 각 부분">
-        <defs>
-          <linearGradient id="bkBody" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F4F1EA"/><stop offset="1" stop-color="#C9C4B6"/></linearGradient>
-          <marker id="bkArr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#152A55"/></marker>
-        </defs>
-        <!-- 본체 (옆에서 본 모양, 살짝 기울임) -->
-        <g transform="translate(300 40) rotate(8)">
-          <rect x="0" y="0" width="92" height="190" rx="22" fill="url(#bkBody)" stroke="#8E8A7E" stroke-width="2"/>
-          <text x="46" y="122" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#5B5750" text-anchor="middle" transform="rotate(90 46 100)">BiKom</text>
-          <!-- 왼쪽 옆면 단추 세 개 -->
-          <rect x="-8" y="34" width="14" height="30" rx="5" fill="#3B3F47"/>
-          <rect x="-8" y="74" width="14" height="42" rx="5" fill="#1E5FB4"/>
-          <rect x="-8" y="126" width="14" height="30" rx="5" fill="#3B3F47"/>
-          <text x="-1" y="53" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">+</text>
-          <text x="-1" y="145" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">−</text>
-          <!-- LED -->
-          <circle cx="76" cy="14" r="4" fill="#1E7A46"/>
-          <!-- 마이크 팔 -->
-          <path d="M60 178 Q40 250 -40 300" fill="none" stroke="#3B3F47" stroke-width="9" stroke-linecap="round"/>
-          <ellipse cx="-44" cy="303" rx="15" ry="11" fill="#6B7280"/>
-          <!-- USB-C -->
-          <rect x="30" y="184" width="30" height="10" rx="5" fill="#2A2E36"/>
-          <rect x="35" y="187" width="20" height="4" rx="2" fill="#9AA0A8"/>
-        </g>
-        <!-- 라벨 (왼쪽) -->
-        <g font-family="'IBM Plex Sans KR', sans-serif" fill="#152A55">
-          <line x1="150" y1="88" x2="292" y2="88" stroke="#152A55" stroke-width="1.5" marker-end="url(#bkArr)"/>
-          <text x="20" y="84" font-size="14" font-weight="700">① (+) 소리 크게</text>
-          <text x="20" y="102" font-size="11" fill="#6B7280">1초: 다음 곡 · 3초: 단축 다이얼</text>
-
-          <line x1="150" y1="138" x2="292" y2="138" stroke="#152A55" stroke-width="1.5" marker-end="url(#bkArr)"/>
-          <text x="20" y="134" font-size="14" font-weight="700" fill="#1E5FB4">② 가운데 — 거의 모든 것</text>
-          <text x="20" y="152" font-size="11" fill="#6B7280">탭: 인터콤 켜기/끄기 · 전화 받기</text>
-          <text x="20" y="166" font-size="11" fill="#6B7280">두 번 탭: 채널 · 3초: Siri / 오픈↔그룹</text>
-          <text x="20" y="180" font-size="11" fill="#6B7280">5초: 폰 페어링 · 그룹 만들기 · 8초: 메시 리셋</text>
-
-          <line x1="150" y1="212" x2="292" y2="200" stroke="#152A55" stroke-width="1.5" marker-end="url(#bkArr)"/>
-          <text x="20" y="214" font-size="14" font-weight="700">③ (−) 소리 작게</text>
-          <text x="20" y="232" font-size="11" fill="#6B7280">1초: 이전 곡</text>
-
-          <line x1="150" y1="300" x2="248" y2="300" stroke="#152A55" stroke-width="1.5" marker-end="url(#bkArr)"/>
-          <text x="20" y="296" font-size="14" font-weight="700">⑥ 마이크 팔</text>
-          <text x="20" y="314" font-size="11" fill="#6B7280">위로 접으면 "Mic off" · 내리면 "Mic on"</text>
-          <text x="20" y="328" font-size="11" fill="#6B7280">입 앞 2~3 cm · 스폰지 끼우기</text>
-        </g>
-        <!-- 라벨 (오른쪽) -->
-        <g font-family="'IBM Plex Sans KR', sans-serif" fill="#152A55">
-          <line x1="500" y1="56" x2="395" y2="52" stroke="#152A55" stroke-width="1.5" marker-end="url(#bkArr)"/>
-          <text x="505" y="52" font-size="14" font-weight="700">④ 상태 · 충전 LED</text>
-          <text x="505" y="70" font-size="11" fill="#6B7280">충전 중 빨강 · 완충 파랑</text>
-          <text x="505" y="84" font-size="11" fill="#6B7280">페어링 중 빨강·파랑 깜빡</text>
-
-          <line x1="500" y1="240" x2="372" y2="230" stroke="#152A55" stroke-width="1.5" marker-end="url(#bkArr)"/>
-          <text x="505" y="236" font-size="14" font-weight="700">⑤ USB-C 충전</text>
-          <text x="505" y="254" font-size="11" fill="#6B7280">2.5시간 완충 · 0~45 °C 에서만</text>
-          <text x="505" y="268" font-size="11" fill="#6B7280">비 온 뒤엔 마른 다음 꽂기</text>
-        </g>
-        <!-- 켜기·끄기 상자 -->
-        <g transform="translate(410 300)">
-          <rect x="0" y="0" width="215" height="48" rx="10" fill="#FFF3C4" stroke="#F5B917"/>
-          <text x="10" y="19" font-family="'IBM Plex Sans KR', sans-serif" font-size="12" font-weight="700" fill="#3B2E00">켜기: ② + ① 같이 1초 → "Hello"</text>
-          <text x="10" y="37" font-family="'IBM Plex Sans KR', sans-serif" font-size="12" font-weight="700" fill="#3B2E00">끄기: ② + ① 같이 한 번 탭 → "Good-bye"</text>
-        </g>
-      </svg>
-      <figcaption>헬멧 왼쪽 턱끈에 달았을 때 안쪽에서 본 모양. 단추 셋이 세로로 나란히 — 위 (+) · 가운데 · 아래 (−). 가운데만 파랗게 튀어나와 장갑 끼고도 손끝으로 찾습니다.</figcaption>
-    </div>
-
-    <h3 class="gh3">단추 세 개로 다 합니다</h3>
-    <div class="sched-wrap">
-      <table class="sched qtab" style="min-width:560px">
-        <thead><tr><th>할 일</th><th>조작</th><th>들리는 말</th></tr></thead>
-        <tbody>
-          <tr><td>켜기 / 끄기</td><td><b>가운데 + (+)</b> 1초 / 두 개 한 번 탭</td><td>"Hello" / "Good-bye"</td></tr>
-          <tr><td>소리 크기</td><td>(+) 또는 (−) 한 번</td><td></td></tr>
-          <tr><td><b>폰 페어링</b></td><td>가운데 <b>5초</b> → 폰 블루투스에서 <b>BiKom 20</b> 선택</td><td>"Phone pairing" → "Phone connected"</td></tr>
-          <tr><td><b>인터콤 켜기 / 끄기</b></td><td>가운데 <b>한 번 탭</b></td><td>"Mesh Intercom on, Open Mesh, channel 1" / "Mesh intercom off"</td></tr>
-          <tr><td>채널 바꾸기</td><td>가운데 두 번 탭 → (+)(−) 로 고르고 → 가운데 탭 (10초 두면 자동 저장)</td><td>"Channel setting, 1" → "Channel is set, channel 3"</td></tr>
-          <tr><td><b>둘만의 그룹 만들기</b></td><td>두 사람 다 가운데 <b>5초</b> (30초 안에)</td><td>"Mesh grouping" → "Group Mesh"</td></tr>
-          <tr><td>오픈 ↔ 그룹 전환</td><td>가운데 3초</td><td>"Open Mesh" / "Group Mesh"</td></tr>
-          <tr><td>마이크 끄기 / 켜기</td><td>마이크 팔을 <b>위로 접기 / 내리기</b></td><td>"Mic off" / "Mic on"</td></tr>
-          <tr><td>전화 받기 / 끊기 / 거절</td><td>가운데 탭 / 2초 / 2초</td><td></td></tr>
-          <tr><td>Siri 부르기</td><td>가운데 3초</td><td></td></tr>
-          <tr><td>음악 재생·정지 / 곡 넘기기</td><td>가운데 1초 / (+)(−) 1초</td><td></td></tr>
-          <tr><td>메시 초기화 (엉켰을 때)</td><td>가운데 8초 → 오픈 메시 채널 1 로 돌아감</td><td>"Reset Mesh"</td></tr>
-          <tr><td>먹통일 때</td><td>충전선 뽑고 (+) + 가운데 8초 (설정 유지)</td><td></td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <h3 class="gh3">처음 한 번 — 집에서 해 둘 것</h3>
-    <div class="sched-wrap">
-      <table class="sched" style="min-width:560px">
-        <tbody>
-          <tr><td style="width:44px">①</td><td><b>Sena Cycling 앱</b> 설치(App Store) → 기기 등록 → <b>펌웨어 업데이트</b> (OTA). 두 대 모두. 앱에서 단축 다이얼·메시 2.0/3.0 전환도 합니다</td></tr>
-          <tr><td>②</td><td>USB-C 로 <b>완충</b> (2.5시간). 충전은 0~45 °C 에서만 — 뜨거운 자전거 가방 안 충전 금지</td></tr>
-          <tr><td>③</td><td>헬멧 턱끈 굵기에 맞는 <b>스트랩 마운트</b>(두꺼운 것·얇은 것 동봉)로 왼쪽 끈에. 마이크 팔이 입 앞 2~3 cm 에 오게, 스폰지 끼우기. 모자엔 클립 마운트</td></tr>
-          <tr><td>④</td><td>각자 <b>자기 폰과 페어링</b> (가운데 5초). 폰 블루투스 이름 <b>BiKom 20</b>. 한 대에 폰 하나만</td></tr>
-          <tr><td>⑤</td><td>둘 다 켜고 가운데 한 번 탭 → "Mesh Intercom on, channel 1" — 이대로 서로 들리면 끝. 순례길엔 세나 쓰는 사람이 많으니 <b>그룹 메시</b>(둘 다 5초)를 한 번 만들어 두면 남이 안 들어옵니다. 그룹은 껐다 켜도 남습니다</td></tr>
-          <tr><td>⑥</td><td>동네에서 한 바퀴 — 800 m 는 <b>개활지</b> 값. 마을 골목·숲에선 200~300 m 로 봅니다. 뒤처지면 소리가 끊기고 다시 붙으면 자동 복귀</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <h3 class="gh3">연결 구조 — 인터콤 · 음성 안내 · 실시간 위치가 어떻게 얽히나</h3>
-    <div class="comfig">
-      <svg viewBox="0 0 720 400" role="img" aria-label="연결 구조도">
-        <defs>
-          <marker id="cxA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#152A55"/></marker>
-          <marker id="cxB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#7A5EA8"/></marker>
-        </defs>
-        <g font-family="'IBM Plex Sans KR', sans-serif">
-          <!-- 사람 둘 -->
-          <g id="bin">
-            <rect x="30" y="60" width="130" height="150" rx="14" fill="#EAF1FB" stroke="#1E5FB4" stroke-width="2"/>
-            <text x="95" y="84" text-anchor="middle" font-size="15" font-weight="700" fill="#1E5FB4">BIN</text>
-            <rect x="52" y="96" width="86" height="40" rx="8" fill="#fff" stroke="#8E8A7E"/>
-            <text x="95" y="112" text-anchor="middle" font-size="11" font-weight="700" fill="#152A55">iPhone</text>
-            <text x="95" y="127" text-anchor="middle" font-size="9.5" fill="#6B7280">비교 페이지 · OwnTracks</text>
-            <rect x="52" y="152" width="86" height="40" rx="8" fill="#fff" stroke="#8E8A7E"/>
-            <text x="95" y="168" text-anchor="middle" font-size="11" font-weight="700" fill="#152A55">BiKom 20</text>
-            <text x="95" y="183" text-anchor="middle" font-size="9.5" fill="#6B7280">헬멧</text>
-            <!-- 폰 ↔ 헤드셋 블루투스 -->
-            <path d="M95 136V152" stroke="#1E5FB4" stroke-width="2.5" stroke-dasharray="4 3"/>
-            <text x="142" y="147" font-size="9.5" fill="#1E5FB4">BT: 안내음성·전화</text>
-          </g>
-          <g id="jin">
-            <rect x="560" y="60" width="130" height="150" rx="14" fill="#FBEAEA" stroke="#C92A2A" stroke-width="2"/>
-            <text x="625" y="84" text-anchor="middle" font-size="15" font-weight="700" fill="#C92A2A">JIN</text>
-            <rect x="582" y="96" width="86" height="40" rx="8" fill="#fff" stroke="#8E8A7E"/>
-            <text x="625" y="112" text-anchor="middle" font-size="11" font-weight="700" fill="#152A55">iPhone</text>
-            <text x="625" y="127" text-anchor="middle" font-size="9.5" fill="#6B7280">비교 페이지 · OwnTracks</text>
-            <rect x="582" y="152" width="86" height="40" rx="8" fill="#fff" stroke="#8E8A7E"/>
-            <text x="625" y="168" text-anchor="middle" font-size="11" font-weight="700" fill="#152A55">BiKom 20</text>
-            <text x="625" y="183" text-anchor="middle" font-size="9.5" fill="#6B7280">헬멧</text>
-            <path d="M625 136V152" stroke="#C92A2A" stroke-width="2.5" stroke-dasharray="4 3"/>
-            <text x="470" y="147" font-size="9.5" fill="#C92A2A">BT: 안내음성·전화</text>
-          </g>
-          <!-- 메시 인터콤 (헤드셋 ↔ 헤드셋 직접) -->
-          <path d="M140 172 Q360 300 580 172" fill="none" stroke="#7A5EA8" stroke-width="4"/>
-          <text x="360" y="252" text-anchor="middle" font-size="12" font-weight="700" fill="#7A5EA8">메시 인터콤 3.0 — 헤드셋끼리 직접 · 800 m (마을·숲 200~300 m)</text>
-          <text x="360" y="268" text-anchor="middle" font-size="10" fill="#7A5EA8">폰·인터넷과 무관 · 그룹 메시로 둘만</text>
-          <!-- 서버 경로 -->
-          <rect x="255" y="20" width="210" height="72" rx="12" fill="#FFF8E6" stroke="#F5B917" stroke-width="2"/>
-          <text x="360" y="42" text-anchor="middle" font-size="12" font-weight="700" fill="#3B2E00">Cloudflare Worker → 앱스 스크립트</text>
-          <text x="360" y="60" text-anchor="middle" font-size="10" fill="#6B7280">OwnTracks 30~180초마다 위치 (LTE/5G)</text>
-          <text x="360" y="76" text-anchor="middle" font-size="10" fill="#6B7280">두 페이지가 15초마다 읽어 서로 위치 표시</text>
-          <path d="M138 100 C 200 60, 220 56, 252 56" fill="none" stroke="#152A55" stroke-width="1.6" marker-end="url(#cxA)"/>
-          <path d="M582 100 C 520 60, 500 56, 468 56" fill="none" stroke="#152A55" stroke-width="1.6" marker-end="url(#cxA)"/>
-          <path d="M252 70 C 220 70, 200 90, 140 116" fill="none" stroke="#152A55" stroke-width="1.6" stroke-dasharray="3 3" marker-end="url(#cxA)"/>
-          <path d="M468 70 C 500 70, 520 90, 580 116" fill="none" stroke="#152A55" stroke-width="1.6" stroke-dasharray="3 3" marker-end="url(#cxA)"/>
-          <!-- 세 층 요약 -->
-          <g transform="translate(30 300)">
-            <rect x="0" y="0" width="660" height="82" rx="12" fill="#F7F5EE" stroke="#D8D3C4"/>
-            <text x="14" y="20" font-size="11.5" font-weight="700" fill="#7A5EA8">① 보라 — 목소리.</text><text x="132" y="20" font-size="11" fill="#3B3F47">헤드셋 둘 사이 직접. 신호 없어도 됨. 800 m 넘게 떨어지면 끊겼다가 다시 붙음.</text>
-            <text x="14" y="42" font-size="11.5" font-weight="700" fill="#1E5FB4">② 파랑·빨강 점선 — 내 폰 → 내 헤드셋.</text><text x="262" y="42" font-size="11" fill="#3B3F47">비교 페이지의 명소·회전 음성, 전화. 각자 자기 것만.</text>
-            <text x="14" y="64" font-size="11.5" font-weight="700" fill="#3B2E00">③ 검정 — 위치.</text><text x="118" y="64" font-size="11" fill="#3B3F47">OwnTracks → 서버 → 두 페이지. 상대가 어디쯤인지 지도에. 목소리와는 별개 경로.</text>
-          </g>
-        </g>
-      </svg>
-      <figcaption>세 경로는 서로 독립입니다. 인터넷이 끊겨도 ①은 되고, 헤드셋을 안 써도 ③은 됩니다. ②와 ①이 한 헤드셋에서 만나는 것이 유일한 겹침이라 아래 "동시에 되나"가 문제가 됩니다.</figcaption>
-    </div>
-
-    <h3 class="gh3">Jin 이 한국에서 혼자 시험하는 순서</h3>
-    <div class="sched-wrap">
-      <table class="sched" style="min-width:560px">
-        <tbody>
-          <tr><td style="width:44px">①</td><td><b>인터콤만</b> — 듀얼팩이니 두 대를 다 켜고 그룹 메시 → 한 대는 헬멧, 한 대는 책상에 두고 다른 방에서 "들려?" 이 단계에서 폰은 필요 없습니다</td></tr>
-          <tr><td>②</td><td><b>폰 + 헤드셋만</b> — 헬멧 것을 폰과 페어링 → 비교 페이지 DAY 0 시험 주행 20× + 음성 안내 켜기 → 명소 음성이 헤드셋으로 나오는지. 이때 인터콤은 꺼 둠 (가운데 탭 → "Mesh intercom off")</td></tr>
-          <tr><td>③</td><td><b>둘 다 켜고</b> — 인터콤 켜서 책상 것에서 말소리를 흘려 두고(라디오 틀어 두면 됨), 동시에 ②를 반복 → <b>말소리 나는 동안 명소 음성이 같이 들리는가</b>. 이게 위 질문의 답입니다</td></tr>
-          <tr><td>④</td><td><b>실주행</b> — 헬멧 쓰고 동네 한 바퀴: OwnTracks Move + 비교 페이지 실시간 위치 + 인터콤 켠 채. 집에서 Bin 이 Jin 위치를 페이지로 보며 카톡으로 "지금 어디 보임" 맞춰 보기</td></tr>
-          <tr><td>⑤</td><td>③의 결과를 카톡으로 → 이 페이지의 "동시에 되나" 문장을 확정으로 바꿉니다</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <h3 class="gh3">비교 페이지 음성 안내를 들으면서 둘이 통화할 수 있나</h3>
-    <div class="note">
-      <b>짧은 답: 통화는 됩니다. 안내 음성이 통화 중에도 같이 들리느냐는 확인이 필요합니다.</b><br>
-      · 인터콤(메시)은 <b>기기끼리 직접</b> 이어지는 것이라 폰과 무관합니다. 폰이 아이폰이든, 페이지가 떠 있든 상관없이 둘이 말할 수 있습니다.<br>
-      · 비교 페이지의 명소 안내는 아이폰의 TTS 가 <b>블루투스 음악 채널(A2DP)</b>로 헤드셋에 갑니다. 폰과 페어링만 돼 있으면 사파리 소리가 헤드셋으로 나옵니다.<br>
-      · 문제는 <b>둘이 동시에 날 때</b>입니다. 세나 기기는 우선순위가 <b>전화 &gt; 인터콤 &gt; 음악·안내</b> 라, 모델에 따라 인터콤이 켜져 있는 동안 음악 채널을 <b>섞어 주는 것(Audio Multitasking)</b>과 <b>잠시 끊는 것</b>이 있습니다. BiKom 20 매뉴얼(1.3)에는 이 항목이 없어서 어느 쪽인지 적혀 있지 않습니다.
-    </div>
-    <div class="sched-wrap" style="margin-top:8px">
-      <table class="sched" style="min-width:560px">
-        <thead><tr><th style="width:44px"></th><th>확인 방법 (동네에서 10분)</th></tr></thead>
-        <tbody>
-          <tr><td>①</td><td>둘 다 인터콤 켜고 대화 중 → 한 사람 폰에서 비교 페이지 <b>DAY 0 시험 주행 20×</b> + 음성 안내 켜기</td></tr>
-          <tr><td>②</td><td><b>말하는 동안</b> 안내 음성이 같이 들리면 → 섞어 줌. 그대로 쓰면 됩니다</td></tr>
-          <tr><td>③</td><td>말할 때 안내가 끊기고 <b>조용해지면 다시 나오면</b> → 우선순위형. 그래도 대화 사이사이엔 안내가 들리니 실용적으로는 씁니다. 300 m 알림을 놓칠 수 있으니 화면 띠도 같이 봅니다</td></tr>
-          <tr><td>④</td><td>인터콤 켜져 있는 동안 <b>안내가 아예 안 나오면</b> → 아래 대안</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="bgnote">
-      <b>대안 (④ 일 때)</b>
-      · 안내 음성은 <b>폰 스피커</b>(거치대)로, 인터콤은 헤드셋으로 — 폰 설정에서 사파리 오디오 출력을 폰으로 두면 됩니다 (제어센터 → 재생 중 → 출력).<br>
-      · 또는 평소엔 인터콤을 <b>꺼 두고</b>(안내 들림) 말할 때만 가운데 한 번 탭으로 켜기. 마이크 팔 접기는 인터콤을 끄는 게 아니라 내 소리만 끄는 것이라 안내엔 도움이 안 됩니다.<br>
-      · 전화는 어느 경우든 최우선이라 인터콤·안내를 끊고 들어옵니다.
-    </div>
-
-    <h3 class="gh3">여행 중 습관</h3>
-    <div class="note">
-      · <b>저녁마다 충전</b> — 통화 8시간이라 하루는 버티지만 여유가 없습니다. 보조배터리와 USB-C 짧은 선 하나.<br>
-      · 아침에 켜면 "Phone connected" 확인, 인터콤 탭 → 서로 "들려?" 한 마디. 안 들리면 8초 리셋 → 채널 1 → 다시 그룹.<br>
-      · 오르막에서 숨차면 마이크 팔 접기 — 상대에게 숨소리 안 감.<br>
-      · 비 오면 그대로 써도 됩니다(IPX7). 충전 단자만 마르고 나서 꽂기.<br>
-      · 세관·항공: 기내 반입 배터리 문제없음(소형). 두 대 다 기내 가방에.
-    </div>
-  </div>
-</section>
-
 <!-- ───────── 비용 ───────── -->
 <section id="secX" style="padding-top:0">
   <div class="wrap">
@@ -4255,7 +4015,6 @@
     <a href="#top">⬆ 맨 위로</a>
     <a href="#sec1">Ⅰ · 고도 프로필</a>
     <a href="#sec2">Ⅱ · 일정 한눈에</a>
-    <a href="#secDay0">🧪 DAY 0 시험 주행</a>
     <a href="#sec3">Ⅲ · 날짜별 카드 (D1~D13)</a>
     <a href="#secL">숙소 · 예약 현황</a>
     <a href="#secS">산티아고 도착</a>
@@ -4263,7 +4022,6 @@
     <a href="#secB">자전거 — 대여 또는 구입</a>
     <a href="#secG">GPS 기기에 넣기 (Edge · Connect)</a>
     <a href="#secFood">🍽 길 위의 음식 (Comida)</a>
-    <a href="#secCom">🎧 인터콤 · Sena BiKom 20</a>
     <a href="#secX">💶 비용 (Gastos)</a>
     <a href="#secP">📕 디지털 순례자 여권</a>
     <a href="#sec4">Ⅳ · 파리 → 생장 기차</a>
@@ -4364,9 +4122,14 @@
 
 
 
-<script src="js/camino-ui.js?v=20260930d" defer></script>
-<script src="js/camino-data.js?v=20260930d" defer></script>
-<script src="js/camino-live.js?v=20260930d" defer></script>
+<script src="js/camino-ui.js" defer></script>
+<script src="js/camino-data.js" defer></script>
+<script src="js/camino-live.js" defer></script>
+<!-- DAY 0 (BIN · JIN) 시험 주행 카드 — 날짜별 상세 카드 맨 앞. 비교하기와 저장소를 함께 씁니다 -->
+<script src="js/camino-shared.js" defer></script>
+<script src="js/camino-day0.js" defer></script>
+<!-- 좌표로 가서 위성 사진 보기 (왼쪽 아래 📍 단추 · 주소 ?goto=위도,경도) -->
+<script src="js/camino-goto.js" defer></script>
 </body>
 
 </html>
