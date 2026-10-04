@@ -226,10 +226,11 @@
     background:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.7);border-radius:14px;
     padding:6px 10px 5px;box-shadow:0 2px 12px rgba(21,42,85,.18);backdrop-filter:blur(6px)}
   .hud-bot.hide{display:none}
-  .hud-src{display:flex;gap:6px;margin-bottom:4px}
-  .hud-src button{flex:1;border:1px solid var(--line);background:#fff;border-radius:8px;
-    padding:6px 4px;font-size:.72rem;font-weight:600;color:var(--soft);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .hud-src #hsrc0{flex:0 0 40%} .hud-src #hsrcL{flex:1 1 60%}          /* 왼쪽 40 % · 오른쪽 60 % */
+  /* 출처 단추 세 개 — 같은 폭으로 한 줄에. 글이 길면 … 로 줄임
+     (10/4: "실시간 위치 · 15시간 전 (…)" 이 길어 폰 GPS 단추가 화면 밖으로 밀려났음) */
+  .hud-src{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:4px}
+  .hud-src button{min-width:0;border:1px solid var(--line);background:#fff;border-radius:8px;padding:9px 4px;
+    font-size:.8rem;font-weight:700;color:var(--ink);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .hud-src button.on{background:var(--blue);color:#fff;border-color:var(--blue)}
   .hud-stat{font-size:.68rem;color:var(--ink);font-variant-numeric:tabular-nums;text-align:center;padding:1px 0 2px;min-height:1em}
   .hud-stat:empty{display:none}
@@ -424,9 +425,9 @@
   <div class="hud-bot hide" id="hbot">
     <div class="hud-rest" id="hrestrow"><button id="hrest" type="button">☕ 휴식 — 예측 멈춤</button></div>
     <div class="hud-src">
-      <button data-src="day0" id="hsrc0">DAY 0 시험 주행</button>
+      <button data-src="day0" id="hsrc0">DAY 0 시험</button>
       <button data-src="live" id="hsrcL">실시간 위치</button>
-      <button data-src="gps" id="hsrcG">폰 GPS</button>
+      <button data-src="gps" id="hsrcG">📍 폰 GPS</button>
     </div>
     <div class="hud-stat" id="hstat"></div>
     <div class="hud-play" id="hplay">
@@ -478,7 +479,7 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:2000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"gps",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20261004-40";
+var D0_VER="v20261004-41";
 var CS=window.CaminoShared||null;   /* js/camino-shared.js — 없으면 예전 방식대로 */
 try{ var _pm=localStorage.getItem("caminoPosMode"); if(_pm==="server") NAV.posMode="server"; if(!GPS_ENABLED) NAV.posMode="server"; }catch(e){}
 try{ var _m2=localStorage.getItem("caminoMap2d"); if(_m2==="0") OPT_MAP2D_INIT=false; }catch(e){}
@@ -1591,7 +1592,7 @@ function syncHud(){
   $("hsrcG").style.display = GPS_ENABLED ? "" : "none";
   $("hsrcG").classList.toggle("on",NAV.src==="gps");
   $("hsrc0").classList.toggle("on",NAV.src==="day0");
-  $("hsrc0").textContent=(D0.day?"DAY "+D0.day+" 노선 재생":"DAY 0 시험 주행");
+  $("hsrc0").textContent=(D0.day?"DAY "+D0.day+" 재생":"DAY 0 시험");
   $("hsrcL").classList.toggle("on",NAV.src==="live");
   hudLiveLabel(); restUI();
   $("hplay").style.display = NAV.src==="day0" ? "" : "none";
@@ -1612,8 +1613,12 @@ function syncD0UI(light){
 var _hudLbl="";
 function hudLiveLabel(){
   var b=$("hsrcL"); if(!b) return;
-  var lv=LIVE[NAV.who], t="실시간 위치"+(lv&&lv.at?" · "+agoText(lv.at):"");
+  var lv=LIVE[NAV.who], t="서버"+(lv&&lv.at?" · "+agoText(lv.at).replace(/\s*\(.*$/,""):"");
   if(t!==_hudLbl){ _hudLbl=t; b.textContent=t; }
+  /* 폰 GPS 단추에 상태 — 켜져 있으면 정확도, 문제가 있으면 짧게 */
+  var g=$("hsrcG"); if(g){ var gt="📍 폰 GPS";
+    if(NAV.src==="gps"){ if(GPS.err) gt="⚠ GPS 권한"; else if(GPS.fix) gt="📍 GPS ±"+Math.round(GPS.fix.acc||0)+"m"; else gt="📍 GPS 찾는 중"; }
+    if(g.textContent!==gt) g.textContent=gt; }
 }
 function setupHud(){
   document.querySelectorAll("#hud [data-who]").forEach(function(b){
