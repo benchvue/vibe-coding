@@ -192,7 +192,7 @@
   #hud{display:none;position:absolute;inset:0;z-index:40;pointer-events:none}
   body.navmode #hud{display:block}
   #hud > *{pointer-events:auto}
-  .hud-top{position:absolute;left:10px;right:10px;top:max(10px,env(safe-area-inset-top));
+  .hud-top{position:absolute;left:10px;right:10px;top:max(2px,env(safe-area-inset-top));
     display:flex;align-items:stretch;gap:8px}
   .hud-who{display:flex;border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(21,42,85,.18);
     border:1px solid rgba(255,255,255,.7)}
@@ -222,9 +222,9 @@
   .hud-zoom button:disabled{opacity:.35}
   .hud-zoom small{text-align:center;font-size:.66rem;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.6);
     font-variant-numeric:tabular-nums}
-  .hud-bot{position:absolute;left:10px;right:10px;bottom:max(8px,env(safe-area-inset-bottom));
-    background:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.7);border-radius:14px;
-    padding:6px 10px 5px;box-shadow:0 2px 12px rgba(21,42,85,.18);backdrop-filter:blur(6px)}
+  .hud-bot{position:absolute;left:0;right:0;bottom:env(safe-area-inset-bottom,0px);
+    background:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.7);border-radius:14px 14px 0 0;
+    padding:5px 8px 3px;box-shadow:0 2px 12px rgba(21,42,85,.18);backdrop-filter:blur(6px)}
   .hud-bot.hide{display:none}
   /* 출처 단추 세 개 — 같은 폭으로 한 줄에. 글이 길면 … 로 줄임
      (10/4: "실시간 위치 · 15시간 전 (…)" 이 길어 폰 GPS 단추가 화면 밖으로 밀려났음) */
@@ -242,7 +242,7 @@
     background:#fff;font-size:.74rem}
   .hud-play b{flex:0 0 66px;text-align:right;font-size:.78rem;font-variant-numeric:tabular-nums;color:var(--ink)}
   /* 진행 막대 — 오디오 플레이어처럼. 위 띠 바로 아래, 좌우 꽉 차게 */
-  .hud-prog{position:absolute;left:10px;right:10px;top:calc(max(10px,env(safe-area-inset-top)) + 46px);
+  .hud-prog{position:absolute;left:10px;right:10px;top:calc(max(2px,env(safe-area-inset-top)) + 46px);
     background:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.7);border-radius:10px;padding:5px 12px 2px;
     box-shadow:0 2px 10px rgba(21,42,85,.18)}
   .hp-track{position:relative;height:8px;border-radius:4px;background:#E4DFD0;overflow:visible}
@@ -254,12 +254,11 @@
   .hp-ticks i.pass{background:#8E2C3A}
   .hp-lbl{display:flex;justify-content:space-between;font-size:.62rem;color:var(--soft);margin-top:2px;font-variant-numeric:tabular-nums}
   .hp-lbl #hpc{color:var(--blue);font-weight:700}
-  .hud-turn{position:absolute;right:10px;top:calc(max(10px,env(safe-area-inset-top)) + 46px + 34px);z-index:3;
+  .hud-turn{position:absolute;right:10px;top:calc(max(2px,env(safe-area-inset-top)) + 46px + 34px);z-index:3;
     display:flex;align-items:center;gap:10px;background:rgba(20,24,36,.62);backdrop-filter:blur(6px);
     color:#fff;border-radius:14px;padding:8px 14px 8px 10px;box-shadow:0 3px 12px rgba(0,0,0,.3)}
   .hud-turn.hide{display:none}
-  /* 명소 띠가 떠 있으면 회전 카드는 띠 안으로 들어갑니다 (겹쳐서 명소를 가리던 문제) */
-  #hud.banner-on .hud-turn{display:none}
+  /* 명소 띠가 떠 있으면 회전 카드는 띠 아래로 (아래 10/5 규칙) */
   .wpx-banner.compact{padding:7px 10px}
   .wb-row{display:flex;align-items:center;gap:7px;white-space:nowrap;min-width:0}
   .wb-row .k{color:#F5B917;font-size:1.02rem;flex:0 0 auto}
@@ -281,14 +280,14 @@
   .hud-rest button{flex:1;border:1px solid #D4B35A;background:#FFF8E1;color:#6B4E00;border-radius:8px;padding:7px 4px;
     font-size:.78rem;font-weight:700;cursor:pointer}
   .hud-rest button.on{background:#1E7A46;border-color:#1E7A46;color:#fff}
-  .hud-restchip{position:absolute;left:50%;transform:translateX(-50%);top:calc(max(10px,env(safe-area-inset-top)) + 46px + 40px);
+  .hud-restchip{position:absolute;left:50%;transform:translateX(-50%);top:calc(max(2px,env(safe-area-inset-top)) + 46px + 40px);
     background:rgba(107,78,0,.92);color:#FFF3C4;border-radius:20px;padding:6px 14px;font-size:.8rem;font-weight:700;z-index:4;
     box-shadow:0 2px 10px rgba(0,0,0,.3);white-space:nowrap}
   .hud-restchip.hide{display:none}
   #hud.resting .hud-turn,#hud.resting .wpx-banner{display:none}
-  .hud-turn b{display:block;font-size:1.2rem;line-height:1.1;font-variant-numeric:tabular-nums}
-  .hud-turn small{display:block;font-size:.7rem;opacity:.85;margin-top:1px}
-  .hud-turn svg{width:44px;height:44px}
+  .hud-turn b{display:block;font-size:1.6rem;line-height:1.1;font-variant-numeric:tabular-nums}
+  .hud-turn small{display:block;font-size:.78rem;opacity:.85;margin-top:2px}
+  .hud-turn svg{width:72px;height:72px}
   /* 노선 이탈 · 역주행 경고 */
   .hud-off{position:absolute;left:10px;right:10px;top:50%;transform:translateY(-140%);z-index:5;
     background:rgba(185,28,28,.9);color:#fff;border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:12px;
@@ -296,8 +295,8 @@
   .hud-off.hide{display:none}
   .hud-off b{display:block;font-size:1.1rem} .hud-off small{display:block;font-size:.78rem;opacity:.9}
   .hud-off .arr{font-size:2rem;line-height:1;display:inline-block}
-  .hud-wp{position:absolute;left:10px;top:calc(max(10px,env(safe-area-inset-top)) + 46px + 34px);max-width:min(58vw,380px);z-index:2}
-  #hud.banner-on .hud-wp{top:calc(max(10px,env(safe-area-inset-top)) + 46px + 34px + var(--bh,104px) + 8px)}
+  .hud-wp{position:absolute;left:10px;top:calc(max(2px,env(safe-area-inset-top)) + 46px + 34px);max-width:min(58vw,380px);z-index:2}
+  #hud.banner-on .hud-wp{top:calc(max(2px,env(safe-area-inset-top)) + 46px + 34px + var(--bh,104px) + 8px)}
   .hud-wp > button.mini-arrow{padding:6px 9px;font-size:.9rem}
   .hud-wp > button{border:1px solid rgba(255,255,255,.7);background:rgba(255,255,255,.94);color:var(--ink);
     border-radius:10px;padding:8px 12px;font-size:.78rem;font-weight:700;cursor:pointer;
@@ -320,7 +319,7 @@
   .wpx-voice{display:flex;align-items:center;gap:6px;font-size:.7rem;color:var(--soft);padding:6px 2px 2px;cursor:pointer}
   .wpx-voice input{accent-color:var(--flecha)}
   .wpx-banner{position:absolute;left:10px;right:10px;max-height:168px;overflow:hidden;
-    top:calc(max(10px,env(safe-area-inset-top)) + 46px + 34px);
+    top:calc(max(2px,env(safe-area-inset-top)) + 46px + 34px);
     background:#3B2E00;color:#FFF3C4;border-radius:14px;padding:10px 14px 11px;
     box-shadow:0 4px 18px rgba(0,0,0,.4);line-height:1.35}
   #hud.has-bot .wpx-banner{}
@@ -339,6 +338,21 @@
     box-shadow:0 2px 8px rgba(21,42,85,.18);display:flex;align-items:center;justify-content:center;
     font-size:.72rem;font-weight:700;color:var(--rioja);pointer-events:none}
   .hud-north i{display:block;font-style:normal;transform-origin:50% 50%}
+  /* 10/5: 나침반 — 원 고리 + 빨간 북쪽 표시만 (시계 바늘처럼 돌아감) */
+  .hud-north{background:rgba(255,255,255,.55);width:46px;height:46px}
+  .hud-north svg{width:44px;height:44px;display:block;transform-origin:50% 50%;transition:transform .4s linear}
+  /* 확대 · 축소 — 평소 숨김, 오른쪽 ‹ 단추로 펼침 */
+  .hud-zoom.hide{display:none}
+  .hud-ztog{position:absolute;right:0;top:50%;transform:translateY(-50%);width:26px;height:58px;border:none;
+    border-radius:12px 0 0 12px;background:rgba(255,255,255,.85);color:var(--blue);font-size:1.3rem;font-weight:700;
+    box-shadow:0 2px 8px rgba(21,42,85,.2);cursor:pointer;padding:0}
+  .hud-ztog.open{right:76px}
+  /* 위쪽 BIN · JIN — 고른 사람만 보임. 누르면 다른 사람으로 */
+  .hud-who button:not(.on){display:none}
+  /* 회전 안내 — 예전처럼 크게, 조금 아래로 · 명소 띠가 있으면 그 아래 */
+  .hud-turn{top:calc(max(2px,env(safe-area-inset-top)) + 46px + 34px + 46px) !important}
+  #hud.banner-on .hud-turn{display:flex !important;top:calc(max(2px,env(safe-area-inset-top)) + 46px + 34px + var(--bh,60px) + 10px) !important}
+  #hud.banner-on .hud-turn.hide{display:none !important}
   @media(prefers-reduced-motion:reduce){ .wtip{transition:none} }
 
   @media(max-width:900px){
@@ -424,8 +438,11 @@
     </div>
   </div>
   <div id="hwpb" class="wpx-banner hide"></div>
-  <div class="hud-north"><i id="hnorth">N↑</i></div>
-  <div class="hud-zoom">
+  <div class="hud-north" id="hnorthw"><svg viewBox="0 0 44 44" id="hnorth" aria-label="북쪽">
+    <circle cx="22" cy="22" r="18" fill="none" stroke="rgba(21,42,85,.55)" stroke-width="3"/>
+    <path d="M22 1 L27 11 L17 11 Z" fill="#D7261E"/><circle cx="22" cy="22" r="2.2" fill="rgba(21,42,85,.6)"/></svg></div>
+  <button class="hud-ztog" id="hztog" type="button" aria-label="확대 축소 단추 보이기">‹</button>
+  <div class="hud-zoom hide" id="hzoomw">
     <button id="hzin" aria-label="확대">＋</button>
     <small id="hzlv">600 m</small>
     <button id="hzout" aria-label="축소">－</button>
@@ -488,7 +505,7 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:2000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"gps",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20261005-47";
+var D0_VER="v20261005-49";
 /* 10/5 JIN 과 정리: 폰 GPS 로 위치가 거의 실시간이라
    · 휴식 단추 — 서버 위치 예측을 멈추려던 것이라 이제 쓸모 없음
    · "여기예요" — 화면 오차는 GPS 자취 + 오늘 주행 GPX 로 저절로 채점되므로 뺌
@@ -1572,8 +1589,22 @@ function setNav(on){
 /* 주행 모드 배터리 절약 (10/5 BIN: 1시간 52분에 96 → 12 %)
    폰 GPS 는 2초마다 한 번 바뀌는데 3D 지도는 초당 24번 그리고 있었습니다.
    주행 중에는 초당 6번 · 화면 해상도도 낮춥니다. 주행 끝이면 원래대로. */
+/* 주행 모드에서는 지도 위 글자(명소 이름 · BIN/JIN 표지 · DAY 표시)를 모두 숨김 — 위성 사진 위에서 잘 안 보여서 (10/5)
+   주행 중 새로 생긴 표지도 3초마다 다시 숨기고, 주행 끝이면 되돌립니다 */
+var LBL={timer:null};
+function navLabels(hide){
+  if(!viewer) return;
+  var each=function(ents){ ents.values.forEach(function(e){ if(!e.label) return;
+    if(hide){ if(!e._lblHid){ e._lblHid=true; e._lblWas=e.label.show; } e.label.show=false; }
+    else if(e._lblHid){ e.label.show=(e._lblWas===undefined?true:e._lblWas); e._lblHid=false; } }); };
+  each(viewer.entities);
+  for(var i=0;i<viewer.dataSources.length;i++) each(viewer.dataSources.get(i).entities);
+}
 function navPower(on){
   if(!viewer) return;
+  clearInterval(LBL.timer); LBL.timer=null;
+  navLabels(on);
+  if(on) LBL.timer=setInterval(function(){ if(NAV.on) navLabels(true); }, 3000);
   if(on){ var dpr=window.devicePixelRatio||1;
     viewer.targetFrameRate = 6;
     viewer.resolutionScale = Math.min(1, 1.2/dpr);
@@ -1693,7 +1724,8 @@ function hudLiveLabel(){
 }
 function setupHud(){
   document.querySelectorAll("#hud [data-who]").forEach(function(b){
-    b.addEventListener("click",function(){ setWho(b.dataset.who); }); });
+    b.addEventListener("click",function(){ setWho(b.dataset.who===NAV.who ? (NAV.who==="bin"?"jin":"bin") : b.dataset.who); }); });
+  on("hztog","click",function(){ var z=$("hzoomw"), open=!z.classList.toggle("hide"); this.classList.toggle("open",open); this.textContent=open?"›":"‹"; });
   on("hexit","click",function(){ setNav(false); });
   on("hrest","click",restToggle);
   /* "여기예요" — 띠는 1초 남짓마다 새로 그려져 단추도 새로 생깁니다. click 은 손가락을 떼는 순간에
@@ -2028,13 +2060,13 @@ function wpxBanner(cur, up, passed){
   if(f && a<=WPX_R){
     WPX.bannerWp=f;
     h='<div class="wb-row"><b class="k">'+(a>15?fmtM(a):"지금")+'</b><span class="nm">'+esc(f.name)+'</span>'
-     +'<span class="sd">'+wpxSideText(f)+'</span>'+turnChipHtml(cur)+'</div>'
+     +'<span class="sd">'+wpxSideText(f)+'</span></div>'
      +(f.cmt&&f.cmt!==f.name?'<div class="wb-c1">'+esc(f.cmt)+'</div>':'');
     b.className="wpx-banner compact";
   }else if(passed){
     var back=(cur-passed.km)*1000, id=wid(passed);
     WPX.bannerWp=passed;
-    h='<div class="wb-row"><b class="k">지나침 '+fmtM(back)+'</b><span class="nm">'+esc(passed.name)+'</span>'+turnChipHtml(cur)+'</div>';
+    h='<div class="wb-row"><b class="k">지나침 '+fmtM(back)+'</b><span class="nm">'+esc(passed.name)+'</span></div>';
     b.className="wpx-banner compact passed";
     if(WPX.said[id]!==3){ WPX.said[id]=3;
       var pk=id+":passed", nw=Date.now();
