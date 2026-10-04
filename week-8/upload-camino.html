@@ -11,6 +11,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
+<!-- 보기 · 비교하기와 같은 저장 형식 — 여기서 주행 GPX 를 올리면 이 폰의 DAY 0 카드 · 폰 GPS 점검도 함께 -->
+<script src="js/camino-shared.js"></script>
 <style>
   :root{
     --blue:#152A55; --blue2:#1E3A6E; --flecha:#F5B917;
@@ -4087,17 +4089,47 @@ const rdUpload = async (file, day) => {
     fileId, name, memo:"", del:false, ts:Date.now()
   });
   rdQueue(); rdRender();
+  const localNote = rdLocalLink(who, txt, file.name, +day);
 
   const planKm=dd[3], diff=st.dist-planKm;
   if(+day===0){ set("<b>DAY 0 시험 주행 기록했습니다.</b> "+st.dist.toFixed(2)+" km"+(st.asc?" · 획득고도 "+st.asc.toLocaleString()+" m":"")
-      +" · day0/"+rdEsc(name)+"<br><small>본 사이트 DAY 0 날씨 카드에 센서 기온 그래프로 나타납니다.</small>","ok"); return; }
+      +" · day0/"+rdEsc(name)+"<br><small>본 사이트 DAY 0 날씨 카드에 센서 기온 그래프로 나타납니다.</small>"+localNote,"ok"); return; }
   set("<b>DAY "+day+" 기록했습니다.</b> 누적 <b>"+mt.cumKm.toFixed(1)+" km</b> · "
     +"실제 주행 "+st.dist.toFixed(1)+" km"
     +(Math.abs(diff)>=0.3 ? " (계획보다 "+(diff>0?"+":"")+diff.toFixed(1)+" km)" : "")
     +(st.asc?" · 획득고도 "+st.asc.toLocaleString()+" m":"")
     +(mt.off>300 ? '<br><span style="color:var(--err)">계획 노선에서 '
-      +mt.off+" m 떨어진 곳에서 끝났습니다 — 날짜를 잘못 고르지 않았는지 확인하세요.</span>":""),
+      +mt.off+" m 떨어진 곳에서 끝났습니다 — 날짜를 잘못 고르지 않았는지 확인하세요.</span>":"")+localNote,
     "ok");
+};
+
+/* ── 이 폰에서도 함께 (보기 · 비교하기와 같은 브라우저 저장소) ──
+   1. 이 폰에 그날 비교하기 주행 기록(폰 GPS 자취 · "여기예요")이 있으면 이 GPX 로 채점해 붙입니다
+      → 비교하기 DAY 0 카드와 보기 DAY 0 카드의 "폰 GPS 주행 점검" 표에 나옵니다.
+   2. DAY 0 시험 주행이면 이 폰의 보기 DAY 0 카드도 이 GPX 로 바꿉니다 (그날 날씨 · 기온).
+   달린 폰(같은 브라우저)에서 올려야 1번이 됩니다. 다른 기기에서 올리면 Drive 기록만 남습니다. */
+const rdLocalLink = (who, txt, fname, day) => {
+  const CS=window.CaminoShared; if(!CS) return "";
+  try{
+    const g=CS.parseGpx(txt);
+    let sessions=[]; try{ sessions=JSON.parse(localStorage.getItem(CS.KEY.plog)||"[]"); }catch(e){}
+    /* "주행 끝" 을 누르기 전이면 진행 중 기록에 있음 */
+    let cur=null; try{ cur=JSON.parse(localStorage.getItem("caminoPredLogCur")||"null"); }catch(e){}
+    const curIn = !!(cur && cur.start && !sessions.some(x=>x.id===cur.id));
+    if(curIn) sessions.push(cur);
+    const route=CS.loadDay0(who);
+    let best=null;
+    sessions.filter(S=>S.who===who).forEach(S=>{
+      const C=CS.gpsCheck(S, g.pts, route?{pts:route.pts}:null);
+      if(C && (!best || C.n+C.marks.length*10 > best.C.n+best.C.marks.length*10)) best={S, C}; });
+    if(best){ best.S.check=best.C;
+      try{ if(curIn && best.S===cur) localStorage.setItem("caminoPredLogCur", JSON.stringify(cur));
+           else localStorage.setItem(CS.KEY.plog, JSON.stringify(sessions.filter(x=>!(curIn && x===cur)))); }catch(e){} }
+    if(day===0 || best) CS.saveRide(who, g.pts, g.name||fname.replace(/\.gpx$/i,""), g.wpts, {file:fname, day:day, check:best?best.C:null});
+    if(best) return "<br><small>📍 이 폰의 주행 점검: 폰 GPS 화면 오차 중간 "+(best.C.phoneMedM==null?"—":best.C.phoneMedM+" m")
+      +" · 여기예요 "+best.C.marks.length+"곳 · 명소 좌표 고칠 곳 <b>"+best.C.fixN+"</b> — 보기 · 비교하기 DAY 0 카드에서 표를 보세요.</small>";
+    return "<br><small>이 폰에는 그 시간의 비교하기 주행 기록이 없습니다 — 폰 GPS 점검은 달린 폰에서 올리면 함께 됩니다.</small>";
+  }catch(e){ return ""; }
 };
 
 /* ── 화면 ── */

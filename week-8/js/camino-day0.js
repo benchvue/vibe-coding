@@ -12,7 +12,8 @@
      1. 오늘 주행 GPX — 비교하기 또는 이 카드의 "오늘 주행 GPX 올리기" (저장소 caminoRide:bin / :jin)
         올리면 그 시간의 예측 로그를 실제 위치로 채점하고, 이 페이지가 열려 있어도 바로 다시 그립니다.
      2. 비교하기에서 그 사람으로 넣은 DAY 0 길잡이 궤적 (caminoDay0:bin / :jin)
-     3. 폴더의 기본 파일 route/day0-bin.gpx · route/day0-jin.gpx  (다른 폰에서도 보이게 하려면 여기에)
+     3. upload-camino.html → 🚴 주행 기록 에서 DAY 0 으로 올린 가장 최근 GPX (Drive · 모든 기기에서 보임)
+     4. 폴더의 기본 파일 route/day0-bin.gpx · route/day0-jin.gpx
    오차 로그: 이 폰의 로그 + 가져온 로그 + logs/pred-log.json
    ══════════════════════════════════════════════════════════════════════ */
 (function(){
@@ -417,21 +418,56 @@
   }
 
   /* ─────────── 최근 7일 예측 오차율 ─────────── */
-  function allSessions(){ return CS.plogMerge([CS.plogLocal(), STATIC_LOGS]); }
+  function allSessions(){
+    var cur=null; try{ cur=JSON.parse(localStorage.getItem("caminoPredLogCur")||"null"); }catch(e){}   /* 아직 "주행 끝" 전인 기록 */
+    return CS.plogMerge([CS.plogLocal(), STATIC_LOGS, cur&&cur.start?[cur]:[]]); }
   function errBlock(who){
     var W=CS.WHO[who], ss=allSessions(), mine=ss.filter(function(S){ return S.who===who; }), last=mine[mine.length-1];
-    var lastTxt="";
-    if(last){ var r=CS.plogRecalc(last);
-      lastTxt='<div class="row">마지막 로그 <b>'+CS.ymd(new Date(last.start).getTime(),W.tz).slice(5).replace("-","/")+' '+CS.clock(new Date(last.start).getTime(),W.tz)+'</b>'
-        +' · 오차율 <b>'+(r.errPct!==null?r.errPct.toFixed(1)+' %':'—')+'</b> · 평균 <b>'+(r.meanErrM!==null?Math.round(r.meanErrM)+' m':'—')+'</b>'
-        +' · 주행 <b>'+r.distKm.toFixed(1)+'</b>'+(last.trackKm?' / '+(+last.trackKm).toFixed(1):'')+' km'
-        +(last.done?' · 완주':' · <b style="color:#B45309">중간 멈춤</b>')+(r.skipped>1?' · 튄 수신 '+(r.skipped-1)+'회 뺌':'')+'</div>'; }
-    return '<div class="d0err"><h5>최근 7일 예측 오차율 · '+W.n+' <small>'+W.place+' 날짜 기준 · 막대 위 % · 아래 평균 오차 m · 점선은 중간에 멈춘 날</small></h5>'
-      + '<div style="max-width:560px">'+CS.errChartSvg(ss, who, {w:420, h:70})+'</div>'
-      + lastTxt
-      + posBlock(who, last)
-      + '<div class="row"><label class="d0btn">로그 JSON 가져오기<input type="file" multiple data-act="log"></label>'
-      + '<span>다른 폰에서 받은 pred-log-*.json 을 넣으면 이 폰에서도 그 사람 그래프가 보입니다.</span></div></div>';
+    var hasFix=mine.some(function(S){ return (S.fixes&&S.fixes.length) || S.errPct!=null; });
+    var h='<div class="d0err">'+gpsBlock(who, mine);
+    /* 예전 서버(OwnTracks) 예측 기록이 있을 때만 — 지금은 폰 GPS 로 달려 새로 쌓이지 않음 */
+    if(hasFix){
+      var lf=mine.filter(function(S){ return S.fixes&&S.fixes.length; }), L=lf[lf.length-1], lastTxt="";
+      if(L){ var r=CS.plogRecalc(L);
+        lastTxt='<div class="row">마지막 서버 로그 <b>'+CS.ymd(new Date(L.start).getTime(),W.tz).slice(5).replace("-","/")+'</b>'
+          +' · 오차율 <b>'+(r.errPct!==null?r.errPct.toFixed(1)+' %':'—')+'</b> · 평균 <b>'+(r.meanErrM!==null?Math.round(r.meanErrM)+' m':'—')+'</b></div>'; }
+      h+='<details style="margin-top:12px"><summary style="cursor:pointer;font-size:.74rem;color:var(--ink-soft)">예전 서버(OwnTracks) 위치 예측 기록 보기</summary>'
+        +'<div style="max-width:560px">'+CS.errChartSvg(ss, who, {w:420, h:60})+'</div>'+lastTxt+posBlock(who, L)+'</details>';
+    }
+    return h+'<div class="row"><label class="d0btn">로그 JSON 가져오기<input type="file" multiple data-act="log"></label>'
+      +'<span>다른 폰에서 받은 pred-log-*.json 을 넣으면 이 폰에서도 그 사람 점검 결과가 보입니다.</span></div></div>';
+  }
+  /* ─────────── 폰 GPS 주행 점검 (오늘 주행 GPX 기준) ───────────
+     · 폰 GPS 화면 자리가 가민 실제 자리와 얼마나 달랐나
+     · "여기예요" 를 누른 곳마다 — 명소 좌표가 경로를 따라 앞/뒤로 얼마나 어긋났나 (알람이 일찍/늦게 울린 이유) */
+  function gpsBlock(who, mine){
+    var W=CS.WHO[who], ride=CS.loadRide(who), route=CS.loadDay0(who);
+    var withG=mine.filter(function(S){ return (S.trail&&S.trail.length)||(S.marks&&S.marks.length); });
+    var S=withG[withG.length-1];
+    var head='<h5>폰 GPS 주행 점검 · '+W.n+' <small>오늘 주행 GPX 로 채점 · 경로상 + 는 실제 자리가 명소보다 앞(알람이 일찍), − 는 뒤</small></h5>';
+    if(!S) return head+'<div class="row">아직 폰 GPS 로 달린 기록이 없습니다. 비교하기 주행 모드에서 📍 폰 GPS 로 달리고, 명소마다 "여기예요" 를 누르세요.</div>';
+    var C=S.check||null;
+    if(!C && ride) C=CS.gpsCheck(S, ride.pts, route?{pts:route.pts}:null);
+    var day=CS.ymd(Date.parse(S.start),W.tz).slice(5).replace("-","/");
+    if(!C) return head+'<div class="row">'+day+' 기록이 있습니다 (자취 '+((S.trail||[]).length)+'점 · 여기예요 '+((S.marks||[]).length)+'곳). '
+      +'<b>오늘 주행 GPX 올리기</b> 를 하면 채점합니다.</div>';
+    var f=function(v){ return v===null||v===undefined?'—':v+' m'; };
+    var h=head+'<div class="row">'+day+' · 폰 GPS 화면 오차 중간 <b>'+f(C.phoneMedM)+'</b> · 10 % 는 <b>'+f(C.phoneP90M)+'</b> 넘음 · 최대 '+f(C.phoneMaxM)
+      +' ('+C.n+'점) · 여기예요 <b>'+C.marks.length+'</b>곳 · 명소 좌표 고칠 곳 <b style="color:#B45309">'+C.fixN+'</b></div>';
+    if(C.marks.length){
+      h+='<div style="overflow-x:auto;margin-top:6px"><table style="border-collapse:collapse;font-size:.72rem;min-width:420px;width:100%">'
+        +'<tr style="color:var(--ink-soft);text-align:left"><th style="padding:3px 6px">명소</th><th style="padding:3px 6px;text-align:right">경로상 어긋남</th>'
+        +'<th style="padding:3px 6px;text-align:right">직선</th><th style="padding:3px 6px;text-align:right">그 순간 화면</th><th style="padding:3px 6px">고칠 좌표</th></tr>';
+      C.marks.forEach(function(r){
+        var sg=function(v){ return v===undefined||v===null?'—':(v>0?'+':'')+v+' m'; };
+        h+='<tr style="border-top:1px solid var(--line)'+(r.fix?';background:#FFF4E0':'')+'"><td style="padding:3px 6px">'+esc(r.name)+'</td>'
+          +'<td style="padding:3px 6px;text-align:right;'+(r.fix?'color:#B45309;font-weight:700':'')+'">'+sg(r.alongM)+'</td>'
+          +'<td style="padding:3px 6px;text-align:right">'+(r.dWpM===undefined?'—':r.dWpM+' m')+'</td>'
+          +'<td style="padding:3px 6px;text-align:right">'+sg(r.dispM)+'</td>'
+          +'<td style="padding:3px 6px;font-family:ui-monospace,monospace">'+(r.fix?r.garmin.lat.toFixed(6)+', '+r.garmin.lon.toFixed(6):'')+'</td></tr>'; });
+      h+='</table></div>';
+    }
+    return h;
   }
   function saveTruth(S){
     [CS.KEY.plog, CS.KEY.plogImp].forEach(function(k){
@@ -518,11 +554,27 @@
       .catch(function(){ return null; });
   }
   var SIG={bin:"",jin:""};
+  /* upload-camino.html 에서 올린 DAY 0 주행 (Drive progress.json) — 다른 기기에서도 보이게 */
+  function fromDrive(who){
+    var D=window.CAMINO_DRIVE; if(!D||!D.files) return Promise.resolve(null);
+    return D.files().then(function(fs){
+      var f=(fs||[]).filter(function(x){ return x.name==="progress.json"; })[0]; if(!f) return null;
+      return D.text(f.id).then(function(t){
+        var j=null; try{ j=JSON.parse(t); }catch(e){}
+        var r=((j&&j.rides)||[]).filter(function(x){ return !x.del && x.owner===who && +x.day===0 && x.fileId; })
+              .sort(function(a,b){ return (b.ts||0)-(a.ts||0); })[0];
+        if(!r) return null;
+        return D.text(r.fileId).then(function(gx){ var g=CS.parseGpx(gx); if(g.pts.length<2) return null;
+          return {src:g, from:"Drive · DAY 0 주행 기록 ("+(r.date||"")+")", file:r.name, saved:r.ts||null, ride:true}; });
+      });
+    }).catch(function(){ return null; });
+  }
   function load(who, preferStatic){
     SIG[who]=storeSig(who);
     var s=preferStatic?null:fromStore(who);
     if(s){ STATE[who]=s; render(who); return Promise.resolve(); }
-    return fromStatic(who).then(function(x){ STATE[who]=x; render(who); });
+    return (preferStatic?Promise.resolve(null):fromDrive(who)).then(function(d){ return d || fromStatic(who); })
+      .then(function(x){ STATE[who]=x; render(who); });
   }
   function bindCard(who){
     var el=document.getElementById("d0"+who);

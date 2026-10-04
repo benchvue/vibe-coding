@@ -184,6 +184,56 @@
       predAhead:big(predE,1), predBehind:big(predE,-1), per:per, marks:marks };
   };
 
+  /* ── 폰 GPS 주행 점검 (OwnTracks 없이) ──
+     S: 주행 기록 (trail: [ms,lat,lon,정확도,km] 15초마다 · marks: "여기예요")
+     ride: 그날 가민 GPX 점들 (시간 있음) · route: {pts,cum} 길잡이 궤적 (없으면 경로 기준 값은 생략)
+     돌려줌
+       phone*  : 폰 GPS 화면 자리와 가민 실제 자리의 거리 (m)
+       marks[] : "여기예요" 를 누른 순간 가민 실제 자리 기준
+                 dWpM   명소 좌표와의 직선거리
+                 alongM 경로를 따라 명소보다 앞(+)/뒤(-) — 알람이 울리는 기준
+                 dispM  그 순간 화면(폰 GPS) km 와 실제 km 차이
+                 fix    alongM 이 25 m 넘으면 명소 좌표를 실제 자리로 고치자는 제안 */
+  CS.gpsCheck = function(S, ride, route){
+    var rp=ride.filter(function(q){ return q.t!==null; }); if(rp.length<2||!S) return null;
+    var T0=rp[0].t, T1=rp[rp.length-1].t;
+    var trail=(S.trail||[]).filter(function(r){ return r[0]>=T0 && r[0]<=T1; });
+    var marks=(S.marks||[]).filter(function(m){ var ms=Date.parse(m.at); return ms>=T0 && ms<=T1; });
+    if(!trail.length && !marks.length) return null;
+    var cum=route&&route.pts&&route.pts.length>1 ? (route.cum||trackIndex(route.pts)) : null;
+    var ph=trail.map(function(r){ return CS.hav({lat:r[1],lon:r[2]}, posAt(rp,r[0])); });
+    var rows=marks.map(function(m){
+      var ms=Date.parse(m.at), g=posAt(rp,ms), o={name:m.name, at:m.at, sym:m.sym||"", wpKm:m.wpKm,
+        garmin:{lat:+g.lat.toFixed(6), lon:+g.lon.toFixed(6)}};
+      if(typeof m.wpLat==="number") o.dWpM=Math.round(CS.hav(g,{lat:m.wpLat,lon:m.wpLon}));
+      if(m.gps) o.phoneM=Math.round(CS.hav(g,m.gps));
+      if(cum && typeof m.wpKm==="number"){ var k=CS.projectKm(route.pts,cum,g.lat,g.lon,m.wpKm,1);
+        if(k && k.off<120){ o.alongM=Math.round((k.km-m.wpKm)*1000);
+          if(typeof m.dispKm==="number") o.dispM=Math.round((m.dispKm-k.km)*1000);
+          o.fix=Math.abs(o.alongM)>25; } }
+      return o; });
+    var sorted=ph.slice().sort(function(a,b){return a-b;});
+    return { kind:"gps", at:new Date().toISOString(), n:trail.length,
+      phoneMedM: sorted.length?Math.round(sorted[Math.floor(sorted.length/2)]):null,
+      phoneP90M: sorted.length?Math.round(sorted[Math.floor(sorted.length*0.9)]):null,
+      phoneMaxM: sorted.length?Math.round(sorted[sorted.length-1]):null,
+      marks:rows, fixN:rows.filter(function(r){ return r.fix; }).length };
+  };
+  /* 고칠 명소를 실제 자리로 옮긴 GPX (길잡이 궤적 + 명소) 글 */
+  CS.correctedGpx = function(route, wpts, check, name){
+    var fx={}; (check&&check.marks||[]).forEach(function(r){ if(r.fix) fx[r.name]=r.garmin; });
+    var e=CS.esc, out=['<?xml version="1.0" encoding="UTF-8"?>',
+      '<gpx version="1.1" creator="camino-compare" xmlns="http://www.topografix.com/GPX/1/1">',
+      '  <metadata><name>'+e(name||"corrected")+'</name></metadata>'];
+    (wpts||[]).forEach(function(w){ var c=fx[w.name], la=c?c.lat:w.lat, lo=c?c.lon:w.lon;
+      out.push('  <wpt lat="'+(+la).toFixed(6)+'" lon="'+(+lo).toFixed(6)+'"><name>'+e(w.name||"")+'</name>'
+        +(w.cmt?'<desc>'+e(w.cmt)+'</desc>':'')+'<sym>'+e(w.sym||"Waypoint")+'</sym></wpt>'); });
+    out.push('  <trk><name>'+e(name||"route")+'</name><trkseg>');
+    (route||[]).forEach(function(q){ out.push('    <trkpt lat="'+q.lat.toFixed(6)+'" lon="'+q.lon.toFixed(6)+'"><ele>'+Math.round(q.ele||0)+'</ele></trkpt>'); });
+    out.push('  </trkseg></trk>','</gpx>');
+    return {text:out.join("\n")+"\n", n:Object.keys(fx).length};
+  };
+
   /* ── 시간대별 날짜 ── */
   CS.ymd = function(ms, tz){
     try{

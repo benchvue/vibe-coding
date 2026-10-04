@@ -166,21 +166,23 @@
             return '<option value="'+d.cum_km_end+'">DAY '+d.day+' · '+esc(d.to)
               +' ('+d.cum_km_end.toFixed(1)+' km)</option>'; }).join("")
         +'</select></label>'
-        +'<button type="button" id="pgLive">상대방 주행 위치 보기</button>'
+        +(window.CAMINO_LIVE&&window.CAMINO_LIVE.off?'':'<button type="button" id="pgLive">상대방 주행 위치 보기</button>')
         +'<button type="button" id="pgRl">기록 새로고침</button>'
       +'</div>'
       +'<p class="pgmsg" id="pgMsg">주행 기록은 <b>upload-camino.html → 🚴 주행 기록</b> 에서 '
         +'그날 GPX 를 올리면 채워집니다. BIN 은 파랑, JIN 은 빨강입니다.<br>'
-        +'달리는 동안에는 <b>●</b> 표시와 함께 <b>실시간 위치</b>가 앞서 나갑니다 — '
+        +(window.CAMINO_LIVE&&window.CAMINO_LIVE.off
+          ? '<small>실시간 위치(OwnTracks)는 쓰지 않습니다 — 그날 주행을 마치고 GPX 를 올리면 표시가 앞으로 나갑니다.</small></p>'
+          : '달리는 동안에는 <b>●</b> 표시와 함께 <b>실시간 위치</b>가 앞서 나갑니다 — '
         +'1분마다 새로 읽습니다.<br>'
         +'<small>스페인 노선 밖에서 보낸 신호는 <b>시험 중</b>으로만 알리고 '
-        +'위치는 찍지 않습니다 — 엉뚱한 자리에 표시되는 것을 막기 위해서입니다.</small></p>';
+        +'위치는 찍지 않습니다 — 엉뚱한 자리에 표시되는 것을 막기 위해서입니다.</small></p>');
     svg=$("pgSvg");
     $("pgDay").addEventListener("change",function(){
       preview = this.value==="" ? null : +this.value;
       draw();
     });
-    $("pgLive").addEventListener("click",function(){
+    if($("pgLive")) $("pgLive").addEventListener("click",function(){
       var b=$("pgLive"), m=$("pgMsg");
       b.disabled=true; m.textContent="위치를 읽는 중…";
       var p = window.CAMINO_LIVE ? window.CAMINO_LIVE.refresh() : Promise.resolve(null);
@@ -265,8 +267,18 @@
    실시간 위치 — db/live.json 을 주기적으로 읽습니다
    좌표는 담겨 있지 않고 누적 km 만 있습니다.
    ══════════════════════════════════════════════════════════════════════ */
+/* 2026-10-04: OwnTracks 를 쓰지 않습니다. 주행 위치는 upload-camino.html → 🚴 주행 기록
+   (그날 GPX) 로만 채웁니다. 다시 쓰려면 아래 LIVE_ON 을 true 로. */
+var CAMINO_LIVE_ON = false;
 window.CAMINO_LIVE = (function(){
   "use strict";
+  if(!CAMINO_LIVE_ON){
+    /* 꺼 둔 상태 — 서버를 읽지 않고, 다른 블록은 주행 기록(progress.json)만 씁니다 */
+    var none={riders:{}};
+    return { off:true, on:function(){}, refresh:function(){ return Promise.resolve(none); },
+      get:function(){ return none; }, age:function(){ return Infinity; }, isStale:function(){ return true; },
+      ago:function(){ return ""; } };
+  }
   var data={riders:{}}, subs=[], timer=null, POLL=60000, STALE=45*60*1000;
 
   /* 앱스 스크립트에서 바로 읽으면 Drive·프록시 캐시를 거치지 않습니다. 비우면 Drive 만 읽습니다. */
@@ -676,7 +688,7 @@ window.CAMINO_LIVE = (function(){
 
     var note=$("ovNote");
     if(note){
-      if(!any){ note.innerHTML='주행 기록을 올리거나 실시간 위치가 들어오면 '
+      if(!any){ note.innerHTML='그날 주행 GPX(주행 기록)를 올리면 '
         +'<b>BIN</b>·<b>JIN</b> 이 여기에 표시됩니다.'; return; }
       var t=[];
       order.forEach(function(w){

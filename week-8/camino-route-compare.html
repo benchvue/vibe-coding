@@ -479,7 +479,10 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:2000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"gps",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20261004-41";
+var D0_VER="v20261004-44";
+/* OwnTracks(서버 위치) 를 쓰지 않습니다 (10/4). 내 위치는 폰 GPS, 나머지 점검은 "오늘 주행 GPX" 로.
+   true 로 바꾸면 서버 위치 단추 · BIN·JIN 보기가 다시 나타납니다 */
+var LIVE_ENABLED=false;
 var CS=window.CaminoShared||null;   /* js/camino-shared.js — 없으면 예전 방식대로 */
 try{ var _pm=localStorage.getItem("caminoPosMode"); if(_pm==="server") NAV.posMode="server"; if(!GPS_ENABLED) NAV.posMode="server"; }catch(e){}
 try{ var _m2=localStorage.getItem("caminoMap2d"); if(_m2==="0") OPT_MAP2D_INIT=false; }catch(e){}
@@ -966,6 +969,9 @@ function gpsStart(){
     if(!f.track && IDX&&IDX.length){ var pi=projectOn(IDX.map(function(r){return {lat:r[0],lon:r[1]};}), IDX.map(function(r){return r[2];}), f.lat,f.lon);
       if(pi&&pi.off<=3000){ f.track="idx"; f.km=pi.km; } }
     GPS.last=GPS.fix; GPS.fix=f;
+    /* 폰 GPS 로 달릴 때도 주행 기록이 남도록 15초마다 자취를 적음 (OwnTracks 없이도 "여기예요" 와 함께 저장) */
+    if(PLOG.s && NAV.on && NAV.src==="gps"){ var tr=PLOG.s.trail=PLOG.s.trail||[], lt=tr.length?tr[tr.length-1][0]:0;
+      if(now-lt>=15000){ tr.push([now, +f.lat.toFixed(6), +f.lon.toFixed(6), Math.round(f.acc||0), f.km!==null?+(+f.km).toFixed(4):null]); plogCurSave(); } }
   }, function(e){
     GPS.err = e.code===1 ? "위치 권한이 거부됐습니다 (설정 → Safari → 위치)" : e.code===2 ? "위치를 잡지 못했습니다" : "위치 응답이 늦습니다";
   }, {enableHighAccuracy:true, maximumAge:GPS.acceptEvery, timeout:20000});
@@ -1012,17 +1018,17 @@ function restToggle(){
     REST.since=null; REST.resumeAt=now; REST.resumeWho=w;
     wpxBeep(1); if(WPX.voice) wpxSay("다시 출발합니다");
   }else{
-    var pr=predict(w); REST.who=w; REST.since=now; REST.km=(pr&&typeof pr.km==="number")?+pr.km.toFixed(4):null; REST.resumeAt=null;
+    var ck=wpxCurKm(); REST.who=w; REST.since=now; REST.km=(typeof ck==="number")?+ck.toFixed(4):null; REST.resumeAt=null;
     if(WPX.voice) wpxSay("휴식. 위치를 고정합니다");
   }
   PRED_CACHE={}; NAV.dispKm=null; restSave(); restUI();
 }
 function restUI(){
   var b=$("hrest"), row=$("hrestrow"), chip=$("hrchip"), hud=$("hud"); if(!b) return;
-  var live=NAV.on && NAV.src==="live", on=live && restOn();
+  var live=NAV.on && (NAV.src==="live"||NAV.src==="gps"), on=live && restOn();
   row.style.display = live ? "" : "none";
   b.classList.toggle("on", on);
-  b.textContent = on ? "▶ 재출발 — 지금부터 다시 예측" : "☕ 휴식 — 예측 멈춤";
+  b.textContent = on ? "▶ 다시 출발 — 알림 켜기" : "☕ 휴식 — 알림 멈춤";
   hud.classList.toggle("resting", on);
   if(on){ var s=Math.round((Date.now()-REST.since)/1000);
     var t="☕ 휴식 "+Math.floor(s/60)+":"+String(s%60).padStart(2,"0")+(REST.km!==null?" · "+REST.km.toFixed(1)+" km 에 고정":"");
@@ -1098,7 +1104,8 @@ function plogMark(){
   var f=WPX.bannerWp, cur=wpxCurKm(); if(!f) return;
   if(!PLOG.s && NAV.on && NAV.src!=="day0") plogStart();
   var diff=(typeof cur==="number")?Math.round((cur-f.km)*1000):null;
-  var m={at:new Date().toISOString(), name:f.name, cmt:f.cmt||"", wpKm:+f.km.toFixed(4), dispKm:typeof cur==="number"?+cur.toFixed(4):null, diffM:diff, src:NAV.src};
+  var m={at:new Date().toISOString(), name:f.name, cmt:f.cmt||"", wpKm:+f.km.toFixed(4), dispKm:typeof cur==="number"?+cur.toFixed(4):null, diffM:diff, src:NAV.src,
+    wpLat:typeof f.lat==="number"?f.lat:null, wpLon:typeof f.lon==="number"?f.lon:null, sym:f.sym||""};
   /* 폰 GPS 가 있으면 그 순간 실제 자리도 같이 (나중에 정확히 채점) */
   if(GPS.fix && now-GPS.fix.at<15000) m.gps={lat:+GPS.fix.lat.toFixed(6), lon:+GPS.fix.lon.toFixed(6), acc:Math.round(GPS.fix.acc||0), km:GPS.fix.km!==null?+(+GPS.fix.km).toFixed(4):null};
   var ok=false;
@@ -1118,7 +1125,8 @@ function plogEnd(){
   S.end=new Date().toISOString(); S.errPct=plogErrPct(S)!==null?+plogErrPct(S).toPrecision(6):null;
   S.meanErrM=plogMeanErr(S)!==null?Math.round(plogMeanErr(S)):null; S.metric="errPct=Σ|err|·(gap/60s)/dist · meanErrM=시간가중 · 튄 수신 제외";
   if(!S.done && S.trackKm) S.note=(S.note?S.note+" · ":"")+"중간 멈춤 "+S.distKm.toFixed(1)+"/"+S.trackKm.toFixed(1)+" km";
-  if(S.fixes.length>=2){ PLOG.all.push(S); if(PLOG.all.length>30) PLOG.all.shift(); plogSave(); }
+  /* 서버 수신이 없어도(폰 GPS 로만 달림) "여기예요" 나 GPS 자취가 있으면 저장 */
+  if(S.fixes.length>=2 || (S.marks&&S.marks.length) || (S.trail&&S.trail.length>=2)){ PLOG.all.push(S); if(PLOG.all.length>30) PLOG.all.shift(); plogSave(); }
   PLOG.s=null; renderStats();
 }
 function plogSummaryToast(){
@@ -1491,13 +1499,12 @@ function setNav(on){
   var c=$("cNav"); if(c) c.checked=on;
   if(on){
     NAV.hdg=null; NAV.dispKm=null; NAV.last=null;
-    var def = (GPS_ENABLED && NAV.posMode==="gps") ? "gps" : "live";
-    if(!D0.pts.length) NAV.src=def;
-    else if(NAV.src!=="live" && NAV.src!=="gps") NAV.src="day0";
+    var def = (!LIVE_ENABLED || (GPS_ENABLED && NAV.posMode==="gps")) ? "gps" : "live";
+    if(!D0.pts.length || NAV.src!=="day0") NAV.src=def;
     if(NAV.src==="gps") gpsStart();
     if(NAV.src==="live"||NAV.src==="gps") plogStart();
     if(OPT.live) liveTimerStart();
-    if(NAV.src==="live" && !OPT.live){ var cl=$("cLive"); if(cl){ cl.checked=true; cl.dispatchEvent(new Event("change")); } }
+    if(LIVE_ENABLED && NAV.src==="live" && !OPT.live){ var cl=$("cLive"); if(cl){ cl.checked=true; cl.dispatchEvent(new Event("change")); } }
     if(NAV.src==="day0" && !D0.playing) d0Play(true);
     syncHud(); ensureLoop();
   }else{
@@ -1590,6 +1597,7 @@ function syncHud(){
   $("hud").classList.add("has-bot");
   $("hsrc0").style.display = has ? "" : "none";
   $("hsrcG").style.display = GPS_ENABLED ? "" : "none";
+  $("hsrcL").style.display = LIVE_ENABLED ? "" : "none";
   $("hsrcG").classList.toggle("on",NAV.src==="gps");
   $("hsrc0").classList.toggle("on",NAV.src==="day0");
   $("hsrc0").textContent=(D0.day?"DAY "+D0.day+" 재생":"DAY 0 시험");
@@ -1868,7 +1876,7 @@ function wpxBuild(){
   BIKE_DAYS.forEach(function(d){
     (DATA[d]&&DATA[d].wpts||[]).forEach(function(w){
       var p=projectOn(tr.pts,tr.cum,w.lat,w.lon);
-      if(p && p.off<=400) WPX.list.push({name:w.name||"", cmt:w.cmt||"", sym:w.sym, day:d, km:p.km, off:p.off, side:p.side});
+      if(p && p.off<=400) WPX.list.push({name:w.name||"", cmt:w.cmt||"", sym:w.sym, day:d, km:p.km, off:p.off, side:p.side, lat:w.lat, lon:w.lon});
     });
   });
   WPX.list.sort(function(a,b){ return a.km-b.km; });
@@ -2566,9 +2574,13 @@ function day0Card(){
   var ride=CS?CS.loadRide(NAV.who):null;
   h+='<div class="d0ride" style="margin-top:10px;border:1px dashed #9FCBB1;background:#F2FAF5;border-radius:10px;padding:8px 10px">'
     +'<div class="row2"><span>오늘 주행 GPX · '+WHO[NAV.who].n+'</span><b>'+(ride?esc(ride.file||ride.name)+' · '+new Date(ride.saved).toLocaleString("ko-KR",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"}):'아직 없음')+'</b></div>'
+    +(ride&&ride.check?checkLine(ride.check):'')
     +(ride&&ride.truth?truthLine(ride.truth):'')
-    +'<div class="d0row"><label class="mini play" style="padding:8px 12px;cursor:pointer">오늘 주행 GPX 올리기<input type="file" id="rideFile" style="display:none"></label></div>'
-    +'<div class="d0note">가민 등에서 내보낸 GPX 를 올리면 보기 페이지의 DAY 0 카드가 바로 바뀝니다. 같은 시간의 예측 로그가 있으면 "화면이 실제보다 앞섰나 · 뒤졌나" 를 채점합니다.</div></div>';
+    +'<div class="d0row"><a class="mini play" style="padding:8px 12px;text-decoration:none" href="upload-camino.html" target="_blank" rel="noopener">주행 기록 올리기 (권장)</a>'
+    +'<label class="mini" style="padding:8px 12px;cursor:pointer">이 폰에만<input type="file" id="rideFile" style="display:none"></label></div>'
+    +'<div class="d0note"><b>주행 기록 올리기</b> — upload-camino.html 에서 그날 GPX 를 한 번 올리면 Drive 기록(보기 지도 · 진행 위치)과 '
+    +'이 폰의 점검(폰 GPS 오차 · 여기예요 · 명소 좌표 고치기)이 함께 됩니다. 달린 이 폰에서 올리세요. '
+    +'<b>이 폰에만</b> 은 Drive 에 남기지 않고 점검만 할 때.</div></div>';
   /* 탈것 · 예측 오차 로그 */
   var n=PLOG.all.length, last=n?PLOG.all[n-1]:null;
   h+='<div class="row2" style="margin-top:10px"><span>경사→속도 표</span><b style="font-size:.68rem">'+esc(SPEED_TABLE_SRC)+'</b></div>'
@@ -2593,6 +2605,28 @@ function errChart(who){
   return '<div class="row2"><span>최근 7일 오차율 · '+WHO[who].n+'</span><b style="font-size:.64rem;color:var(--soft)">'+CS.WHO[who].place+' 날짜</b></div>'
     +'<div style="margin:2px 0 6px">'+CS.errChartSvg(plogAllForChart(), who, {w:260, h:60, ink:"var(--ink)", soft:"var(--soft)"})+'</div>';
 }
+function checkLine(C){
+  var f=function(v){ return v===null||v===undefined?"—":v+" m"; };
+  var h='<div class="d0note" style="color:#146B3C">폰 GPS 화면 오차 중간 '+f(C.phoneMedM)+' · 10 % 는 '+f(C.phoneP90M)+' 넘음 ('+C.n+'점)'
+    +' · 여기예요 '+C.marks.length+'곳 · 명소 좌표 고칠 곳 <b>'+C.fixN+'</b></div>';
+  if(C.marks.length){
+    h+='<div style="max-height:180px;overflow:auto;font-size:.7rem;margin-top:4px"><table style="width:100%;border-collapse:collapse">'
+      +'<tr style="color:var(--soft)"><td>명소</td><td style="text-align:right">경로상</td><td style="text-align:right">화면</td></tr>';
+    C.marks.forEach(function(r){ h+='<tr style="border-top:1px solid var(--line)'+(r.fix?';color:#B45309;font-weight:700':'')+'"><td>'+esc(r.name)+'</td>'
+      +'<td style="text-align:right">'+(r.alongM===undefined?'—':(r.alongM>0?'+':'')+r.alongM+' m')+'</td>'
+      +'<td style="text-align:right">'+(r.dispM===undefined?'—':(r.dispM>0?'+':'')+r.dispM+' m')+'</td></tr>'; });
+    h+='</table></div><div class="d0note">경로상 + 는 실제 자리가 명소 좌표보다 앞(알람이 일찍 울림), − 는 뒤. 25 m 넘는 곳은 주황색.</div>';
+    if(C.fixN) h+='<div class="d0row"><button class="mini play" id="fixGpx">고친 명소 GPX 받기 ('+C.fixN+'곳)</button></div>';
+  }
+  return h;
+}
+function fixGpxDownload(){
+  var ride=CS&&CS.loadRide(NAV.who); if(!ride||!ride.check||!D0.pts.length) return;
+  var g=CS.correctedGpx(D0.pts, D0.wpts||[], ride.check, (D0.name||"route")+" (명소 고침)");
+  var a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([g.text],{type:"application/gpx+xml"}));
+  a.download=(D0.name||"route").replace(/[\\/:*?"<>|]/g,"_")+"-fixed.gpx"; document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 2000);
+}
 function truthLine(T){
   var f=function(v){ return v===null||v===undefined?"—":Math.round(v)+" m"; };
   return '<div class="d0note" style="color:#146B3C">채점 '+T.n+'회 · 수신 지연 '+(T.lagMedS!==null?Math.round(T.lagMedS)+'초':'—')
@@ -2610,18 +2644,26 @@ function rideUpload(file){
     cands.concat(imp.filter(function(S){ return S.who===who; })).forEach(function(S){
       var T=CS.rideTruth(S, g.pts); if(T && (!best || T.n>best.T.n)){ best={S:S,T:T}; } });
     var extra={file:file.name};
+    /* 폰 GPS 주행 점검 — 폰 GPS 화면이 얼마나 맞았나 · "여기예요" 로 명소 좌표가 맞는지 */
+    var bestC=null, route=trk?{pts:trk.pts}:(D0.pts.length?{pts:D0.pts,cum:D0.cum}:null);
+    cands.forEach(function(S){ var C=CS.gpsCheck(S, g.pts, route);
+      if(C && (!bestC || C.n+C.marks.length*10 > bestC.C.n+bestC.C.marks.length*10)) bestC={S:S,C:C}; });
+    if(bestC){ bestC.S.check=bestC.C; extra.check=bestC.C; extra.check.sid=bestC.S.id; plogSave(); }
     if(best){ best.S.truth=best.T; extra.truth={sid:best.S.id, n:best.T.n, lagMedS:best.T.lagMedS, dispN:best.T.dispN, dispMedAbsM:best.T.dispMedAbsM,
         dispAhead:best.T.dispAhead, dispBehind:best.T.dispBehind, predMedAbsM:best.T.predMedAbsM, predAhead:best.T.predAhead, predBehind:best.T.predBehind, marks:best.T.marks};
       if(PLOG.all.indexOf(best.S)>=0) plogSave(); else try{ localStorage.setItem(CS.KEY.plogImp, JSON.stringify(imp)); }catch(e){} }
     CS.saveRide(who, g.pts, g.name||file.name.replace(/\.gpx$/i,""), g.wpts, extra);
     renderStats();
     alert(WHO[who].n+" 오늘 주행 GPX 를 저장했습니다 — 보기 페이지 DAY 0 카드에 바로 나옵니다."
-      +(best?"\n예측 로그 "+best.T.n+"회를 실제 위치로 채점했습니다.":"\n같은 시간의 예측 로그는 없습니다."));
+      +(bestC?"\n폰 GPS 점검: 화면 오차 중간값 "+(bestC.C.phoneMedM===null?"—":bestC.C.phoneMedM+" m")+" · 여기예요 "+bestC.C.marks.length+"곳 · 명소 좌표 고칠 곳 "+bestC.C.fixN+"곳"
+             :"\n같은 시간의 주행 기록(폰 GPS · 여기예요)이 없습니다.")
+      +(best?"\n예측 로그 "+best.T.n+"회도 채점했습니다.":""));
   }).catch(function(e){ alert("GPX 를 읽지 못했습니다 — "+e.message); });
 }
 function bindDay0Card(){
   VEHICLE="bike";
   on("rideFile","change",function(e){ rideUpload(e.target.files[0]); e.target.value=""; });
+  on("fixGpx","click",fixGpxDownload);
   on("plogDl","click",plogDownload);
   on("plogImp","change",function(e){ if(!CS) return; var fs=[].slice.call(e.target.files||[]), add=0;
     Promise.all(fs.map(function(f){ return f.text().then(function(t){ try{ add+=CS.plogImport(JSON.parse(t)); }catch(err){ alert(f.name+" — "+err.message); } }); }))
@@ -2664,12 +2706,13 @@ function renderCtrl(){
     +chk("cXray","지형에 가려도 보이기","산 뒤로 넘어간 부분을 점선으로",OPT.xray,"")
     +'</div>'
     +'<div class="grp"><h3>주행 위치</h3>'
-    +chk("cLive","BIN · JIN 보기","1분마다 새로 읽습니다",OPT.live,"")
+    +(LIVE_ENABLED ? chk("cLive","BIN · JIN 보기","1분마다 새로 읽습니다",OPT.live,"")
     +'<div class="row2" style="margin-top:6px;margin-bottom:10px"><span id="livemsg">'
     +'켜면 두 사람의 위치를 표시합니다.</span></div>'
+    : '<div class="row2" style="margin-bottom:8px"><span>내 위치는 이 폰 GPS 로 · 누구 폰인지 고르세요</span></div>')
     +'<div class="who"><button class="bin'+(NAV.who==="bin"?" on":"")+'" data-who="bin">BIN</button>'
     +'<button class="jin'+(NAV.who==="jin"?" on":"")+'" data-who="jin">JIN</button></div>'
-    +(GPS_ENABLED ? '<div class="row2" style="margin:8px 0 4px"><span>주행 모드 위치 방식</span></div>'
+    +(GPS_ENABLED && LIVE_ENABLED ? '<div class="row2" style="margin:8px 0 4px"><span>주행 모드 위치 방식</span></div>'
     +'<div class="who mode"><button class="srv'+(NAV.posMode!=="gps"?" on":"")+'" data-mode="server">서버 (OwnTracks · 3분)</button>'
     +'<button class="gps'+(NAV.posMode==="gps"?" on":"")+'" data-mode="gps">폰 GPS (5초)</button></div>' : '')
     +chk("cEco","화면 절전","초당 24프레임 · 해상도 낮춤 · 지형 타일 줄임 — 폰 발열을 크게 줄입니다",OPT.eco,"")
@@ -2745,7 +2788,7 @@ function renderCtrl(){
     b.addEventListener("click",function(){ setBase(b.dataset.base); }); });
   document.querySelectorAll("#ctrl [data-who]").forEach(function(b){
     b.addEventListener("click",function(){ setWho(b.dataset.who); }); });
-  bind("cLive",function(v){
+  if(LIVE_ENABLED) bind("cLive",function(v){
     OPT.live=v;
     if(v){ refreshLive(); liveTimerStart(); }
     else { liveTimerStop(); drawLive(); }
