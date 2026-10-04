@@ -4127,7 +4127,7 @@ const rdLocalLink = (who, txt, fname, day) => {
            else localStorage.setItem(CS.KEY.plog, JSON.stringify(sessions.filter(x=>!(curIn && x===cur)))); }catch(e){} }
     if(day===0 || best) CS.saveRide(who, g.pts, g.name||fname.replace(/\.gpx$/i,""), g.wpts, {file:fname, day:day, check:best?best.C:null});
     if(best) return "<br><small>📍 이 폰의 주행 점검: 폰 GPS 화면 오차 중간 "+(best.C.phoneMedM==null?"—":best.C.phoneMedM+" m")
-      +" · 여기예요 "+best.C.marks.length+"곳 · 명소 좌표 고칠 곳 <b>"+best.C.fixN+"</b> — 보기 · 비교하기 DAY 0 카드에서 표를 보세요.</small>";
+      +(best.C.marks.length?" · 여기예요 "+best.C.marks.length+"곳 · 명소 좌표 고칠 곳 <b>"+best.C.fixN+"</b>":"")+" ("+best.C.n+"점) — 보기 · 비교하기 DAY 0 카드에서 보세요.</small>";
     return "<br><small>이 폰에는 그 시간의 비교하기 주행 기록이 없습니다 — 폰 GPS 점검은 달린 폰에서 올리면 함께 됩니다.</small>";
   }catch(e){ return ""; }
 };

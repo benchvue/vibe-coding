@@ -445,15 +445,15 @@
     var withG=mine.filter(function(S){ return (S.trail&&S.trail.length)||(S.marks&&S.marks.length); });
     var S=withG[withG.length-1];
     var head='<h5>폰 GPS 주행 점검 · '+W.n+' <small>오늘 주행 GPX 로 채점 · 경로상 + 는 실제 자리가 명소보다 앞(알람이 일찍), − 는 뒤</small></h5>';
-    if(!S) return head+'<div class="row">아직 폰 GPS 로 달린 기록이 없습니다. 비교하기 주행 모드에서 📍 폰 GPS 로 달리고, 명소마다 "여기예요" 를 누르세요.</div>';
+    if(!S) return head+'<div class="row">아직 폰 GPS 로 달린 기록이 없습니다. 비교하기 주행 모드에서 📍 폰 GPS 로 달리면 15초마다 자취가 남습니다.</div>';
     var C=S.check||null;
     if(!C && ride) C=CS.gpsCheck(S, ride.pts, route?{pts:route.pts}:null);
     var day=CS.ymd(Date.parse(S.start),W.tz).slice(5).replace("-","/");
-    if(!C) return head+'<div class="row">'+day+' 기록이 있습니다 (자취 '+((S.trail||[]).length)+'점 · 여기예요 '+((S.marks||[]).length)+'곳). '
+    if(!C) return head+'<div class="row">'+day+' 기록이 있습니다 (자취 '+((S.trail||[]).length)+'점). '
       +'<b>오늘 주행 GPX 올리기</b> 를 하면 채점합니다.</div>';
     var f=function(v){ return v===null||v===undefined?'—':v+' m'; };
     var h=head+'<div class="row">'+day+' · 폰 GPS 화면 오차 중간 <b>'+f(C.phoneMedM)+'</b> · 10 % 는 <b>'+f(C.phoneP90M)+'</b> 넘음 · 최대 '+f(C.phoneMaxM)
-      +' ('+C.n+'점) · 여기예요 <b>'+C.marks.length+'</b>곳 · 명소 좌표 고칠 곳 <b style="color:#B45309">'+C.fixN+'</b></div>';
+      +' ('+C.n+'점)'+(C.marks.length?' · 여기예요 <b>'+C.marks.length+'</b>곳 · 명소 좌표 고칠 곳 <b style="color:#B45309">'+C.fixN+'</b>':'')+'</div>';
     if(C.marks.length){
       h+='<div style="overflow-x:auto;margin-top:6px"><table style="border-collapse:collapse;font-size:.72rem;min-width:420px;width:100%">'
         +'<tr style="color:var(--ink-soft);text-align:left"><th style="padding:3px 6px">명소</th><th style="padding:3px 6px;text-align:right">경로상 어긋남</th>'

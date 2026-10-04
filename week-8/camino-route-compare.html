@@ -479,7 +479,12 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:2000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"gps",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20261004-44";
+var D0_VER="v20261005-45";
+/* 10/5 JIN 과 정리: 폰 GPS 로 위치가 거의 실시간이라
+   · 휴식 단추 — 서버 위치 예측을 멈추려던 것이라 이제 쓸모 없음
+   · "여기예요" — 화면 오차는 GPS 자취 + 오늘 주행 GPX 로 저절로 채점되므로 뺌
+   다시 쓰려면 아래를 true 로 */
+var REST_BTN=false, HERE_BTN=false;
 /* OwnTracks(서버 위치) 를 쓰지 않습니다 (10/4). 내 위치는 폰 GPS, 나머지 점검은 "오늘 주행 GPX" 로.
    true 로 바꾸면 서버 위치 단추 · BIN·JIN 보기가 다시 나타납니다 */
 var LIVE_ENABLED=false;
@@ -1009,8 +1014,9 @@ function liveHistPush(){
    폰이 잠들어 페이지가 다시 열려도 이어지도록 저장해 둡니다. */
 var REST={who:null, since:null, km:null, resumeAt:null, resumeWho:null};
 try{ var _rs=JSON.parse(localStorage.getItem("caminoRest")||"null"); if(_rs) for(var _k in _rs) REST[_k]=_rs[_k]; }catch(e){}
+if(!REST_BTN){ REST.since=null; REST.resumeAt=null; }
 function restSave(){ try{ localStorage.setItem("caminoRest", JSON.stringify(REST)); }catch(e){} }
-function restOn(w){ return !!REST.since && REST.who===(w||NAV.who); }
+function restOn(w){ return REST_BTN && !!REST.since && REST.who===(w||NAV.who); }
 function restToggle(){
   var w=NAV.who, now=Date.now();
   if(restOn(w)){
@@ -1026,7 +1032,7 @@ function restToggle(){
 function restUI(){
   var b=$("hrest"), row=$("hrestrow"), chip=$("hrchip"), hud=$("hud"); if(!b) return;
   var live=NAV.on && (NAV.src==="live"||NAV.src==="gps"), on=live && restOn();
-  row.style.display = live ? "" : "none";
+  row.style.display = (live && REST_BTN) ? "" : "none";
   b.classList.toggle("on", on);
   b.textContent = on ? "▶ 다시 출발 — 알림 켜기" : "☕ 휴식 — 알림 멈춤";
   hud.classList.toggle("resting", on);
@@ -1950,7 +1956,7 @@ function wpxBanner(cur, up, passed){
   if(f && a<=WPX_R){
     WPX.bannerWp=f;
     h='<div class="wb-head"><b>'+(a>15?fmtM(a)+" 앞":"지금")+'</b><span>'+wpxSideText(f)+'</span>'
-     +'<button class="wb-here" type="button" data-here="1">여기예요</button></div>'
+     +(HERE_BTN?'<button class="wb-here" type="button" data-here="1">여기예요</button>':'')+'</div>'
      +'<div class="wb-name">'+esc(f.name)+'</div>'
      +(f.cmt?'<div class="wb-cmt">'+esc(f.cmt)+'</div>':'')
      +(WPX.markMsg&&Date.now()-WPX.markMsg.t<6000?'<div class="wb-mark">✓ '+esc(WPX.markMsg.txt)+'</div>':'')
@@ -1961,7 +1967,7 @@ function wpxBanner(cur, up, passed){
     var back=(cur-passed.km)*1000, id=wid(passed);
     WPX.bannerWp=passed;
     h='<div class="wb-head"><b>방금 지나침</b><span>'+(passed.off<20?"뒤 ":(passed.side>0?"왼쪽 ":"오른쪽 ")+Math.round(passed.off/10)*10+" m · 뒤 ")+fmtM(back)+'</span>'
-     +'<button class="wb-here" type="button" data-here="1">여기예요</button></div>'
+     +(HERE_BTN?'<button class="wb-here" type="button" data-here="1">여기예요</button>':'')+'</div>'
      +(WPX.markMsg&&Date.now()-WPX.markMsg.t<6000?'<div class="wb-mark">✓ '+esc(WPX.markMsg.txt)+'</div>':'')
      +'<div class="wb-name">'+esc(passed.name)+'</div>'
      +(passed.cmt?'<div class="wb-cmt">'+esc(passed.cmt)+'</div>':'')
@@ -2579,7 +2585,7 @@ function day0Card(){
     +'<div class="d0row"><a class="mini play" style="padding:8px 12px;text-decoration:none" href="upload-camino.html" target="_blank" rel="noopener">주행 기록 올리기 (권장)</a>'
     +'<label class="mini" style="padding:8px 12px;cursor:pointer">이 폰에만<input type="file" id="rideFile" style="display:none"></label></div>'
     +'<div class="d0note"><b>주행 기록 올리기</b> — upload-camino.html 에서 그날 GPX 를 한 번 올리면 Drive 기록(보기 지도 · 진행 위치)과 '
-    +'이 폰의 점검(폰 GPS 오차 · 여기예요 · 명소 좌표 고치기)이 함께 됩니다. 달린 이 폰에서 올리세요. '
+    +'이 폰의 점검(폰 GPS 화면 오차)이 함께 됩니다. 달린 이 폰에서 올리세요. '
     +'<b>이 폰에만</b> 은 Drive 에 남기지 않고 점검만 할 때.</div></div>';
   /* 탈것 · 예측 오차 로그 */
   var n=PLOG.all.length, last=n?PLOG.all[n-1]:null;
@@ -2608,7 +2614,7 @@ function errChart(who){
 function checkLine(C){
   var f=function(v){ return v===null||v===undefined?"—":v+" m"; };
   var h='<div class="d0note" style="color:#146B3C">폰 GPS 화면 오차 중간 '+f(C.phoneMedM)+' · 10 % 는 '+f(C.phoneP90M)+' 넘음 ('+C.n+'점)'
-    +' · 여기예요 '+C.marks.length+'곳 · 명소 좌표 고칠 곳 <b>'+C.fixN+'</b></div>';
+    +(C.marks.length?' · 여기예요 '+C.marks.length+'곳 · 명소 좌표 고칠 곳 <b>'+C.fixN+'</b>':'')+'</div>';
   if(C.marks.length){
     h+='<div style="max-height:180px;overflow:auto;font-size:.7rem;margin-top:4px"><table style="width:100%;border-collapse:collapse">'
       +'<tr style="color:var(--soft)"><td>명소</td><td style="text-align:right">경로상</td><td style="text-align:right">화면</td></tr>';
