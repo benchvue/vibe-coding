@@ -260,6 +260,15 @@
   .hud-turn.hide{display:none}
   /* 명소 띠가 떠 있으면 회전 카드는 띠 안으로 들어갑니다 (겹쳐서 명소를 가리던 문제) */
   #hud.banner-on .hud-turn{display:none}
+  .wpx-banner.compact{padding:7px 10px}
+  .wb-row{display:flex;align-items:center;gap:7px;white-space:nowrap;min-width:0}
+  .wb-row .k{color:#F5B917;font-size:1.02rem;flex:0 0 auto}
+  .wb-row .nm{font-weight:700;font-size:.98rem;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1 1 auto}
+  .wb-row .sd{font-size:.72rem;opacity:.75;flex:0 0 auto}
+  .wb-chip{flex:0 0 auto;display:inline-flex;align-items:center;gap:3px;background:rgba(255,255,255,.14);border-radius:14px;
+    padding:1px 8px 1px 2px;font-weight:700;font-size:.82rem;color:#fff}
+  .wb-chip svg{width:26px;height:26px}
+  .wb-c1{font-size:.76rem;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
   .wb-turn{display:flex;align-items:center;gap:8px;margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,.18)}
   .wb-turn svg{width:40px;height:40px;flex:0 0 40px}
   .wb-turn b{font-size:1.05rem;color:#fff;font-variant-numeric:tabular-nums} .wb-turn small{font-size:.78rem;opacity:.85}
@@ -277,9 +286,9 @@
     box-shadow:0 2px 10px rgba(0,0,0,.3);white-space:nowrap}
   .hud-restchip.hide{display:none}
   #hud.resting .hud-turn,#hud.resting .wpx-banner{display:none}
-  .hud-turn b{display:block;font-size:1.5rem;line-height:1.1;font-variant-numeric:tabular-nums}
-  .hud-turn small{display:block;font-size:.74rem;opacity:.85;margin-top:2px}
-  .hud-turn svg{width:66px;height:66px}
+  .hud-turn b{display:block;font-size:1.2rem;line-height:1.1;font-variant-numeric:tabular-nums}
+  .hud-turn small{display:block;font-size:.7rem;opacity:.85;margin-top:1px}
+  .hud-turn svg{width:44px;height:44px}
   /* 노선 이탈 · 역주행 경고 */
   .hud-off{position:absolute;left:10px;right:10px;top:50%;transform:translateY(-140%);z-index:5;
     background:rgba(185,28,28,.9);color:#fff;border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:12px;
@@ -479,7 +488,7 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:2000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"gps",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20261005-45";
+var D0_VER="v20261005-47";
 /* 10/5 JIN 과 정리: 폰 GPS 로 위치가 거의 실시간이라
    · 휴식 단추 — 서버 위치 예측을 멈추려던 것이라 이제 쓸모 없음
    · "여기예요" — 화면 오차는 GPS 자취 + 오늘 주행 GPX 로 저절로 채점되므로 뺌
@@ -970,13 +979,13 @@ function gpsStart(){
     if(f.hdg===null && GPS.fix && hav(GPS.fix,f)>8) f.hdg=bearing(GPS.fix,f);
     /* 어느 궤적 위에 있나 — DAY 0 궤적 400 m 안이면 그것, 아니면 노선 색인 3 km 안 */
     f.track=null; f.km=null;
-    if(D0.pts.length){ var p0=projectOn(D0.pts,D0.cum,f.lat,f.lon,(GPS.fix&&GPS.fix.track==="d0")?GPS.fix.km:undefined); if(p0&&p0.off<=400){ f.track="d0"; f.km=p0.km; } }
+    if(D0.pts.length){ var p0=projectOn(D0.pts,D0.cum,f.lat,f.lon,(GPS.fix&&GPS.fix.track==="d0")?GPS.fix.km:undefined); if(p0&&p0.off<=400){ f.track="d0"; f.km=p0.km; f.off=p0.off; } }
     if(!f.track && IDX&&IDX.length){ var pi=projectOn(IDX.map(function(r){return {lat:r[0],lon:r[1]};}), IDX.map(function(r){return r[2];}), f.lat,f.lon);
       if(pi&&pi.off<=3000){ f.track="idx"; f.km=pi.km; } }
     GPS.last=GPS.fix; GPS.fix=f;
     /* 폰 GPS 로 달릴 때도 주행 기록이 남도록 15초마다 자취를 적음 (OwnTracks 없이도 "여기예요" 와 함께 저장) */
     if(PLOG.s && NAV.on && NAV.src==="gps"){ var tr=PLOG.s.trail=PLOG.s.trail||[], lt=tr.length?tr[tr.length-1][0]:0;
-      if(now-lt>=15000){ tr.push([now, +f.lat.toFixed(6), +f.lon.toFixed(6), Math.round(f.acc||0), f.km!==null?+(+f.km).toFixed(4):null]); plogCurSave(); } }
+      if(now-lt>=15000){ tr.push([now, +f.lat.toFixed(6), +f.lon.toFixed(6), Math.round(f.acc||0), f.km!==null?+(+f.km).toFixed(4):null, typeof f.off==="number"?Math.round(f.off):null]); plogCurSave(); } }
   }, function(e){
     GPS.err = e.code===1 ? "위치 권한이 거부됐습니다 (설정 → Safari → 위치)" : e.code===2 ? "위치를 잡지 못했습니다" : "위치 응답이 늦습니다";
   }, {enableHighAccuracy:true, maximumAge:GPS.acceptEvery, timeout:20000});
@@ -1130,10 +1139,13 @@ function plogEnd(){
   if(restOn(S.who)){ (S.rests=S.rests||[]).push({from:new Date(REST.since).toISOString(), to:new Date().toISOString(), km:REST.km}); REST.since=null; REST.resumeAt=null; restSave(); }
   S.end=new Date().toISOString(); S.errPct=plogErrPct(S)!==null?+plogErrPct(S).toPrecision(6):null;
   S.meanErrM=plogMeanErr(S)!==null?Math.round(plogMeanErr(S)):null; S.metric="errPct=Σ|err|·(gap/60s)/dist · meanErrM=시간가중 · 튄 수신 제외";
+  S.gps=gpsStats(S);
+  if(S.gps){ S.distKm=S.gps.km; if(S.trackKm && S.gps.km>=S.trackKm-0.5) S.done=true; }
   if(!S.done && S.trackKm) S.note=(S.note?S.note+" · ":"")+"중간 멈춤 "+S.distKm.toFixed(1)+"/"+S.trackKm.toFixed(1)+" km";
   /* 서버 수신이 없어도(폰 GPS 로만 달림) "여기예요" 나 GPS 자취가 있으면 저장 */
   if(S.fixes.length>=2 || (S.marks&&S.marks.length) || (S.trail&&S.trail.length>=2)){ PLOG.all.push(S); if(PLOG.all.length>30) PLOG.all.shift(); plogSave(); }
   PLOG.s=null; renderStats();
+  if(S.gps) setTimeout(function(){ alert("오늘 주행 (폰 GPS)\n"+gpsStatText(S.gps)+"\n\n저녁에 가민 GPX 를 올리면 화면 오차를 실제 위치로 채점합니다."); }, 300);
 }
 function plogSummaryToast(){
   var S=PLOG.s, t=$("hwpb"); if(!S||!t) return;
@@ -1147,7 +1159,7 @@ function plogSummaryToast(){
 var HP={total:0, key:""};
 function hudProgress(curKm, pct){
   var f=$("hpfill"), k=$("hpknob"), c=$("hpc"), e=$("hp1"); if(!f) return;
-  var total = (NAV.src==="day0"||(NAV.src==="live"&&LIVEHIST[NAV.who].length&&LIVEHIST[NAV.who][LIVEHIST[NAV.who].length-1].d0km!==undefined)) && D0.total
+  var total = (NAV.src==="day0"||(NAV.src==="gps"&&GPS.fix&&GPS.fix.track==="d0")||(NAV.src==="live"&&LIVEHIST[NAV.who].length&&LIVEHIST[NAV.who][LIVEHIST[NAV.who].length-1].d0km!==undefined)) && D0.total
               ? D0.total : (IDX&&IDX.length ? IDX[IDX.length-1][2] : 0);
   if(!total){ $("hprog").style.display="none"; return; }
   $("hprog").style.display="";
@@ -1162,11 +1174,41 @@ function hudProgress(curKm, pct){
     (WPX.list||[]).forEach(function(w){ h+='<i class="'+(w.sym==="Summit"?"pass":"")+'" style="left:'+(w.km/total*100).toFixed(2)+'%" title="'+esc(w.cmt||w.name)+'"></i>'; });
     t.innerHTML=h; }
 }
+/* 폰 GPS 주행 요약 — 주행 끝에 바로 보이는 "오늘 오차"
+   GPS ±   = 폰이 스스로 알려 준 GPS 오차 중간값
+   경로와  = 길잡이 궤적에서 떨어진 거리 중간값
+   끊김    = 1분 넘게 자취가 빈 횟수 (화면 꺼짐 · 다른 앱) */
+function gpsStats(S){
+  var T=(S&&S.trail)||[]; if(T.length<2) return null;
+  var med=function(a){ if(!a.length) return null; var b=a.slice().sort(function(x,y){return x-y;}); return b[Math.floor(b.length/2)]; };
+  var acc=[], off=[], gaps=0, gapS=0, dist=0, prevK=null;
+  T.forEach(function(r,i){ if(r[3]!=null) acc.push(r[3]); if(r[5]!=null) off.push(r[5]);
+    if(i){ var dt=(r[0]-T[i-1][0])/1000; if(dt>60){ gaps++; gapS+=dt; } }
+    if(r[4]!=null){ if(prevK!==null){ var dk=r[4]-prevK; if(dk>0 && dk<1.5) dist+=dk; } prevK=r[4]; } });
+  var sec=(T[T.length-1][0]-T[0][0])/1000, offS=off.slice().sort(function(a,b){return a-b;});
+  return { n:T.length, km:+dist.toFixed(2), sec:Math.round(sec), accMed:med(acc), offMed:med(off),
+    offP90:offS.length?offS[Math.floor(offS.length*0.9)]:null, gaps:gaps, gapMin:Math.round(gapS/60) };
+}
+function gpsStatText(g, short){
+  if(!g) return "";
+  var hm=Math.floor(g.sec/3600)+":"+String(Math.floor(g.sec%3600/60)).padStart(2,"0");
+  return (short?"":g.km.toFixed(1)+" km · "+hm+" · ")+"GPS ±"+(g.accMed==null?"—":g.accMed)+" m · 경로와 "+(g.offMed==null?"—":g.offMed)+" m"
+    +(!short&&g.offP90!=null?" (10 % 는 "+g.offP90+" m 넘음)":"")+" · 끊김 "+g.gaps+"회"+(g.gaps?" ("+g.gapMin+"분)":"");
+}
+/* 최근 7일 폰 GPS 주행 */
+function gpsWeekRows(who){
+  var since=Date.now()-7*86400000, rows=PLOG.all.filter(function(S){ return S.who===who && S.gps && Date.parse(S.start)>=since; });
+  if(!rows.length) return "";
+  return '<div class="row2" style="margin-top:6px"><span>최근 7일 폰 GPS 주행</span><b></b></div>'
+    +rows.map(function(S){ var d=new Date(S.start); return '<div class="d0note" style="font-variant-numeric:tabular-nums">'
+      +(d.getMonth()+1)+'/'+d.getDate()+' · '+esc(gpsStatText(S.gps))+'</div>'; }).join("");
+}
 function plogStat(){
   var el=$("hstat"); if(!el) return;
   var S=PLOG.s, txt="";
-  if(S){ var sec=Math.round((Date.now()-new Date(S.start).getTime())/1000);
-    txt="주행 "+Math.floor(sec/3600)+":"+String(Math.floor(sec%3600/60)).padStart(2,"0")+":"+String(sec%60).padStart(2,"0")
+  if(S){ var sec=Math.round((Date.now()-new Date(S.start).getTime())/1000), hms=Math.floor(sec/3600)+":"+String(Math.floor(sec%3600/60)).padStart(2,"0")+":"+String(sec%60).padStart(2,"0");
+    if(NAV.src==="gps"){ var g=gpsStats(S); txt="주행 "+hms+(g?"  ·  "+gpsStatText(g,true):"  ·  GPS 자취 모으는 중"); }
+    else txt="주행 "+hms
        +"  ·  수신 "+S.fixes.length+"회  ·  오차 "+sig4(plogErrPct(S))+" % · "+(plogMeanErr(S)!==null?Math.round(plogMeanErr(S)):"—")+" m"+(S.done?"  ·  완주":""); }
   else if(NAV.src==="day0" && D0.total){ txt="궤적 재생 — 로그 없음"; }
   else txt="";
@@ -1315,7 +1357,9 @@ function riderState(){
   var w=NAV.who, m=WHO[w];
   if(NAV.src==="gps"){
     var f=GPS.fix; if(!f) return null;
-    var g={lat:f.lat, lon:f.lon, hdg:f.hdg, km:f.km,
+    /* 진행 막대 · 위쪽 "km (%)" — 폰 GPS 에서도 (10/5 빠져 있던 것) */
+    var gTot = f.track==="d0" ? (D0.total||0) : (IDX&&IDX.length ? IDX[IDX.length-1][2] : 0);
+    var g={lat:f.lat, lon:f.lon, hdg:f.hdg, km:f.km, pct:(f.km!==null&&gTot)?f.km/gTot:null,
       sub:"폰 GPS · ±"+Math.round(f.acc)+" m · "+agoText(new Date(f.at).toISOString())+(GPS.err?" · "+GPS.err:"")};
     g.ele = (f.track==="d0" ? d0State(f.km).ele : nearestEleAt(f.lat,f.lon))*OPT.exag+OPT.lift;
     return g;
@@ -1512,9 +1556,11 @@ function setNav(on){
     if(OPT.live) liveTimerStart();
     if(LIVE_ENABLED && NAV.src==="live" && !OPT.live){ var cl=$("cLive"); if(cl){ cl.checked=true; cl.dispatchEvent(new Event("change")); } }
     if(NAV.src==="day0" && !D0.playing) d0Play(true);
+    navPower(true);
     syncHud(); ensureLoop();
   }else{
     viewer.camera.lookAtTransform(Cesium.Matrix4.IDENTITY);
+    navPower(false);
     NAV.hdg=null; gpsStop(); plogEnd(); if(OPT.live) liveTimerStart();
     /* 날짜 노선을 재생하던 중이었으면 기억해 둔 DAY 0 GPX 로 되돌립니다 */
     if(D0.day){ D0.playing=false; if(!restoreDay0()) clearDay0(); WPX.key=""; }
@@ -1522,6 +1568,17 @@ function setNav(on){
     drawLive();
     syncD0UI();
   }
+}
+/* 주행 모드 배터리 절약 (10/5 BIN: 1시간 52분에 96 → 12 %)
+   폰 GPS 는 2초마다 한 번 바뀌는데 3D 지도는 초당 24번 그리고 있었습니다.
+   주행 중에는 초당 6번 · 화면 해상도도 낮춥니다. 주행 끝이면 원래대로. */
+function navPower(on){
+  if(!viewer) return;
+  if(on){ var dpr=window.devicePixelRatio||1;
+    viewer.targetFrameRate = 6;
+    viewer.resolutionScale = Math.min(1, 1.2/dpr);
+    viewer.scene.globe.maximumScreenSpaceError = 4; }
+  else setEco(OPT.eco);
 }
 /* 화면 절전 — 발열의 대부분은 WebGL 이 초당 60번 그리는 데서 나옵니다 */
 function setEco(on){
@@ -1684,16 +1741,26 @@ function turnsBuild(tr){
   while(k<=total){ while(i<n-2 && cum[i+1]<k) i++;
     var t=(k-cum[i])/((cum[i+1]-cum[i])||1e-9); samp.push({km:k, lat:pts[i].lat+(pts[i+1].lat-pts[i].lat)*t, lon:pts[i].lon+(pts[i+1].lon-pts[i].lon)*t}); k+=0.01; }
   var S=samp, hb=function(a,b){ return bearing(S[a],S[b]); }, ad=function(x,y){ return ((y-x+540)%360)-180; };
+  /* 10/5 BIN: 유턴 바로 뒤 우회전을 놓치고 다음 회전을 보여 줌 —
+     유턴 · 연속 회전 옆에서는 "앞뒤가 곧다" 조건이 깨져서 버려졌음.
+     · 80° 넘는 회전은 곧음 조건 없이 받음 (강변 굽이는 ±60 m 안에서 80° 를 넘지 않음)
+     · 60~80° 는 곧음 조건을 보되, 창 안에서 조건을 만족하는 자리를 찾음
+     · 유턴 뒤에는 간격을 50 m 만 띄움 */
   for(var j=10;j<S.length-10;j++){
     var d=ad(hb(j-6,j-2),hb(j+2,j+6)); if(Math.abs(d)<TURN_MIN) continue;
-    var best=j, bd=d;
-    for(var q=j;q<Math.min(S.length-10,j+6);q++){ var d2=ad(hb(q-6,q-2),hb(q+2,q+6)); if(Math.abs(d2)>Math.abs(bd)){ bd=d2; best=q; } }
-    var pre=Math.abs(ad(hb(best-10,best-6),hb(best-6,best-2))), post=Math.abs(ad(hb(best+2,best+6),hb(best+6,best+10)));
-    var last=TURNS.list[TURNS.list.length-1];
-    if((pre<TURN_STRAIGHT && post<TURN_STRAIGHT) || Math.abs(bd)>=150){
-      if(!last || S[best].km-last.km>0.08) TURNS.list.push(mk(best,bd));
+    var best=j, bd=d, okq=-1, okd=0;
+    for(var q=j;q<Math.min(S.length-10,j+6);q++){
+      var d2=ad(hb(q-6,q-2),hb(q+2,q+6)); if(Math.abs(d2)>Math.abs(bd)){ bd=d2; best=q; }
+      var pr2=Math.abs(ad(hb(q-10,q-6),hb(q-6,q-2))), po2=Math.abs(ad(hb(q+2,q+6),hb(q+6,q+10)));
+      if(Math.abs(d2)>=TURN_MIN && pr2<TURN_STRAIGHT && po2<TURN_STRAIGHT && Math.abs(d2)>Math.abs(okd)){ okq=q; okd=d2; }
     }
-    j=best+6;
+    var last=TURNS.list[TURNS.list.length-1], at=-1, ang=0;
+    if(Math.abs(bd)>=80){ at=best; ang=bd; } else if(okq>=0){ at=okq; ang=okd; }
+    if(at>=0){
+      var gap=(last && Math.abs(last.ang)>=150 && Math.abs(ang)<120) ? 0.05 : 0.08;   /* 유턴 꼬리가 또 유턴으로 잡히지 않게 */
+      if(!last || S[at].km-last.km>gap) TURNS.list.push(mk(at,ang));
+    }
+    j=best+4;
   }
   function mk(ix,ang){ var shape=samp.slice(Math.max(0,ix-7), Math.min(samp.length,ix+8));
     return {km:samp[ix].km, ang:Math.round(ang), shape:shape, hin:bearing(samp[Math.max(0,ix-3)],samp[ix]), lat:samp[ix].lat, lon:samp[ix].lon, jx:null}; }
@@ -1768,6 +1835,10 @@ function turnRender(cur){
   box.classList.remove("hide");
   box.innerHTML=turnGlyph(nxt, cur)+'<div><b>'+(m<1000?Math.round(m/10)*10+" m":(m/1000).toFixed(1)+" km")+'</b><small>'+turnText(nxt.ang)
     +(nt.n2&&nt.n2.km-cur<=2?' · 다음 '+fmtM((nt.n2.km-cur)*1000)+' '+turnText(nt.n2.ang):'')+'</small></div>';
+}
+function turnChipHtml(cur){
+  var nt=turnNext(cur); if(!nt) return "";
+  return '<span class="wb-chip">'+turnGlyph(nt.t,cur)+fmtM((nt.t.km-cur)*1000)+' '+turnText(nt.t.ang)+'</span>';
 }
 function turnMiniHtml(cur){
   var nt=turnNext(cur); if(!nt) return "";
@@ -1953,27 +2024,18 @@ function wpxBanner(cur, up, passed){
   var f=up&&up[0], a=f?(f.km-cur)*1000:null, h="";
   WPX.bannerWp=null;
   if(restOn()){ b.className="wpx-banner hide"; WPX.lastBanner=""; $("hud").classList.remove("banner-on"); return; }
+  /* 10/5 BIN: 지도를 더 보이게 — 명소 · 회전을 한 줄로, 설명은 작은 한 줄, "다음" 줄은 뺌 */
   if(f && a<=WPX_R){
     WPX.bannerWp=f;
-    h='<div class="wb-head"><b>'+(a>15?fmtM(a)+" 앞":"지금")+'</b><span>'+wpxSideText(f)+'</span>'
-     +(HERE_BTN?'<button class="wb-here" type="button" data-here="1">여기예요</button>':'')+'</div>'
-     +'<div class="wb-name">'+esc(f.name)+'</div>'
-     +(f.cmt?'<div class="wb-cmt">'+esc(f.cmt)+'</div>':'')
-     +(WPX.markMsg&&Date.now()-WPX.markMsg.t<6000?'<div class="wb-mark">✓ '+esc(WPX.markMsg.txt)+'</div>':'')
-     +turnMiniHtml(cur)
-     +(up[1]?'<div class="wb-next">다음 · '+fmtM((up[1].km-cur)*1000)+' · '+esc(up[1].cmt||up[1].name)+'</div>':'');
-    b.className="wpx-banner";
+    h='<div class="wb-row"><b class="k">'+(a>15?fmtM(a):"지금")+'</b><span class="nm">'+esc(f.name)+'</span>'
+     +'<span class="sd">'+wpxSideText(f)+'</span>'+turnChipHtml(cur)+'</div>'
+     +(f.cmt&&f.cmt!==f.name?'<div class="wb-c1">'+esc(f.cmt)+'</div>':'');
+    b.className="wpx-banner compact";
   }else if(passed){
     var back=(cur-passed.km)*1000, id=wid(passed);
     WPX.bannerWp=passed;
-    h='<div class="wb-head"><b>방금 지나침</b><span>'+(passed.off<20?"뒤 ":(passed.side>0?"왼쪽 ":"오른쪽 ")+Math.round(passed.off/10)*10+" m · 뒤 ")+fmtM(back)+'</span>'
-     +(HERE_BTN?'<button class="wb-here" type="button" data-here="1">여기예요</button>':'')+'</div>'
-     +(WPX.markMsg&&Date.now()-WPX.markMsg.t<6000?'<div class="wb-mark">✓ '+esc(WPX.markMsg.txt)+'</div>':'')
-     +'<div class="wb-name">'+esc(passed.name)+'</div>'
-     +(passed.cmt?'<div class="wb-cmt">'+esc(passed.cmt)+'</div>':'')
-     +turnMiniHtml(cur)
-     +(f?'<div class="wb-next">다음 · '+fmtM(a)+' · '+esc(f.cmt||f.name)+'</div>':'');
-    b.className="wpx-banner passed";
+    h='<div class="wb-row"><b class="k">지나침 '+fmtM(back)+'</b><span class="nm">'+esc(passed.name)+'</span>'+turnChipHtml(cur)+'</div>';
+    b.className="wpx-banner compact passed";
     if(WPX.said[id]!==3){ WPX.said[id]=3;
       var pk=id+":passed", nw=Date.now();
       if(!WPX_LAST[pk] || nw-WPX_LAST[pk]>180000){ WPX_LAST[pk]=nw;
@@ -2593,7 +2655,9 @@ function day0Card(){
     +'<div class="d0note" style="font-variant-numeric:tabular-nums">'+GRADE_BINS.map(function(b,i){ return (b[0]<=-99?"↓6+":b[1]>=99?"↑6+":(b[0]+"~"+b[1]))+"% "+SPEED_TABLE[i]; }).join(" · ")+' km/h</div>'
     +errChart(NAV.who)
     +'<div class="row2"><span>예측 오차 로그</span><b>'+n+'회'+(PLOG.s?' + 진행 중':'')+'</b></div>'
-    +(last?(function(){ var r=CS?CS.plogRecalc(last):{errPct:last.errPct,meanErrM:last.meanErrM,distKm:last.distKm};
+    +gpsWeekRows(NAV.who)
+    +(last&&last.gps?'<div class="row2"><span>마지막</span><b>'+esc(last.who.toUpperCase())+' · 폰 GPS · '+esc(gpsStatText(last.gps))+'</b></div>':'')
+    +(last&&!last.gps?(function(){ var r=CS?CS.plogRecalc(last):{errPct:last.errPct,meanErrM:last.meanErrM,distKm:last.distKm};
         return '<div class="row2"><span>마지막</span><b>'+esc(last.who.toUpperCase())+' · '+sig4(r.errPct)+' %'+(r.meanErrM!==null&&r.meanErrM!==undefined?' · 평균 '+Math.round(r.meanErrM)+' m':'')+' · '+r.distKm.toFixed(1)+' km'+(last.done?'':' · 중간 멈춤')+' · '+esc(last.ver)+'</b></div>'; })():'')
     +'<div class="d0row"><button class="mini play" id="plogDl"'+(n||PLOG.s?'':' disabled')+'>로그 내려받기 · 공유</button>'
     +'<button class="mini" id="plogClr"'+(n?'':' disabled')+'>로그 지우기</button>'
