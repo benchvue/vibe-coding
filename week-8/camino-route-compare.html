@@ -357,7 +357,8 @@
   #hblack .bk-turn svg{width:70px;height:70px;opacity:.6;flex:0 0 auto}
   #hblack .bk-turn .lr{font-size:2em;line-height:1}
   #hblack .bk-km{position:absolute;left:0;right:0;top:75%;transform:translateY(-50%);text-align:center;
-    font-size:1.6rem;font-weight:800;color:#2F7FE0;font-variant-numeric:tabular-nums}
+    font-size:3.2rem;font-weight:800;color:#2F7FE0;font-variant-numeric:tabular-nums;line-height:1.1}
+  #hblack .bk-km small{display:block;font-size:1em}
   .hud-src #hblk{background:#111;color:#ddd;border-color:#111}
   /* 위쪽 BIN · JIN — 고른 사람만 보임. 누르면 다른 사람으로 */
   .hud-who button:not(.on){display:none}
@@ -530,7 +531,7 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:2000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"gps",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20261006-52";
+var D0_VER="v20261006-53";
 /* 10/5 JIN 과 정리: 폰 GPS 로 위치가 거의 실시간이라
    · 휴식 단추 — 서버 위치 예측을 멈추려던 것이라 이제 쓸모 없음
    · "여기예요" — 화면 오차는 GPS 자취 + 오늘 주행 GPX 로 저절로 채점되므로 뺌
@@ -1673,8 +1674,10 @@ function blkTurn(nxt, m){
   var t=$("bkTurn"), k=$("bkKm"); if(!t) return;
   var h = nxt ? turnGlyph(nxt, nxt.km-m/1000)+'<span>'+fmtM(m)+' '+turnTextHtml(nxt.ang)+'</span>' : '';
   if(t._h!==h){ t._h=h; t.innerHTML=h; }
-  var kt=BLK.km||"";
-  if(k.textContent!==kt) k.textContent=kt;
+  /* 글자가 2배라 한 줄에 다 안 들어감 — "22.42 km" / "90 %" 두 줄로 */
+  var kt=BLK.km||"", mm=kt.match(/^(.*?)\s*\((.*)\)\s*$/);
+  var kh=mm ? esc(mm[1])+'<small>'+esc(mm[2])+'</small>' : esc(kt);
+  if(k._h!==kh){ k._h=kh; k.innerHTML=kh; }
 }
 /* 주행 모드에서는 지도 위 글자(명소 이름 · BIN/JIN 표지 · DAY 표시)를 모두 숨김 — 위성 사진 위에서 잘 안 보여서 (10/5)
    주행 중 새로 생긴 표지도 3초마다 다시 숨기고, 주행 끝이면 되돌립니다 */
