@@ -347,6 +347,15 @@
     border-radius:12px 0 0 12px;background:rgba(255,255,255,.85);color:var(--blue);font-size:1.3rem;font-weight:700;
     box-shadow:0 2px 8px rgba(21,42,85,.2);cursor:pointer;padding:0}
   .hud-ztog.open{right:76px}
+  /* 🌙 화면 끄기 — 아이폰 OLED 는 검은 점이 거의 전기를 안 씀. 지도 그리기도 멈추고 GPS · 음성만 계속 */
+  #hblack{position:fixed;inset:0;z-index:60;background:#000;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;gap:14px;color:#5a1a14;-webkit-tap-highlight-color:transparent}
+  #hblack.hide{display:none}
+  #hblack .bk-turn{display:flex;align-items:center;gap:12px;font-size:2.2rem;font-weight:700;color:#7a2a20;min-height:80px}
+  #hblack .bk-turn svg{width:80px;height:80px;opacity:.55}
+  #hblack .bk-km{font-size:1rem;color:#4a1c16;font-variant-numeric:tabular-nums}
+  #hblack .bk-tip{position:absolute;bottom:40px;font-size:.78rem;color:#3a1410}
+  .hud-src #hblk{background:#111;color:#ddd;border-color:#111}
   /* 위쪽 BIN · JIN — 고른 사람만 보임. 누르면 다른 사람으로 */
   .hud-who button:not(.on){display:none}
   /* 회전 안내 — 예전처럼 크게, 조금 아래로 · 명소 띠가 있으면 그 아래 */
@@ -448,12 +457,18 @@
     <button id="hzout" aria-label="축소">－</button>
   </div>
   <div class="hud-restchip hide" id="hrchip"></div>
+  <div id="hblack" class="hide" role="button" aria-label="화면 켜기">
+    <div class="bk-turn" id="bkTurn"></div>
+    <div class="bk-km" id="bkKm"></div>
+    <div class="bk-tip">눌러서 화면 켜기 · 20초 뒤 다시 꺼짐</div>
+  </div>
   <div class="hud-bot hide" id="hbot">
     <div class="hud-rest" id="hrestrow"><button id="hrest" type="button">☕ 휴식 — 예측 멈춤</button></div>
     <div class="hud-src">
       <button data-src="day0" id="hsrc0">DAY 0 시험</button>
       <button data-src="live" id="hsrcL">실시간 위치</button>
       <button data-src="gps" id="hsrcG">📍 폰 GPS</button>
+      <button id="hblk" type="button">🌙 화면 끄기</button>
     </div>
     <div class="hud-stat" id="hstat"></div>
     <div class="hud-play" id="hplay">
@@ -505,7 +520,7 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:2000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"gps",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20261005-49";
+var D0_VER="v20261005-50";
 /* 10/5 JIN 과 정리: 폰 GPS 로 위치가 거의 실시간이라
    · 휴식 단추 — 서버 위치 예측을 멈추려던 것이라 이제 쓸모 없음
    · "여기예요" — 화면 오차는 GPS 자취 + 오늘 주행 GPX 로 저절로 채점되므로 뺌
@@ -1002,7 +1017,7 @@ function gpsStart(){
     GPS.last=GPS.fix; GPS.fix=f;
     /* 폰 GPS 로 달릴 때도 주행 기록이 남도록 15초마다 자취를 적음 (OwnTracks 없이도 "여기예요" 와 함께 저장) */
     if(PLOG.s && NAV.on && NAV.src==="gps"){ var tr=PLOG.s.trail=PLOG.s.trail||[], lt=tr.length?tr[tr.length-1][0]:0;
-      if(now-lt>=15000){ tr.push([now, +f.lat.toFixed(6), +f.lon.toFixed(6), Math.round(f.acc||0), f.km!==null?+(+f.km).toFixed(4):null, typeof f.off==="number"?Math.round(f.off):null]); plogCurSave(); } }
+      if(now-lt>=15000){ tr.push([now, +f.lat.toFixed(6), +f.lon.toFixed(6), Math.round(f.acc||0), f.km!==null?+(+f.km).toFixed(4):null, typeof f.off==="number"?Math.round(f.off):null]); if(tr.length%4===0) plogCurSave(); } }
   }, function(e){
     GPS.err = e.code===1 ? "위치 권한이 거부됐습니다 (설정 → Safari → 위치)" : e.code===2 ? "위치를 잡지 못했습니다" : "위치 응답이 늦습니다";
   }, {enableHighAccuracy:true, maximumAge:GPS.acceptEvery, timeout:20000});
@@ -1504,7 +1519,8 @@ function navTick(now){
   var s=riderState();
   if(!s){ navShow(false); setHudText("—", NAV.src==="gps" ? (GPS.err||"폰 GPS 를 잡는 중…") : "위치를 기다리는 중"); return; }
   if(s.hdg===null||s.hdg===undefined) s.hdg = (NAV.hdg===null?0:NAV.hdg);
-  NAV.hdg = NAV.hdg===null ? s.hdg : lerpAngle(NAV.hdg, s.hdg, 0.12);
+  var dtF=Math.min(30, Math.max(1, (now-(NAV._tn||now))/16.7)); NAV._tn=now;      /* 화면 몇 번 분량이 지났나 — 4 Hz 에서도 같은 속도로 돌게 */
+  NAV.hdg = NAV.hdg===null ? s.hdg : lerpAngle(NAV.hdg, s.hdg, 1-Math.pow(1-0.12, dtF));
   var gnd=groundAt(s.lat,s.lon,s.ele);
   var tall = NAV.on ? Math.max(35, navRange()*0.22) : 600;
   NAVP.base=Cesium.Cartesian3.fromDegrees(s.lon,s.lat,gnd+2);
@@ -1542,14 +1558,18 @@ function setHudText(a,b){ var k=$("hkm"), s=$("hsub"); if(k) k.textContent=a; if
 
 /* 한 개의 rAF 루프 — 주행 모드거나 DAY 0 재생 중일 때만 돕니다 */
 var LOOP=null;
+/* 주행 모드(폰 GPS)에서는 초당 4번만 계산 — 위치는 2초마다 바뀌는데 매 화면(초당 60번)마다 계산하던 것을 줄여 배터리 절약 (10/5)
+   DAY 0 재생 중에는 부드럽게 보이도록 예전처럼 매 화면 */
+var LOOP_T=null;
 function ensureLoop(){
-  if(LOOP) return;
+  if(LOOP || LOOP_T) return;
   var step=function(now){
+    LOOP=null; LOOP_T=null;
     if(D0.playing) d0Advance(now);
     navTick(now);
     if(D0.playing) syncD0UI(true);
-    if(NAV.on || D0.playing){ LOOP=requestAnimationFrame(step); }
-    else LOOP=null;
+    if(D0.playing){ LOOP=requestAnimationFrame(step); }
+    else if(NAV.on){ LOOP_T=setTimeout(function(){ step(performance.now()); }, 250); }
   };
   LOOP=requestAnimationFrame(step);
 }
@@ -1577,7 +1597,7 @@ function setNav(on){
     syncHud(); ensureLoop();
   }else{
     viewer.camera.lookAtTransform(Cesium.Matrix4.IDENTITY);
-    navPower(false);
+    navPower(false); blkSet(false);
     NAV.hdg=null; gpsStop(); plogEnd(); if(OPT.live) liveTimerStart();
     /* 날짜 노선을 재생하던 중이었으면 기억해 둔 DAY 0 GPX 로 되돌립니다 */
     if(D0.day){ D0.playing=false; if(!restoreDay0()) clearDay0(); WPX.key=""; }
@@ -1589,6 +1609,32 @@ function setNav(on){
 /* 주행 모드 배터리 절약 (10/5 BIN: 1시간 52분에 96 → 12 %)
    폰 GPS 는 2초마다 한 번 바뀌는데 3D 지도는 초당 24번 그리고 있었습니다.
    주행 중에는 초당 6번 · 화면 해상도도 낮춥니다. 주행 끝이면 원래대로. */
+/* ── 🌙 화면 끄기 (검은 화면) ──
+   웹 페이지는 폰 화면을 잠그면 GPS · 음성이 멈춥니다(아이폰 규칙). 그래서 화면은 켜 둔 채 검게 칠하고
+   3D 지도 그리기를 멈춥니다. 위치 계산 · 명소 · 회전 음성은 계속. 누르면 20초 동안 지도가 보였다가 다시 검게. */
+var BLK={on:false, wakeT:null};
+function blkSet(on){
+  BLK.on=!!on; clearTimeout(BLK.wakeT);
+  var b=$("hblack"); if(!b) return;
+  b.classList.toggle("hide", !BLK.on);
+  if(viewer) viewer.useDefaultRenderLoop = !BLK.on;
+  var btn=$("hblk"); if(btn) btn.textContent=BLK.on?"☀ 화면 켜기":"🌙 화면 끄기";
+  if(BLK.on && WPX && !WPX.voice){ var v=$("hwpv"); if(v && !v.checked){ v.checked=true; WPX.voice=true; wpxSay("화면을 끕니다. 음성으로 안내합니다"); } }
+}
+function blkWake(){
+  if(!BLK.on) return;
+  $("hblack").classList.add("hide"); if(viewer) viewer.useDefaultRenderLoop=true;
+  clearTimeout(BLK.wakeT);
+  BLK.wakeT=setTimeout(function(){ if(BLK.on && NAV.on){ $("hblack").classList.remove("hide"); if(viewer) viewer.useDefaultRenderLoop=false; } }, 20000);
+}
+function blkTurn(nxt, m){
+  if(!BLK.on) return;
+  var t=$("bkTurn"), k=$("bkKm"); if(!t) return;
+  var h = nxt ? turnGlyph(nxt, nxt.km-m/1000)+'<span>'+fmtM(m)+' '+turnText(nxt.ang)+'</span>' : '';
+  if(t._h!==h){ t._h=h; t.innerHTML=h; }
+  var c=wpxCurKm(); var kt=(typeof c==="number"?c.toFixed(1)+" km":"")+(D0.total?" / "+D0.total.toFixed(1)+" km":"");
+  if(k.textContent!==kt) k.textContent=kt;
+}
 /* 주행 모드에서는 지도 위 글자(명소 이름 · BIN/JIN 표지 · DAY 표시)를 모두 숨김 — 위성 사진 위에서 잘 안 보여서 (10/5)
    주행 중 새로 생긴 표지도 3초마다 다시 숨기고, 주행 끝이면 되돌립니다 */
 var LBL={timer:null};
@@ -1725,6 +1771,8 @@ function hudLiveLabel(){
 function setupHud(){
   document.querySelectorAll("#hud [data-who]").forEach(function(b){
     b.addEventListener("click",function(){ setWho(b.dataset.who===NAV.who ? (NAV.who==="bin"?"jin":"bin") : b.dataset.who); }); });
+  on("hblk","click",function(){ blkSet(!BLK.on); });
+  on("hblack","click",function(){ blkWake(); });
   on("hztog","click",function(){ var z=$("hzoomw"), open=!z.classList.toggle("hide"); this.classList.toggle("open",open); this.textContent=open?"›":"‹"; });
   on("hexit","click",function(){ setNav(false); });
   on("hrest","click",restToggle);
@@ -1859,10 +1907,24 @@ function dotAt(P, pts, curKm){
   var x=(+P[i][0]+(+P[i+1][0]-P[i][0])*t).toFixed(1), y=(+P[i][1]+(+P[i+1][1]-P[i][1])*t).toFixed(1);
   return '<circle cx="'+x+'" cy="'+y+'" r="5" fill="#fff" stroke="#1E5FB4" stroke-width="2.5"/>';
 }
+/* 회전 음성 — 화면을 꺼 두고(검은 화면) 소리로만 달릴 수 있게 (10/5 JIN)
+   200 m 앞에서 한 번, 바로 앞(40 m)에서 한 번 */
+var TURN_SAID={};
+function turnVoice(nxt, m){
+  var k=nxt.km.toFixed(3), now=Date.now();
+  if(m<=230 && m>120 && !TURN_SAID[k+":a"]){ TURN_SAID[k+":a"]=now; wpxBeep(1);
+    try{ if(navigator.vibrate) navigator.vibrate([100,60,100]); }catch(e){}
+    if(WPX.voice) wpxSay("200 미터 앞 "+turnText(nxt.ang)); }
+  if(m<=45 && m>-10 && !TURN_SAID[k+":b"]){ TURN_SAID[k+":b"]=now; wpxBeep(2);
+    try{ if(navigator.vibrate) navigator.vibrate([250]); }catch(e){}
+    if(WPX.voice) wpxSay("지금 "+turnText(nxt.ang)); }
+}
 function turnRender(cur){
   var box=$("hturn"); if(!box) return;
-  var nt=turnNext(cur); if(!nt){ box.classList.add("hide"); box.dataset.key=""; return; }
+  var nt=turnNext(cur); if(!nt){ box.classList.add("hide"); box.dataset.key=""; blkTurn(null); return; }
   var nxt=nt.t, m=(nxt.km-cur)*1000, key=nxt.km+":"+Math.round(m/5);
+  if(NAV.on && NAV.src!=="day0") turnVoice(nxt, m);
+  blkTurn(nxt, m);
   if(box.dataset.key===key) return; box.dataset.key=key;
   box.classList.remove("hide");
   box.innerHTML=turnGlyph(nxt, cur)+'<div><b>'+(m<1000?Math.round(m/10)*10+" m":(m/1000).toFixed(1)+" km")+'</b><small>'+turnText(nxt.ang)
