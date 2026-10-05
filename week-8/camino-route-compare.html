@@ -351,10 +351,13 @@
   #hblack{position:fixed;inset:0;z-index:60;background:#000;display:flex;flex-direction:column;align-items:center;
     justify-content:center;gap:14px;color:#5a1a14;-webkit-tap-highlight-color:transparent}
   #hblack.hide{display:none}
-  #hblack .bk-turn{display:flex;align-items:center;gap:12px;font-size:2.2rem;font-weight:700;color:#7a2a20;min-height:80px}
-  #hblack .bk-turn svg{width:80px;height:80px;opacity:.55}
-  #hblack .bk-km{font-size:1rem;color:#4a1c16;font-variant-numeric:tabular-nums}
-  #hblack .bk-tip{position:absolute;bottom:40px;font-size:.78rem;color:#3a1410}
+  /* 10/6: 검은 화면 — 회전은 위에서 25 % 높이, 주행 거리(%)는 75 % 높이에 파란 글씨 */
+  #hblack .bk-turn{position:absolute;left:0;right:0;top:25%;transform:translateY(-50%);display:flex;align-items:center;
+    justify-content:center;gap:10px;font-size:1.8rem;font-weight:700;color:#8a3226;white-space:nowrap}
+  #hblack .bk-turn svg{width:70px;height:70px;opacity:.6;flex:0 0 auto}
+  #hblack .bk-turn .lr{font-size:2em;line-height:1}
+  #hblack .bk-km{position:absolute;left:0;right:0;top:75%;transform:translateY(-50%);text-align:center;
+    font-size:1.6rem;font-weight:800;color:#2F7FE0;font-variant-numeric:tabular-nums}
   .hud-src #hblk{background:#111;color:#ddd;border-color:#111}
   /* 위쪽 BIN · JIN — 고른 사람만 보임. 누르면 다른 사람으로 */
   .hud-who button:not(.on){display:none}
@@ -363,6 +366,7 @@
   .hud-turn{top:max(25%, calc(max(2px,env(safe-area-inset-top)) + 46px + 34px + 70px)) !important;transform:translateY(-50%)}
   #hud.banner-on .hud-turn{display:flex !important;top:max(25%, calc(max(2px,env(safe-area-inset-top)) + 46px + 34px + var(--bh,60px) + 70px)) !important}
   .hud-turn em{display:block;font-style:normal;font-size:1.56rem;font-weight:800;color:#F5B917;line-height:1.15;margin-top:2px}
+  .hud-turn em .lr{font-size:2em;line-height:1}            /* "우" · "좌" 만 2배 */
   /* 화면 아래 75 % 에 주행 거리 (%) — 검은 바탕 · 파란 글씨 · 가운데 */
   .hud-km2{position:absolute;left:50%;top:75%;transform:translate(-50%,-50%);background:rgba(0,0,0,.82);color:#4FA3FF;
     font-size:1.35rem;font-weight:800;padding:6px 16px;border-radius:12px;font-variant-numeric:tabular-nums;white-space:nowrap;
@@ -445,7 +449,6 @@
     <div class="hp-lbl"><span id="hp0">0</span><span id="hpc">—</span><span id="hp1">—</span></div>
   </div>
   <div class="hud-turn hide" id="hturn"></div>
-  <div class="hud-km2" id="hkm2"></div>
   <div class="hud-off hide" id="hoff"></div>
   <div class="hud-wp">
     <button id="hwp">📍 명소</button>
@@ -468,7 +471,6 @@
   <div id="hblack" class="hide" role="button" aria-label="화면 켜기">
     <div class="bk-turn" id="bkTurn"></div>
     <div class="bk-km" id="bkKm"></div>
-    <div class="bk-tip">눌러서 화면 켜기 · 20초 뒤 다시 꺼짐</div>
   </div>
   <div class="hud-bot hide" id="hbot">
     <div class="hud-rest" id="hrestrow"><button id="hrest" type="button">☕ 휴식 — 예측 멈춤</button></div>
@@ -528,7 +530,7 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:2000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"gps",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20261006-51";
+var D0_VER="v20261006-52";
 /* 10/5 JIN 과 정리: 폰 GPS 로 위치가 거의 실시간이라
    · 휴식 단추 — 서버 위치 예측을 멈추려던 것이라 이제 쓸모 없음
    · "여기예요" — 화면 오차는 GPS 자취 + 오늘 주행 GPX 로 저절로 채점되므로 뺌
@@ -1593,8 +1595,7 @@ function navTick(now){
   }
 }
 function fmtClock(ms){ var d=new Date(ms); return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0"); }
-function setHudText(a,b){ var k=$("hkm"), s=$("hsub"), k2=$("hkm2"); if(k) k.textContent=a; if(s) s.textContent=b;
-  if(k2){ var t=(a&&a!=="—")?a.replace(/\s+/g," "):""; if(k2.textContent!==t) k2.textContent=t; } }
+function setHudText(a,b){ var k=$("hkm"), s=$("hsub"); if(k) k.textContent=a; if(s) s.textContent=b; BLK.km=(a&&a!=="—")?a.replace(/\s+/g," "):""; }
 
 /* 한 개의 rAF 루프 — 주행 모드거나 DAY 0 재생 중일 때만 돕니다 */
 var LOOP=null;
@@ -1658,7 +1659,7 @@ function blkSet(on){
   var b=$("hblack"); if(!b) return;
   b.classList.toggle("hide", !BLK.on);
   if(viewer) viewer.useDefaultRenderLoop = !BLK.on;
-  var btn=$("hblk"); if(btn) btn.textContent=BLK.on?"☀ 화면 켜기":"🌙 화면 끄기";
+  var btn=$("hblk"); if(btn) btn.textContent="🌙 화면 끄기";   /* 켜기는 검은 화면을 톡 치면 됨 */
   if(BLK.on && WPX && !WPX.voice){ var v=$("hwpv"); if(v && !v.checked){ v.checked=true; WPX.voice=true; wpxSay("화면을 끕니다. 음성으로 안내합니다"); } }
 }
 function blkWake(){
@@ -1670,9 +1671,9 @@ function blkWake(){
 function blkTurn(nxt, m){
   if(!BLK.on) return;
   var t=$("bkTurn"), k=$("bkKm"); if(!t) return;
-  var h = nxt ? turnGlyph(nxt, nxt.km-m/1000)+'<span>'+fmtM(m)+' '+turnText(nxt.ang)+'</span>' : '';
+  var h = nxt ? turnGlyph(nxt, nxt.km-m/1000)+'<span>'+fmtM(m)+' '+turnTextHtml(nxt.ang)+'</span>' : '';
   if(t._h!==h){ t._h=h; t.innerHTML=h; }
-  var c=wpxCurKm(); var kt=(typeof c==="number"?c.toFixed(1)+" km":"")+(D0.total?" / "+D0.total.toFixed(1)+" km":"");
+  var kt=BLK.km||"";
   if(k.textContent!==kt) k.textContent=kt;
 }
 /* 주행 모드에서는 지도 위 글자(명소 이름 · BIN/JIN 표지 · DAY 표시)를 모두 숨김 — 위성 사진 위에서 잘 안 보여서 (10/5)
@@ -1811,8 +1812,13 @@ function hudLiveLabel(){
 function setupHud(){
   document.querySelectorAll("#hud [data-who]").forEach(function(b){
     b.addEventListener("click",function(){ setWho(b.dataset.who===NAV.who ? (NAV.who==="bin"?"jin":"bin") : b.dataset.who); }); });
-  on("hblk","click",function(){ blkSet(!BLK.on); });
+  on("hblk","click",function(){ blkSet(true); });             /* 잠깐 깨운 상태에서 누르면 바로 다시 검게 */
   on("hblack","click",function(){ blkWake(); });
+  /* 검은 화면을 1초 길게 누르면 화면 끄기를 완전히 끝냄 */
+  (function(){ var b=$("hblack"), t=null; if(!b) return;
+    var start=function(){ t=setTimeout(function(){ t=null; blkSet(false); wpxBeep(1); }, 1000); };
+    var stop=function(){ if(t){ clearTimeout(t); t=null; } };
+    b.addEventListener("pointerdown",start); b.addEventListener("pointerup",stop); b.addEventListener("pointerleave",stop); })();
   on("hztog","click",function(){ var z=$("hzoomw"), open=!z.classList.toggle("hide"); this.classList.toggle("open",open); this.textContent=open?"›":"‹"; });
   on("hexit","click",function(){ setNav(false); });
   on("hrest","click",restToggle);
@@ -1916,7 +1922,8 @@ function turnsJunction(key){
       console.log("회전 안내: 모양으로 "+list.length+"곳 → 갈림길 "+TURNS.show.length+"곳");
     }).catch(function(e){ console.warn("길 지도 확인 못함 — 모양으로만 안내", e); });
 }
-function turnText(a){ var s=Math.abs(a); return (s>=150?"유턴":(a<0?"좌":"우")+"회전"); }      /* "급" 은 뺌 (10/5 BIN) */
+function turnText(a){ var s=Math.abs(a); return (s>=150?"유턴":(a<0?"좌":"우")+"회전"); }
+function turnTextHtml(a){ var s=Math.abs(a); return s>=150?"유턴":'<span class="lr">'+(a<0?"좌":"우")+'</span>회전'; }      /* "급" 은 뺌 (10/5 BIN) */
 var TURN_SHOW_KM=1.0;     /* 1 km 안으로 다가온 갈림길만 */
 function turnNext(cur){
   if(cur===null||cur===undefined||!TURNS.show.length) return null;
@@ -1974,7 +1981,7 @@ function turnRender(cur){
   blkTurn(nxt, m);
   if(box.dataset.key===key) return; box.dataset.key=key;
   box.classList.remove("hide");
-  box.innerHTML=turnGlyph(nxt, cur)+'<div><b>'+(m<1000?Math.round(m/10)*10+" m":(m/1000).toFixed(1)+" km")+'</b><em>'+turnText(nxt.ang)+'</em>'
+  box.innerHTML=turnGlyph(nxt, cur)+'<div><b>'+(m<1000?Math.round(m/10)*10+" m":(m/1000).toFixed(1)+" km")+'</b><em>'+turnTextHtml(nxt.ang)+'</em>'
     +(nt.n2&&nt.n2.km-cur<=2?'<small>다음 '+fmtM((nt.n2.km-cur)*1000)+' '+turnText(nt.n2.ang)+'</small>':'')+'</div>';
 }
 function turnChipHtml(cur){
