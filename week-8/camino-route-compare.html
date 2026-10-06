@@ -359,6 +359,12 @@
   #hblack .bk-km{position:absolute;left:0;right:0;top:75%;transform:translateY(-50%);text-align:center;
     font-size:3.2rem;font-weight:800;color:#2F7FE0;font-variant-numeric:tabular-nums;line-height:1.1}
   #hblack .bk-km small{display:block;font-size:1em}
+  #hblack .u{font-size:.5em;margin-left:.12em}                       /* 단위(m · km · % · °C)는 반 크기 */
+  #hblack .bk-turn .num{font-size:2em;line-height:1}                 /* 남은 거리 숫자 — "우 · 좌" 와 같은 크기 */
+  #hblack .bk-turn .u{font-size:1em}                                 /* 회전 거리의 m 은 그대로 */
+  #hblack .bk-temp{position:absolute;left:0;right:0;top:91%;transform:translateY(-50%);text-align:center;
+    font-size:3.2rem;font-weight:800;color:#2FA35A;font-variant-numeric:tabular-nums;line-height:1}
+  #hblack .bk-temp small{display:block;font-size:.22em;font-weight:600;color:#1f6b3b;margin-top:2px}
   .hud-src #hblk{background:#111;color:#ddd;border-color:#111}
   /* 위쪽 BIN · JIN — 고른 사람만 보임. 누르면 다른 사람으로 */
   .hud-who button:not(.on){display:none}
@@ -472,6 +478,7 @@
   <div id="hblack" class="hide" role="button" aria-label="화면 켜기">
     <div class="bk-turn" id="bkTurn"></div>
     <div class="bk-km" id="bkKm"></div>
+    <div class="bk-temp" id="bkTemp"></div>
   </div>
   <div class="hud-bot hide" id="hbot">
     <div class="hud-rest" id="hrestrow"><button id="hrest" type="button">☕ 휴식 — 예측 멈춤</button></div>
@@ -531,7 +538,7 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:2000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"gps",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20261006-53";
+var D0_VER="v20261006-54";
 /* 10/5 JIN 과 정리: 폰 GPS 로 위치가 거의 실시간이라
    · 휴식 단추 — 서버 위치 예측을 멈추려던 것이라 이제 쓸모 없음
    · "여기예요" — 화면 오차는 GPS 자취 + 오늘 주행 GPX 로 저절로 채점되므로 뺌
@@ -1669,14 +1676,33 @@ function blkWake(){
   clearTimeout(BLK.wakeT);
   BLK.wakeT=setTimeout(function(){ if(BLK.on && NAV.on){ $("hblack").classList.remove("hide"); if(viewer) viewer.useDefaultRenderLoop=false; } }, 20000);
 }
+/* 기온 — 폰에는 웹 페이지가 읽을 수 있는 온도계가 없어서, 지금 GPS 자리의 기상 기온(Open-Meteo)을 10분마다 받아 씀 */
+var TEMP={t:null, at:0, lat:null, lon:null, busy:false};
+function blkTemp(){
+  var el=$("bkTemp"); if(!el || !BLK.on) return;
+  var f=GPS.fix, now=Date.now();
+  if(f && !TEMP.busy && (now-TEMP.at>600000 || (TEMP.lat!==null && hav({lat:TEMP.lat,lon:TEMP.lon},f)>5000))){
+    TEMP.busy=true;
+    fetch("https://api.open-meteo.com/v1/forecast?latitude="+f.lat.toFixed(3)+"&longitude="+f.lon.toFixed(3)+"&current=temperature_2m")
+      .then(function(r){ return r.json(); })
+      .then(function(j){ if(j&&j.current&&typeof j.current.temperature_2m==="number"){ TEMP.t=j.current.temperature_2m; TEMP.at=Date.now(); TEMP.lat=f.lat; TEMP.lon=f.lon; } })
+      .catch(function(){}).then(function(){ TEMP.busy=false; });
+  }
+  var h = TEMP.t===null ? "" : Math.round(TEMP.t)+'<span class="u">°C</span>';
+  if(el._h!==h){ el._h=h; el.innerHTML=h; }
+}
 function blkTurn(nxt, m){
   if(!BLK.on) return;
   var t=$("bkTurn"), k=$("bkKm"); if(!t) return;
-  var h = nxt ? turnGlyph(nxt, nxt.km-m/1000)+'<span>'+fmtM(m)+' '+turnTextHtml(nxt.ang)+'</span>' : '';
+  var dm=fmtM(m), dmm=dm.match(/^([\d.,]+)\s*(\S+)$/);
+  var dh=dmm ? '<span class="num">'+dmm[1]+'</span><span class="u">'+dmm[2]+'</span>' : dm;
+  var h = nxt ? turnGlyph(nxt, nxt.km-m/1000)+'<span>'+dh+' '+turnTextHtml(nxt.ang)+'</span>' : '';
   if(t._h!==h){ t._h=h; t.innerHTML=h; }
   /* 글자가 2배라 한 줄에 다 안 들어감 — "22.42 km" / "90 %" 두 줄로 */
   var kt=BLK.km||"", mm=kt.match(/^(.*?)\s*\((.*)\)\s*$/);
-  var kh=mm ? esc(mm[1])+'<small>'+esc(mm[2])+'</small>' : esc(kt);
+  var un=function(t){ var q=String(t).match(/^([\d.,]+)\s*(.*)$/); return q ? esc(q[1])+(q[2]?'<span class="u">'+esc(q[2])+'</span>':'') : esc(t); };
+  var kh=mm ? un(mm[1])+'<small>'+un(mm[2])+'</small>' : un(kt);
+  blkTemp();
   if(k._h!==kh){ k._h=kh; k.innerHTML=kh; }
 }
 /* 주행 모드에서는 지도 위 글자(명소 이름 · BIN/JIN 표지 · DAY 표시)를 모두 숨김 — 위성 사진 위에서 잘 안 보여서 (10/5)
