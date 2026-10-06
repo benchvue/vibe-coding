@@ -3808,19 +3808,21 @@
   </div>
 </section>
 
-<!-- ───────── 충전기 사용 ───────── -->
+<!-- ───────── 충전기 사용 (BIN · JIN) ───────── -->
 <section id="secPower" style="padding-top:0;padding-bottom:48px">
   <div class="wrap">
     <div class="sec-head">
       <div class="no">Cargador</div>
       <h2>🔌 충전기 사용</h2>
-      <p>스페인은 <b>230 V · 50 Hz</b>, 콘센트는 <b>Type C/F</b> 입니다. 기기 자체보다
+      <p>스페인은 <b>230 V · 50 Hz</b>, 콘센트는 <b>Type C/F</b> 입니다. 미국 · 한국에서 쓰던 충전기를 그대로 쓸 수 있고,
       <b>충전기 입력이 100–240 V, 50/60 Hz</b> 인지만 확인하면 됩니다.
-      7개 장비라고 7포트가 필요하지 않습니다 — <b>65 W GaN 멀티포트 충전기 1개 + 스페인 플러그 어댑터</b>면 충분합니다.</p>
+      장비가 많아도 포트 수만큼 충전기가 필요하지는 않습니다 — <b>65 W GaN 멀티포트 충전기 1개 + 스페인 플러그 어댑터</b>가 기본입니다.</p>
     </div>
+
+    <h3 style="margin:26px 0 10px;font-size:1.2rem;display:flex;align-items:center;gap:8px"><span style="background:#1E5FB4;color:#fff;border-radius:8px;padding:2px 10px">BIN</span> 충전 장비</h3>
     <figure class="img-card" style="margin:0 0 16px">
-      <img src="images/charge.png" alt="여행용 충전기와 장비 연결 그림" loading="lazy"
-        onerror="if(!this.dataset.f){this.dataset.f=1;this.src='image/charge.png'}else{this.closest('figure').style.display='none'}">
+      <img src="images/bin-charge.png" alt="BIN 충전 장비와 케이블 연결 그림" loading="lazy"
+        onerror="if(!this.dataset.f){this.dataset.f=1;this.src='images/charge.png'}else{this.closest('figure').style.display='none'}">
     </figure>
     <div class="sched-wrap">
       <table class="sched" style="min-width:420px">
@@ -3848,15 +3850,46 @@
         </tbody>
       </table>
     </div>
-    <p>잠자기 전에 Edge 나 GoPro 충전이 끝나면 그 케이블을 전조등 · 후미등으로 옮겨 꽂습니다.
-    Camino 에서는 3~4 포트가 무게와 크기 면에서 가장 유리합니다.</p>
-    <h3 style="margin:22px 0 8px;color:var(--camino-blue);font-size:1.05rem">더 가볍게</h3>
-    <ul style="margin:0 0 0 18px;line-height:1.7">
-      <li><b>USB-A 케이블 없애기</b> — Micro-USB 후미등은 <b>USB-C → Micro-USB 짧은 케이블</b> 하나로 충전합니다. 충전기에 USB-A 포트가 없어도 됩니다.</li>
-      <li><b>GoPro 배터리 2~3개</b>를 쓴다면 본체로 하나씩 충전하기보다 <b>USB-C 듀얼 배터리 충전기</b>가 훨씬 편합니다.</li>
-    </ul>
+    <p>GoPro 배터리를 2~3개 쓰면 본체로 하나씩 충전하기보다 <b>USB-C 듀얼 배터리 충전기</b>가 편합니다.</p>
     <p style="margin-top:12px;padding:10px 14px;background:var(--stone);border-radius:10px">
-      <b>최종 준비물</b> — 65 W GaN USB-C 3포트 충전기 1 · C→C 케이블 3 · C→Micro-USB 짧은 케이블 1 (후미등 1) · 스페인 Type C/F 어댑터 1</p>
+      <b>BIN 최종 준비물</b> — 65 W GaN USB-C 3포트 충전기 1 · C→C 케이블 3 · C→Micro-USB 짧은 케이블 1 · 스페인 Type C/F 어댑터 1</p>
+
+    <h3 style="margin:26px 0 10px;font-size:1.2rem;display:flex;align-items:center;gap:8px"><span style="background:#C92A2A;color:#fff;border-radius:8px;padding:2px 10px">JIN</span> 충전 장비</h3>
+    <figure class="img-card" style="margin:0 0 16px">
+      <img src="images/jin-charge.png" alt="JIN 충전 장비와 케이블 연결 그림" loading="lazy"
+        onerror="this.closest('figure').style.display='none'">
+    </figure>
+    <p>한국에서 쓰던 충전기를 스페인에서도 그대로 쓸 수 있습니다. 충전기 뒷면의 입력 표시가 <b>100–240 V, 50/60 Hz</b> 인지만 확인하세요.</p>
+    <div class="sched-wrap">
+      <table class="sched" style="min-width:420px">
+        <thead><tr><th>장비</th><th>충전 단자</th><th>권장 케이블</th></tr></thead>
+        <tbody>
+          <tr><td>Garmin Edge 1030</td><td>Micro-USB</td><td>C → Micro-USB</td></tr>
+          <tr><td>Trek 전조등 <small style="color:var(--ink-soft)">(모델 미정)</small></td><td>Micro-USB</td><td>C → Micro-USB</td></tr>
+          <tr><td>Garmin Varia RTL515 후미등 · 레이더</td><td>Micro-USB</td><td>C → Micro-USB</td></tr>
+          <tr><td>Sena Bikom 20</td><td>USB-C</td><td>C → C</td></tr>
+          <tr><td>보조배터리 <small style="color:var(--ink-soft)">(구입 예정)</small></td><td>USB-C</td><td>C → C</td></tr>
+          <tr><td>iPhone 16 Pro</td><td>USB-C</td><td>C → C</td></tr>
+          <tr><td>전동 펌프 <small style="color:var(--ink-soft)">(모델 미정)</small></td><td>USB-C</td><td>C → C</td></tr>
+          <tr><td>Apple Watch</td><td>자석 충전</td><td>전용 자석 케이블 (충전기 쪽 USB-C)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3 style="margin:22px 0 8px;color:var(--camino-blue);font-size:1.05rem">추천 구성 — 65 W GaN 멀티포트 (USB-C 3포트 이상)</h3>
+    <p>여러 장비를 한꺼번에 충전하도록 65 W GaN 멀티포트 충전기를 기준으로 했습니다. 숙소에 도착하면 이렇게 꽂습니다.</p>
+    <div class="sched-wrap">
+      <table class="sched" style="min-width:300px">
+        <thead><tr><th>포트</th><th>먼저 충전</th><th>끝나면 바꿔 꽂기</th></tr></thead>
+        <tbody>
+          <tr><td>USB-C 1</td><td>iPhone 16 Pro</td><td>Apple Watch → Sena Bikom 20</td></tr>
+          <tr><td>USB-C 2</td><td>Edge 1030</td><td>Varia RTL515 → Trek 전조등</td></tr>
+          <tr><td>USB-C 3</td><td>보조배터리 (밤새)</td><td>전동 펌프 (쓴 날만)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>보조배터리는 아직 구입 전이므로 <b>USB-C 입출력 제품</b>으로 사면 케이블 종류가 늘지 않아 전체 구성이 단순해집니다.</p>
+    <p style="margin-top:12px;padding:10px 14px;background:var(--stone);border-radius:10px">
+      <b>JIN 최종 준비물</b> — 65 W GaN 멀티포트 충전기 1 · C→Micro-USB 케이블 3 · C→C 케이블 4 · Apple Watch 전용 케이블 1 · 스페인 Type C/F 어댑터 1</p>
   </div>
 </section>
 
@@ -4081,7 +4114,7 @@
     <a href="#sec6">Ⅵ · 숙소</a>
     <a href="#sec7">Ⅶ · 준비물</a>
     <a href="#sec8">Ⅷ · 자전거 짐 배치</a>
-    <a href="#secPower">🔌 충전기 사용</a>
+    <a href="#secPower">🔌 충전기 사용 (BIN · JIN)</a>
     <a href="#sec9">Ⅸ · 날짜별 추천 식당 🦐</a>
     <a href="#sec10">Ⅹ · To Do List ✅</a>
   </div>
