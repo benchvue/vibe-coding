@@ -365,12 +365,13 @@
   #hblack .bk-temp{position:absolute;left:0;right:0;top:91%;transform:translateY(-50%);text-align:center;
     font-size:3.2rem;font-weight:800;color:#2FA35A;font-variant-numeric:tabular-nums;line-height:1}
   #hblack .bk-temp small{display:block;font-size:.22em;font-weight:600;color:#1f6b3b;margin-top:2px}
-  /* 10/10: 다음 명소 — 1 km 안에 들어오면 회전 아래(50 %)에 남은 거리, 다음 줄에 한글 이름과 방향 화살표. 어두운 노랑 */
+  /* 10/10: 다음 명소 — 항상 다음 명소까지 남은 거리(위에서 30 %)에 남은 거리, 다음 줄에 한글 이름과 방향 화살표. 어두운 노랑 */
   #hblack .bk-poi{position:absolute;left:0;right:0;top:30%;transform:translateY(-50%);text-align:center;padding:0 16px;
     color:#B8901A;font-weight:800;line-height:1.15}
   #hblack .bk-poi .pd{font-size:3.2rem;font-variant-numeric:tabular-nums;display:block}
   #hblack .bk-poi .pn{font-size:1.7rem;font-weight:700;display:block;margin-top:4px;word-break:keep-all}
-  #hblack .bk-poi .ar{font-size:1.15em;margin:0 .25em}
+  #hblack .bk-poi .pn{display:flex;align-items:center;justify-content:center;gap:.35em;flex-wrap:nowrap}
+  #hblack .bk-poi .ar{width:1.3em;height:1.3em;flex:0 0 auto}
   .hud-src #hblk{background:#111;color:#ddd;border-color:#111}
   /* 위쪽 BIN · JIN — 고른 사람만 보임. 누르면 다른 사람으로 */
   .hud-who button:not(.on){display:none}
@@ -545,7 +546,7 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:2000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"gps",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20261010-56";
+var D0_VER="v20261010-57";
 /* 10/5 JIN 과 정리: 폰 GPS 로 위치가 거의 실시간이라
    · 휴식 단추 — 서버 위치 예측을 멈추려던 것이라 이제 쓸모 없음
    · "여기예요" — 화면 오차는 GPS 자취 + 오늘 주행 GPX 로 저절로 채점되므로 뺌
@@ -1698,7 +1699,9 @@ function blkTemp(){
   var h = TEMP.t===null ? "" : Math.round(TEMP.t)+'<span class="u">°C</span>';
   if(el._h!==h){ el._h=h; el.innerHTML=h; }
 }
-/* 다음 명소 (검은 화면) — 1 km 안부터 10 m 단위. 이름은 한글 부분만, 명소가 있는 쪽에 화살표 하나 */
+/* 다음 명소 (검은 화면, 10/10 BIN·JIN) — 거리 제한 없이 항상 다음 명소까지 남은 거리.
+   명소를 지나 "지나쳤습니다" 음성(30 m 지난 뒤)이 나오기 전까지는 -10 m, -20 m 로 보이고, 그 뒤 다음 명소로 바뀜.
+   1 km 이상은 12.34 km (10 m 단위), 그 아래는 980 m. 이름은 한글 부분만, 명소가 있는 쪽에 그림 화살표 하나 */
 function poiKo(w){
   var has=function(t){ return /[\uAC00-\uD7A3]/.test(t||""); };
   var t = has(w.name) ? w.name : (has(w.cmt) ? w.cmt : (w.cmt||w.name||""));
@@ -1706,15 +1709,18 @@ function poiKo(w){
                .split(/\s+/).filter(function(x){ return !/^[A-Za-zÀ-ÿ'’.\-]+$/.test(x); }).join(" ");
   return t.replace(/\s*·\s*$/,"").replace(/^\s*·\s*/,"").trim();
 }
+var POI_AR={
+  L:'<svg class="ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12 L19 3 L15 12 L19 21 Z" fill="currentColor"/></svg>',
+  R:'<svg class="ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12 L5 3 L9 12 L5 21 Z" fill="currentColor"/></svg>'};
 function blkPoi(cur, up){
   var el=$("bkPoi"); if(!el || !BLK.on) return;
-  var w=null, a=0;
-  if(cur!==null && cur!==undefined && up) for(var i=0;i<up.length;i++){ var d=(up[i].km-cur)*1000; if(d<=1000){ w=up[i]; a=d; break; } }
-  var h="";
+  var w=(cur!==null && cur!==undefined && up && up.length) ? up[0] : null, h="";
   if(w){
-    var nm=esc(poiKo(w)), ds = a>15 ? '<span>'+Math.round(a/10)*10+'</span><span class="u">m</span>' : '<span>지금</span>';
-    var lab = w.off<20 ? '<span class="ar">↑</span>'+nm
-            : (w.side>0 ? '<span class="ar">←</span>'+nm : nm+'<span class="ar">→</span>');
+    var a=Math.round((w.km-cur)*100)*10, ds;                  /* 10 m 단위 */
+    if(Math.abs(a)>=1000) ds='<span>'+(a/1000).toFixed(2)+'</span><span class="u">km</span>';
+    else ds='<span>'+(a<0?"−":"")+Math.abs(a)+'</span><span class="u">m</span>';
+    var nm='<span>'+esc(poiKo(w))+'</span>';
+    var lab = w.side>0 ? POI_AR.L+nm : nm+POI_AR.R;
     h='<span class="pd">'+ds+'</span><span class="pn">'+lab+'</span>';
   }
   if(el._h!==h){ el._h=h; el.innerHTML=h; }
