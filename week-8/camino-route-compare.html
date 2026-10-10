@@ -546,7 +546,7 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:2000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"gps",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20261010-57";
+var D0_VER="v20261010-58";
 /* 10/5 JIN 과 정리: 폰 GPS 로 위치가 거의 실시간이라
    · 휴식 단추 — 서버 위치 예측을 멈추려던 것이라 이제 쓸모 없음
    · "여기예요" — 화면 오차는 GPS 자취 + 오늘 주행 GPX 로 저절로 채점되므로 뺌
@@ -2208,9 +2208,7 @@ function wpxRender(force){
         +'<span class="wpx-d"><b>'+fmtM(ahead)+'</b><i>'+wpxSideText(w)+'</i></span></div>';
       /* 소리·음성 — 300 m 안에 처음 들어올 때, 60 m 안에서, 지나쳤을 때 각 한 번 */
       var id=wid(w);
-      /* 10/10 JIN: 1 km 앞에서 한 번 더 미리 알림 (1.3 km 밖으로 다시 밀려나면 되돌림) */
       if(ahead>1300) delete WPX.said1k[id];
-      else if(ahead<=1000 && ahead>WPX_R+150 && !WPX.said1k[id]){ WPX.said1k[id]=1; wpxAlert(w, 1000); }
       if(near && !WPX.said[id]){ WPX.said[id]=1; wpxAlert(w, Math.round(ahead/10)*10); }
       if(ahead<=60 && WPX.said[id]===1){ WPX.said[id]=2; wpxAlert(w, 0); }
     });
@@ -2227,6 +2225,7 @@ function wpxRender(force){
   if(html!==WPX.lastHtml){ WPX.lastHtml=html; box.innerHTML=html; }
   turnsBuild(wpxTrack());
   wpxBanner(cur, up, passed);
+  wpxEarly(cur, up, passed);
   blkPoi(cur, up);
   wpxTint();
   turnRender(cur);
@@ -2272,9 +2271,20 @@ function wpxTint(){
       if(e.polyline) e.polyline.width=inside?4:1.6; }
   });
 }
+/* 미리 알림 (10/10 JIN 1 km · BIN 순서) — "다음 명소" 하나만 알립니다.
+   앞 명소를 아직 안 지났으면 그 뒤 명소는 1 km 안이어도 말하지 않고,
+   앞 명소 "지나쳤습니다" 가 나온 다음에 바로 알립니다 (1 km 안이면 실제 남은 거리로). 300 m 안이면 기존 알림이 맡음 */
+function wpxEarly(cur, up, passed){
+  if(cur===null || cur===undefined || !up || !up.length) return;
+  if(passed && WPX.said[wid(passed)]!==3) return;          /* 지나침 음성이 먼저 */
+  var w=up[0], id=wid(w), ahead=(w.km-cur)*1000;
+  if(ahead>1000 || ahead<=WPX_R || WPX.said1k[id] || WPX.said[id]) return;
+  WPX.said1k[id]=1;
+  wpxAlert(w, ahead>=950 ? 1000 : Math.round(ahead/10)*10, "early");
+}
 var WPX_LAST={};
-function wpxAlert(w, ahead){
-  var id=wid(w)+":"+(ahead>=1000?"1k":(ahead>0?"near":"here")), now=Date.now();
+function wpxAlert(w, ahead, tag){
+  var id=wid(w)+":"+(tag||(ahead>0?"near":"here")), now=Date.now();
   if(WPX_LAST[id] && now-WPX_LAST[id]<180000) return;      /* 같은 알림 3분 안 반복 금지 */
   WPX_LAST[id]=now;
   var side=wpxSideText(w);
