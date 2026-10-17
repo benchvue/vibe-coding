@@ -562,7 +562,7 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:2000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"gps",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20261017-62";
+var D0_VER="v20261017-63";
 /* 10/5 JIN 과 정리: 폰 GPS 로 위치가 거의 실시간이라
    · 휴식 단추 — 서버 위치 예측을 멈추려던 것이라 이제 쓸모 없음
    · "여기예요" — 화면 오차는 GPS 자취 + 오늘 주행 GPX 로 저절로 채점되므로 뺌
@@ -1714,6 +1714,7 @@ function blkTemp(){
   }
   var h = TEMP.t===null ? "" : Math.round(TEMP.t)+'<span class="u">°C</span>';
   if(el._h!==h){ el._h=h; el.innerHTML=h; BLK.dirty=true; }
+  blkWind();   /* 바람 · 습도도 같은 4 Hz 박자로 (10/17: 예전엔 명소 갱신 때만 불려서 안 보였음) */
 }
 /* 다음 명소 (검은 화면, 10/10 BIN·JIN) — 거리 제한 없이 항상 다음 명소까지 남은 거리.
    명소를 지나 "지나쳤습니다" 음성(30 m 지난 뒤)이 나오기 전까지는 -10 m, -20 m 로 보이고, 그 뒤 다음 명소로 바뀜.
@@ -1740,7 +1741,6 @@ function blkPoi(cur, up){
     h='<span class="pd">'+ds+'</span><span class="pn">'+lab+'</span>';
   }
   if(el._h!==h){ el._h=h; el.innerHTML=h; BLK.dirty=true; }
-  blkWind();
 }
 /* 바람 (10/17) — Open-Meteo 의 바람 방향은 "불어오는 쪽"(북=0°, 시계 방향). 내 진행 방향(NAV.hdg)을 빼면
    0° = 앞에서 오는 맞바람(화살표가 원 위에서 아래로), 180° = 뒤에서 미는 뒷바람(아래에서 위로) */
