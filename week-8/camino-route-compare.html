@@ -378,7 +378,12 @@
   #hblack.hide{display:none}
   #hblack > div{position:static !important;transform:none !important;top:auto !important;min-height:0}
   /* 바람 — 원 안에서 화살표가 바람이 불어오는 쪽(내 진행 방향 기준, 위 = 앞)에서 가운데로. 숫자는 바람 속도만 */
-  #hblack .bk-wind{display:flex;justify-content:center;align-items:center;color:#F25FE6}
+  #hblack .bk-wind{display:flex;justify-content:center;align-items:center;color:#F25FE6;position:relative}
+  /* 습도 (10/17) — 바람 원 오른쪽. 하늘색 물방울 아이콘 위, 숫자 아래 (단위 % 는 작게) */
+  #hblack .bk-hum{position:absolute;left:calc(50% + min(70px,11vh) + 14px);top:50%;transform:translateY(-50%);
+    display:flex;flex-direction:column;align-items:center;gap:2px;color:#4FC3F7;font-weight:800;
+    font-size:2.2rem;line-height:1;font-variant-numeric:tabular-nums}
+  #hblack .bk-wind .bk-hum svg{width:1.4em;height:1.4em}
   #hblack .bk-wind svg{width:min(140px,22vh);height:min(140px,22vh);overflow:visible}
   #hblack .bk-wind .ws{font:800 46px system-ui,-apple-system,sans-serif;fill:currentColor}
   #hblack .bk-wind .wu{font:500 20px system-ui,-apple-system,sans-serif;fill:currentColor}
@@ -557,7 +562,7 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:2000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"gps",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20261017-61";
+var D0_VER="v20261017-62";
 /* 10/5 JIN 과 정리: 폰 GPS 로 위치가 거의 실시간이라
    · 휴식 단추 — 서버 위치 예측을 멈추려던 것이라 이제 쓸모 없음
    · "여기예요" — 화면 오차는 GPS 자취 + 오늘 주행 GPX 로 저절로 채점되므로 뺌
@@ -1702,9 +1707,9 @@ function blkTemp(){
   var f=GPS.fix, now=Date.now();
   if(f && !TEMP.busy && (now-TEMP.at>600000 || (TEMP.lat!==null && hav({lat:TEMP.lat,lon:TEMP.lon},f)>5000))){
     TEMP.busy=true;
-    fetch("https://api.open-meteo.com/v1/forecast?latitude="+f.lat.toFixed(3)+"&longitude="+f.lon.toFixed(3)+"&current=temperature_2m,wind_speed_10m,wind_direction_10m&wind_speed_unit=kmh")
+    fetch("https://api.open-meteo.com/v1/forecast?latitude="+f.lat.toFixed(3)+"&longitude="+f.lon.toFixed(3)+"&current=temperature_2m,relative_humidity_2m,wind_speed_10m,wind_direction_10m&wind_speed_unit=kmh")
       .then(function(r){ return r.json(); })
-      .then(function(j){ if(j&&j.current&&typeof j.current.temperature_2m==="number"){ TEMP.t=j.current.temperature_2m; TEMP.ws=j.current.wind_speed_10m; TEMP.wd=j.current.wind_direction_10m; TEMP.at=Date.now(); TEMP.lat=f.lat; TEMP.lon=f.lon; } })
+      .then(function(j){ if(j&&j.current&&typeof j.current.temperature_2m==="number"){ TEMP.t=j.current.temperature_2m; TEMP.ws=j.current.wind_speed_10m; TEMP.wd=j.current.wind_direction_10m; TEMP.rh=j.current.relative_humidity_2m; TEMP.at=Date.now(); TEMP.lat=f.lat; TEMP.lon=f.lon; } })
       .catch(function(){}).then(function(){ TEMP.busy=false; });
   }
   var h = TEMP.t===null ? "" : Math.round(TEMP.t)+'<span class="u">°C</span>';
@@ -1756,6 +1761,12 @@ function blkWind(){
      +'<path d="M54 6 L70 28 L86 6 Z" fill="currentColor" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/></g>':'')
      +'<text class="ws" x="70" y="78" text-anchor="middle">'+sp+'</text>'
      +'<text class="wu" x="70" y="100" text-anchor="middle">km/h</text></svg>';
+  }
+  if(typeof TEMP.rh==="number"){
+    h+='<div class="bk-hum" aria-label="습도 '+Math.round(TEMP.rh)+' %">'
+      +'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5C9 7 5.5 10.6 5.5 14.6a6.5 6.5 0 0 0 13 0C18.5 10.6 15 7 12 2.5Z" fill="currentColor"/>'
+      +'<path d="M9 15.2a3.2 3.2 0 0 0 2.6 3" stroke="#000" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".55"/></svg>'
+      +'<span>'+Math.round(TEMP.rh)+'<span class="u">%</span></span></div>';
   }
   if(el._h!==h){ el._h=h; el.innerHTML=h; BLK.dirty=true; }
 }
