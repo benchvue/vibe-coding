@@ -562,7 +562,7 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:2000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"gps",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20261017-63";
+var D0_VER="v20261017-64";
 /* 10/5 JIN 과 정리: 폰 GPS 로 위치가 거의 실시간이라
    · 휴식 단추 — 서버 위치 예측을 멈추려던 것이라 이제 쓸모 없음
    · "여기예요" — 화면 오차는 GPS 자취 + 오늘 주행 GPX 로 저절로 채점되므로 뺌
@@ -1704,8 +1704,9 @@ function blkWake(){
 var TEMP={t:null, at:0, lat:null, lon:null, busy:false};
 function blkTemp(){
   var el=$("bkTemp"); if(!el || !BLK.on) return;
-  var f=GPS.fix, now=Date.now();
-  if(f && !TEMP.busy && (now-TEMP.at>600000 || (TEMP.lat!==null && hav({lat:TEMP.lat,lon:TEMP.lon},f)>5000))){
+  /* 폰 GPS 가 없을 때(DAY 0 다시 보기 · 실시간 보기)는 화면에 보이는 현재 위치로 (10/17: 집에서 시험할 때 날씨가 비던 문제) */
+  var f=(GPS.fix && Date.now()-GPS.fix.at<120000) ? GPS.fix : (NAV.cur || GPS.fix), now=Date.now();
+  if(f && typeof f.lat==="number" && !TEMP.busy && (now-TEMP.at>600000 || (TEMP.lat!==null && hav({lat:TEMP.lat,lon:TEMP.lon},f)>5000))){
     TEMP.busy=true;
     fetch("https://api.open-meteo.com/v1/forecast?latitude="+f.lat.toFixed(3)+"&longitude="+f.lon.toFixed(3)+"&current=temperature_2m,relative_humidity_2m,wind_speed_10m,wind_direction_10m&wind_speed_unit=kmh")
       .then(function(r){ return r.json(); })
