@@ -354,7 +354,7 @@
   /* 10/6: 검은 화면 — 회전은 위에서 25 % 높이, 주행 거리(%)는 75 % 높이에 파란 글씨 */
   #hblack .bk-turn{position:absolute;left:0;right:0;top:10%;transform:translateY(-50%);display:flex;align-items:center;
     justify-content:center;gap:10px;font-size:1.8rem;font-weight:700;color:#8a3226;white-space:nowrap}
-  #hblack .bk-turn svg{width:70px;height:70px;opacity:.6;flex:0 0 auto}
+  #hblack .bk-turn svg{width:2.43em;height:2.43em;opacity:.6;flex:0 0 auto}
   #hblack .bk-turn .lr{font-size:2em;line-height:1}
   #hblack .bk-km{position:absolute;left:0;right:0;top:75%;transform:translateY(-50%);text-align:center;
     font-size:3.2rem;font-weight:800;color:#2F7FE0;font-variant-numeric:tabular-nums;line-height:1.1}
@@ -367,11 +367,21 @@
   #hblack .bk-temp small{display:block;font-size:.22em;font-weight:600;color:#1f6b3b;margin-top:2px}
   /* 10/10: 다음 명소 — 항상 다음 명소까지 남은 거리(위에서 30 %)에 남은 거리, 다음 줄에 한글 이름과 방향 화살표. 어두운 노랑 */
   #hblack .bk-poi{position:absolute;left:0;right:0;top:30%;transform:translateY(-50%);text-align:center;padding:0 16px;
-    color:#B8901A;font-weight:800;line-height:1.15}
-  #hblack .bk-poi .pd{font-size:3.2rem;font-variant-numeric:tabular-nums;display:block}
-  #hblack .bk-poi .pn{font-size:1.7rem;font-weight:700;display:block;margin-top:4px;word-break:keep-all}
+    color:#B8901A;font-weight:800;line-height:1.15;font-size:1rem}
+  #hblack .bk-poi .pd{font-size:3.2em;font-variant-numeric:tabular-nums;display:block}
+  #hblack .bk-poi .pn{font-size:1.7em;font-weight:700;display:block;margin-top:4px;word-break:keep-all}
   #hblack .bk-poi .pn{display:flex;align-items:center;justify-content:center;gap:.35em;flex-wrap:nowrap}
   #hblack .bk-poi .ar{width:1.3em;height:1.3em;flex:0 0 auto}
+  /* 10/17: 검은 화면을 5칸으로 나눔 — 회전 · 명소 · 바람 · 주행 거리 · 기온. 칸 높이가 정해져 있어 화면이 짧아도 안 겹치고,
+     안내가 없는 칸은 비어 있어도 다른 줄이 움직이지 않음 */
+  #hblack{display:grid;grid-template-rows:12fr 24fr 26fr 26fr 12fr;grid-template-columns:minmax(0,1fr);justify-items:stretch;align-items:center;gap:0}
+  #hblack.hide{display:none}
+  #hblack > div{position:static !important;transform:none !important;top:auto !important;min-height:0}
+  /* 바람 — 원 안에서 화살표가 바람이 불어오는 쪽(내 진행 방향 기준, 위 = 앞)에서 가운데로. 숫자는 바람 속도만 */
+  #hblack .bk-wind{display:flex;justify-content:center;align-items:center;color:#F25FE6}
+  #hblack .bk-wind svg{width:min(140px,22vh);height:min(140px,22vh);overflow:visible}
+  #hblack .bk-wind .ws{font:800 46px system-ui,-apple-system,sans-serif;fill:currentColor}
+  #hblack .bk-wind .wu{font:500 20px system-ui,-apple-system,sans-serif;fill:currentColor}
   .hud-src #hblk{background:#111;color:#ddd;border-color:#111}
   /* 위쪽 BIN · JIN — 고른 사람만 보임. 누르면 다른 사람으로 */
   .hud-who button:not(.on){display:none}
@@ -485,6 +495,7 @@
   <div id="hblack" class="hide" role="button" aria-label="화면 켜기">
     <div class="bk-turn" id="bkTurn"></div>
     <div class="bk-poi" id="bkPoi"></div>
+    <div class="bk-wind" id="bkWind"></div>
     <div class="bk-km" id="bkKm"></div>
     <div class="bk-temp" id="bkTemp"></div>
   </div>
@@ -546,7 +557,7 @@ var GPS={watch:null, fix:null, last:null, err:"", acceptEvery:2000};
 var NAV={on:false, who:"bin", src:"live", zi:3, timer:null, posMode:"gps",
          hdg:null, last:null, pos:null, ents:null};
 /* DAY 0 · 가져온 GPX 로 하는 시험 주행 */
-var D0_VER="v20261010-58";
+var D0_VER="v20261017-61";
 /* 10/5 JIN 과 정리: 폰 GPS 로 위치가 거의 실시간이라
    · 휴식 단추 — 서버 위치 예측을 멈추려던 것이라 이제 쓸모 없음
    · "여기예요" — 화면 오차는 GPS 자취 + 오늘 주행 GPX 로 저절로 채점되므로 뺌
@@ -1691,13 +1702,13 @@ function blkTemp(){
   var f=GPS.fix, now=Date.now();
   if(f && !TEMP.busy && (now-TEMP.at>600000 || (TEMP.lat!==null && hav({lat:TEMP.lat,lon:TEMP.lon},f)>5000))){
     TEMP.busy=true;
-    fetch("https://api.open-meteo.com/v1/forecast?latitude="+f.lat.toFixed(3)+"&longitude="+f.lon.toFixed(3)+"&current=temperature_2m")
+    fetch("https://api.open-meteo.com/v1/forecast?latitude="+f.lat.toFixed(3)+"&longitude="+f.lon.toFixed(3)+"&current=temperature_2m,wind_speed_10m,wind_direction_10m&wind_speed_unit=kmh")
       .then(function(r){ return r.json(); })
-      .then(function(j){ if(j&&j.current&&typeof j.current.temperature_2m==="number"){ TEMP.t=j.current.temperature_2m; TEMP.at=Date.now(); TEMP.lat=f.lat; TEMP.lon=f.lon; } })
+      .then(function(j){ if(j&&j.current&&typeof j.current.temperature_2m==="number"){ TEMP.t=j.current.temperature_2m; TEMP.ws=j.current.wind_speed_10m; TEMP.wd=j.current.wind_direction_10m; TEMP.at=Date.now(); TEMP.lat=f.lat; TEMP.lon=f.lon; } })
       .catch(function(){}).then(function(){ TEMP.busy=false; });
   }
   var h = TEMP.t===null ? "" : Math.round(TEMP.t)+'<span class="u">°C</span>';
-  if(el._h!==h){ el._h=h; el.innerHTML=h; }
+  if(el._h!==h){ el._h=h; el.innerHTML=h; BLK.dirty=true; }
 }
 /* 다음 명소 (검은 화면, 10/10 BIN·JIN) — 거리 제한 없이 항상 다음 명소까지 남은 거리.
    명소를 지나 "지나쳤습니다" 음성(30 m 지난 뒤)이 나오기 전까지는 -10 m, -20 m 로 보이고, 그 뒤 다음 명소로 바뀜.
@@ -1723,21 +1734,65 @@ function blkPoi(cur, up){
     var lab = w.side>0 ? POI_AR.L+nm : nm+POI_AR.R;
     h='<span class="pd">'+ds+'</span><span class="pn">'+lab+'</span>';
   }
-  if(el._h!==h){ el._h=h; el.innerHTML=h; }
+  if(el._h!==h){ el._h=h; el.innerHTML=h; BLK.dirty=true; }
+  blkWind();
 }
+/* 바람 (10/17) — Open-Meteo 의 바람 방향은 "불어오는 쪽"(북=0°, 시계 방향). 내 진행 방향(NAV.hdg)을 빼면
+   0° = 앞에서 오는 맞바람(화살표가 원 위에서 아래로), 180° = 뒤에서 미는 뒷바람(아래에서 위로) */
+function blkWind(){
+  var el=$("bkWind"); if(!el || !BLK.on) return;
+  var h="";
+  if(typeof TEMP.ws==="number" && typeof TEMP.wd==="number"){
+    var hd = (NAV.hdg===null||NAV.hdg===undefined) ? 0 : NAV.hdg;
+    var rel = Math.round((((TEMP.wd-hd)%360)+360)%360/5)*5;          /* 5° 단위로만 다시 그림 */
+    var sp = Math.round(TEMP.ws);
+    h='<svg viewBox="0 0 140 140" aria-label="바람 '+sp+' km/h">'
+     +'<circle cx="70" cy="70" r="62" fill="none" stroke="currentColor" stroke-width="5"/>'
+     +(sp>0?'<g transform="rotate('+rel+' 70 70)">'
+     /* 검은 테두리 먼저 (원 선과 화살표를 갈라 줌) → 그 위에 분홍 화살표 */
+     +'<path d="M70 -10 L70 10" stroke="#000" stroke-width="19" stroke-linecap="round"/>'
+     +'<path d="M54 6 L70 28 L86 6 Z" fill="#000" stroke="#000" stroke-width="12" stroke-linejoin="round"/>'
+     +'<path d="M70 -10 L70 10" stroke="currentColor" stroke-width="11" stroke-linecap="round"/>'
+     +'<path d="M54 6 L70 28 L86 6 Z" fill="currentColor" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/></g>':'')
+     +'<text class="ws" x="70" y="78" text-anchor="middle">'+sp+'</text>'
+     +'<text class="wu" x="70" y="100" text-anchor="middle">km/h</text></svg>';
+  }
+  if(el._h!==h){ el._h=h; el.innerHTML=h; BLK.dirty=true; }
+}
+/* 글자 넘침 막기 (10/17) — 평소 크기는 그대로. 폰의 글자 확대 설정 등으로 글이 제 칸(회전 12 · 명소 24 · 바람 26 ·
+   거리 26 · 기온 12 %)을 넘거나 옆으로 잘릴 때만 그 칸 글자를 딱 맞을 만큼 줄입니다. 내용이 바뀔 때만 계산 */
+var BLK_ROWS=[12,24,26,26,12];
+function blkFitAll(force){
+  if(!BLK.on || (!BLK.dirty && !force)) return; BLK.dirty=false;
+  var b=$("hblack"); if(!b || b.classList.contains("hide")) { BLK.dirty=true; return; }
+  var H=b.clientHeight, kids=b.children, tot=BLK_ROWS.reduce(function(a,c){return a+c;},0);
+  for(var i=0;i<kids.length && i<BLK_ROWS.length;i++){
+    var el=kids[i]; if(el.id==="bkWind") continue;            /* 바람 원은 화면 높이에 맞춰 이미 줄어듦 */
+    el.style.fontSize=""; if(!el.innerHTML) continue;
+    var avail=H*BLK_ROWS[i]/tot - 4, fs0=parseFloat(getComputedStyle(el).fontSize), k=1;
+    for(var r=0;r<4;r++){
+      var sh=el.scrollHeight, cw=el.clientWidth, sw=el.scrollWidth;
+      var kk=Math.min(1, avail/Math.max(1,sh), cw/Math.max(1,sw));
+      if(kk>=0.99) break;
+      k*=kk*0.98; el.style.fontSize=(fs0*k).toFixed(1)+"px";
+    }
+  }
+}
+window.addEventListener("resize",function(){ BLK.dirty=true; blkFitAll(); });
 function blkTurn(nxt, m){
   if(!BLK.on) return;
   var t=$("bkTurn"), k=$("bkKm"); if(!t) return;
   var dm=fmtM(m), dmm=dm.match(/^([\d.,]+)\s*(\S+)$/);
   var dh=dmm ? '<span class="num">'+dmm[1]+'</span><span class="u">'+dmm[2]+'</span>' : dm;
   var h = nxt ? turnGlyph(nxt, nxt.km-m/1000)+'<span>'+dh+' '+turnTextHtml(nxt.ang)+'</span>' : '';
-  if(t._h!==h){ t._h=h; t.innerHTML=h; }
+  if(t._h!==h){ t._h=h; t.innerHTML=h; BLK.dirty=true; }
   /* 글자가 2배라 한 줄에 다 안 들어감 — "22.42 km" / "90 %" 두 줄로 */
   var kt=BLK.km||"", mm=kt.match(/^(.*?)\s*\((.*)\)\s*$/);
   var un=function(t){ var q=String(t).match(/^([\d.,]+)\s*(.*)$/); return q ? esc(q[1])+(q[2]?'<span class="u">'+esc(q[2])+'</span>':'') : esc(t); };
   var kh=mm ? un(mm[1])+'<small>'+un(mm[2])+'</small>' : un(kt);
   blkTemp();
-  if(k._h!==kh){ k._h=kh; k.innerHTML=kh; }
+  if(k._h!==kh){ k._h=kh; k.innerHTML=kh; BLK.dirty=true; }
+  blkFitAll();
 }
 /* 주행 모드에서는 지도 위 글자(명소 이름 · BIN/JIN 표지 · DAY 표시)를 모두 숨김 — 위성 사진 위에서 잘 안 보여서 (10/5)
    주행 중 새로 생긴 표지도 3초마다 다시 숨기고, 주행 끝이면 되돌립니다 */
@@ -1876,12 +1931,31 @@ function setupHud(){
   document.querySelectorAll("#hud [data-who]").forEach(function(b){
     b.addEventListener("click",function(){ setWho(b.dataset.who===NAV.who ? (NAV.who==="bin"?"jin":"bin") : b.dataset.who); }); });
   on("hblk","click",function(){ blkSet(true); });             /* 잠깐 깨운 상태에서 누르면 바로 다시 검게 */
-  on("hblack","click",function(){ blkWake(); });
-  /* 검은 화면을 1초 길게 누르면 화면 끄기를 완전히 끝냄 */
-  (function(){ var b=$("hblack"), t=null; if(!b) return;
-    var start=function(){ t=setTimeout(function(){ t=null; blkSet(false); wpxBeep(1); }, 1000); };
-    var stop=function(){ if(t){ clearTimeout(t); t=null; } };
-    b.addEventListener("pointerdown",start); b.addEventListener("pointerup",stop); b.addEventListener("pointerleave",stop); })();
+  /* 검은 화면 손짓 (10/17 빗방울 대책) — 한 번 톡은 무시.
+     · 두 번 톡 (0.5초 안, 같은 자리 60 px 안, 각각 0.35초 안에 뗌) → 20초 동안 지도
+     · 2초 길게 누름 (움직임 20 px 안) → 화면 끄기 끝
+     · 손가락이 두 개 이상 동시에 닿으면(물이 번지면 흔함) 그 손짓 전체를 버림 */
+  (function(){ var b=$("hblack"); if(!b) return;
+    var act={}, n=0, spoiled=false, hold=null, last=null, x0=0, y0=0, t0=0;
+    var cancelHold=function(){ if(hold){ clearTimeout(hold); hold=null; } };
+    b.addEventListener("pointerdown",function(e){
+      act[e.pointerId]=1; n++;
+      if(n>1){ spoiled=true; cancelHold(); last=null; return; }
+      spoiled=false; x0=e.clientX; y0=e.clientY; t0=Date.now();
+      hold=setTimeout(function(){ hold=null; if(!spoiled){ spoiled=true; last=null; blkSet(false); wpxBeep(1); } }, 2000);
+    });
+    b.addEventListener("pointermove",function(e){ if(act[e.pointerId] && Math.hypot(e.clientX-x0,e.clientY-y0)>20){ spoiled=true; cancelHold(); } });
+    var up=function(e){
+      if(!act[e.pointerId]) return; delete act[e.pointerId]; n=Math.max(0,n-1);
+      cancelHold(); if(n>0) return;
+      var now=Date.now(), ok=!spoiled && e.type==="pointerup" && now-t0<=350;
+      if(!ok){ last=null; return; }
+      if(last && now-last.t<=500 && Math.hypot(x0-last.x,y0-last.y)<=60){ last=null; blkWake(); }
+      else last={t:now, x:x0, y:y0};
+    };
+    b.addEventListener("pointerup",up); b.addEventListener("pointercancel",up);
+    b.addEventListener("contextmenu",function(e){ e.preventDefault(); });
+    b.style.touchAction="none"; })();
   on("hztog","click",function(){ var z=$("hzoomw"), open=!z.classList.toggle("hide"); this.classList.toggle("open",open); this.textContent=open?"›":"‹"; });
   on("hexit","click",function(){ setNav(false); });
   on("hrest","click",restToggle);
