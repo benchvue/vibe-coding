@@ -166,6 +166,17 @@
   .stay .meta b{font-weight:600;color:var(--ink);display:inline}
   .stay .meta .sun::before{content:"☀ ";color:#C98F00}
   .stay .meta .tmp::before{content:"🌡 "}
+  /* 예약된 숙소 표시 (lodging.json) */
+  .stay-bk{margin-top:7px;padding:7px 9px;border-radius:9px;background:#F4F2EA;font-size:.72rem;line-height:1.5}
+  .stay-bk.book,.stay-bk.paid{background:#EAF3EC}
+  .stay-bk.asked{background:#FFFBEE} .stay-bk.wait{background:#F5F9FC}
+  .stay-bk b{display:block;color:var(--ok);font-size:.78rem}
+  .stay-bk.asked b{color:#8A6A12} .stay-bk.wait b{color:#2C5F80}
+  .stay-bk span{display:block;color:var(--ink-soft)}
+  .stay-bk a{display:inline-block;margin-top:3px;font-size:.68rem;color:var(--camino-blue)}
+  .dstay{padding:8px 14px;border-top:1px dashed var(--line);font-size:.78rem;background:#EAF3EC;color:var(--ink)}
+  .dstay.asked{background:#FFFBEE} .dstay.wait{background:#F5F9FC} .dstay.none{background:#F4F2EA}
+  .dstay b{color:var(--ok);margin-right:4px} .dstay a{color:var(--camino-blue);margin-left:6px}
 
   footer.site{background:var(--camino-blue);color:#9FB0CE;text-align:center;padding:32px 16px;font-size:.8rem}
   footer.site b{color:var(--flecha)}

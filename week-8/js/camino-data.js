@@ -3280,6 +3280,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
   else if(document.readyState==="loading")
     document.addEventListener("DOMContentLoaded",boot);
   else boot();
+  document.addEventListener("camino:days-ready", function(){ if(window.CAMINO_LODGING) paintElsewhere(window.CAMINO_LODGING); });
 })();
 
 /* ── 블록 6 ── */
