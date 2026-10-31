@@ -2980,7 +2980,7 @@ const pgOnSignedIn=()=>{
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20261031-1";
+  var BUILD="20261031-3";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
@@ -3700,7 +3700,7 @@ const lgNorm = (raw) => {
       if(!n||!n.date) return;
       out.nights.push({date:n.date, city:n.city||"", name:n.name||"",
         status:n.status||"none", ref:n.ref||"", by:n.by||"", price:n.price||"",
-        url:n.url||"", memo:n.memo||"", ts:+n.ts||0});
+        url:n.url||"", memo:n.memo||"", addr:n.addr||"", tel:n.tel||"", ts:+n.ts||0});
     });
   }
   return out;
@@ -3761,7 +3761,7 @@ const lgSet = (iso, field, value) => {
   if(!n){
     const p=LG_PLAN.find(x=>x[0]===iso);
     n={date:iso, city:p?p[2]:"", name:"", status:"none", ref:"", by:"",
-       price:"", url:"", memo:"", ts:0};
+       price:"", url:"", memo:"", addr:"", tel:"", ts:0};
     lgData.nights.push(n);
     lgData.nights.sort((a,b)=>a.date<b.date?-1:1);
   }
@@ -3810,15 +3810,19 @@ const lgRender = () => {
             +'" placeholder="예: €62"></label>'
         +'</div>'
         +'<div class="lgrow">'
-          +'<label>주소 (사이트 지도 단추에 씀)<input type="text" data-f="addr" value="'+lgEsc(n.addr||"")
-            +'" placeholder="예: 738 route de Çaro, 64220 Saint-Jean-Pied-de-Port"></label>'
+          +'<label>🏠 숙소 주소 <small style="font-weight:400;color:#A79E86">— 사이트의 지도 단추·DAY 카드에 나옵니다</small><input type="text" data-f="addr" value="'+lgEsc(n.addr||"")
+            +'" placeholder="번지 · 길 이름 · 우편번호 · 도시"></label>'
           +'<label>전화<input type="text" data-f="tel" value="'+lgEsc(n.tel||"")
             +'" placeholder="+33 …"></label>'
         +'</div>'
         +'<label class="lgw">메모<input type="text" data-f="memo" value="'+lgEsc(n.memo||"")
           +'" placeholder="답장 내용 · 확인할 것"></label>'
-        +'<label class="lgw">링크<input type="text" data-f="url" value="'+lgEsc(n.url||"")
-          +'" placeholder="예약 페이지 주소"></label>'
+        +'<label class="lgw">링크 <small style="font-weight:400;color:#A79E86">(예약 페이지 웹주소 · 선택)</small><input type="text" data-f="url" value="'+lgEsc(n.url||"")
+          +'" placeholder="https://…"></label>'
+        +'<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px;align-items:center">'
+          +'<span class="lgsaved" data-d="'+p[0]+'" style="font-size:.72rem;color:#A79E86"></span>'
+          +'<button type="button" class="lgsavebtn" data-d="'+p[0]+'" style="background:var(--camino-blue,#152A55);color:#fff;border:none;border-radius:999px;padding:8px 18px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit">💾 이 날 저장</button>'
+        +'</div>'
       +'</div></div>';
   });
 
@@ -3841,6 +3845,13 @@ const lgBind = () => {
       const go=()=>lgSet(iso, inp.dataset.f, inp.value.trim());
       inp.addEventListener("change",go);
       inp.addEventListener("blur",go);
+    });
+    const sb=box.querySelector(".lgsavebtn");
+    if(sb) sb.addEventListener("click",()=>{
+      box.querySelectorAll("input[data-f]").forEach(inp=>lgSet(iso, inp.dataset.f, inp.value.trim()));
+      clearTimeout(lgTimer);
+      const tag=box.querySelector(".lgsaved"); if(tag) tag.textContent="저장 중…";
+      lgSave().then(()=>{ if(tag) tag.textContent="✓ 저장됨 "+new Date().toLocaleTimeString("ko-KR",{hour:"2-digit",minute:"2-digit"}); });
     });
   });
 };
