@@ -3190,7 +3190,8 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     return {
       iso:iso, day:p?p[1]:null, city:d.city || (p?p[2]:""), area:p?p[3]:"",
       name:d.name||"", status:d.status||"none", ref:d.ref||"",
-      by:d.by||"", price:d.price||"", memo:d.memo||"", url:d.url||""
+      by:d.by||"", price:d.price||"", memo:d.memo||"", url:d.url||"",
+      addr:d.addr||"", tel:d.tel||""
     };
   }
 
@@ -3228,13 +3229,15 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
         h += '<div class="lcd out"><span class="lcn">'+day+'</span></div>';
         continue;
       }
-      var s = st(r.status);
-      h += '<div class="lcd '+s.c+'" title="'+esc(r.city+" · "+s.n)+'">'
+      var s = st(r.status), anchor="#lodge-05"+(day<10?"0":"")+day;
+      h += '<a class="lcd '+s.c+'" href="'+anchor+'" title="'+esc(r.city+" · "+s.n)+' · 자세히">'
         + '<span class="lcn">'+day+'</span>'
         + '<span class="lct">'+esc(r.city)+'</span>'
         + '<span class="lcs">'+s.i+' '+s.n+'</span>'
         + (r.name?'<span class="lcm">'+esc(r.name)+'</span>':'')
-        + '</div>';
+        + (r.addr?'<span class="lcm" style="color:#A79E86">'+esc(r.addr)+'</span>':'')
+        + '<span class="lcm" style="color:var(--camino-blue)">자세히 →</span>'
+        + '</a>';
     }
     h += '</div></div>';
 
@@ -3242,19 +3245,21 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     h += '<div class="llist">';
     rows.forEach(function(r){
       var s = st(r.status);
-      h += '<div class="lrow '+s.c+'">'
+      h += '<a class="lrow '+s.c+'" href="#lodge-'+r.iso.slice(5,7)+r.iso.slice(8,10)+'" style="text-decoration:none;color:inherit">'
         + '<div class="ld"><b>'+md(r.iso)+'</b><span>'+dow(r.iso)+'</span>'
           + (r.day>0?'<em>DAY '+r.day+'</em>':(r.day===0?'<em>생장</em>':'<em>파리</em>'))+'</div>'
         + '<div class="li"><b>'+esc(r.city)+'</b>'
           + (r.name?'<span>'+esc(r.name)+'</span>':'<span class="dim">숙소 미정</span>')
+          + (r.addr?'<small>📍 '+esc(r.addr)+(r.tel?' · '+esc(r.tel):'')+'</small>':'')
           + (r.memo?'<small>'+esc(r.memo)+'</small>':'')
           + '</div>'
         + '<div class="lz"><span class="lst '+s.c+'">'+s.i+' '+s.n+'</span>'
           + (r.ref?'<code>'+esc(r.ref)+'</code>':'')
           + (r.by?'<i class="who '+r.by+'">'+r.by.toUpperCase()+'</i>':'')
           + (r.price?'<em>'+esc(r.price)+'</em>':'')
+          + '<span style="font-size:.66rem;color:var(--camino-blue)">자세히 →</span>'
           + '</div>'
-        + '</div>';
+        + '</a>';
     });
     h += '</div>';
 
@@ -3266,6 +3271,36 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       + 'Bin·Jin 둘 다 고칠 수 있고, 누가 예약했는지도 함께 남깁니다.</p>';
 
     root.innerHTML = h;
+    window.CAMINO_LODGING = rows;
+    paintElsewhere(rows);
+  }
+  /* 예약된 숙소를 Ⅵ 날짜별 숙박지 카드와 DAY 카드 맨 끝에도 보여 줍니다 */
+  function paintElsewhere(rows){
+    var mapLink=function(r){ return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(r.name+", "+r.addr); };
+    var anchor=function(r){ return "#lodge-"+r.iso.slice(5,7)+r.iso.slice(8,10); };
+    document.querySelectorAll(".stay-grid .stay").forEach(function(card){
+      var d=card.querySelector(".d"); if(!d) return;
+      var m=(d.textContent||"").match(/(\d+)\/(\d+)/); if(!m) return;
+      var iso="2027-"+(m[1].length<2?"0":"")+m[1]+"-"+(m[2].length<2?"0":"")+m[2];
+      var r=rows.filter(function(x){ return x.iso===iso; })[0]; if(!r||!r.name) return;
+      var old=card.querySelector(".stay-bk"); if(old) old.remove();
+      var s=st(r.status), el=document.createElement("div"); el.className="stay-bk "+s.c;
+      el.innerHTML='<b>'+s.i+' '+esc(r.name)+'</b>'+(r.addr?'<span>📍 '+esc(r.addr)+'</span>':'')
+        +(r.ref?'<span>예약 '+esc(r.ref)+(r.by?' · '+r.by.toUpperCase():'')+'</span>':'')
+        +(r.addr?'<a href="'+mapLink(r)+'" target="_blank" rel="noopener">지도 열기</a> ':'')
+        +'<a href="'+anchor(r)+'">숙소 자세히 →</a>';
+      card.querySelector("div:last-child").appendChild(el);
+    });
+    var byDay={}; rows.forEach(function(r){ if(r.day>0) byDay[r.day]=r; });
+    document.querySelectorAll(".dcard[id^='day']").forEach(function(card){
+      var n=+(card.id.replace(/\D/g,"")); var r=byDay[n]; if(!r||!r.name) return;
+      var old=card.querySelector(".dstay"); if(old) old.remove();
+      var s=st(r.status), el=document.createElement("div"); el.className="dstay "+s.c;
+      el.innerHTML='🛏 <b>오늘 숙소</b> '+s.i+' '+esc(r.name)+(r.addr?' · '+esc(r.addr):'')+(r.tel?' · '+esc(r.tel):'')
+        +(r.addr?' <a href="'+mapLink(r)+'" target="_blank" rel="noopener">지도</a>':'')
+        +' <a class="dstay-go" href="'+anchor(r)+'">숙소 자세히 →</a>';
+      card.appendChild(el);                                   /* 카드 맨 끝 (세요 줄 다음) */
+    });
   }
   function lc(n,v,s,c){
     return '<div class="lsc'+(c?" "+c:"")+'"><small>'+n+'</small><b>'+v+'</b><i>'+(s||"")+'</i></div>';
