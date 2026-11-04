@@ -705,6 +705,7 @@
   .lgn.none{border-left:4px solid #E3B7B7}
   .lgn.asked{border-left:4px solid var(--flecha)}
   .lgn.waiting{border-left:4px solid #7FA8C4}
+  .lgn.pending{border-left:4px solid #9C7AC6}
   .lgn.booked,.lgn.paid{border-left:4px solid var(--ok)}
   .lgn.cancel{border-left:4px solid #C3BFB2;opacity:.65}
   .lgh{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:9px 12px;
@@ -2980,7 +2981,7 @@ const pgOnSignedIn=()=>{
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20261031-3";
+  var BUILD="20261103-1";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
@@ -3680,6 +3681,7 @@ const LG_ST = [
   {k:"none",    n:"미예약",   i:"·"},
   {k:"asked",   n:"문의 발송", i:"✉"},
   {k:"waiting", n:"오픈 대기", i:"⏳"},
+  {k:"pending", n:"예약 대기", i:"🕓"},
   {k:"booked",  n:"예약 완료", i:"✓"},
   {k:"paid",    n:"결제 완료", i:"✓✓"},
   {k:"cancel",  n:"취소됨",   i:"✕"}
@@ -3780,7 +3782,7 @@ const lgRender = () => {
   let h='<div class="lgsum">'
     + lgCard("전체", LG_PLAN.length+"박", "5/7 ~ 5/21")
     + lgCard("예약 완료", ((cnt.booked||0)+(cnt.paid||0))+"곳", "결제 포함", "ok")
-    + lgCard("문의 · 대기", ((cnt.asked||0)+(cnt.waiting||0))+"곳", "답 기다리는 중", "wa")
+    + lgCard("문의 · 대기", ((cnt.asked||0)+(cnt.waiting||0)+(cnt.pending||0))+"곳", "답·확정 기다리는 중", "wa")
     + lgCard("미예약", (cnt.none||0)+"곳", "아직 손대지 않음", "no")
     + '</div>';
 

@@ -169,13 +169,13 @@
   /* 예약된 숙소 표시 (lodging.json) */
   .stay-bk{margin-top:7px;padding:7px 9px;border-radius:9px;background:#F4F2EA;font-size:.72rem;line-height:1.5}
   .stay-bk.book,.stay-bk.paid{background:#EAF3EC}
-  .stay-bk.asked{background:#FFFBEE} .stay-bk.wait{background:#F5F9FC}
+  .stay-bk.asked{background:#FFFBEE} .stay-bk.wait{background:#F5F9FC} .stay-bk.pend{background:#F6F2FB}
   .stay-bk b{display:block;color:var(--ok);font-size:.78rem}
   .stay-bk.asked b{color:#8A6A12} .stay-bk.wait b{color:#2C5F80}
   .stay-bk span{display:block;color:var(--ink-soft)}
   .stay-bk a{display:inline-block;margin-top:3px;font-size:.68rem;color:var(--camino-blue)}
   .dstay{padding:8px 14px;border-top:1px dashed var(--line);font-size:.78rem;background:#EAF3EC;color:var(--ink)}
-  .dstay.asked{background:#FFFBEE} .dstay.wait{background:#F5F9FC} .dstay.none{background:#F4F2EA}
+  .dstay.asked{background:#FFFBEE} .dstay.wait{background:#F5F9FC} .dstay.pend{background:#F6F2FB} .dstay.none{background:#F4F2EA}
   .dstay b{color:var(--ok);margin-right:4px} .dstay a{color:var(--camino-blue);margin-left:6px}
   .dstay>div+div{margin-top:5px;padding-top:5px;border-top:1px dashed rgba(0,0,0,.08)}
   .dstay-go{display:inline-block;background:var(--camino-blue);color:#fff!important;border-radius:999px;padding:3px 11px;font-size:.72rem;font-weight:700;text-decoration:none}
@@ -1637,6 +1637,7 @@
   .lcd.none{background:#FDF6F5} .lcd.none .lcs{color:#B06A6A}
   .lcd.asked{background:#FFFBEE} .lcd.asked .lcs{color:#8A6A12}
   .lcd.wait{background:#F5F9FC} .lcd.wait .lcs{color:#2C5F80}
+  .lcd.pend{background:#F6F2FB} .lcd.pend .lcs{color:#5B3F8A}
   .lcd.book{background:#F2FAF5} .lcd.book .lcs{color:var(--ok)}
   .lcd.paid{background:#E6F3EA} .lcd.paid .lcs{color:var(--ok)}
   .lcd.canc{background:#F4F2EA} .lcd.canc .lcs{color:#A79E86}
@@ -1648,6 +1649,7 @@
   .lrow.none{border-left:4px solid #E3B7B7}
   .lrow.asked{border-left:4px solid var(--flecha)}
   .lrow.wait{border-left:4px solid #7FA8C4}
+  .lrow.pend{border-left:4px solid #9C7AC6}
   .lrow.book,.lrow.paid{border-left:4px solid var(--ok)}
   .lrow.canc{border-left:4px solid #C3BFB2;opacity:.6}
   .ld{flex:0 0 62px;text-align:center}
@@ -1669,6 +1671,7 @@
   .lst.none{background:#F6DDD6;color:#B03A2E}
   .lst.asked{background:#F6EEDC;color:#8A6A12}
   .lst.wait{background:#DCEAF3;color:#2C5F80}
+  .lst.pend{background:#E9E0F4;color:#5B3F8A}
   .lst.book{background:#E6F3EA;color:var(--ok)}
   .lst.paid{background:var(--ok);color:#fff}
   .lst.canc{background:#EFEDE5;color:#8A8578}

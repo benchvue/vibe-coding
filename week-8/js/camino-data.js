@@ -3139,6 +3139,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     none   : {n:"미예약",    c:"none",  i:"·"},
     asked  : {n:"문의 발송",  c:"asked", i:"✉"},
     waiting: {n:"오픈 대기",  c:"wait",  i:"⏳"},
+    pending: {n:"예약 대기",  c:"pend",  i:"🕓"},
     booked : {n:"예약 완료",  c:"book",  i:"✓"},
     paid   : {n:"결제 완료",  c:"paid",  i:"✓✓"},
     cancel : {n:"취소됨",     c:"canc",  i:"✕"}
@@ -3206,7 +3207,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     var h = '<div class="lsum">'
       + lc("전체", rows.length+"박", "5/7 ~ 5/21")
       + lc("예약 완료", (cnt.booked||0)+(cnt.paid||0)+"곳", "결제 포함", "book")
-      + lc("문의 · 대기", (cnt.asked||0)+(cnt.waiting||0)+"곳", "답을 기다리는 중", "asked")
+      + lc("문의 · 대기", (cnt.asked||0)+(cnt.waiting||0)+(cnt.pending||0)+"곳", "답·확정을 기다리는 중", "asked")
       + lc("미예약", (cnt.none||0)+"곳", "아직 손대지 않음", "none")
       + '</div>';
 
@@ -3291,14 +3292,23 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
         +'<a href="'+anchor(r)+'">숙소 자세히 →</a>';
       card.querySelector("div:last-child").appendChild(el);
     });
-    var byDay={}; rows.forEach(function(r){ if(r.day>0) byDay[r.day]=r; });
-    document.querySelectorAll(".dcard[id^='day']").forEach(function(card){
-      var n=+(card.id.replace(/\D/g,"")); var r=byDay[n]; if(!r||!r.name) return;
-      var old=card.querySelector(".dstay"); if(old) old.remove();
-      var s=st(r.status), el=document.createElement("div"); el.className="dstay "+s.c;
-      el.innerHTML='🛏 <b>오늘 숙소</b> '+s.i+' '+esc(r.name)+(r.addr?' · '+esc(r.addr):'')+(r.tel?' · '+esc(r.tel):'')
+    /* DAY n 카드: 출발 숙소(전날 밤) + 도착 숙소(그날 밤) 둘 다 */
+    var byDay={}; rows.forEach(function(r){ if(r.day!=null) byDay[r.day]=r; });
+    var line=function(label,r){
+      if(!r) return '';
+      var s=st(r.status);
+      if(!r.name) return '<div>🛏 <b>'+label+'</b> <span style="color:#A79E86">'+esc(r.city)+' · 숙소 미정</span> <a class="dstay-go" href="'+anchor(r)+'">후보 보기 →</a></div>';
+      return '<div>🛏 <b>'+label+'</b> '+s.i+' '+esc(r.name)+' <small>('+esc(r.city)+')</small>'+(r.addr?' · '+esc(r.addr):'')+(r.tel?' · '+esc(r.tel):'')
         +(r.addr?' <a href="'+mapLink(r)+'" target="_blank" rel="noopener">지도</a>':'')
-        +' <a class="dstay-go" href="'+anchor(r)+'">숙소 자세히 →</a>';
+        +' <a class="dstay-go" href="'+anchor(r)+'">숙소 자세히 →</a></div>';
+    };
+    document.querySelectorAll(".dcard[id^='day']").forEach(function(card){
+      var n=+(card.id.replace(/\D/g,"")); if(!n) return;
+      var from=byDay[n-1], to=byDay[n];           /* DAY 1: 출발 5/8 생장 · 도착 5/9 수비리 */
+      if(!from && !to) return;
+      var old=card.querySelector(".dstay"); if(old) old.remove();
+      var el=document.createElement("div"); el.className="dstay "+(to?st(to.status).c:"none");
+      el.innerHTML=line("출발 숙소 "+(from?md(from.iso):""), from)+line("도착 숙소 "+(to?md(to.iso):""), to);
       card.appendChild(el);                                   /* 카드 맨 끝 (세요 줄 다음) */
     });
   }
