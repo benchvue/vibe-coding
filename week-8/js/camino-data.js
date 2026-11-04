@@ -3097,19 +3097,25 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     h+='</div>';
 
     /* 기간별 */
-    var max=0;
-    for(var i=0;i<=DAYS+1;i++) if((t.day[i]||0)>max) max=t.day[i]||0;
-    h+='<h3 class="xh3">기간별 <small style="font-weight:400;color:var(--ink-soft)">· 분류 색으로 쌓음 · 숙박은 묵는 밤 기준</small></h3><div class="xdays">';
-    for(var d2=0;d2<=DAYS+1;d2++){
-      var v=t.day[d2]||0, dc=t.dayCat[d2]||{}, tip=dayName(d2)+' '+eur(v);
-      var segs=''; XC.forEach(function(c){ var cv=dc[c.k]||0; if(!cv) return; tip+=' · '+c.n+' '+eur(cv);
-        segs+='<i style="height:'+(max?(cv/max*100):0).toFixed(1)+'%;background:'+c.c+'"></i>'; });
-      h+='<div class="xd'+(d2===0||d2>DAYS?" sp":"")+'" title="'+tip+'">'
+    /* 기간별 — 출발 전·완주 후는 금액이 크게 달라 따로, DAY 1~13 은 자기 눈금으로. 막대 위에 금액을 적어 손 안 올려도 보이게 */
+    var bar=function(d2,max,wide){
+      var v=t.day[d2]||0, dc=t.dayCat[d2]||{}, tip=dayName(d2)+' '+eur(v), segs='';
+      XC.forEach(function(c){ var cv=dc[c.k]||0; if(!cv) return; tip+=' · '+c.n+' '+eur(cv);
+        segs+='<i style="height:'+(max?(cv/max*100):0).toFixed(1)+'%;background:'+c.c+'" title="'+c.n+' '+eur(cv)+'"></i>'; });
+      return '<div class="xd'+(wide?" wide":"")+'" title="'+tip+'">'
+        +'<span class="xdv">'+(v?eur0(v):"")+'</span>'
         +'<span class="xdb xdb-stack">'+segs+'</span>'
-        +'<span class="xdl">'+(d2===0?"전":(d2>DAYS?"후":d2))+'</span></div>';
-    }
-    h+='</div><p class="xdnote">막대에 손을 올리면 금액이 보입니다 · '
-      +'<b>전</b> 출발 전(항공·자전거 등) · <b>후</b> 완주 후 · 미리 결제한 숙박은 업로드 페이지에서 <b>어느 밤</b>을 고르면 그 날로 옮겨집니다</p>';
+        +'<span class="xdl">'+(d2===0?"출발 전":(d2>DAYS?"완주 후":"DAY "+d2))+'</span></div>';
+    };
+    var maxPP=Math.max(t.day[0]||0, t.day[DAYS+1]||0), maxD=0;
+    for(var i=1;i<=DAYS;i++) if((t.day[i]||0)>maxD) maxD=t.day[i]||0;
+    h+='<h3 class="xh3">기간별 <small style="font-weight:400;color:var(--ink-soft)">· 분류 색으로 쌓음 · 숙박은 묵는 밤 기준</small></h3>'
+      +'<div class="xdays xdays-pp">'+bar(0,maxPP,true)+bar(DAYS+1,maxPP,true)
+      +'<div class="xdleg">'+XC.map(function(c){ return (t.cat[c.k]?'<span><i style="background:'+c.c+'"></i>'+c.n+'</span>':''); }).join("")+'</div></div>'
+      +'<div class="xdays-cap">여행 중 하루하루 <small>· 눈금이 위와 다릅니다 (최대 '+eur0(maxD)+')</small></div>'
+      +'<div class="xdays">';
+    for(var d2=1;d2<=DAYS;d2++) h+=bar(d2,maxD,false);
+    h+='</div><p class="xdnote"><b>출발 전</b> 항공·자전거·미리 낸 숙박 등 · <b>완주 후</b> 귀국길 · 미리 결제한 숙박은 업로드 페이지에서 <b>어느 밤</b>을 고르면 그 날로 옮겨집니다</p>';
 
     h+='<p class="tsfoot">기록은 <b>upload-camino.html → 💶 비용</b> 탭에서 합니다. '
       +'금액은 모두 유로로 환산한 값이며, 원화·달러는 결제 당시 환율로 계산했습니다.</p>';
