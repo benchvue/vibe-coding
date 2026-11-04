@@ -2988,7 +2988,7 @@ const pgOnSignedIn=()=>{
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20261104-2";
+  var BUILD="20261104-3";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
@@ -3084,6 +3084,7 @@ const exNorm = (raw) => {
     cat:x.cat||"etc", sub:x.sub||"", payer:x.payer||"bin", split:x.split||"half",
     settle:(x.settle===undefined?true:!!x.settle),
     day:(x.day===undefined?0:+x.day), date:x.date||"", place:x.place||"",
+    night:(x.night===undefined||x.night===null||x.night==="")?null:+x.night,
     memo:x.memo||"", fileId:x.fileId||"", mime:x.mime||"", del:!!x.del, ts:+x.ts||0
   }));
   return d;
@@ -3424,6 +3425,12 @@ const exForm = (rec) => {
           +'<option value="'+(EX.days+1)+'"'+(day===EX.days+1?" selected":"")+'>완주 후</option>'
         +'</select></label>'
       +'</div>'
+      +'<label class="exl" id="exNightWrap" style="'+(cat==="stay"?"":"display:none")+'">🛏 어느 밤 숙박인가 <small style="font-weight:400;color:#A79E86">— 미리 결제한 숙소는 여기로 기간별 그래프에 들어갑니다</small>'
+        +'<select id="exNight"><option value="">(구간과 같음)</option>'
+          +'<option value="-1"'+(rec.night===-1?" selected":"")+'>5/7 파리</option>'
+          +'<option value="0"'+(rec.night===0?" selected":"")+'>5/8 생장</option>'
+          +Array.from({length:EX.days},(_,i)=>'<option value="'+(i+1)+'"'+(rec.night===i+1?" selected":"")+'>DAY '+(i+1)+' · '+exDayDate(i+1).slice(5)+' 밤</option>').join("")
+        +'</select></label>'
 
       +'<label class="exl">결제한 사람</label>'
       +'<div class="exseg" id="exPayer">'
@@ -3483,6 +3490,7 @@ const exFormBind = (cat, sub) => {
     curCat=b.dataset.c; curSub="";
     ed.querySelectorAll(".excatb").forEach(x=>x.classList.toggle("on",x===b));
     paintSubs();
+    const nw=$("exNightWrap"); if(nw) nw.style.display = curCat==="stay" ? "" : "none";
   }));
   ["exPayer","exSplit"].forEach(id=>{
     const box=$(id);
@@ -3556,6 +3564,7 @@ const exFormBind = (cat, sub) => {
       split:$("exSplit").querySelector(".on").dataset.v,
       settle:$("exSettle").checked,
       day:+$("exDay").value, date:$("exDate").value,
+      night:(curCat==="stay" && $("exNight") && $("exNight").value!=="") ? +$("exNight").value : null,
       place:$("exPlace").value.trim(), memo:$("exMemo").value.trim(),
       fileId:rec.fileId||"", mime:rec.mime||"", del:false, ts:Date.now()
     };

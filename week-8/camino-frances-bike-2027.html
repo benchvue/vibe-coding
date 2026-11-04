@@ -1406,6 +1406,12 @@
   .xd{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%}
   .xdb{flex:1;width:100%;display:flex;align-items:flex-end;background:#F7F5EE;border-radius:3px}
   .xdb i{display:block;width:100%;background:var(--camino-blue);border-radius:3px;min-height:2px}
+  .xdb-stack{flex-direction:column-reverse;justify-content:flex-start}
+  .xdb-stack i{border-radius:0;min-height:1px} .xdb-stack i:last-child{border-radius:3px 3px 0 0}
+  .xpbar i{position:relative} .xpbar i em{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-style:normal;font-size:.72rem;font-weight:700;color:#fff;letter-spacing:.02em;text-shadow:0 1px 2px rgba(0,0,0,.35)}
+  .xpbar i[style*="width:0%"] em,.xpbar i[style*="width: 0%"] em{display:none}
+  .xpl small{color:var(--ink-soft);font-weight:400}
   .xd.sp .xdb i{background:#B8A97A}
   .xdl{font-size:.6rem;color:var(--ink-soft);font-variant-numeric:tabular-nums}
   .xdnote{margin-top:7px;font-size:.7rem;color:var(--ink-soft)}

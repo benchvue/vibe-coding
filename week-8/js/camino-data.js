@@ -2993,7 +2993,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
         return { id:x.id, eur:+x.eur||0, amt:+x.amt||0, cur:x.cur||"EUR",
           cat:x.cat||"etc", sub:x.sub||"", payer:x.payer||"bin",
           split:x.split||"half", settle:(x.settle===undefined?true:!!x.settle),
-          day:(x.day===undefined?0:+x.day), place:x.place||"", memo:x.memo||"",
+          day:(x.day===undefined?0:+x.day), night:(x.night===undefined||x.night===null||x.night==="")?null:+x.night, place:x.place||"", memo:x.memo||"",
           fileId:x.fileId||"" };
       });
   }
@@ -3021,12 +3021,15 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     return DATA.bin.concat(DATA.jin).sort(function(a,b){ return a.day-b.day; });
   }
   function totals(){
-    var t={all:0,bin:0,jin:0,cat:{},day:{},sBin:0,sJin:0,pre:0,ride:0,post:0,n:0};
+    var t={all:0,bin:0,jin:0,cat:{},day:{},dayCat:{},sBin:0,sJin:0,pre:0,ride:0,post:0,n:0};
     all().forEach(function(x){
       var v=x.eur; t.all+=v; t.n++;
       t[x.payer]=(t[x.payer]||0)+v;
       t.cat[x.cat]=(t.cat[x.cat]||0)+v;
-      t.day[x.day]=(t.day[x.day]||0)+v;
+      /* 기간별 자리: 숙박은 "어느 밤"(night)이 있으면 그 밤으로 — 미리 결제한 숙소가 전부 "전"에 몰리지 않게 */
+      var slot = (x.cat==="stay" && x.night!==null && x.night!==undefined) ? Math.max(0, x.night) : x.day;
+      t.day[slot]=(t.day[slot]||0)+v;
+      (t.dayCat[slot]=t.dayCat[slot]||{})[x.cat]=((t.dayCat[slot]||{})[x.cat]||0)+v;
       if(x.day<=0) t.pre+=v; else if(x.day>DAYS) t.post+=v; else t.ride+=v;
       if(!x.settle) return;
       var owed = x.split==="half" ? v/2 : (x.split==="other" ? v : 0);
@@ -3075,9 +3078,9 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     var bp = t.all ? Math.round((t.bin||0)/t.all*100) : 50;
     h+='<h3 class="xh3">누가 얼마를 냈나</h3>'
       +'<div class="xpay"><div class="xpbar">'
-        +'<i class="bin" style="width:'+bp+'%"></i><i class="jin" style="width:'+(100-bp)+'%"></i></div>'
-      +'<div class="xpl"><span><b class="who bin">BIN</b> '+eur(t.bin||0)+'</span>'
-        +'<span>'+eur(t.jin||0)+' <b class="who jin">JIN</b></span></div></div>';
+        +'<i class="bin" style="width:'+bp+'%"><em>'+Math.round(bp)+' %</em></i><i class="jin" style="width:'+(100-bp)+'%"><em>'+Math.round(100-bp)+' %</em></i></div>'
+      +'<div class="xpl"><span><b class="who bin">BIN</b> '+eur(t.bin||0)+' <small>'+Math.round(bp)+' %</small></span>'
+        +'<span><small>'+Math.round(100-bp)+' %</small> '+eur(t.jin||0)+' <b class="who jin">JIN</b></span></div></div>';
 
     /* 분류별 */
     var cats=XC.map(function(c){ return {c:c, v:t.cat[c.k]||0}; })
@@ -3096,15 +3099,17 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     /* 기간별 */
     var max=0;
     for(var i=0;i<=DAYS+1;i++) if((t.day[i]||0)>max) max=t.day[i]||0;
-    h+='<h3 class="xh3">기간별</h3><div class="xdays">';
+    h+='<h3 class="xh3">기간별 <small style="font-weight:400;color:var(--ink-soft)">· 분류 색으로 쌓음 · 숙박은 묵는 밤 기준</small></h3><div class="xdays">';
     for(var d2=0;d2<=DAYS+1;d2++){
-      var v=t.day[d2]||0, hh=max?Math.round(v/max*100):0;
-      h+='<div class="xd'+(d2===0||d2>DAYS?" sp":"")+'" title="'+dayName(d2)+' '+eur(v)+'">'
-        +'<span class="xdb"><i style="height:'+hh+'%"></i></span>'
+      var v=t.day[d2]||0, dc=t.dayCat[d2]||{}, tip=dayName(d2)+' '+eur(v);
+      var segs=''; XC.forEach(function(c){ var cv=dc[c.k]||0; if(!cv) return; tip+=' · '+c.n+' '+eur(cv);
+        segs+='<i style="height:'+(max?(cv/max*100):0).toFixed(1)+'%;background:'+c.c+'"></i>'; });
+      h+='<div class="xd'+(d2===0||d2>DAYS?" sp":"")+'" title="'+tip+'">'
+        +'<span class="xdb xdb-stack">'+segs+'</span>'
         +'<span class="xdl">'+(d2===0?"전":(d2>DAYS?"후":d2))+'</span></div>';
     }
     h+='</div><p class="xdnote">막대에 손을 올리면 금액이 보입니다 · '
-      +'<b>전</b> 출발 전 · <b>후</b> 완주 후</p>';
+      +'<b>전</b> 출발 전(항공·자전거 등) · <b>후</b> 완주 후 · 미리 결제한 숙박은 업로드 페이지에서 <b>어느 밤</b>을 고르면 그 날로 옮겨집니다</p>';
 
     h+='<p class="tsfoot">기록은 <b>upload-camino.html → 💶 비용</b> 탭에서 합니다. '
       +'금액은 모두 유로로 환산한 값이며, 원화·달러는 결제 당시 환율로 계산했습니다.</p>';
