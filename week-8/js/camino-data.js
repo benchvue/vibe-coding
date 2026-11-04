@@ -3300,6 +3300,32 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       card.querySelector("div:last-child").appendChild(el);
     });
     /* DAY n 카드: 출발 숙소(전날 밤) + 도착 숙소(그날 밤) 둘 다 */
+    /* 숙소 절의 날짜 상자(#lodge-MMDD): 예약·대기 중인 숙소가 있으면 그 내용을 맨 위에 두고, 후보 목록·Booking 단추는 접습니다 */
+    rows.forEach(function(r){
+      var box=document.getElementById("lodge-"+r.iso.slice(5,7)+r.iso.slice(8,10)); if(!box||!box.classList.contains("nb")) return;
+      var has = (r.name && r.status!=="none") || r.b;
+      var old=box.querySelector(".nbooked"); if(old) old.remove();
+      var gen=box.querySelector(".ngen");
+      if(!gen){ /* 후보 목록·Booking·지도 단추를 한 덩이로 묶어 접을 수 있게 */
+        gen=document.createElement("details"); gen.className="ngen";
+        var sm=document.createElement("summary"); sm.textContent="다른 후보 · Booking 검색 · 지도에서 보기"; gen.appendChild(sm);
+        var kids=Array.prototype.slice.call(box.children).filter(function(k){ return !k.classList.contains("nh") && !k.classList.contains("nx") && !k.classList.contains("townmap") && !k.classList.contains("booking") && k.tagName!=="FIGURE"; });
+        kids.forEach(function(k){ gen.appendChild(k); });
+        box.appendChild(gen);
+      }
+      gen.open = !has;
+      if(!has) return;
+      var el=document.createElement("div"); el.className="nbooked";
+      var one=function(label,n){ if(!n) return ""; var s=st(n.status);
+        return '<div class="nbk-row '+s.c+'"><span class="lst '+s.c+'">'+s.i+' '+s.n+'</span> <b>'+esc(n.name)+'</b>'
+          +(label?' <small>'+label+'</small>':'')
+          +(n.addr?'<div class="nbk-sub">📍 '+esc(n.addr)+(n.tel?' · '+esc(n.tel):'')+'</div>':'')
+          +'<div class="nbk-sub">'+(n.ref?'예약 '+esc(n.ref)+' · ':'')+(n.by?n.by.toUpperCase()+' · ':'')+(n.price?esc(n.price)+' · ':'')+(n.memo?esc(n.memo):'')+'</div>'
+          +(n.addr?'<a class="nbk-map" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(n.name+", "+n.addr)+'" target="_blank" rel="noopener">지도 열기</a>':'')
+          +'</div>'; };
+      el.innerHTML = one("", r.name?r:null) + one("🛟 보조 (알베르게 확정되면 취소)", r.b);
+      var nh=box.querySelector(".nh"); if(nh) nh.insertAdjacentElement("afterend", el); else box.prepend(el);
+    });
     var byDay={}; rows.forEach(function(r){ if(r.day!=null) byDay[r.day]=r; });
     var line=function(label,r){
       if(!r) return '';
