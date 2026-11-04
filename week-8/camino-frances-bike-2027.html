@@ -1630,18 +1630,17 @@
     margin-bottom:14px}
   .lcal-h{padding:10px 14px;background:var(--camino-blue);color:#fff;
     font-family:'Gowun Batang',serif;font-size:.95rem}
-  .lcal-g{display:grid;grid-template-columns:repeat(7,1fr)}
+  .lcal-g{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}   /* 내용 길이와 무관하게 7열 균등 */
   .lcw{padding:7px 4px;text-align:center;font-size:.68rem;font-weight:700;color:var(--ink-soft);
     background:#F1EEE4;border-bottom:1px solid var(--line)}
-  .lcd{min-height:88px;padding:6px 7px;border-right:1px solid var(--line2);
+  .lcd{min-height:88px;padding:6px 7px;border-right:1px solid var(--line2);min-width:0;overflow:hidden;
     border-bottom:1px solid var(--line2);display:flex;flex-direction:column;gap:2px}
   .lcd:nth-child(7n){border-right:none}
   .lcd.off,.lcd.out{background:#FBFAF5}
   .lcn{font-size:.72rem;font-weight:700;color:var(--ink-soft);font-variant-numeric:tabular-nums}
   .lct{font-size:.72rem;font-weight:600;color:var(--ink);line-height:1.3}
   .lcs{font-size:.62rem;font-weight:700}
-  .lcm{font-size:.6rem;color:var(--ink-soft);line-height:1.35;
-    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .lcm{font-size:.6rem;color:var(--ink-soft);line-height:1.35;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   .lcd.none{background:#FDF6F5} .lcd.none .lcs{color:#B06A6A}
   .lcd.asked{background:#FFFBEE} .lcd.asked .lcs{color:#8A6A12}
   .lcd.wait{background:#F5F9FC} .lcd.wait .lcs{color:#2C5F80}
