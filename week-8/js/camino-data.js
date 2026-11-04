@@ -3192,7 +3192,8 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       iso:iso, day:p?p[1]:null, city:d.city || (p?p[2]:""), area:p?p[3]:"",
       name:d.name||"", status:d.status||"none", ref:d.ref||"",
       by:d.by||"", price:d.price||"", memo:d.memo||"", url:d.url||"",
-      addr:d.addr||"", tel:d.tel||""
+      addr:d.addr||"", tel:d.tel||"",
+      b:(d.b_name?{name:d.b_name, status:d.b_status||"none", ref:d.b_ref||"", by:d.b_by||"", price:d.b_price||"", addr:d.b_addr||"", memo:d.b_memo||""}:null)
     };
   }
 
@@ -3201,8 +3202,10 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     if(state==="load"){ root.innerHTML='<p class="tsload">예약 현황을 불러오는 중…</p>'; return; }
 
     var rows = PLAN.map(function(p){ return row(p[0]); });
+    var eff=function(r){ var ok=function(k){ return k==="booked"||k==="paid"; }; if(ok(r.status)) return r.status; if(r.b&&ok(r.b.status)) return r.b.status; return r.status; };
+    rows.forEach(function(r){ r.eff=eff(r); });
     var cnt = {};
-    rows.forEach(function(r){ cnt[r.status]=(cnt[r.status]||0)+1; });
+    rows.forEach(function(r){ cnt[r.eff]=(cnt[r.eff]||0)+1; });
 
     var h = '<div class="lsum">'
       + lc("전체", rows.length+"박", "5/7 ~ 5/21")
@@ -3230,13 +3233,14 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
         h += '<div class="lcd out"><span class="lcn">'+day+'</span></div>';
         continue;
       }
-      var s = st(r.status), anchor="#lodge-05"+(day<10?"0":"")+day;
-      h += '<a class="lcd '+s.c+'" href="'+anchor+'" title="'+esc(r.city+" · "+s.n)+' · 자세히">'
+      var s = st(r.status), se=st(r.eff), anchor="#lodge-05"+(day<10?"0":"")+day;
+      h += '<a class="lcd '+se.c+'" href="'+anchor+'" title="'+esc(r.city+" · "+se.n)+' · 자세히">'
         + '<span class="lcn">'+day+'</span>'
         + '<span class="lct">'+esc(r.city)+'</span>'
         + '<span class="lcs">'+s.i+' '+s.n+'</span>'
         + (r.name?'<span class="lcm">'+esc(r.name)+'</span>':'')
         + (r.addr?'<span class="lcm" style="color:#A79E86">'+esc(r.addr)+'</span>':'')
+        + (r.b?'<span class="lcm lcbk">🛟 '+st(r.b.status).i+' '+esc(r.b.name)+'</span>':'')
         + '<span class="lcm" style="color:var(--camino-blue)">자세히 →</span>'
         + '</a>';
     }
@@ -3246,13 +3250,15 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     h += '<div class="llist">';
     rows.forEach(function(r){
       var s = st(r.status);
-      h += '<a class="lrow '+s.c+'" href="#lodge-'+r.iso.slice(5,7)+r.iso.slice(8,10)+'" style="text-decoration:none;color:inherit">'
+      var se=st(r.eff);
+      h += '<a class="lrow '+se.c+'" href="#lodge-'+r.iso.slice(5,7)+r.iso.slice(8,10)+'" style="text-decoration:none;color:inherit">'
         + '<div class="ld"><b>'+md(r.iso)+'</b><span>'+dow(r.iso)+'</span>'
           + (r.day>0?'<em>DAY '+r.day+'</em>':(r.day===0?'<em>생장</em>':'<em>파리</em>'))+'</div>'
         + '<div class="li"><b>'+esc(r.city)+'</b>'
           + (r.name?'<span>'+esc(r.name)+'</span>':'<span class="dim">숙소 미정</span>')
           + (r.addr?'<small>📍 '+esc(r.addr)+(r.tel?' · '+esc(r.tel):'')+'</small>':'')
           + (r.memo?'<small>'+esc(r.memo)+'</small>':'')
+          + (r.b?'<small class="lbk">🛟 보조 <b>'+esc(r.b.name)+'</b> <span class="lst '+st(r.b.status).c+'">'+st(r.b.status).i+' '+st(r.b.status).n+'</span>'+(r.b.price?' · '+esc(r.b.price):'')+(r.b.memo?' · '+esc(r.b.memo):'')+'</small>':'')
           + '</div>'
         + '<div class="lz"><span class="lst '+s.c+'">'+s.i+' '+s.n+'</span>'
           + (r.ref?'<code>'+esc(r.ref)+'</code>':'')
@@ -3283,11 +3289,12 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       var d=card.querySelector(".d"); if(!d) return;
       var m=(d.textContent||"").match(/(\d+)\/(\d+)/); if(!m) return;
       var iso="2027-"+(m[1].length<2?"0":"")+m[1]+"-"+(m[2].length<2?"0":"")+m[2];
-      var r=rows.filter(function(x){ return x.iso===iso; })[0]; if(!r||!r.name) return;
+      var r=rows.filter(function(x){ return x.iso===iso; })[0]; if(!r||(!r.name&&!r.b)) return;
       var old=card.querySelector(".stay-bk"); if(old) old.remove();
-      var s=st(r.status), el=document.createElement("div"); el.className="stay-bk "+s.c;
-      el.innerHTML='<b>'+s.i+' '+esc(r.name)+'</b>'+(r.addr?'<span>📍 '+esc(r.addr)+'</span>':'')
+      var s=st(r.status), el=document.createElement("div"); el.className="stay-bk "+st(r.eff).c;
+      el.innerHTML=(r.name?'<b>'+s.i+' '+esc(r.name)+'</b>':'')+(r.addr?'<span>📍 '+esc(r.addr)+'</span>':'')
         +(r.ref?'<span>예약 '+esc(r.ref)+(r.by?' · '+r.by.toUpperCase():'')+'</span>':'')
+        +(r.b?'<span class="bk">🛟 보조 '+st(r.b.status).i+' <b>'+esc(r.b.name)+'</b>'+(r.b.price?' · '+esc(r.b.price):'')+'</span>':'')
         +(r.addr?'<a href="'+mapLink(r)+'" target="_blank" rel="noopener">지도 열기</a> ':'')
         +'<a href="'+anchor(r)+'">숙소 자세히 →</a>';
       card.querySelector("div:last-child").appendChild(el);
@@ -3296,10 +3303,11 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     var byDay={}; rows.forEach(function(r){ if(r.day!=null) byDay[r.day]=r; });
     var line=function(label,r){
       if(!r) return '';
-      var s=st(r.status);
+      var s=st(r.status), bk=r.b?' <span class="bk">🛟 보조 '+st(r.b.status).i+' '+esc(r.b.name)+'</span>':'';
+      if(!r.name && r.b) return '<div>🛏 <b>'+label+'</b> '+bk+' <a class="dstay-go" href="'+anchor(r)+'">숙소 자세히 →</a></div>';
       if(!r.name) return '<div>🛏 <b>'+label+'</b> <span style="color:#A79E86">'+esc(r.city)+' · 숙소 미정</span> <a class="dstay-go" href="'+anchor(r)+'">후보 보기 →</a></div>';
       return '<div>🛏 <b>'+label+'</b> '+s.i+' '+esc(r.name)+' <small>('+esc(r.city)+')</small>'+(r.addr?' · '+esc(r.addr):'')+(r.tel?' · '+esc(r.tel):'')
-        +(r.addr?' <a href="'+mapLink(r)+'" target="_blank" rel="noopener">지도</a>':'')
+        +(r.addr?' <a href="'+mapLink(r)+'" target="_blank" rel="noopener">지도</a>':'')+bk
         +' <a class="dstay-go" href="'+anchor(r)+'">숙소 자세히 →</a></div>';
     };
     document.querySelectorAll(".dcard[id^='day']").forEach(function(card){
@@ -3307,7 +3315,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       var from=byDay[n-1], to=byDay[n];           /* DAY 1: 출발 5/8 생장 · 도착 5/9 수비리 */
       if(!from && !to) return;
       var old=card.querySelector(".dstay"); if(old) old.remove();
-      var el=document.createElement("div"); el.className="dstay "+(to?st(to.status).c:"none");
+      var el=document.createElement("div"); el.className="dstay "+(to?st(to.eff||to.status).c:"none");
       el.innerHTML=line("출발 숙소 "+(from?md(from.iso):""), from)+line("도착 숙소 "+(to?md(to.iso):""), to);
       card.appendChild(el);                                   /* 카드 맨 끝 (세요 줄 다음) */
     });

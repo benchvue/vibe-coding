@@ -724,6 +724,9 @@
   .lgb.cancel{background:#EFEDE5;color:#8A8578}
   .lgb2{padding:10px 12px 12px}
   .lgseg{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:9px}
+  .lgbk{margin:10px 0 2px;padding:8px 10px;border:1px dashed #C9BFA8;border-radius:10px;background:#FBF9F3}
+  .lgbk summary{cursor:pointer;font-size:.78rem;color:#6B5E3F;margin-bottom:6px}
+  .lgbk .lgseg button{font-size:.7rem;padding:5px 4px}
   @media(max-width:560px){ .lgseg{grid-template-columns:1fr 1fr} }
   .lgseg button{border:1px solid var(--line);background:#fff;color:var(--muted);
     border-radius:8px;padding:8px 4px;font-size:11.5px;font-family:inherit}
@@ -2981,7 +2984,7 @@ const pgOnSignedIn=()=>{
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20261103-1";
+  var BUILD="20261104-1";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
@@ -3702,7 +3705,8 @@ const lgNorm = (raw) => {
       if(!n||!n.date) return;
       out.nights.push({date:n.date, city:n.city||"", name:n.name||"",
         status:n.status||"none", ref:n.ref||"", by:n.by||"", price:n.price||"",
-        url:n.url||"", memo:n.memo||"", addr:n.addr||"", tel:n.tel||"", ts:+n.ts||0});
+        url:n.url||"", memo:n.memo||"", addr:n.addr||"", tel:n.tel||"", ts:+n.ts||0,
+        b_name:n.b_name||"", b_status:n.b_status||"none", b_ref:n.b_ref||"", b_by:n.b_by||"", b_price:n.b_price||"", b_addr:n.b_addr||"", b_memo:n.b_memo||""});
     });
   }
   return out;
@@ -3763,7 +3767,8 @@ const lgSet = (iso, field, value) => {
   if(!n){
     const p=LG_PLAN.find(x=>x[0]===iso);
     n={date:iso, city:p?p[2]:"", name:"", status:"none", ref:"", by:"",
-       price:"", url:"", memo:"", addr:"", tel:"", ts:0};
+       price:"", url:"", memo:"", addr:"", tel:"", ts:0,
+       b_name:"", b_status:"none", b_ref:"", b_by:"", b_price:"", b_addr:"", b_memo:""};
     lgData.nights.push(n);
     lgData.nights.sort((a,b)=>a.date<b.date?-1:1);
   }
@@ -3776,12 +3781,14 @@ const lgRender = () => {
   if(!lgLoaded){ root.innerHTML='<p class="wxload">숙소 자료를 불러오는 중…</p>'; return; }
 
   const cnt={};
+  /* 밤의 대표 상태 — 본 숙소나 보조 숙소 중 하나라도 예약·결제면 "예약 완료" 로 셉니다 */
+  const lgEff = n => { const ok=k=>k==="booked"||k==="paid"; if(ok(n.status)) return n.status; if(ok(n.b_status)) return n.b_status; return n.status||"none"; };
   LG_PLAN.forEach(p=>{ const n=lgGet(p[0])||{status:"none"};
-    cnt[n.status]=(cnt[n.status]||0)+1; });
+    const k=lgEff(n); cnt[k]=(cnt[k]||0)+1; });
 
   let h='<div class="lgsum">'
     + lgCard("전체", LG_PLAN.length+"박", "5/7 ~ 5/21")
-    + lgCard("예약 완료", ((cnt.booked||0)+(cnt.paid||0))+"곳", "결제 포함", "ok")
+    + lgCard("예약 완료", ((cnt.booked||0)+(cnt.paid||0))+"곳", "보조 숙소 포함", "ok")
     + lgCard("문의 · 대기", ((cnt.asked||0)+(cnt.waiting||0)+(cnt.pending||0))+"곳", "답·확정 기다리는 중", "wa")
     + lgCard("미예약", (cnt.none||0)+"곳", "아직 손대지 않음", "no")
     + '</div>';
@@ -3821,6 +3828,22 @@ const lgRender = () => {
           +'" placeholder="답장 내용 · 확인할 것"></label>'
         +'<label class="lgw">링크 <small style="font-weight:400;color:#A79E86">(예약 페이지 웹주소 · 선택)</small><input type="text" data-f="url" value="'+lgEsc(n.url||"")
           +'" placeholder="https://…"></label>'
+        +'<details class="lgbk"'+(n.b_name?' open':'')+'><summary>🛟 보조 숙소 (백업) — 알베르게 대기 중에 따로 잡아 둔 호텔'+(n.b_name?' · <b>'+lgEsc(n.b_name)+'</b>':'')+'</summary>'
+          +'<div class="lgseg">'+LG_ST.map(x=>'<button type="button" data-bs="'+x.k+'"'
+            +(x.k===(n.b_status||"none")?' class="on"':'')+'>'+x.i+' '+x.n+'</button>').join("")+'</div>'
+          +'<div class="lgrow">'
+            +'<label>보조 숙소 이름<input type="text" data-f="b_name" value="'+lgEsc(n.b_name||"")+'" placeholder="예: Hotel Rural ..."></label>'
+            +'<label>예약번호<input type="text" data-f="b_ref" value="'+lgEsc(n.b_ref||"")+'" placeholder="선택"></label>'
+          +'</div>'
+          +'<div class="lgrow">'
+            +'<label>예약한 사람<div class="lgwho">'
+              +['bin','jin'].map(w=>'<button type="button" data-bw="'+w+'"'+(n.b_by===w?' class="on '+w+'"':'')+'>'+w.toUpperCase()+'</button>').join("")
+              +'<button type="button" data-bw="">-</button></div></label>'
+            +'<label>1박 요금<input type="text" data-f="b_price" value="'+lgEsc(n.b_price||"")+'" placeholder="예: €85"></label>'
+          +'</div>'
+          +'<label class="lgw">🏠 보조 숙소 주소<input type="text" data-f="b_addr" value="'+lgEsc(n.b_addr||"")+'" placeholder="번지 · 길 · 도시"></label>'
+          +'<label class="lgw">메모<input type="text" data-f="b_memo" value="'+lgEsc(n.b_memo||"")+'" placeholder="예: 알베르게 확정되면 취소 · 무료 취소 기한 …"></label>'
+        +'</details>'
         +'<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px;align-items:center">'
           +'<span class="lgsaved" data-d="'+p[0]+'" style="font-size:.72rem;color:#A79E86"></span>'
           +'<button type="button" class="lgsavebtn" data-d="'+p[0]+'" style="background:var(--camino-blue,#152A55);color:#fff;border:none;border-radius:999px;padding:8px 18px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit">💾 이 날 저장</button>'
@@ -3837,11 +3860,17 @@ const lgCard = (n,v,s,c) =>
 const lgBind = () => {
   document.querySelectorAll(".lgn").forEach(box=>{
     const iso=box.dataset.d;
-    box.querySelectorAll(".lgseg button").forEach(b=>b.addEventListener("click",()=>{
+    box.querySelectorAll(".lgseg button[data-s]").forEach(b=>b.addEventListener("click",()=>{
       lgSet(iso,"status",b.dataset.s); lgRender();
     }));
-    box.querySelectorAll(".lgwho button").forEach(b=>b.addEventListener("click",()=>{
+    box.querySelectorAll(".lgwho button[data-w]").forEach(b=>b.addEventListener("click",()=>{
       lgSet(iso,"by",b.dataset.w); lgRender();
+    }));
+    box.querySelectorAll("button[data-bs]").forEach(b=>b.addEventListener("click",()=>{
+      lgSet(iso,"b_status",b.dataset.bs); lgRender();
+    }));
+    box.querySelectorAll("button[data-bw]").forEach(b=>b.addEventListener("click",()=>{
+      lgSet(iso,"b_by",b.dataset.bw); lgRender();
     }));
     box.querySelectorAll("input[data-f]").forEach(inp=>{
       const go=()=>lgSet(iso, inp.dataset.f, inp.value.trim());
