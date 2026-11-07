@@ -2984,7 +2984,15 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
   }
   function eur0(v){ return "€" + Math.round(v).toLocaleString(); }
   function cat(k){ for(var i=0;i<XC.length;i++) if(XC[i].k===k) return XC[i]; return XC[XC.length-1]; }
-  function dayName(d){ return d<=0 ? "출발 전" : (d>DAYS ? "완주 후" : "DAY "+d); }
+  function dayName(d){ return d==="paris" ? "5/7 파리" : (d==="sjpp" ? "5/8 생장" : (d<=0 ? "출발 전" : (d>DAYS ? "완주 후" : "DAY "+d))); }
+  function dayDate(d){ return d==="paris" ? "5/7" : (d==="sjpp" ? "5/8" : (d>=1 && d<=DAYS ? "5/"+(8+d) : "")); }
+  /* 기간별 자리: 숙박은 "어느 밤"(night) 우선 (-1 파리 · 0 생장) · 그 밖은 구간(day: -1 파리 · -2 생장 · 0 출발 전) · 옛 기록은 날짜로 */
+  function slotOf(x){
+    if(x.cat==="stay" && x.night!==null && x.night!==undefined){ if(x.night===-1) return "paris"; if(x.night===0) return "sjpp"; return x.night; }
+    if(x.day===-1) return "paris"; if(x.day===-2) return "sjpp";
+    if(x.day<=0){ if(x.date==="2027-05-07") return "paris"; if(x.date==="2027-05-08") return "sjpp"; return 0; }
+    return x.day;
+  }
 
   function norm(j){
     if(!j || !j.items) return [];
@@ -2993,7 +3001,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
         return { id:x.id, eur:+x.eur||0, amt:+x.amt||0, cur:x.cur||"EUR",
           cat:x.cat||"etc", sub:x.sub||"", payer:x.payer||"bin",
           split:x.split||"half", settle:(x.settle===undefined?true:!!x.settle),
-          day:(x.day===undefined?0:+x.day), night:(x.night===undefined||x.night===null||x.night==="")?null:+x.night, place:x.place||"", memo:x.memo||"",
+          date:x.date||"", day:(x.day===undefined?0:+x.day), night:(x.night===undefined||x.night===null||x.night==="")?null:+x.night, place:x.place||"", memo:x.memo||"",
           fileId:x.fileId||"" };
       });
   }
@@ -3027,10 +3035,10 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       t[x.payer]=(t[x.payer]||0)+v;
       t.cat[x.cat]=(t.cat[x.cat]||0)+v;
       /* 기간별 자리: 숙박은 "어느 밤"(night)이 있으면 그 밤으로 — 미리 결제한 숙소가 전부 "전"에 몰리지 않게 */
-      var slot = (x.cat==="stay" && x.night!==null && x.night!==undefined) ? Math.max(0, x.night) : x.day;
+      var slot = slotOf(x);
       t.day[slot]=(t.day[slot]||0)+v;
       (t.dayCat[slot]=t.dayCat[slot]||{})[x.cat]=((t.dayCat[slot]||{})[x.cat]||0)+v;
-      if(x.day<=0) t.pre+=v; else if(x.day>DAYS) t.post+=v; else t.ride+=v;
+      if(slot===0) t.pre+=v; else if(slot!=="paris" && slot!=="sjpp" && slot>DAYS) t.post+=v; else t.ride+=v;
       if(!x.settle) return;
       var owed = x.split==="half" ? v/2 : (x.split==="other" ? v : 0);
       if(x.payer==="bin") t.sBin+=owed; else t.sJin+=owed;
@@ -3105,17 +3113,21 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       return '<div class="xd'+(wide?" wide":"")+'" title="'+tip+'">'
         +'<span class="xdv">'+(v?eur0(v):"")+'</span>'
         +'<span class="xdb xdb-stack">'+segs+'</span>'
-        +'<span class="xdl">'+(d2===0?"출발 전":(d2>DAYS?"완주 후":"DAY "+d2))+'</span></div>';
+        +(wide ? '<span class="xdl">'+(d2===0?"출발 전":"완주 후")+'</span>'
+               : '<span class="xdl"><b>'+(d2==="paris"||d2==="sjpp"?"D0":"D"+d2)+'</b><i>'+dayDate(d2)+'</i></span>')
+        +'</div>';
     };
     var maxPP=Math.max(t.day[0]||0, t.day[DAYS+1]||0), maxD=0;
     for(var i=1;i<=DAYS;i++) if((t.day[i]||0)>maxD) maxD=t.day[i]||0;
+    maxD=Math.max(maxD, t.day.paris||0, t.day.sjpp||0);
     h+='<h3 class="xh3">기간별 <small style="font-weight:400;color:var(--ink-soft)">· 분류 색으로 쌓음 · 숙박은 묵는 밤 기준</small></h3>'
       +'<div class="xdays xdays-pp">'+bar(0,maxPP,true)+bar(DAYS+1,maxPP,true)
       +'<div class="xdleg">'+XC.map(function(c){ return (t.cat[c.k]?'<span><i style="background:'+c.c+'"></i>'+c.n+'</span>':''); }).join("")+'</div></div>'
-      +'<div class="xdays-cap">여행 중 하루하루 <small>· 눈금이 위와 다릅니다 (최대 '+eur0(maxD)+')</small></div>'
+      +'<div class="xdays-cap">여행 중 하루하루 <small>· 5/7 파리 ~ 5/21 산티아고 · 눈금이 위와 다릅니다 (최대 '+eur0(maxD)+')</small></div>'
       +'<div class="xdays">';
+    h+=bar("paris",maxD,false)+bar("sjpp",maxD,false);
     for(var d2=1;d2<=DAYS;d2++) h+=bar(d2,maxD,false);
-    h+='</div><p class="xdnote"><b>출발 전</b> 항공·자전거·미리 낸 숙박 등 · <b>완주 후</b> 귀국길 · 미리 결제한 숙박은 업로드 페이지에서 <b>어느 밤</b>을 고르면 그 날로 옮겨집니다</p>';
+    h+='</div><p class="xdnote"><b>출발 전</b> 항공·자전거·예약금 등 · <b>D0</b> 5/7 파리 · 5/8 생장 · <b>완주 후</b> 귀국길 · 미리 결제한 숙박은 업로드 페이지에서 <b>어느 밤</b>을, 그 밖의 지출은 <b>구간</b>(5/7 파리 · 5/8 생장)을 고르면 그 날로 옮겨집니다</p>';
 
     h+='<p class="tsfoot">기록은 <b>upload-camino.html → 💶 비용</b> 탭에서 합니다. '
       +'금액은 모두 유로로 환산한 값이며, 원화·달러는 결제 당시 환율로 계산했습니다.</p>';
@@ -3257,26 +3269,28 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     }
     h += '</div></div>';
 
-    /* ── 좁은 화면: 세로 카드 ── */
+    /* ── 좁은 화면: 날짜별 카드 (세로로 쌓음 · 잘리는 칸 없음) ── */
     h += '<div class="llist">';
     rows.forEach(function(r){
-      var s = st(r.status);
-      var se=st(r.eff);
-      h += '<a class="lrow '+se.c+'" href="#lodge-'+r.iso.slice(5,7)+r.iso.slice(8,10)+'" style="text-decoration:none;color:inherit">'
-        + '<div class="ld"><b>'+md(r.iso)+'</b><span>'+dow(r.iso)+'</span>'
-          + (r.day>0?'<em>DAY '+r.day+'</em>':(r.day===0?'<em>생장</em>':'<em>파리</em>'))+'</div>'
-        + '<div class="li"><b>'+esc(r.city)+'</b>'
-          + (r.name?'<span>'+esc(r.name)+'</span>':'<span class="dim">숙소 미정</span>')
-          + (r.addr?'<small>📍 '+esc(r.addr)+(r.tel?' · '+esc(r.tel):'')+'</small>':'')
-          + (r.memo?'<small>'+esc(r.memo)+'</small>':'')
-          + (r.b?'<small class="lbk">🛟 보조 <b>'+esc(r.b.name)+'</b> <span class="lst '+st(r.b.status).c+'">'+st(r.b.status).i+' '+st(r.b.status).n+'</span>'+(r.b.price?' · '+esc(r.b.price):'')+(r.b.memo?' · '+esc(r.b.memo):'')+'</small>':'')
-          + '</div>'
-        + '<div class="lz"><span class="lst '+s.c+'">'+s.i+' '+s.n+'</span>'
-          + (r.ref?'<code>'+esc(r.ref)+'</code>':'')
-          + (r.by?'<i class="who '+r.by+'">'+r.by.toUpperCase()+'</i>':'')
-          + (r.price?'<em>'+esc(r.price)+'</em>':'')
-          + '<span style="font-size:.66rem;color:var(--camino-blue)">자세히 →</span>'
-          + '</div>'
+      var s = st(r.status), se=st(r.eff);
+      var tag = r.day>0 ? 'DAY '+r.day : (r.day===0 ? 'D0 · 생장' : 'D0 · 파리');
+      h += '<a class="lcard '+se.c+'" href="#lodge-'+r.iso.slice(5,7)+r.iso.slice(8,10)+'">'
+        + '<div class="lc-top"><b class="lc-date">'+md(r.iso)+'<small>'+dow(r.iso)+'</small></b><em class="lc-day">'+tag+'</em><span class="lst '+s.c+'">'+s.i+' '+s.n+'</span></div>'
+        + '<div class="lc-city">'+esc(r.city)+(r.area&&r.area!==r.city?' <small>'+esc(r.area)+'</small>':'')+'</div>'
+        + (r.name?'<div class="lc-name">'+esc(r.name)+'</div>':'<div class="lc-name dim">숙소 미정</div>')
+        + ((r.price||r.by||r.ref)?'<div class="lc-meta">'
+            + (r.price?'<em>'+(/^\d/.test(String(r.price).trim())?'€':'')+esc(r.price)+'</em>':'')
+            + (r.by?'<i class="who '+r.by+'">'+r.by.toUpperCase()+'</i>':'')
+            + (r.ref?'<code>'+esc(r.ref)+'</code>':'')
+            + '</div>':'')
+        + (r.addr?'<div class="lc-addr">📍 '+esc(r.addr)+'</div>':'')
+        + (r.tel?'<div class="lc-addr">☎ '+esc(r.tel)+'</div>':'')
+        + (r.memo?'<div class="lc-memo">'+esc(r.memo)+'</div>':'')
+        + (r.b?'<div class="lc-bk"><b>🛟 보조 · '+esc(r.b.name)+'</b> <span class="lst '+st(r.b.status).c+'">'+st(r.b.status).i+' '+st(r.b.status).n+'</span>'
+            + (r.b.price?'<span class="lc-bkp">'+(/^\d/.test(String(r.b.price).trim())?'€':'')+esc(r.b.price)+'</span>':'')
+            + (r.b.addr?'<small>📍 '+esc(r.b.addr)+'</small>':'')
+            + (r.b.memo?'<small>'+esc(r.b.memo)+'</small>':'')+'</div>':'')
+        + '<div class="lc-go">자세히 · 지도 보기 →</div>'
         + '</a>';
     });
     h += '</div>';
