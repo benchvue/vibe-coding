@@ -3386,10 +3386,9 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
         gen=document.createElement("details"); gen.className="ngen";
         var sm=document.createElement("summary"); sm.textContent="다른 후보 · Booking 검색 · 지도에서 보기"; gen.appendChild(sm);
         var kids=Array.prototype.slice.call(box.children).filter(function(k){ return !k.classList.contains("nh") && !k.classList.contains("nx") && !k.classList.contains("townmap") && !k.classList.contains("booking") && k.tagName!=="FIGURE"; });
-        kids.forEach(function(k){ gen.appendChild(k); });
-        box.appendChild(gen);
+        if(kids.length){ kids.forEach(function(k){ gen.appendChild(k); }); box.appendChild(gen); } else gen=null;
       }
-      gen.open = !has;
+      if(gen) gen.open = !has;
       if(!has) return;
       var el=document.createElement("div"); el.className="nbooked";
       var one=function(label,n){ if(!n) return ""; var s=st(n.status);
