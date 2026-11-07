@@ -3739,7 +3739,8 @@ const lgNorm = (raw) => {
   if(raw && Array.isArray(raw.nights)){
     raw.nights.forEach(n=>{
       if(!n||!n.date) return;
-      out.nights.push({date:n.date, city:n.city||"", name:n.name||"",
+      const pp=LG_PLAN.find(x=>x[0]===n.date);
+      out.nights.push({date:n.date, city:(pp?pp[2]:"")||n.city||"", name:n.name||"",
         status:n.status||"none", ref:n.ref||"", by:n.by||"", price:n.price||"",
         url:n.url||"", memo:n.memo||"", addr:n.addr||"", tel:n.tel||"", ts:+n.ts||0,
         b_name:n.b_name||"", b_status:n.b_status||"none", b_ref:n.b_ref||"", b_by:n.b_by||"", b_price:n.b_price||"", b_addr:n.b_addr||"", b_memo:n.b_memo||"",

@@ -3221,7 +3221,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     var p = PLAN.filter(function(x){ return x[0]===iso; })[0];
     var d = DATA[iso] || {};
     return {
-      iso:iso, day:p?p[1]:null, city:d.city || (p?p[2]:""), area:p?p[3]:"",
+      iso:iso, day:p?p[1]:null, city:(p?p[2]:"") || d.city || "", area:p?p[3]:"",   /* 도시는 사이트 일정표 기준 (저장된 옛 이름보다 우선) */
       name:d.name||"", status:d.status||"none", ref:d.ref||"",
       by:d.by||"", price:d.price||"", memo:d.memo||"", url:d.url||"",
       addr:d.addr||"", tel:d.tel||"",
