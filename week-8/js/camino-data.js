@@ -1453,8 +1453,8 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     cast : {k:"키스트로헤리스",    o:"Castrojeriz",             la:42.2886, lo:-4.1383},
     saha : {k:"사아군",            o:"Sahagún",                 la:42.3713, lo:-5.0296},
     leon : {k:"레온",              o:"León",                    la:42.5987, lo:-5.5671},
-    raba : {k:"라바날 델 까미노",  o:"Rabanal del Camino",      la:42.4817, lo:-6.2839},
-    vega : {k:"베가 데 발까르세",  o:"Vega de Valcarce",        la:42.6597, lo:-6.9250},
+    fonc : {k:"폰세바돈",          o:"Foncebadón · 1,416 m",    la:42.4911, lo:-6.3422},
+    herr : {k:"라스 에레리아스",   o:"Las Herrerías",           la:42.6717, lo:-6.9857},
     sarr : {k:"사리아",            o:"Sarria",                  la:42.7776, lo:-7.4144},
     arzu : {k:"아르수아",          o:"Arzúa",                   la:42.9296, lo:-8.1620},
     sant : {k:"산티아고 데 콤포스텔라", o:"Santiago de Compostela", la:42.8805, lo:-8.5457},
@@ -1469,7 +1469,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
   var DAY = {
     1:["sjpp","zubi"],  2:["zubi","este"],  3:["este","nava"], 4:["nava","belo"],
     5:["belo","cast"],  6:["cast","saha"],  7:["saha","leon"], 8:["leon","leon"],
-    9:["leon","raba"], 10:["raba","vega"], 11:["vega","sarr"],12:["sarr","arzu"],
+    9:["leon","fonc"], 10:["fonc","herr"], 11:["herr","sarr"],12:["sarr","arzu"],
    13:["arzu","sant"]
   };
   var REST_DAY = 8;                                  /* 휴식일 — 라이딩 표시 제외 */
