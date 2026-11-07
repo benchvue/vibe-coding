@@ -3109,6 +3109,14 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     /* 기간별 — 출발 전·완주 후는 금액이 크게 달라 따로, DAY 1~13 은 자기 눈금으로. 막대 위에 금액을 적어 손 안 올려도 보이게 */
     var bar=function(d2,max,wide){
       var v=t.day[d2]||0, dc=t.dayCat[d2]||{}, tip=dayName(d2)+' '+eur(v), segs='';
+      if(!wide){ /* 하루하루: 가로 막대 한 줄씩 — 핸드폰에서도 라벨·금액이 안 잘림 */
+        XC.forEach(function(c){ var cv=dc[c.k]||0; if(!cv) return; tip+=' · '+c.n+' '+eur(cv);
+          segs+='<i style="width:'+(max?(cv/max*100):0).toFixed(1)+'%;background:'+c.c+'" title="'+c.n+' '+eur(cv)+'"></i>'; });
+        return '<div class="xr'+(v?"":" zero")+'" title="'+tip+'">'
+          +'<span class="xrl"><b>'+(d2==="paris"?"D-1":(d2==="sjpp"?"D0":"D"+d2))+'</b><i>'+dayDate(d2)+' '+(DAY_CITY[d2]||"")+'</i></span>'
+          +'<span class="xrb">'+segs+'</span>'
+          +'<span class="xrv">'+(v?eur0(v):"–")+'</span></div>';
+      }
       XC.forEach(function(c){ var cv=dc[c.k]||0; if(!cv) return; tip+=' · '+c.n+' '+eur(cv);
         segs+='<i style="height:'+(max?(cv/max*100):0).toFixed(1)+'%;background:'+c.c+'" title="'+c.n+' '+eur(cv)+'"></i>'; });
       return '<div class="xd'+(wide?" wide":"")+'" title="'+tip+'">'
@@ -3125,7 +3133,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       +'<div class="xdays xdays-pp">'+bar(0,maxPP,true)+bar(DAYS+1,maxPP,true)
       +'<div class="xdleg">'+XC.map(function(c){ return (t.cat[c.k]?'<span><i style="background:'+c.c+'"></i>'+c.n+'</span>':''); }).join("")+'</div></div>'
       +'<div class="xdays-cap">여행 중 하루하루 <small>· 5/7 파리 ~ 5/21 산티아고 · 눈금이 위와 다릅니다 (최대 '+eur0(maxD)+')</small></div>'
-      +'<div class="xdays">';
+      +'<div class="xrows">';
     h+=bar("paris",maxD,false)+bar("sjpp",maxD,false);
     for(var d2=1;d2<=DAYS;d2++) h+=bar(d2,maxD,false);
     h+='</div><p class="xdnote"><b>출발 전</b> 항공·자전거·예약금 등 · <b>D-1</b> 5/7 파리 · <b>D0</b> 5/8 생장 · <b>완주 후</b> 귀국길 · 미리 결제한 숙박은 업로드 페이지에서 <b>어느 밤</b>을, 그 밖의 지출은 <b>구간</b>(5/7 파리 · 5/8 생장)을 고르면 그 날로 옮겨집니다</p>';
