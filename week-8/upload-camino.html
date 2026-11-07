@@ -2994,7 +2994,7 @@ const pgOnSignedIn=()=>{
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20261107-1";
+  var BUILD="20261107-2";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
@@ -3837,7 +3837,7 @@ const lgRender = () => {
     const s=LG_ST.find(x=>x.k===(n.status||"none")) || LG_ST[0];
     h+='<div class="lgn '+s.k+'" data-d="'+iso+'">'
       +'<div class="lgh"><b>'+lgMd(iso)+'</b><span>'+lgDow(iso)+'</span>'
-        +(p[1]>0?'<em>DAY '+p[1]+'</em>':(p[1]===0?'<em>생장</em>':'<em>파리</em>'))
+        +(p[1]>0?'<em title="체크인 DAY '+p[1]+' 저녁 → 체크아웃 DAY '+(p[1]+1)+' 아침">DAY '+p[1]+' → '+(p[1]>=13?'귀국':p[1]+1)+'</em>':(p[1]===0?'<em>D0 → DAY 1</em>':'<em>D-1 → D0</em>'))
         +'<i class="lgc">'+lgEsc(p[2])+'</i>'
         +'<span class="lgb '+s.k+'">'+s.i+' '+s.n+'</span></div>'
       +'<div class="lgb2">'
