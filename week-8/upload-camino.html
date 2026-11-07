@@ -733,6 +733,7 @@
   .lgbk .lgseg button{font-size:.7rem;padding:5px 4px}
   .lgck{border-color:#B9CDB9;background:#F6FAF6} .lgck summary b{color:var(--ok,#1E7A46)}
   .lgck-seg{grid-template-columns:repeat(4,1fr)!important}
+  .lghist{border-color:#D9CFC4;background:#FAF8F4} .lgh{font-size:.76rem;padding:5px 0;border-top:1px dashed #E3DCCF} .lgh code{font-family:'IBM Plex Mono',monospace;background:#F1EEE4;border-radius:4px;padding:0 5px}
   @media(max-width:560px){ .lgseg{grid-template-columns:1fr 1fr} .lgseg button{white-space:normal} }
   .lgseg button{border:1px solid var(--line);background:#fff;color:var(--muted);
     border-radius:8px;padding:8px 4px;font-size:11.5px;font-family:inherit}
@@ -2990,7 +2991,7 @@ const pgOnSignedIn=()=>{
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20261106-1";
+  var BUILD="20261106-2";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
@@ -3726,7 +3727,7 @@ const lgNorm = (raw) => {
         status:n.status||"none", ref:n.ref||"", by:n.by||"", price:n.price||"",
         url:n.url||"", memo:n.memo||"", addr:n.addr||"", tel:n.tel||"", ts:+n.ts||0,
         b_name:n.b_name||"", b_status:n.b_status||"none", b_ref:n.b_ref||"", b_by:n.b_by||"", b_price:n.b_price||"", b_addr:n.b_addr||"", b_memo:n.b_memo||"",
-        c_bike:n.c_bike||"", c_late:n.c_late||"", c_bf:n.c_bf||"", c_din:n.c_din||"", c_cancel:n.c_cancel||"", c_pay:n.c_pay||"", c_payamt:n.c_payamt||"", c_wash:n.c_wash||"", c_note:n.c_note||""});
+        c_bike:n.c_bike||"", c_late:n.c_late||"", c_bf:n.c_bf||"", c_din:n.c_din||"", c_cancel:n.c_cancel||"", c_pay:n.c_pay||"", c_payamt:n.c_payamt||"", c_wash:n.c_wash||"", c_note:n.c_note||"", hist:Array.isArray(n.hist)?n.hist:[]});
     });
   }
   return out;
@@ -3789,7 +3790,7 @@ const lgSet = (iso, field, value) => {
     n={date:iso, city:p?p[2]:"", name:"", status:"none", ref:"", by:"",
        price:"", url:"", memo:"", addr:"", tel:"", ts:0,
        b_name:"", b_status:"none", b_ref:"", b_by:"", b_price:"", b_addr:"", b_memo:"",
-       c_bike:"", c_late:"", c_bf:"", c_din:"", c_cancel:"", c_pay:"", c_payamt:"", c_wash:"", c_note:""};
+       c_bike:"", c_late:"", c_bf:"", c_din:"", c_cancel:"", c_pay:"", c_payamt:"", c_wash:"", c_note:"", hist:[]};
     lgData.nights.push(n);
     lgData.nights.sort((a,b)=>a.date<b.date?-1:1);
   }
@@ -3825,6 +3826,8 @@ const lgRender = () => {
       +'<div class="lgb2">'
         +'<div class="lgseg">'+LG_ST.map(x=>'<button type="button" data-s="'+x.k+'"'
           +(x.k===(n.status||"none")?' class="on"':'')+'>'+x.i+' '+x.n+'</button>').join("")+'</div>'
+        +(n.name?'<div style="display:flex;justify-content:flex-end;margin:-4px 0 8px"><button type="button" class="lgcancel" style="background:#fff;border:1px solid #D9B8BE;color:#8E2C3A;border-radius:999px;padding:5px 12px;font-size:.72rem;cursor:pointer;font-family:inherit">↩ 이 숙소 취소하고 새로 잡기 <small style="color:#A07A80">— 지금 내용은 "이전 기록"으로 내려갑니다</small></button></div>':'')
+        +lgHist(n)
         +'<div class="lgrow">'
           +'<label>숙소 이름<input type="text" data-f="name" value="'+lgEsc(n.name||"")
             +'" placeholder="'+lgEsc(p[3])+'"></label>'
@@ -3903,6 +3906,25 @@ const lgCheck = n =>
   +'<label class="lgw">기타<input type="text" data-f="c_note" value="'+lgEsc(n.c_note||"")+'" placeholder="열쇠 수령 방법 · 엘리베이터 · 짐 …"></label>'
   +'</details>';
 
+/* ── 이전 기록 (취소한 숙소) ── */
+const lgHist = n => {
+  const h=n.hist||[]; if(!h.length) return "";
+  return '<details class="lgbk lghist"><summary>🗂 이전 기록 <b>'+h.length+'건</b> <small style="color:#A79E86">— 취소한 숙소 · 예약번호가 남아 있어 환불 확인에 씁니다</small></summary>'
+    +h.map((x,i)=>'<div class="lgh"><b>'+lgEsc(x.name)+'</b> <span class="lst cancel" style="font-size:.62rem">✕ 취소됨</span>'
+      +(x.ref?' · 예약 <code>'+lgEsc(x.ref)+'</code>':'')+(x.by?' · '+x.by.toUpperCase():'')+(x.price?' · '+lgEsc(x.price):'')
+      +(x.at?' · <small>'+lgEsc(x.at)+' 취소</small>':'')+(x.memo?'<div style="color:#A79E86;font-size:.7rem">'+lgEsc(x.memo)+'</div>':'')
+      +'<button type="button" class="lghdel" data-i="'+i+'" title="기록 지우기" style="float:right;background:none;border:none;color:#B9B3A4;cursor:pointer">✕</button></div>').join("")
+    +'</details>';
+};
+const lgCancelToHist = (iso) => {
+  const n=lgGet(iso); if(!n||!n.name) return;
+  if(!confirm('"'+n.name+'" 을(를) 취소한 것으로 기록하고 칸을 비울까요?\n예약번호·요금·메모는 "이전 기록"에 남습니다.')) return;
+  n.hist=n.hist||[];
+  n.hist.push({name:n.name, status:"cancel", ref:n.ref||"", by:n.by||"", price:n.price||"", addr:n.addr||"", tel:n.tel||"", url:n.url||"", memo:n.memo||"", at:new Date().toISOString().slice(0,10), ts:Date.now()});
+  ["name","ref","price","url","memo","addr","tel","c_bike","c_late","c_bf","c_din","c_cancel","c_pay","c_payamt","c_wash","c_note"].forEach(k=>n[k]="");
+  n.status="none"; n.ts=Date.now(); lgQueue(); lgRender();
+};
+
 const lgCard = (n,v,s,c) =>
   '<div class="lgc2'+(c?" "+c:"")+'"><small>'+n+'</small><b>'+v+'</b><i>'+(s||"")+'</i></div>';
 
@@ -3920,6 +3942,11 @@ const lgBind = () => {
     }));
     box.querySelectorAll("button[data-bw]").forEach(b=>b.addEventListener("click",()=>{
       lgSet(iso,"b_by",b.dataset.bw); lgRender();
+    }));
+    const cb=box.querySelector(".lgcancel"); if(cb) cb.addEventListener("click",()=>lgCancelToHist(iso));
+    box.querySelectorAll(".lghdel").forEach(b=>b.addEventListener("click",()=>{
+      const n=lgGet(iso); if(!n||!n.hist) return; if(!confirm("이 기록을 지울까요?")) return;
+      n.hist.splice(+b.dataset.i,1); n.ts=Date.now(); lgQueue(); lgRender();
     }));
     box.querySelectorAll("button[data-ck]").forEach(b=>b.addEventListener("click",()=>{
       lgSet(iso,b.dataset.ck,b.dataset.v); lgRender();

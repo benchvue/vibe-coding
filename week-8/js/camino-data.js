@@ -3225,6 +3225,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       name:d.name||"", status:d.status||"none", ref:d.ref||"",
       by:d.by||"", price:d.price||"", memo:d.memo||"", url:d.url||"",
       addr:d.addr||"", tel:d.tel||"",
+      hist:Array.isArray(d.hist)?d.hist:[],
       ck:{bike:d.c_bike||"", late:d.c_late||"", bf:d.c_bf||"", din:d.c_din||"", cancel:d.c_cancel||"", pay:d.c_pay||"", payamt:d.c_payamt||"", wash:d.c_wash||"", note:d.c_note||""},
       b:(d.b_name?{name:d.b_name, status:d.b_status||"none", ref:d.b_ref||"", by:d.b_by||"", price:d.b_price||"", addr:d.b_addr||"", memo:d.b_memo||""}:null)
     };
