@@ -76,6 +76,8 @@
     border-bottom:1px solid var(--line);padding:8px 0}
   .daynav .in{display:flex;gap:8px;overflow-x:auto;padding:0 14px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
   .daynav .in::-webkit-scrollbar{display:none}
+  /* 데스크톱: 가로 스크롤바가 숨겨져 D12·D13 에 못 가므로 줄바꿈으로 전부 보이게 */
+  @media(min-width:900px){ .daynav .in{flex-wrap:wrap;justify-content:center;overflow:visible;row-gap:6px} }
   .daynav a{flex:0 0 auto;text-decoration:none;background:#fff;border:1px solid var(--line);border-radius:20px;
     padding:5px 13px;font-size:.8rem;font-weight:700;color:var(--camino-blue);display:flex;gap:6px;align-items:baseline}
   .daynav a small{font-weight:400;color:var(--ink-soft);font-size:.68rem}

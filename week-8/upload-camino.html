@@ -3348,10 +3348,11 @@ const exRender = () => {
 
   /* 목록 */
   const sortBtn=(k,l)=>'<button type="button" class="exsort'+(exSort===k?" on":"")+'" onclick="exSetSort(\''+k+'\')">'+l+'</button>';
-  h+='<h3 class="exh3">내역 <small>'+items.length+'건</small> <span class="exsorts">'+sortBtn("recent","최근 올린 순")+sortBtn("date","날짜순")+sortBtn("day","구간순")+'</span></h3>';
+  h+='<h3 class="exh3">내역 <small>'+items.length+'건</small> <span class="exsorts">'+sortBtn("recent","최근 올린 순")+sortBtn("date","주행 날짜순 ↓")+sortBtn("day","주행 날짜 역순 ↑")+'</span></h3>';
   let list=items.slice().reverse();                                   /* 기본: 올린 순서 최근 것이 위 */
-  if(exSort==="date") list=items.slice().sort((a,b)=>((b.date||"")<(a.date||"")?-1:(b.date||"")>(a.date||"")?1:0)||(b.ts-a.ts));   /* 지출 날짜 최신이 위 */
-  if(exSort==="day")  list=items.slice().sort((a,b)=>(exSlotOrder(a)-exSlotOrder(b))||((a.date||"")<(b.date||"")?-1:1));           /* 출발 전 → D-1 → D0 → D1… */
+  const bySlot=(a,b)=>(exSlotOrder(a)-exSlotOrder(b))||((a.date||"")<(b.date||"")?-1:(a.date||"")>(b.date||"")?1:0)||(a.ts-b.ts);
+  if(exSort==="date") list=items.slice().sort(bySlot);                 /* 주행 날짜순: 출발 전 → D-1 파리 → D0 생장 → D1 … D13 → 완주 후 */
+  if(exSort==="day")  list=items.slice().sort(bySlot).reverse();       /* 역순: 완주 후 → D13 … → 출발 전 */
   if(!items.length){
     h+='<p class="tdhint">아직 올린 비용이 없습니다. 위의 <b>영수증 찍어 올리기</b>로 시작하세요.</p>';
   }else{
