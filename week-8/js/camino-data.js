@@ -2985,6 +2985,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
   function eur0(v){ return "€" + Math.round(v).toLocaleString(); }
   function cat(k){ for(var i=0;i<XC.length;i++) if(XC[i].k===k) return XC[i]; return XC[XC.length-1]; }
   function dayName(d){ return d==="paris" ? "5/7 파리" : (d==="sjpp" ? "5/8 생장" : (d<=0 ? "출발 전" : (d>DAYS ? "완주 후" : "DAY "+d))); }
+  var DAY_CITY={paris:"파리",sjpp:"생장",1:"수비리",2:"에스테야",3:"나바레테",4:"벨로라도",5:"카스트로",6:"사아군",7:"레온",8:"레온",9:"라바날",10:"에레리아스",11:"사리아",12:"아르수아",13:"산티아고"};
   function dayDate(d){ return d==="paris" ? "5/7" : (d==="sjpp" ? "5/8" : (d>=1 && d<=DAYS ? "5/"+(8+d) : "")); }
   /* 기간별 자리: 숙박은 "어느 밤"(night) 우선 (-1 파리 · 0 생장) · 그 밖은 구간(day: -1 파리 · -2 생장 · 0 출발 전) · 옛 기록은 날짜로 */
   function slotOf(x){
@@ -3114,7 +3115,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
         +'<span class="xdv">'+(v?eur0(v):"")+'</span>'
         +'<span class="xdb xdb-stack">'+segs+'</span>'
         +(wide ? '<span class="xdl">'+(d2===0?"출발 전":"완주 후")+'</span>'
-               : '<span class="xdl"><b>'+(d2==="paris"||d2==="sjpp"?"D0":"D"+d2)+'</b><i>'+dayDate(d2)+'</i></span>')
+               : '<span class="xdl"><b>'+(d2==="paris"?"D-1":(d2==="sjpp"?"D0":"D"+d2))+'</b><i>'+dayDate(d2)+'</i><i class="xdc">'+(DAY_CITY[d2]||"")+'</i></span>')
         +'</div>';
     };
     var maxPP=Math.max(t.day[0]||0, t.day[DAYS+1]||0), maxD=0;
@@ -3127,7 +3128,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       +'<div class="xdays">';
     h+=bar("paris",maxD,false)+bar("sjpp",maxD,false);
     for(var d2=1;d2<=DAYS;d2++) h+=bar(d2,maxD,false);
-    h+='</div><p class="xdnote"><b>출발 전</b> 항공·자전거·예약금 등 · <b>D0</b> 5/7 파리 · 5/8 생장 · <b>완주 후</b> 귀국길 · 미리 결제한 숙박은 업로드 페이지에서 <b>어느 밤</b>을, 그 밖의 지출은 <b>구간</b>(5/7 파리 · 5/8 생장)을 고르면 그 날로 옮겨집니다</p>';
+    h+='</div><p class="xdnote"><b>출발 전</b> 항공·자전거·예약금 등 · <b>D-1</b> 5/7 파리 · <b>D0</b> 5/8 생장 · <b>완주 후</b> 귀국길 · 미리 결제한 숙박은 업로드 페이지에서 <b>어느 밤</b>을, 그 밖의 지출은 <b>구간</b>(5/7 파리 · 5/8 생장)을 고르면 그 날로 옮겨집니다</p>';
 
     h+='<p class="tsfoot">기록은 <b>upload-camino.html → 💶 비용</b> 탭에서 합니다. '
       +'금액은 모두 유로로 환산한 값이며, 원화·달러는 결제 당시 환율로 계산했습니다.</p>';
@@ -3216,10 +3217,50 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
       name:d.name||"", status:d.status||"none", ref:d.ref||"",
       by:d.by||"", price:d.price||"", memo:d.memo||"", url:d.url||"",
       addr:d.addr||"", tel:d.tel||"",
+      ck:{bike:d.c_bike||"", late:d.c_late||"", bf:d.c_bf||"", din:d.c_din||"", cancel:d.c_cancel||"", pay:d.c_pay||"", payamt:d.c_payamt||"", wash:d.c_wash||"", note:d.c_note||""},
       b:(d.b_name?{name:d.b_name, status:d.b_status||"none", ref:d.b_ref||"", by:d.b_by||"", price:d.b_price||"", addr:d.b_addr||"", memo:d.b_memo||""}:null)
     };
   }
 
+  var CKL={bike:{in:"실내 잠금",ok:"보관 가능",no:"없음"}, pay:{paid:"결제 완료",onsite:"현장 결제",deposit:"예약금만"}, wash:{yes:"세탁기",hand:"손빨래",no:"없음"}};
+  function ckMd(iso){ return iso ? md(iso) : ""; }
+  /* 점검 칩 — 빈 칸은 빈 대로 보여서 뭘 더 물어봐야 하는지 보이게 */
+  function ckChips(r){
+    var c=r.ck, out='';
+    var chip=function(icon,txt,cls){ return '<span class="ckc '+(cls||"")+'">'+icon+' '+esc(txt)+'</span>'; };
+    out+= c.bike ? chip("🚲",CKL.bike[c.bike]||c.bike, c.bike==="no"?"bad":"ok") : chip("🚲","보관 미확인","todo");
+    out+= c.late ? chip("🕗",c.late,"ok") : chip("🕗","늦은 도착 ?","todo");
+    out+= c.bf ? chip("🥐",c.bf,"ok") : chip("🥐","아침 ?","todo");
+    out+= c.din ? chip("🍽",c.din,"ok") : '';
+    out+= c.cancel ? chip("↩","무료취소 "+ckMd(c.cancel)+"까지","ok") : '';
+    out+= c.pay ? chip("💳",(CKL.pay[c.pay]||c.pay)+(c.payamt?" "+c.payamt:""), c.pay==="onsite"?"warn":"ok") : '';
+    out+= c.wash ? chip("🧺",CKL.wash[c.wash]||c.wash,"ok") : '';
+    out+= c.note ? chip("📝",c.note,"ok") : '';
+    return '<div class="lc-ck">'+out+'</div>';
+  }
+  function ckTable(rows){
+    var td=function(v,cls){ return '<td class="'+(cls||"")+'">'+v+'</td>'; };
+    var h='<details class="lckt"><summary>✅ 숙소 점검표 <small>— 자전거 보관 · 늦은 도착 · 아침 · 저녁 · 무료 취소 · 결제 · 세탁 (올리기 페이지 숙소 탭에서 적습니다)</small></summary>'
+      +'<div class="lckt-w"><table><thead><tr><th>날짜</th><th>숙소</th><th>🚲 자전거</th><th>🕗 늦은 도착</th><th>🥐 아침</th><th>🍽 저녁</th><th>↩ 무료취소</th><th>💳 결제</th><th>🧺 세탁</th><th>📝 기타</th></tr></thead><tbody>';
+    rows.forEach(function(r){
+      var c=r.ck, q='<i class="ckq">?</i>';
+      h+='<tr><td class="ckd"><b>'+md(r.iso)+'</b> '+(r.day>0?'D'+r.day:(r.day===0?'D0':'D-1'))+'</td>'
+        +td('<a href="#lodge-'+r.iso.slice(5,7)+r.iso.slice(8,10)+'">'+esc(r.name||r.city)+'</a>','ckn')
+        +td(c.bike?esc(CKL.bike[c.bike]||c.bike):q, c.bike==="no"?"bad":(c.bike?"ok":"todo"))
+        +td(c.late?esc(c.late):q, c.late?"":"todo")
+        +td(c.bf?esc(c.bf):q, c.bf?"":"todo")
+        +td(c.din?esc(c.din):"")
+        +td(c.cancel?ckMd(c.cancel):"")
+        +td(c.pay?esc((CKL.pay[c.pay]||c.pay)+(c.payamt?" "+c.payamt:"")):"", c.pay==="onsite"?"warn":"")
+        +td(c.wash?esc(CKL.wash[c.wash]||c.wash):"")
+        +td(c.note?esc(c.note):"")
+        +'</tr>';
+    });
+    var onsite=0; rows.forEach(function(r){ var m=/([\d.,]+)/.exec(r.ck.payamt||""); if(r.ck.pay==="onsite"&&m) onsite+=parseFloat(m[1].replace(/,/g,""))||0; });
+    h+='</tbody></table></div>'
+      +'<p class="tsfoot" style="margin-top:6px">? = 아직 안 물어본 것 · 현장 결제 합계 <b>€'+onsite.toFixed(2)+'</b> (현금·카드 준비)</p></details>';
+    return h;
+  }
   function render(){
     var root=document.getElementById("lodgeRoot"); if(!root) return;
     if(state==="load"){ root.innerHTML='<p class="tsload">예약 현황을 불러오는 중…</p>'; return; }
@@ -3273,7 +3314,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     h += '<div class="llist">';
     rows.forEach(function(r){
       var s = st(r.status), se=st(r.eff);
-      var tag = r.day>0 ? 'DAY '+r.day : (r.day===0 ? 'D0 · 생장' : 'D0 · 파리');
+      var tag = r.day>0 ? 'DAY '+r.day : (r.day===0 ? 'D0 · 생장' : 'D-1 · 파리');
       h += '<a class="lcard '+se.c+'" href="#lodge-'+r.iso.slice(5,7)+r.iso.slice(8,10)+'">'
         + '<div class="lc-top"><b class="lc-date">'+md(r.iso)+'<small>'+dow(r.iso)+'</small></b><em class="lc-day">'+tag+'</em><span class="lst '+s.c+'">'+s.i+' '+s.n+'</span></div>'
         + '<div class="lc-city">'+esc(r.city)+(r.area&&r.area!==r.city?' <small>'+esc(r.area)+'</small>':'')+'</div>'
@@ -3290,10 +3331,12 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
             + (r.b.price?'<span class="lc-bkp">'+(/^\d/.test(String(r.b.price).trim())?'€':'')+esc(r.b.price)+'</span>':'')
             + (r.b.addr?'<small>📍 '+esc(r.b.addr)+'</small>':'')
             + (r.b.memo?'<small>'+esc(r.b.memo)+'</small>':'')+'</div>':'')
+        + ckChips(r)
         + '<div class="lc-go">자세히 · 지도 보기 →</div>'
         + '</a>';
     });
     h += '</div>';
+    h += ckTable(rows);
 
     h += '<div class="lleg">'
       + Object.keys(ST).map(function(k){

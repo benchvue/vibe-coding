@@ -731,6 +731,8 @@
   .lgbk{margin:10px 0 2px;padding:8px 10px;border:1px dashed #C9BFA8;border-radius:10px;background:#FBF9F3}
   .lgbk summary{cursor:pointer;font-size:.78rem;color:#6B5E3F;margin-bottom:6px}
   .lgbk .lgseg button{font-size:.7rem;padding:5px 4px}
+  .lgck{border-color:#B9CDB9;background:#F6FAF6} .lgck summary b{color:var(--ok,#1E7A46)}
+  .lgck-seg{grid-template-columns:repeat(4,1fr)!important}
   @media(max-width:560px){ .lgseg{grid-template-columns:1fr 1fr} .lgseg button{white-space:normal} }
   .lgseg button{border:1px solid var(--line);background:#fff;color:var(--muted);
     border-radius:8px;padding:8px 4px;font-size:11.5px;font-family:inherit}
@@ -3422,7 +3424,7 @@ const exForm = (rec) => {
         +'<label class="exl">날짜<input type="date" id="exDate" value="'+iso+'"></label>'
         +'<label class="exl">구간<select id="exDay">'
           +'<option value="0"'+(day===0?" selected":"")+'>출발 전</option>'
-          +'<option value="-1"'+(day===-1?" selected":"")+'>5/7 파리 (D0)</option>'
+          +'<option value="-1"'+(day===-1?" selected":"")+'>5/7 파리 (D-1)</option>'
           +'<option value="-2"'+(day===-2?" selected":"")+'>5/8 생장 (D0)</option>'
           +Array.from({length:EX.days},(_,i)=>'<option value="'+(i+1)+'"'
             +(day===i+1?" selected":"")+'>DAY '+(i+1)+'</option>').join("")
@@ -3723,7 +3725,8 @@ const lgNorm = (raw) => {
       out.nights.push({date:n.date, city:n.city||"", name:n.name||"",
         status:n.status||"none", ref:n.ref||"", by:n.by||"", price:n.price||"",
         url:n.url||"", memo:n.memo||"", addr:n.addr||"", tel:n.tel||"", ts:+n.ts||0,
-        b_name:n.b_name||"", b_status:n.b_status||"none", b_ref:n.b_ref||"", b_by:n.b_by||"", b_price:n.b_price||"", b_addr:n.b_addr||"", b_memo:n.b_memo||""});
+        b_name:n.b_name||"", b_status:n.b_status||"none", b_ref:n.b_ref||"", b_by:n.b_by||"", b_price:n.b_price||"", b_addr:n.b_addr||"", b_memo:n.b_memo||"",
+        c_bike:n.c_bike||"", c_late:n.c_late||"", c_bf:n.c_bf||"", c_din:n.c_din||"", c_cancel:n.c_cancel||"", c_pay:n.c_pay||"", c_payamt:n.c_payamt||"", c_wash:n.c_wash||"", c_note:n.c_note||""});
     });
   }
   return out;
@@ -3785,7 +3788,8 @@ const lgSet = (iso, field, value) => {
     const p=LG_PLAN.find(x=>x[0]===iso);
     n={date:iso, city:p?p[2]:"", name:"", status:"none", ref:"", by:"",
        price:"", url:"", memo:"", addr:"", tel:"", ts:0,
-       b_name:"", b_status:"none", b_ref:"", b_by:"", b_price:"", b_addr:"", b_memo:""};
+       b_name:"", b_status:"none", b_ref:"", b_by:"", b_price:"", b_addr:"", b_memo:"",
+       c_bike:"", c_late:"", c_bf:"", c_din:"", c_cancel:"", c_pay:"", c_payamt:"", c_wash:"", c_note:""};
     lgData.nights.push(n);
     lgData.nights.sort((a,b)=>a.date<b.date?-1:1);
   }
@@ -3845,6 +3849,7 @@ const lgRender = () => {
           +'" placeholder="답장 내용 · 확인할 것"></label>'
         +'<label class="lgw">링크 <small style="font-weight:400;color:#A79E86">(예약 페이지 웹주소 · 선택)</small><input type="text" data-f="url" value="'+lgEsc(n.url||"")
           +'" placeholder="https://…"></label>'
+        +lgCheck(n)
         +'<details class="lgbk"'+(n.b_name?' open':'')+'><summary>🛟 보조 숙소 (백업) — 알베르게 대기 중에 따로 잡아 둔 호텔'+(n.b_name?' · <b>'+lgEsc(n.b_name)+'</b>':'')+'</summary>'
           +'<div class="lgseg">'+LG_ST.map(x=>'<button type="button" data-bs="'+x.k+'"'
             +(x.k===(n.b_status||"none")?' class="on"':'')+'>'+x.i+' '+x.n+'</button>').join("")+'</div>'
@@ -3871,6 +3876,33 @@ const lgRender = () => {
   root.innerHTML=h;
   lgBind();
 };
+/* ── 숙소 점검표 (자전거·늦은 도착·아침·저녁·취소·결제·세탁) ── */
+const LG_CK = {
+  bike:[["","미확인"],["in","✓ 실내 잠금"],["ok","✓ 보관 가능"],["no","✗ 없음"]],
+  pay :[["","미정"],["paid","✓ 결제 완료"],["onsite","현장 결제"],["deposit","예약금만"]],
+  wash:[["","?"],["yes","세탁기 있음"],["hand","손빨래"],["no","없음"]]
+};
+const lgSegCk = (n,f,opts) => '<div class="lgseg lgck-seg">'+opts.map(o=>'<button type="button" data-ck="'+f+'" data-v="'+o[0]+'"'+((n[f]||"")===o[0]?' class="on"':'')+'>'+o[1]+'</button>').join("")+'</div>';
+const lgCkDone = n => ["c_bike","c_late","c_bf","c_din","c_cancel","c_pay"].filter(k=>n[k]).length;
+const lgCheck = n =>
+  '<details class="lgbk lgck"'+(lgCkDone(n)?' open':'')+'><summary>✅ 숙소 점검표 <b>'+lgCkDone(n)+'/6</b> <small style="color:#A79E86">— 사이트 숙소 현황의 점검표·카드에 나옵니다</small></summary>'
+  +'<label class="lgw">🚲 자전거 보관</label>'+lgSegCk(n,"c_bike",LG_CK.bike)
+  +'<div class="lgrow">'
+    +'<label>🕗 늦은 도착 <small style="font-weight:400;color:#A79E86">체크인 마감 · 늦을 때 연락</small><input type="text" data-f="c_late" value="'+lgEsc(n.c_late||"")+'" placeholder="예: 21시까지 · WhatsApp +34 …"></label>'
+    +'<label>🥐 아침 <small style="font-weight:400;color:#A79E86">시작 시간 / 없음</small><input type="text" data-f="c_bf" value="'+lgEsc(n.c_bf||"")+'" placeholder="예: 7:30부터 포함 · 없음(전날 빵)"></label>'
+  +'</div>'
+  +'<div class="lgrow">'
+    +'<label>🍽 저녁 <small style="font-weight:400;color:#A79E86">숙소 제공 / 근처 식당·시간</small><input type="text" data-f="c_din" value="'+lgEsc(n.c_din||"")+'" placeholder="예: 숙소 순례자 메뉴 19:30 · 예약 필요"></label>'
+    +'<label>↩ 무료 취소 마감<input type="date" data-f="c_cancel" value="'+lgEsc(n.c_cancel||"")+'"></label>'
+  +'</div>'
+  +'<label class="lgw">💳 결제</label>'+lgSegCk(n,"c_pay",LG_CK.pay)
+  +'<div class="lgrow">'
+    +'<label>현장 결제 금액 <small style="font-weight:400;color:#A79E86">현장 결제일 때</small><input type="text" data-f="c_payamt" value="'+lgEsc(n.c_payamt||"")+'" placeholder="예: €199.50"></label>'
+    +'<label>🧺 세탁</label>'
+  +'</div>'+lgSegCk(n,"c_wash",LG_CK.wash)
+  +'<label class="lgw">기타<input type="text" data-f="c_note" value="'+lgEsc(n.c_note||"")+'" placeholder="열쇠 수령 방법 · 엘리베이터 · 짐 …"></label>'
+  +'</details>';
+
 const lgCard = (n,v,s,c) =>
   '<div class="lgc2'+(c?" "+c:"")+'"><small>'+n+'</small><b>'+v+'</b><i>'+(s||"")+'</i></div>';
 
@@ -3888,6 +3920,9 @@ const lgBind = () => {
     }));
     box.querySelectorAll("button[data-bw]").forEach(b=>b.addEventListener("click",()=>{
       lgSet(iso,"b_by",b.dataset.bw); lgRender();
+    }));
+    box.querySelectorAll("button[data-ck]").forEach(b=>b.addEventListener("click",()=>{
+      lgSet(iso,b.dataset.ck,b.dataset.v); lgRender();
     }));
     box.querySelectorAll("input[data-f]").forEach(inp=>{
       const go=()=>lgSet(iso, inp.dataset.f, inp.value.trim());

@@ -1423,7 +1423,8 @@
   .xd.sp .xdb i{background:#B8A97A}
   .xdl{font-size:.6rem;color:var(--ink-soft);font-variant-numeric:tabular-nums;display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1}
   .xdl b{font-size:.58rem;color:var(--ink)} .xdl i{font-style:normal;writing-mode:vertical-rl;font-size:.58rem;letter-spacing:.02em}
-  .xdays:not(.xdays-pp){height:168px}
+  .xdl i.xdc{color:#A79E86;letter-spacing:0}
+  .xdays:not(.xdays-pp){height:230px}
   .xdnote{margin-top:7px;font-size:.7rem;color:var(--ink-soft)}
 
 
@@ -1705,6 +1706,23 @@
   .lst.paid{background:var(--ok);color:#fff}
   .lst.canc{background:#EFEDE5;color:#8A8578}
   .lleg{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+  /* 점검 칩 (카드) */
+  .lc-ck{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+  .ckc{font-size:.66rem;border-radius:7px;padding:3px 7px;background:#F1EEE4;color:var(--ink-soft);line-height:1.4;overflow-wrap:anywhere}
+  .ckc.ok{background:#EAF3EC;color:#1E5A36} .ckc.todo{background:#FFF6E0;color:#8A6A12;border:1px dashed #E3C98A}
+  .ckc.bad{background:#F6DDD6;color:#B03A2E} .ckc.warn{background:#F3EBDD;color:#7A5A12}
+  /* 점검표 (표) */
+  .lckt{border:1px solid #B9CDB9;border-radius:14px;background:#F6FAF6;padding:8px 12px;margin-bottom:14px}
+  .lckt summary{cursor:pointer;font-weight:700;font-size:.86rem;color:var(--ink)} .lckt summary small{font-weight:400;color:var(--ink-soft)}
+  .lckt-w{overflow-x:auto;margin-top:8px}
+  .lckt table{border-collapse:collapse;width:100%;font-size:.7rem;background:#fff;border-radius:10px;overflow:hidden}
+  .lckt th{background:#E9F1EA;color:#2F5A3A;font-weight:700;padding:6px 7px;text-align:left;white-space:nowrap}
+  .lckt td{padding:6px 7px;border-top:1px solid var(--line2);vertical-align:top;min-width:70px;line-height:1.4}
+  .lckt td.ckd{white-space:nowrap;color:var(--ink-soft)} .lckt td.ckd b{color:var(--camino-blue)}
+  .lckt td.ckn{min-width:120px} .lckt td.ckn a{color:var(--ink);text-decoration:none;font-weight:600}
+  .lckt td.todo{background:#FFF9E8} .lckt td.ok{color:#1E5A36} .lckt td.bad{color:#B03A2E;background:#FBECE8} .lckt td.warn{color:#7A5A12}
+  .ckq{font-style:normal;color:#C9A450;font-weight:700}
+  @media(max-width:820px){ .lckt{display:none} }
 
   @media(max-width:820px){
     .lcal{display:none}
