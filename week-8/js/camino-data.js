@@ -2985,7 +2985,7 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
   function eur0(v){ return "€" + Math.round(v).toLocaleString(); }
   function cat(k){ for(var i=0;i<XC.length;i++) if(XC[i].k===k) return XC[i]; return XC[XC.length-1]; }
   function dayName(d){ return d==="paris" ? "5/7 파리" : (d==="sjpp" ? "5/8 생장" : (d<=0 ? "출발 전" : (d>DAYS ? "완주 후" : "DAY "+d))); }
-  var DAY_CITY={paris:"파리",sjpp:"생장",1:"수비리",2:"에스테야",3:"나바레테",4:"벨로라도",5:"카스트로",6:"사아군",7:"레온",8:"레온",9:"라바날",10:"에레리아스",11:"사리아",12:"아르수아",13:"산티아고"};
+  var DAY_CITY={paris:"파리",sjpp:"생장",1:"수비리",2:"에스테야",3:"나바레테",4:"벨로라도",5:"카스트로",6:"사아군",7:"레온",8:"레온",9:"폰세바돈",10:"에레리아스",11:"사리아",12:"아르수아",13:"산티아고"};
   function dayDate(d){ return d==="paris" ? "5/7" : (d==="sjpp" ? "5/8" : (d>=1 && d<=DAYS ? "5/"+(8+d) : "")); }
   /* 기간별 자리: 숙박은 "어느 밤"(night) 우선 (-1 파리 · 0 생장) · 그 밖은 구간(day: -1 파리 · -2 생장 · 0 출발 전) · 옛 기록은 날짜로 */
   function slotOf(x){
@@ -3188,8 +3188,8 @@ window.CAMINO_SPOTS=CAMINO_SPOTS;
     ["2027-05-14",  6, "사아군",            "Sahagún"],
     ["2027-05-15",  7, "레온",              "León"],
     ["2027-05-16",  8, "레온 (휴식)",        "León"],
-    ["2027-05-17",  9, "라바날 델 카미노",   "Rabanal"],
-    ["2027-05-18", 10, "베가 데 발카르세",   "Las Herrerías"],
+    ["2027-05-17",  9, "폰세바돈",          "Foncebadón"],
+    ["2027-05-18", 10, "라스 에레리아스",    "Las Herrerías"],
     ["2027-05-19", 11, "사리아",            "Sarria"],
     ["2027-05-20", 12, "아르수아",          "Arzúa"],
     ["2027-05-21", 13, "산티아고",          "Santiago"]

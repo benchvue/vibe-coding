@@ -731,6 +731,9 @@
   .lgbk{margin:10px 0 2px;padding:8px 10px;border:1px dashed #C9BFA8;border-radius:10px;background:#FBF9F3}
   .lgbk summary{cursor:pointer;font-size:.78rem;color:#6B5E3F;margin-bottom:6px}
   .lgbk .lgseg button{font-size:.7rem;padding:5px 4px}
+  .exsorts{display:inline-flex;gap:4px;margin-left:8px;vertical-align:middle}
+  .exsort{font:inherit;font-size:.68rem;padding:3px 9px;border-radius:999px;border:1px solid var(--line,#DDD6C6);background:#fff;color:#6B6B66;cursor:pointer}
+  .exsort.on{background:#152A55;border-color:#152A55;color:#fff}
   .lgck{border-color:#B9CDB9;background:#F6FAF6} .lgck summary b{color:var(--ok,#1E7A46)}
   .lgck-seg{grid-template-columns:repeat(4,1fr)!important}
   .lghist{border-color:#D9CFC4;background:#FAF8F4} .lgh{font-size:.76rem;padding:5px 0;border-top:1px dashed #E3DCCF} .lgh code{font-family:'IBM Plex Mono',monospace;background:#F1EEE4;border-radius:4px;padding:0 5px}
@@ -2032,9 +2035,9 @@ const PG_DAY_TOWNS = {
   6:["Castrojeriz","Frómista","Carrión de los Condes","Sahagún"],
   7:["Sahagún","El Burgo Ranero","Mansilla de las Mulas","León"],
   8:["León"],
-  9:["León","Hospital de Órbigo","Astorga","Rabanal del Camino"],
-  10:["Rabanal del Camino","Molinaseca","Ponferrada","Cacabelos","Villafranca del Bierzo","Vega de Valcarce"],
-  11:["Vega de Valcarce","O Cebreiro","Triacastela","Sarria"],
+  9:["León","Hospital de Órbigo","Astorga","Rabanal del Camino","Foncebadón"],
+  10:["Foncebadón","Molinaseca","Ponferrada","Cacabelos","Villafranca del Bierzo","Vega de Valcarce","Las Herrerías"],
+  11:["Las Herrerías","O Cebreiro","Triacastela","Sarria"],
   12:["Sarria","Portomarín","Palas de Rei","Melide","Arzúa"],
   13:["Arzúa","O Pedrouzo","Monte do Gozo","Santiago de Compostela"]
 };
@@ -2991,7 +2994,7 @@ const pgOnSignedIn=()=>{
    아이폰 사파리는 HTML 을 오래 붙들고 있어서 새 파일을 올려도 예전 화면이 나올 수 있습니다.
    아래 번호가 최신인지 확인하고, 다르면 [↻ 최신본] 을 누르세요. */
 (function(){
-  var BUILD="20261106-2";
+  var BUILD="20261107-1";
   function paint(){
     document.querySelectorAll(".buildver").forEach(function(el){ el.textContent="v"+BUILD; });
     document.querySelectorAll(".buildreload").forEach(function(b){
@@ -3284,6 +3287,14 @@ const exUpload = async(file) => {
 };
 
 /* ══════════ 화면 ══════════ */
+let exSort = "recent";
+const exSetSort = k => { exSort=k; try{ localStorage.setItem("exSort",k); }catch(e){} exRender(); };
+try{ exSort = localStorage.getItem("exSort") || "recent"; }catch(e){}
+/* 구간 정렬 키: 출발 전 0 · 파리 -1 → 1 · 생장 -2 → 2 · DAY n → n+2 · 완주 후 맨 뒤 (숙박은 어느 밤 우선) */
+const exSlotOrder = x => {
+  if(x.cat==="stay" && x.night!==null && x.night!==undefined && x.night!=="") { const n=+x.night; return n===-1?1:(n===0?2:n+2); }
+  const d=+x.day||0; if(d===-1) return 1; if(d===-2) return 2; if(d<=0) return 0; return d+2;
+};
 const exRender = () => {
   const root=$("exRoot"); if(!root) return;
   if(!exLoaded){ root.innerHTML='<p class="wxload">비용 자료를 불러오는 중…</p>'; return; }
@@ -3336,12 +3347,16 @@ const exRender = () => {
   h+='</div>';
 
   /* 목록 */
-  h+='<h3 class="exh3">내역 <small>'+items.length+'건 · 최근 순</small></h3>';
+  const sortBtn=(k,l)=>'<button type="button" class="exsort'+(exSort===k?" on":"")+'" onclick="exSetSort(\''+k+'\')">'+l+'</button>';
+  h+='<h3 class="exh3">내역 <small>'+items.length+'건</small> <span class="exsorts">'+sortBtn("recent","최근 올린 순")+sortBtn("date","날짜순")+sortBtn("day","구간순")+'</span></h3>';
+  let list=items.slice().reverse();                                   /* 기본: 올린 순서 최근 것이 위 */
+  if(exSort==="date") list=items.slice().sort((a,b)=>((b.date||"")<(a.date||"")?-1:(b.date||"")>(a.date||"")?1:0)||(b.ts-a.ts));   /* 지출 날짜 최신이 위 */
+  if(exSort==="day")  list=items.slice().sort((a,b)=>(exSlotOrder(a)-exSlotOrder(b))||((a.date||"")<(b.date||"")?-1:1));           /* 출발 전 → D-1 → D0 → D1… */
   if(!items.length){
     h+='<p class="tdhint">아직 올린 비용이 없습니다. 위의 <b>영수증 찍어 올리기</b>로 시작하세요.</p>';
   }else{
     h+='<div class="exlist">';
-    items.slice().reverse().forEach(x=>{
+    list.forEach(x=>{
       const c=exCat(x.cat), mine=exCan(x.payer);
       h+='<div class="exrow'+(mine?" mine":"")+'" data-id="'+x.id+'" data-o="'+x.payer+'">'
         + (x.fileId
@@ -3694,8 +3709,8 @@ const LG_PLAN = [
   ["2027-05-14",  6, "사아군",          "Sahagún"],
   ["2027-05-15",  7, "레온",            "León"],
   ["2027-05-16",  8, "레온 (휴식)",      "같은 숙소 2박 권장"],
-  ["2027-05-17",  9, "라바날 델 카미노", "Rabanal"],
-  ["2027-05-18", 10, "베가 데 발카르세", "Las Herrerías"],
+  ["2027-05-17",  9, "폰세바돈",        "Foncebadón"],
+  ["2027-05-18", 10, "라스 에레리아스",  "Las Herrerías"],
   ["2027-05-19", 11, "사리아",          "Sarria"],
   ["2027-05-20", 12, "아르수아",        "Arzúa"],
   ["2027-05-21", 13, "산티아고",        "완주 기념"]
@@ -3856,6 +3871,7 @@ const lgRender = () => {
         +'<details class="lgbk"'+(n.b_name?' open':'')+'><summary>🛟 보조 숙소 (백업) — 알베르게 대기 중에 따로 잡아 둔 호텔'+(n.b_name?' · <b>'+lgEsc(n.b_name)+'</b>':'')+'</summary>'
           +'<div class="lgseg">'+LG_ST.map(x=>'<button type="button" data-bs="'+x.k+'"'
             +(x.k===(n.b_status||"none")?' class="on"':'')+'>'+x.i+' '+x.n+'</button>').join("")+'</div>'
+          +(n.b_name?'<div style="display:flex;justify-content:flex-end;margin:-4px 0 8px"><button type="button" class="lgcancelb" style="background:#fff;border:1px solid #D9B8BE;color:#8E2C3A;border-radius:999px;padding:5px 12px;font-size:.72rem;cursor:pointer;font-family:inherit">↩ 보조 숙소 취소 (이전 기록으로)</button></div>':'')
           +'<div class="lgrow">'
             +'<label>보조 숙소 이름<input type="text" data-f="b_name" value="'+lgEsc(n.b_name||"")+'" placeholder="예: Hotel Rural ..."></label>'
             +'<label>예약번호<input type="text" data-f="b_ref" value="'+lgEsc(n.b_ref||"")+'" placeholder="선택"></label>'
@@ -3925,6 +3941,15 @@ const lgCancelToHist = (iso) => {
   n.status="none"; n.ts=Date.now(); lgQueue(); lgRender();
 };
 
+const lgCancelBackupToHist = (iso) => {
+  const n=lgGet(iso); if(!n||!n.b_name) return;
+  if(!confirm('보조 숙소 "'+n.b_name+'" 을(를) 취소한 것으로 기록하고 보조 칸을 비울까요?')) return;
+  n.hist=n.hist||[];
+  n.hist.push({name:n.b_name+" (보조)", status:"cancel", ref:n.b_ref||"", by:n.b_by||"", price:n.b_price||"", addr:n.b_addr||"", tel:"", url:"", memo:n.b_memo||"", at:new Date().toISOString().slice(0,10), ts:Date.now()});
+  ["b_name","b_ref","b_by","b_price","b_addr","b_memo"].forEach(k=>n[k]=""); n.b_status="none";
+  n.ts=Date.now(); lgQueue(); lgRender();
+};
+
 const lgCard = (n,v,s,c) =>
   '<div class="lgc2'+(c?" "+c:"")+'"><small>'+n+'</small><b>'+v+'</b><i>'+(s||"")+'</i></div>';
 
@@ -3944,6 +3969,7 @@ const lgBind = () => {
       lgSet(iso,"b_by",b.dataset.bw); lgRender();
     }));
     const cb=box.querySelector(".lgcancel"); if(cb) cb.addEventListener("click",()=>lgCancelToHist(iso));
+    const cbb=box.querySelector(".lgcancelb"); if(cbb) cbb.addEventListener("click",()=>lgCancelBackupToHist(iso));
     box.querySelectorAll(".lghdel").forEach(b=>b.addEventListener("click",()=>{
       const n=lgGet(iso); if(!n||!n.hist) return; if(!confirm("이 기록을 지울까요?")) return;
       n.hist.splice(+b.dataset.i,1); n.ts=Date.now(); lgQueue(); lgRender();
@@ -3993,9 +4019,9 @@ const RD_DAYS = [
   [5,"2027-05-13","벨로라도 → 카스트로헤리스",90.0,234.8],
   [6,"2027-05-14","카스트로헤리스 → 사아군",82.3,324.8],
   [7,"2027-05-15","사아군 → 레온",54.7,407.1],
-  [9,"2027-05-17","레온 → 라바날",68.9,461.8],
-  [10,"2027-05-18","라바날 → 베가 데 발카르세",74.3,530.7],
-  [11,"2027-05-19","베가 데 발카르세 → 사리아",62.3,604.9],
+  [9,"2027-05-17","레온 → 폰세바돈",74.6,461.8],
+  [10,"2027-05-18","폰세바돈 → 라스 에레리아스",73.3,536.4],
+  [11,"2027-05-19","라스 에레리아스 → 사리아",57.6,609.7],
   [12,"2027-05-20","사리아 → 아르수아",76.3,667.2],
   [13,"2027-05-21","아르수아 → 산티아고",38.9,743.5]
 ];
