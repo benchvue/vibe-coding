@@ -1703,6 +1703,8 @@
   .lc-bk{margin-top:8px;padding:8px 10px;border:1px dashed #D9B8BE;border-radius:9px;font-size:.74rem;color:#8E2C3A;line-height:1.5}
   .lc-bk b{display:inline;margin-right:4px} .lc-bk .lst{vertical-align:1px} .lc-bkp{margin-left:6px;font-weight:700}
   .lc-bk small{display:block;color:#A07A80;font-size:.68rem}
+  .receipt{border:1px solid #B9CDB9;border-radius:14px;background:#F6FAF6;padding:10px 12px;margin-bottom:16px} .receipt .rh{margin-bottom:8px} .receipt .rh small{display:block;color:var(--ink-soft);font-size:.74rem}
+  .receipt code,.sched code{font-family:'IBM Plex Mono',monospace;background:#F1EEE4;border-radius:5px;padding:1px 7px;font-size:.8rem}
   .tfaq{border:1px solid var(--line);border-radius:14px;background:#fff;padding:6px 14px 12px;margin-bottom:16px}
   .tfaq details{border-top:1px solid var(--line2);padding:8px 0} .tfaq details:first-of-type{border-top:0}
   .tfaq summary{cursor:pointer;font-weight:700;font-size:.86rem;color:var(--ink);padding:4px 0}
@@ -2885,65 +2887,124 @@
 <section id="secTrain" style="padding-top:0">
   <div class="wrap">
     <div class="sec-head">
-      <div class="no">Tren · Reserva</div>
-      <h2>🚆 생장 기차 예매 — 5/8(토) 파리 → 생장피에드포르</h2>
-      <p>TGV(몽파르나스 → Bayonne) + TER(Bayonne → 생장)을 <b>하나의 연결 여정</b>으로, 두 사람분. 자전거는 생장에서 받으니 자전거 칸은 필요 없습니다.
-      아직 판매 전이라 이 섹션에서 상태를 갱신합니다.</p>
+      <div class="no">Tren · Reservado</div>
+      <h2>🚆 생장 기차 — 5/8(토) 파리 → 생장피에드포르 <span class="tag goal">✓ 예매 완료</span></h2>
+      <p>2026-11-12 SNCF Connect 에서 두 사람분 예매 완료. TGV INOUI(몽파르나스 → Bayonne, <b>1등석</b>) + TER(Bayonne → 생장, 2등석 자유석)을 <b>한 주문의 연결 여정</b>으로 샀습니다.
+      아래 예약번호·좌석·시각만 기억하면 됩니다.</p>
     </div>
 
-    <h3 class="jh3">판매 상태 확인 기록</h3>
-<div class="sched-wrap">
-    <table class="sched" style="min-width:480px">
-      <thead><tr><th>확인한 날</th><th>5/8 조회</th><th>보인 것</th><th>다음 할 일</th></tr></thead>
-      <tbody>
-        <tr><td><b>2026-11-07</b></td><td>불가 (날짜 선택 안 됨)</td><td>5/1(토) 시간표 — <i>En vente prochainement</i> (곧 판매) · 10:11 편 상세: TGV 8537 → Bayonne 14:05 / 14:22 TER L54 → 15:25 · 요금 아직 없음</td><td><b>11/12</b> TGV 오픈일 확인 · TER 은 <b>12/8 쯤</b> · 알림 등록</td></tr>
-        <tr><td style="color:var(--ink-soft)">—</td><td style="color:var(--ink-soft)">5/8 열리면</td><td style="color:var(--ink-soft)">10:11 편 요금·환승 시각</td><td style="color:var(--ink-soft)">바로 예매 (연결 여정 · 2명 · 2등석)</td></tr>
-      </tbody>
-    </table>
+    <div class="receipt">
+      <div class="rh"><b>SNCF Connect 구매 증명서 (Justificatif d'achat)</b><small>주문 2026-11-12 19:10 (파리) · 거래 585665 · 카드 ···3771 · BIN 결제</small></div>
+      <table class="sched" style="min-width:0">
+        <thead><tr><th>구간</th><th>5/8 출발 → 도착</th><th>열차</th><th>예약번호 (Réf)</th><th style="text-align:right">금액</th></tr></thead>
+        <tbody>
+          <tr><td><b>Paris Montparnasse → Bayonne</b></td><td>10:11 → 14:08</td><td>TGV INOUI 8537 · <b>1re classe</b> · 11호차 176·177</td><td><code>J98MB3</code></td><td class="km">€116.00</td></tr>
+          <tr><td><b>Bayonne → Saint-Jean-Pied-de-Port</b></td><td>14:22 → 15:25</td><td>TER NA 867315 · 2de classe · 자유석</td><td><code>XZYB76</code></td><td class="km">€19.60</td></tr>
+          <tr><td>Allianz 보험 — 티켓 변경 보장 + 여정 차질</td><td colspan="2">사건번호 VSCFRA605034193</td><td></td><td class="km">€5.70</td></tr>
+          <tr style="background:#FFF3D0"><td colspan="4"><b>합계 (2명)</b> · 탑승자 JONGBIN YM · JIN OOK KIM</td><td class="km"><b>€141.30</b></td></tr>
+        </tbody>
+      </table>
     </div>
 
-    <h3 class="jh3">5/8 열차 — SNCF Connect 조회 결과</h3>
-    <div class="jc" style="margin-bottom:10px">
-      <b>2026-11-07 확인</b>
-      2027-05-08 은 아직 조회가 안 되고, 같은 토요일인 <b>2027-05-01</b> 시간표만 나옵니다 (표시 <i>En vente prochainement</i> = 곧 판매 예정, 아직 구매 불가).
-      5/8 이 열리면 아래 <b>10:11 편</b>을 <b>파리 → 생장 하나의 연결 여정</b>으로 예매합니다. SNCF 안내에 따르면 TGV 구간은 <b>11/12</b>, TER 구간은 <b>12월 초(5개월 전)</b>에 열립니다 — 아래 FAQ.
+    <h3 class="jh3">예약 조회 — SNCF Connect "내 예약 찾기"에 넣을 것</h3>
+    <div class="sched-wrap">
+      <table class="sched" style="min-width:420px">
+        <thead><tr><th>화면 항목</th><th>파리 → Bayonne</th><th>Bayonne → 생장</th></tr></thead>
+        <tbody>
+          <tr><td>파일 참조 (Référence de dossier · 6자)</td><td><code>J98MB3</code></td><td><code>XZYB76</code></td></tr>
+          <tr><td>주문에 사용된 성 (Nom)</td><td><code>YM</code></td><td><code>YM</code></td></tr>
+        </tbody>
+      </table>
     </div>
-<div class="sched-wrap">
-    <table class="sched" style="min-width:520px">
-      <thead>
-        <tr><th>몽파르나스 출발</th><th>생장 도착</th><th>소요</th><th>환승</th><th style="text-align:right">상태</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>06:52</td><td>12:25</td><td>5시간 33분</td><td>1회</td><td class="km">곧 판매</td></tr>
-        <tr style="background:#FFF3D0"><td><b>10:11</b><span class="tag goal" style="margin-left:6px">✓ 선택</span></td><td><b>15:25</b></td><td><b>5시간 14분</b></td><td>1회 (Bayonne 17분 · TGV→TER)</td><td class="km">곧 판매</td></tr>
-        <tr><td>14:05</td><td>19:21</td><td>5시간 16분</td><td>1회 (Bayonne)</td><td class="km">곧 판매</td></tr>
-        <tr><td>14:43</td><td>20:33</td><td>5시간 50분</td><td>2회</td><td class="km">곧 판매</td></tr>
-      </tbody>
-    </table>
-    </div>
-    <p class="jp" style="font-size:.78rem;color:var(--ink-soft)">조회되는 편은 날짜에 따라 조금 다릅니다. 06:52 편은 호텔에서 6시 전 출발이라 무리, 14시대 편은 19~20시 도착이라 Maya Sport(19시 마감)·순례자 사무소를 못 가므로 <b>10:11 편</b>이어야 합니다.
-    목록을 펼치면 아직 <i>Aucun tarif disponible</i>(요금 없음) — "Billets mis en vente prochainement" 상자에서 <b>표가 풀리면 알려 달라고 등록</b>할 수 있습니다 (결과 페이지에서 "être prévenu").</p>
+    <p class="jp" style="font-size:.8rem">입력 후 <b>Valider</b>(검증하기). 두 구간은 따로 조회되지만 한 주문입니다. 앱에서는 "생장피드포르 여행"으로 한 줄에 보이고, Google Wallet 추가 단추로 QR 표를 폰에 넣을 수 있습니다. JIN 폰에도 같은 번호+성으로 조회해 저장해 두세요.</p>
 
-    <h3 class="jh3">10:11 편 자세히 — Détail du trajet</h3>
+    <h3 class="jh3">좌석 — TGV 8537 · 11호차 위층</h3>
+<figure class="townmap" style="margin:8px 0"><svg viewBox="0 0 700 200" width="100%" role="img" aria-label="TGV 8537 11호차 위층 좌석 배치"><title>TGV INOUI 8537 · Voiture 11 · Salle haute</title>
+<rect width="700" height="200" fill="#F7F5EE"/>
+<rect x="8" y="18" width="684" height="150" rx="14" fill="#fff" stroke="#8A7F63" stroke-width="1.5"/>
+<text x="20" y="12" font-size="10" fill="#8A7F63" font-family="'IBM Plex Sans KR',sans-serif">창가 (Fenêtre)</text>
+<text x="350" y="112" text-anchor="middle" font-size="9" fill="#B9B3A4" font-family="'IBM Plex Sans KR',sans-serif">통로 (Couloir)</text>
+<text x="20" y="182" font-size="10" fill="#8A7F63" font-family="'IBM Plex Sans KR',sans-serif">창가</text>
+<rect x="636" y="30" width="48" height="56" rx="6" fill="#EDE8D8"/><text x="660" y="62" text-anchor="middle" font-size="9" fill="#7B6E55" font-family="'IBM Plex Sans KR',sans-serif">계단 ↓</text>
+<rect x="636" y="128" width="48" height="26" rx="6" fill="#EDE8D8"/><text x="660" y="145" text-anchor="middle" font-size="9" fill="#7B6E55" font-family="'IBM Plex Sans KR',sans-serif">🧳 짐</text>
+<rect x="20" y="128" width="40" height="26" rx="6" fill="#EDE8D8"/><text x="40" y="145" text-anchor="middle" font-size="9" fill="#7B6E55" font-family="'IBM Plex Sans KR',sans-serif">🧳 짐</text>
+<g font-family="'IBM Plex Sans KR',sans-serif"><rect x="20" y="30" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="35" y="47" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">179</text><rect x="92" y="30" width="30" height="26" rx="5" fill="#8E2C3A" stroke="#8E2C3A" stroke-width="2"/><text x="107" y="47" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">177</text><rect x="128" y="30" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="143" y="47" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">175</text><rect x="200" y="30" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="215" y="47" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">172</text><rect x="272" y="30" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="287" y="47" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">169</text><rect x="308" y="30" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="323" y="47" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">166</text><rect x="344" y="30" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="359" y="47" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">163</text><rect x="380" y="30" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="395" y="47" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">160</text><rect x="416" y="30" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="431" y="47" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">157</text><rect x="452" y="30" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="467" y="47" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">154</text><rect x="488" y="30" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="503" y="47" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">151</text><rect x="524" y="30" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="539" y="47" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">148</text><rect x="560" y="30" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="575" y="47" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">145</text><rect x="596" y="30" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="611" y="47" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">142</text><rect x="20" y="62" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="35" y="79" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">178</text><rect x="92" y="62" width="30" height="26" rx="5" fill="#8E2C3A" stroke="#8E2C3A" stroke-width="2"/><text x="107" y="79" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">176</text><rect x="128" y="62" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="143" y="79" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">174</text><rect x="200" y="62" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="215" y="79" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">171</text><rect x="272" y="62" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="287" y="79" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">168</text><rect x="308" y="62" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="323" y="79" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">165</text><rect x="344" y="62" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="359" y="79" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">162</text><rect x="380" y="62" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="395" y="79" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">159</text><rect x="416" y="62" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="431" y="79" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">156</text><rect x="452" y="62" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="467" y="79" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">153</text><rect x="488" y="62" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="503" y="79" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">150</text><rect x="524" y="62" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="539" y="79" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">147</text><rect x="560" y="62" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="575" y="79" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">144</text><rect x="92" y="128" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="107" y="145" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">173</text><rect x="128" y="128" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="143" y="145" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">170</text><rect x="272" y="128" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="287" y="145" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">167</text><rect x="308" y="128" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="323" y="145" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">164</text><rect x="344" y="128" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="359" y="145" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">161</text><rect x="380" y="128" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="395" y="145" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">158</text><rect x="416" y="128" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="431" y="145" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">155</text><rect x="452" y="128" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="467" y="145" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">152</text><rect x="488" y="128" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="503" y="145" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">149</text><rect x="524" y="128" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="539" y="145" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">146</text><rect x="560" y="128" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="575" y="145" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">143</text><rect x="596" y="128" width="30" height="26" rx="5" fill="#fff" stroke="#C9A6AC" stroke-width="1.2"/><text x="611" y="145" text-anchor="middle" font-size="10" font-weight="400" fill="#5A4A2E">140</text></g>
+<text x="350" y="194" text-anchor="middle" font-size="10" fill="#A79E86" font-family="'IBM Plex Sans KR',sans-serif">11호차 위층(Salle haute) · 177 창가 · 176 통로 · 나란히 2인석 · 짐은 양 끝 짐칸 또는 머리 위 선반</text>
+</svg></figure>
+    <div class="sched-wrap">
+      <table class="sched" style="min-width:0">
+        <thead><tr><th>여행자</th><th>차량</th><th>좌석</th><th>자리</th></tr></thead>
+        <tbody>
+          <tr><td>여행자 1 · JONGBIN YM</td><td>Voiture 11</td><td><b>177</b></td><td>Salle haute · <b>창가</b> (Fenêtre)</td></tr>
+          <tr><td>여행자 2 · JIN OOK KIM</td><td>Voiture 11</td><td><b>176</b></td><td>Salle haute · <b>통로</b> (Couloir)</td></tr>
+          <tr><td>TER 867315</td><td>—</td><td>자유석</td><td>Placement libre · 아무 자리 · 일찍 타기</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="jp" style="font-size:.8rem">1등석이라 좌석이 넓고(2+1 배치) 전원 콘센트·와이파이·바 차량이 있습니다. 11호차는 앞쪽 편성 — 몽파르나스 승강장 전광판의 차량 번호 안내(repère)를 보고 그 글자 앞에서 기다리세요.</p>
+
+    <h3 class="jh3">당일 시간표</h3>
     <ol class="jlist" style="margin-bottom:12px;border:1px solid var(--line);border-radius:12px;background:#fff">
-      <li><b>10:09</b> 탑승 마감 <small>출발 2분 전까지 승강장 입장 (Accueil embarquement) — 몽파르나스 Hall 1&amp;2, 홀이 넓어 20분 전엔 역에</small></li>
-      <li><b>10:11</b> Paris Montparnasse 출발 <small><b>TGV INOUI 8537</b> · 3시간 54분 · 와이파이 · 바 차량 · 자전거 칸은 유료(우리는 해당 없음)</small></li>
-      <li><b>14:05</b> Bayonne 도착 <small>환승 <b>17분</b> · 같은 역 안 승강장 이동 (Correspondance)</small></li>
-      <li><b>14:20</b> TER 탑승 마감 → <b>14:22</b> Bayonne 출발 <small><b>TER NA 노선 L54</b> (SNCF Voyageurs) · 1시간 3분 · 자전거 칸 무료(예약 필요할 수 있음)</small></li>
-      <li class="jgoal"><b>15:25</b> Saint-Jean-Pied-de-Port 도착 <small>종착역 · 짐 들고 역 앞 택시 → Maya Sport</small></li>
+      <li><b>09:40</b> 호텔 Les Artistes 출발 <small>도보 6분 · 몽파르나스 Hall 1&amp;2 · 1등석은 승강장 입장이 따로 없음, 전광판에 승강장(Voie)은 출발 20분 전쯤 표시</small></li>
+      <li><b>10:09</b> 탑승 마감 <small>출발 2분 전까지 (Accueil embarquement)</small></li>
+      <li><b>10:11</b> 몽파르나스 출발 <small><b>TGV INOUI 8537</b> · 11호차 위층 176·177 · 3시간 57분</small></li>
+      <li><b>14:08</b> Bayonne 도착 <small>환승 <b>14분</b> — 전광판에서 Saint-Jean-Pied-de-Port 행 승강장 확인</small></li>
+      <li><b>14:20</b> TER 탑승 마감 → <b>14:22</b> Bayonne 출발 <small><b>TER NA 867315</b> · 2등석 자유석 · 1시간 3분</small></li>
+      <li class="jgoal"><b>15:25</b> Saint-Jean-Pied-de-Port 도착 <small>종착역 · 택시 → Maya Sport (19시 마감) → 순례자 사무소 → Gure Lana</small></li>
     </ol>
-    <div class="booking">
-      <a class="primary" href="https://www.sncf-connect.com" target="_blank" rel="noopener">SNCF Connect <small>공식 예매 · 시간표 출처</small></a>
-      <a href="https://www.ouigo.com" target="_blank" rel="noopener">OUIGO <small>저가 TGV · 생장 연결은 따로 사야 함</small></a>
-      <a href="https://www.thetrainline.com" target="_blank" rel="noopener">Trainline <small>영어 UI · 통합 검색</small></a>
-      <a href="https://www.raileurope.com" target="_blank" rel="noopener">Rail Europe <small>해외 카드 결제 편리</small></a>
+
+    <h3 class="jh3">남은 일</h3>
+    <ol style="padding-left:22px;font-size:.84rem;line-height:1.75;margin:0 0 12px">
+      <li>두 사람 폰에 e-billet(QR) 저장 — SNCF Connect 앱 로그인 또는 위 번호로 조회 → Google Wallet / Apple Wallet</li>
+      <li>올리기 페이지 비용 탭에 <b>€141.30 · 교통 · BIN · 구간 "5/8 생장"</b> 기록 (영수증 PDF 첨부)</li>
+      <li>5/7 저녁 SNCF Connect 에서 운행 여부 재확인 (TER 대체버스 공지)</li>
+      <li>변경이 필요하면 앱의 "교환 또는 취소" — 보험 덕에 변경 수수료 보장</li>
+    </ol>
+
+    <h3 class="jh3">타는 날 알아 둘 것</h3>
+    <div class="jchk">
+      <div class="jc warn">
+        <b>5/8은 토요일 — TER 편수가 줄어듭니다</b>
+        Bayonne ↔ 생장 구간은 평일 6왕복이지만 <b>주말에는 5왕복</b>입니다.
+        평일 시간표를 보고 계획을 세우면 실제 토요일에는 그 열차가 없을 수 있습니다.
+        우리 표는 5/8 토요일 시간표로 산 것이니 문제없습니다.
+      </div>
+      <div class="jc">
+        <b>예약번호가 두 개인 이유</b>
+        파리→Bayonne(J98MB3)와 Bayonne→생장(XZYB76)은 예약번호가 둘이지만 <b>한 주문의 연결 여정</b>이라 TGV가 늦어 TER을 놓치면 다음 편으로 바꿔 줍니다.
+        Allianz 보험(€5.70)도 "티켓 변경 보장 + 여정 차질"용 — 사건번호 <b>VSCFRA605034193</b>.
+      </div>
+      <div class="jc">
+        <b>Bayonne 환승 14분</b>
+        Bayonne는 작은 역이라 14분이면 충분하지만, 생장행 TER은 별도 승강장을 쓰는 경우가 있습니다.
+        도착 직후 전광판에서 <b>Saint-Jean-Pied-de-Port</b> 행 승강장부터 확인하세요.
+      </div>
+      <div class="jc">
+        <b>TER은 단량 디젤 차량입니다</b>
+        52km 단선 비전철 구간을 X 73500 한 량짜리 열차가 다닙니다.
+        좌석이 적고 순례철(5월)에는 배낭을 멘 순례자로 붐빕니다. 좌석 지정이 없으니 일찍 승강장에 서세요.
+      </div>
+      <div class="jc">
+        <b>운휴 · 대체버스 가능성</b>
+        이 노선은 산사태로 운휴된 적이 있고, 그럴 때는 Cambo-les-Bains 이후 구간을 버스로 대체합니다.
+        출발 전날 SNCF에서 운행 여부를 한 번 더 확인하세요. 대체버스면 소요시간이 늘어납니다.
+      </div>
     </div>
 
 
-
-    <h3 class="jh3">판매 시작 FAQ — SNCF Connect 안내 페이지 요약</h3>
-    <div class="tfaq">
-      <details open><summary>우리 5/8 표는 언제부터 살 수 있나?</summary>
+    <details class="tfaq" style="margin-top:14px"><summary>예매 과정 기록 (11/7 ~ 11/12)</summary>
+      <div class="sched-wrap" style="margin-top:8px">
+      <table class="sched" style="min-width:480px">
+        <thead><tr><th>날짜</th><th>5/8 조회</th><th>보인 것</th></tr></thead>
+        <tbody>
+          <tr><td>2026-11-07</td><td>불가</td><td>5/1(토) 시간표만 "곧 판매" · 10:11 편 상세 확인</td></tr>
+          <tr><td>2026-11-10</td><td>열림</td><td>08:31 OUIGO + TER 2회 환승 €65.10 만 (TGV INOUI 미오픈)</td></tr>
+          <tr><td><b>2026-11-12</b></td><td><b>TGV INOUI 오픈</b></td><td>10:11 편 1등석 2명 + TER 연결 여정 <b>예매 완료 €141.30</b></td></tr>
+        </tbody>
+      </table>
+      </div>
+    <div style="margin-top:8px">
+      <details><summary>우리 5/8 표는 언제부터 살 수 있나? (기록)</summary>
         <p>열차 종류마다 다릅니다. 10:11 편은 <b>TGV INOUI + TER(누벨아키텐)</b> 두 구간이라 둘 다 열려야 "하나의 여정"으로 살 수 있습니다.</p>
         <table class="sched" style="min-width:0">
           <thead><tr><th>구간</th><th>판매 시작</th><th>근거</th></tr></thead>
@@ -2973,52 +3034,8 @@
       <p style="font-size:.76rem;color:var(--ink-soft);margin:8px 0 0">출처: <a href="https://www.sncf-connect.com/aide/l-ouverture-des-ventes" target="_blank" rel="noopener" style="color:var(--camino-blue)">SNCF Connect — L'ouverture des ventes</a> (2026-11-07 확인). 날짜는 SNCF 가 바꿀 수 있으니 11/12 전후로 다시 보세요.</p>
     </div>
 
-    <h3 class="jh3">예매 순서 (SNCF Connect)</h3>
-    <ol style="padding-left:22px;font-size:.84rem;line-height:1.75;margin:0 0 12px">
-      <li>sncf-connect.com → Départ <b>Paris Montparnasse</b> · Arrivée <b>Saint-Jean-Pied-de-Port</b> · Aller <b>Sam. 08 mai 2027</b> · 승객 <b>2</b> (Adulte) · Codes 없음</li>
-      <li>목록에서 <b>10:11 → 15:25 · 1 correspondance</b> 선택 → "Détail du trajet"로 Bayonne 환승 시각 확인 → <b>2de classe</b></li>
-      <li>요금 종류: 환불·변경이 되는 쪽(Flex)이 조금 비싸도 안전 — 항공 지연 가능성(Bin 06:10 도착)은 전날이라 괜찮지만, 변경 가능이면 마음이 편합니다</li>
-      <li>결제 후 <b>e-billet(QR)</b>을 두 사람 폰에 각각 저장 (SNCF Connect 앱 또는 PDF) · 예약번호 6자리를 올리기 페이지 비용 탭에 기록 (구간 "5/8 생장")</li>
-      <li>출발 전날 SNCF Connect 에서 운행 여부 재확인 (TER 대체버스 공지)</li>
-    </ol>
 
-    <div class="booking">
-      <a class="primary" href="https://www.sncf-connect.com/app/home/search?origin=Paris%20Montparnasse&destination=Saint-Jean-Pied-de-Port&outwardDate=2027-05-08" target="_blank" rel="noopener">SNCF Connect — 5/8 조회 <small>날짜 선택이 되면 열린 것</small></a>
-      <a href="https://www.sncf-connect.com" target="_blank" rel="noopener">SNCF Connect 홈</a>
-    </div>
-
-    <h3 class="jh3">예매할 때 확인해 둘 것</h3>
-    <div class="jchk">
-      <div class="jc warn">
-        <b>5/8은 토요일 — TER 편수가 줄어듭니다</b>
-        Bayonne ↔ 생장 구간은 평일 6왕복이지만 <b>주말에는 5왕복</b>입니다.
-        평일 시간표를 보고 계획을 세우면 실제 토요일에는 그 열차가 없을 수 있습니다.
-        예매할 때 반드시 <b>2027-05-08 토요일</b> 날짜로 조회하세요 — 5/1 시간표와 같은 패턴이지만 그대로 믿지 말고 5/8 로 다시 봐야 합니다.
-      </div>
-      <div class="jc">
-        <b>한 번에 묶어 예매하세요</b>
-        파리→Bayonne와 Bayonne→생장을 <b>하나의 여정으로</b> 예매하면 TGV가 늦어도 다음 TER 연결이 보장됩니다.
-        따로 사면 지연 시 보상이 없습니다. 2026-11-07 현재 5/1 편이 "곧 판매" 상태이니 5/8 도 머지않아 열립니다.
-      </div>
-      <div class="jc">
-        <b>Bayonne 환승 17분</b>
-        Bayonne는 작은 역이라 17분이면 충분하지만, 생장행 TER은 별도 승강장을 쓰는 경우가 있습니다.
-        도착 직후 전광판에서 <b>Saint-Jean-Pied-de-Port</b> 행 승강장부터 확인하세요.
-      </div>
-      <div class="jc">
-        <b>TER은 단량 디젤 차량입니다</b>
-        52km 단선 비전철 구간을 X 73500 한 량짜리 열차가 다닙니다.
-        좌석이 적고 순례철(5월)에는 배낭을 멘 순례자로 붐빕니다. 좌석 지정이 없으니 일찍 승강장에 서세요.
-      </div>
-      <div class="jc">
-        <b>운휴 · 대체버스 가능성</b>
-        이 노선은 산사태로 운휴된 적이 있고, 그럴 때는 Cambo-les-Bains 이후 구간을 버스로 대체합니다.
-        출발 전날 SNCF에서 운행 여부를 한 번 더 확인하세요. 대체버스면 소요시간이 늘어납니다.
-      </div>
-    </div>
-
-    <div class="note">시각은 SNCF Connect 의 2027-05-01(토) 조회값이며, 5/8 이 열리면 다시 확인합니다.
-    생장 역은 종착역이라 내리면 바로 마을이고, 순례자 사무소까지 도보 10분 안쪽입니다.</div>
+    </details>
   </div>
 </section>
 <section id="sec4" style="padding-top:0">
@@ -3094,8 +3111,8 @@
         <ul class="jlist">
           <li><b>08:30~09:00</b> 호텔 출발 → <b>도보 5~10분</b> → Gare Montparnasse
             <small>09:15 이전 도착 권장 · 지하철을 다시 탈 필요가 없습니다</small></li>
-          <li><b>10:11</b> Paris Montparnasse 출발 <small>TGV INOUI 8537 · 3시간 54분</small></li>
-          <li><b>14:05</b> Bayonne 도착 → 전광판에서 생장행 TER 승강장 확인 <small>환승 17분</small></li>
+          <li><b>10:11</b> Paris Montparnasse 출발 <small>TGV INOUI 8537 · 1등석 11호차 176·177 · 3시간 57분</small></li>
+          <li><b>14:08</b> Bayonne 도착 → 전광판에서 생장행 TER 승강장 확인 <small>환승 14분</small></li>
           <li><b>14:22</b> Bayonne 출발 <small>TER L54 · 1시간 3분</small></li>
           <li class="jgoal"><b>15:25</b> Saint-Jean-Pied-de-Port 도착
             <small>호텔 체크인 → <b>Maya Sport 에서 자전거 수령</b>(현장 €20) · 세팅 → 크레덴시알 수령 → Day 1 준비</small></li>
@@ -3708,7 +3725,7 @@
       <ul class="todo" data-td="pre">
         <li><label><input type="checkbox"> 항공권 발권 — Bin(AF071 · IB1136/IB0327 <b>발권 완료</b>) · Jin(KE901 · KE6472/AF1649 · KE902 <b>발권 완료</b> · VY1623 부엘링 <b>별도 발권 완료</b>)</label></li>
         <li><label><input type="checkbox"> VY1623 기내 캐리어 포함 확인 — 예약 확인서에 "Cabin bag 10 kg" 있는지, 없으면 출발 전 온라인 추가 (짐은 기내 반입 예정)</label></li>
-        <li><label><input type="checkbox"> TGV 예약 — 5/8(토) 몽파르나스 10:11 → 생장 15:25, 연결 여정 하나로 (SNCF Connect · 11/7 현재 "곧 판매" · 매주 확인)</label></li>
+        <li><label><input type="checkbox" checked> ✓ 기차 예매 완료 — 5/8(토) 몽파르나스 10:11 TGV 8537 1등석(11호차 176·177) → Bayonne 14:08 / 14:22 TER → 생장 15:25 · J98MB3 / XZYB76 · €141.30 (11/12)</label></li>
         <li><label><input type="checkbox" checked> 자전거 원웨이 렌탈 2대 예약 — <b>10/31 Bicigrino 완료</b> (BIN #388629030 · JIN #388628709) · 보증금 €200 ×2 메일 결제 남음</label></li>
         <li><label><input type="checkbox"> 숙소 예약 — <b>산티아고 최종 호텔부터 확정</b> (아래 캐리어 직송의 수령지) → 파리 → 경유지 순</label></li>
         <li><label><input type="checkbox"> 산티아고 호텔에 이메일 — "guest luggage storage before arrival"(도착 전 짐 보관) 가능 여부 확인</label></li>
@@ -3779,7 +3796,7 @@
     <a href="#secFood">🍽 길 위의 음식 (Comida)</a>
     <a href="#secX">💶 비용 (Gastos)</a>
     <a href="#secP">📕 디지털 순례자 여권</a>
-    <a href="#secTrain">🚆 생장 기차 예매 (5/8)</a>
+    <a href="#secTrain">🚆 생장 기차 (5/8) ✓</a>
     <a href="#sec4">Ⅳ · 파리 → 생장</a>
     <a href="#sec5">Ⅴ · 항공 · 환승</a>
     <a href="#sec6">Ⅵ · 숙소</a>
